@@ -21,14 +21,6 @@ const productsData = [
     },
     {
         id: 3,
-        name: "Gluta E Vitamin E + Collagen Powder",
-        type: "Dietary Supplement",
-        description: "Beauty From Within. High-potency antioxidant + collagen powder for radiant skin, joint support, and daily wellness. 30 Servings.",
-        price: 29.99,
-        badge: "Popular"
-    },
-    {
-        id: 4,
         name: "Snail Gluta Cream Day/Night",
         type: "Moisturizer/Cosmetic",
         description: "Ultimate Skin Reset Duo. K-beauty powered repair system. Snail mucin + Glutathione heal, brighten, and strengthen skin barrier. Day 20g + Night 50g Set.",
