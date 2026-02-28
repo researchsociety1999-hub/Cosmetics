@@ -342,4 +342,62 @@ body {
     .hero-image-side { display: none; }
     .editorial-grid { grid-template-columns: 1fr; }
     .drawer-content { width: 100%; right: -100%; }
+}/* Force the Hero Split to be side-by-side */
+.hero-split {
+    display: flex;
+    flex-direction: row; /* Side by side on desktop */
+    height: 90vh;
+    align-items: center;
+}
+
+.hero-text-side {
+    flex: 1;
+    padding: 5%;
+}
+
+.hero-image-side {
+    flex: 1.2;
+    height: 100%;
+    background: var(--beige);
+    /* Add a high-end beauty image URL here */
+    background-image: url('https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&q=80');
+    background-size: cover;
+}
+
+/* Force Products into a Row, not a List */
+.editorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+/* Fix the Cart Drawer so it's not at the bottom */
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Hidden by default */
+    width: 400px;
+    height: 100vh;
+    background: white;
+    z-index: 9999;
+    transition: 0.5s ease;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+}
+
+.cart-drawer.active {
+    right: 0; /* Slides in */
+}
+
+/* Hide the overlay when not active */
+.drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 9998;
+}
+
+.drawer-overlay.active {
+    display: block;
 }

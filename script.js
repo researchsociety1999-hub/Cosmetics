@@ -162,3 +162,17 @@ function initLuxuryEffects() {
         }
     });
 }
+// Toggle Cart Drawer
+function openCart() {
+    document.getElementById('cartDrawer').classList.add('active');
+    document.getElementById('drawerOverlay').classList.add('active');
+}
+
+function closeCart() {
+    document.getElementById('cartDrawer').classList.remove('active');
+    document.getElementById('drawerOverlay').classList.remove('active');
+}
+
+// Ensure the buttons work
+document.getElementById('cartBtn').addEventListener('click', openCart);
+document.getElementById('closeDrawer').addEventListener('click', closeCart);
