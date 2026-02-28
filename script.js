@@ -4,20 +4,19 @@
  */
 
 // --- 1. CONFIGURATION ---
-// Replace with your actual Supabase Project details
 const SUPABASE_URL = 'https://your-project-id.supabase.co';
 const SUPABASE_KEY = 'your-anon-public-key';
 const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// --- 2. BRAND DATA (Fallback from your Product Master Database) ---
-const productsData = [
+// --- 2. PRODUCT MASTER DATA (Mapped from your Pacific Radiance Sheets) ---
+const fallbackProducts = [
     {
         id: 1,
         name: "8888 Brightening Lotion",
         category: "Moisturizer",
         price: 45.00,
         image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
-        tag: "Best Seller"
+        tag: "California Glow"
     },
     {
         id: 2,
@@ -26,18 +25,10 @@ const productsData = [
         price: 62.00,
         image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
         tag: "New Arrival"
-    },
-    {
-        id: 3,
-        name: "Herbal Argan Dye",
-        category: "Hair Care",
-        price: 28.00,
-        image: "https://images.unsplash.com/photo-1527799822340-304cf6670e4c?auto=format&fit=crop&w=800&q=80",
-        tag: "Natural"
     }
 ];
 
-// --- 3. STATE MANAGEMENT ---
+// --- 3. STATE ---
 let cart = JSON.parse(localStorage.getItem('pacific_cart')) || [];
 let liveProducts = [];
 
@@ -47,48 +38,43 @@ const cartCount = document.getElementById('cartCount');
 const cartDrawer = document.getElementById('cartDrawer');
 const cartItemsContainer = document.getElementById('cartItems');
 const cartTotalElement = document.getElementById('cartTotal');
-const navbar = document.getElementById('navbar');
 
 // --- 5. INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
-    initNavbarScroll();
-    await loadStoreProducts();
+    initLuxuryEffects();
+    await fetchBoutiqueProducts();
     updateCartUI();
-    setupEventListeners();
+    bindEvents();
 });
 
-// --- 6. STORE LOGIC ---
-
-async function loadStoreProducts() {
+// --- 6. DATA FETCHING ---
+async function fetchBoutiqueProducts() {
     if (!productsGrid) return;
-
     try {
         if (supabase) {
             const { data, error } = await supabase.from('products').select('*');
             if (error) throw error;
-            liveProducts = data.length > 0 ? data : productsData;
+            liveProducts = data.length > 0 ? data : fallbackProducts;
         } else {
-            liveProducts = productsData;
+            liveProducts = fallbackProducts;
         }
     } catch (err) {
-        console.warn("Supabase connection skipped. Loading local boutique data.");
-        liveProducts = productsData;
+        liveProducts = fallbackProducts;
     }
-
-    renderProducts(liveProducts);
+    renderBoutique(liveProducts);
 }
 
-function renderProducts(products) {
+function renderBoutique(products) {
     productsGrid.innerHTML = products.map(product => `
         <div class="product-card">
             <div class="product-image">
                 <img src="${product.image}" alt="${product.name}" loading="lazy">
             </div>
             <div class="product-info">
-                <span class="product-tag">${product.tag || 'Luxury'}</span>
+                <span class="product-tag">${product.tag || 'The Essentials'}</span>
                 <h3 class="product-name">${product.name}</h3>
                 <p class="product-price">$${parseFloat(product.price).toFixed(2)}</p>
-                <button class="btn-gold" style="width: 100%; margin-top: 1.5rem;" onclick="addToCart(${product.id})">
+                <button class="btn-gold" style="width: 100%; margin-top: 2rem;" onclick="addToCart(${product.id})">
                     Add to Kit
                 </button>
             </div>
@@ -96,66 +82,57 @@ function renderProducts(products) {
     `).join('');
 }
 
-// --- 7. CART SYSTEM ---
-
+// --- 7. CART LOGIC ---
 window.addToCart = (productId) => {
     const product = liveProducts.find(p => p.id === productId);
     const existing = cart.find(item => item.id === productId);
-
+    
     if (existing) {
         existing.quantity += 1;
     } else {
         cart.push({ ...product, quantity: 1 });
     }
-
-    saveCart();
-    updateCartUI();
+    
+    saveAndUpdate();
     openCart();
 };
 
-window.removeFromCart = (productId) => {
-    cart = cart.filter(item => item.id !== productId);
-    saveCart();
-    updateCartUI();
+window.removeFromCart = (id) => {
+    cart = cart.filter(item => item.id !== id);
+    saveAndUpdate();
 };
 
+function saveAndUpdate() {
+    localStorage.setItem('pacific_cart', JSON.stringify(cart));
+    updateCartUI();
+}
+
 function updateCartUI() {
-    // Update Badge
     const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
     if (cartCount) cartCount.textContent = totalQty;
-
-    // Render Items
+    
     if (cartItemsContainer) {
         if (cart.length === 0) {
-            cartItemsContainer.innerHTML = `
-                <div style="text-align:center; padding: 4rem 0; opacity: 0.5;">
-                    <p>Your glow kit is empty.</p>
-                </div>`;
+            cartItemsContainer.innerHTML = `<div class="empty-state">Your kit is empty.</div>`;
         } else {
             cartItemsContainer.innerHTML = cart.map(item => `
-                <div class="cart-item" style="display:flex; gap:1.5rem; margin-bottom:2rem; align-items:center;">
-                    <img src="${item.image}" width="70" height="90" style="object-fit:cover;">
+                <div class="cart-item" style="display:flex; gap:1rem; margin-bottom:1.5rem; align-items:center;">
+                    <img src="${item.image}" width="60" style="background:#f9f9f9;">
                     <div style="flex:1">
-                        <h4 style="font-family:var(--font-heading); font-size:1rem;">${item.name}</h4>
+                        <h4 style="font-family:var(--font-heading); font-size:0.9rem;">${item.name}</h4>
                         <p style="font-size:0.8rem; color:var(--gold)">$${item.price} x ${item.quantity}</p>
                     </div>
-                    <button onclick="removeFromCart(${item.id})" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">&times;</button>
+                    <button onclick="removeFromCart(${item.id})" style="background:none; border:none; cursor:pointer;">&times;</button>
                 </div>
             `).join('');
         }
     }
-
-    // Update Total
+    
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     if (cartTotalElement) cartTotalElement.textContent = `$${total.toFixed(2)}`;
 }
 
-function saveCart() {
-    localStorage.setItem('pacific_cart', JSON.stringify(cart));
-}
-
 // --- 8. UI INTERACTIONS ---
-
 function openCart() {
     cartDrawer.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -166,18 +143,22 @@ function closeCart() {
     document.body.style.overflow = '';
 }
 
-function setupEventListeners() {
+function bindEvents() {
     document.getElementById('cartBtn')?.addEventListener('click', openCart);
     document.getElementById('closeDrawer')?.addEventListener('click', closeCart);
     document.getElementById('drawerOverlay')?.addEventListener('click', closeCart);
 }
 
-function initNavbarScroll() {
+function initLuxuryEffects() {
+    // Smooth Navbar reveal on scroll
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
+        const nav = document.getElementById('navbar');
+        if (window.scrollY > 100) {
+            nav.style.padding = "0.5rem 0";
+            nav.style.boxShadow = "0 10px 30px rgba(0,0,0,0.02)";
         } else {
-            navbar.classList.remove('scrolled');
+            nav.style.padding = "1rem 0";
+            nav.style.boxShadow = "none";
         }
     });
 }
