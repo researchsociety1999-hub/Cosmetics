@@ -411,7 +411,7 @@ function addNotificationStyles() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Pacific Radiance - Initializing...');
+    console.log('ABC Cosmetics - Initializing...');
     
     // Load cart from localStorage
     loadCartFromStorage();
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add notification styles
     addNotificationStyles();
     
-    console.log('Pacific Radiance - Initialization complete!');
+    console.log('ABC Cosmetics - Initialization complete!');
     console.log(`Loaded ${productsData.length} products`);
 });
 
