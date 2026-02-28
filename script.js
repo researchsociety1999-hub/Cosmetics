@@ -228,3 +228,8 @@ style.textContent = \`
     }
 \`;
 document.head.appendChild(style);
+
+
+git add . && git commit -m "Initialize roadmap and prepare for Supabase integration" && git push origin main
+
+touch supabase.js

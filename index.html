@@ -250,6 +250,33 @@
             </div>
         </div>
     </div>
+cat >> styles.css <<EOF
+
+/* Reviews Section */
+.reviews-section { padding: 8rem 0; background: var(--bg-white); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+.review-card { padding: 2.5rem; background: var(--bg-soft); border-radius: 12px; transition: var(--transition); }
+.review-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.stars { color: #ffc107; margin-bottom: 1rem; font-size: 0.9rem; }
+.review-card p { font-style: italic; color: var(--text-main); margin-bottom: 1.5rem; }
+.reviewer { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
+
+/* FAQ Section */
+.faq-section { padding: 8rem 0; background: var(--primary-light); }
+.faq-grid { max-width: 800px; margin: 3rem auto 0;
+     display: grid; gap: 2rem; }
+.faq-item { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+.faq-item h3 { font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 1rem; color: var(--secondary); }
+.faq-item p { color: var(--text-muted); font-s
+    ize: 0.95rem; }
+touch privacy.html terms.html returns.html
+
+
+@media (max-width: 768px) {
+    .reviews-grid { grid-template-columns: 1fr; }git add . && git commit -m "Add reviews, FAQ sections and legal page templates" && git push origin main
+
+}
+EOF
 
     <!-- Scripts -->
     <script src="script.js"></script>
