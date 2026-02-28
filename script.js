@@ -1,169 +1,178 @@
 /**
- * ABC Cosmetics - Premium Script
- * Handling: Supabase Integration, Product Rendering, Cart Logic
+ * PACIFIC RADIANCE - Official Boutique Script
+ * Core: Supabase Integration, Cart Drawer Logic, & Luxury UI Interactions
  */
 
-// --- CONFIGURATION ---
-// Replace these with your actual Supabase project details from the dashboard
-const SUPABASE_URL = 'https://your-project-url.supabase.co';
+// --- 1. CONFIGURATION ---
+// Replace with your actual Supabase Project details
+const SUPABASE_URL = 'https://your-project-id.supabase.co';
 const SUPABASE_KEY = 'your-anon-public-key';
 const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// --- FALLBACK DATA (Used if Supabase is empty or connecting) ---
-const fallbackProducts = [
+// --- 2. BRAND DATA (Fallback from your Product Master Database) ---
+const productsData = [
     {
         id: 1,
         name: "8888 Brightening Lotion",
-        category: "Skincare",
-        price: 24.99,
-        badge: "Bestseller",
-        image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80"
+        category: "Moisturizer",
+        price: 45.00,
+        image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
+        tag: "Best Seller"
     },
     {
         id: 2,
-        name: "Herbal Hair Dye w/ Argan Oil",
+        name: "Radiant Face Serum",
+        category: "Treatment",
+        price: 62.00,
+        image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+        tag: "New Arrival"
+    },
+    {
+        id: 3,
+        name: "Herbal Argan Dye",
         category: "Hair Care",
-        price: 18.99,
-        badge: "Natural",
-        image: "https://images.unsplash.com/photo-1527799822340-304cf6670e4c?auto=format&fit=crop&w=800&q=80"
+        price: 28.00,
+        image: "https://images.unsplash.com/photo-1527799822340-304cf6670e4c?auto=format&fit=crop&w=800&q=80",
+        tag: "Natural"
     }
 ];
 
-// --- STATE MANAGEMENT ---
-let cart = JSON.parse(localStorage.getItem('abc_cart')) || [];
-let productsData = [];
+// --- 3. STATE MANAGEMENT ---
+let cart = JSON.parse(localStorage.getItem('pacific_cart')) || [];
+let liveProducts = [];
 
-// --- DOM ELEMENTS ---
+// --- 4. DOM ELEMENTS ---
 const productsGrid = document.getElementById('productsGrid');
 const cartCount = document.getElementById('cartCount');
-const cartModal = document.getElementById('cartModal');
-const cartBtn = document.getElementById('cartBtn');
-const modalClose = document.getElementById('modalClose');
-const modalOverlay = document.getElementById('modalOverlay');
+const cartDrawer = document.getElementById('cartDrawer');
 const cartItemsContainer = document.getElementById('cartItems');
 const cartTotalElement = document.getElementById('cartTotal');
 const navbar = document.getElementById('navbar');
 
-// --- INITIALIZATION ---
+// --- 5. INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
-    await fetchProducts();
+    initNavbarScroll();
+    await loadStoreProducts();
     updateCartUI();
-    initScrollEffects();
+    setupEventListeners();
 });
 
-// --- CORE FUNCTIONS ---
+// --- 6. STORE LOGIC ---
 
-async function fetchProducts() {
+async function loadStoreProducts() {
     if (!productsGrid) return;
-    
+
     try {
-        // Try to fetch from Supabase
         if (supabase) {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*');
-            
+            const { data, error } = await supabase.from('products').select('*');
             if (error) throw error;
-            productsData = data.length > 0 ? data : fallbackProducts;
+            liveProducts = data.length > 0 ? data : productsData;
         } else {
-            productsData = fallbackProducts;
+            liveProducts = productsData;
         }
     } catch (err) {
-        console.warn("Supabase not connected, using fallback data.", err);
-        productsData = fallbackProducts;
+        console.warn("Supabase connection skipped. Loading local boutique data.");
+        liveProducts = productsData;
     }
 
-    renderProducts(productsData);
+    renderProducts(liveProducts);
 }
 
-function renderProducts(data) {
-    productsGrid.innerHTML = data.map(product => `
+function renderProducts(products) {
+    productsGrid.innerHTML = products.map(product => `
         <div class="product-card">
             <div class="product-image">
-                <img src="${product.image_url || product.image}" alt="${product.name}" loading="lazy">
-                ${product.badge ? `<span class="product-tag">${product.badge}</span>` : ''}
+                <img src="${product.image}" alt="${product.name}" loading="lazy">
             </div>
             <div class="product-info">
-                <span class="product-category">${product.category || 'Cosmetics'}</span>
+                <span class="product-tag">${product.tag || 'Luxury'}</span>
                 <h3 class="product-name">${product.name}</h3>
-                <div class="product-footer">
-                    <span class="product-price">$${parseFloat(product.price).toFixed(2)}</span>
-                    <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id})">
-                        Add to Cart
-                    </button>
-                </div>
+                <p class="product-price">$${parseFloat(product.price).toFixed(2)}</p>
+                <button class="btn-gold" style="width: 100%; margin-top: 1.5rem;" onclick="addToCart(${product.id})">
+                    Add to Kit
+                </button>
             </div>
         </div>
     `).join('');
 }
 
+// --- 7. CART SYSTEM ---
+
 window.addToCart = (productId) => {
-    const product = productsData.find(p => p.id === productId);
+    const product = liveProducts.find(p => p.id === productId);
     const existing = cart.find(item => item.id === productId);
-    
+
     if (existing) {
         existing.quantity += 1;
     } else {
         cart.push({ ...product, quantity: 1 });
     }
-    
+
     saveCart();
     updateCartUI();
-    showCart();
+    openCart();
 };
 
-function saveCart() {
-    localStorage.setItem('abc_cart', JSON.stringify(cart));
-}
+window.removeFromCart = (productId) => {
+    cart = cart.filter(item => item.id !== productId);
+    saveCart();
+    updateCartUI();
+};
 
 function updateCartUI() {
-    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (cartCount) cartCount.textContent = totalCount;
-    
+    // Update Badge
+    const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+    if (cartCount) cartCount.textContent = totalQty;
+
+    // Render Items
     if (cartItemsContainer) {
         if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<div class="empty-cart-state"><p>Your glow kit is empty.</p></div>';
+            cartItemsContainer.innerHTML = `
+                <div style="text-align:center; padding: 4rem 0; opacity: 0.5;">
+                    <p>Your glow kit is empty.</p>
+                </div>`;
         } else {
             cartItemsContainer.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <img src="${item.image_url || item.image}" alt="${item.name}">
-                    <div class="item-info">
-                        <h4>${item.name}</h4>
-                        <p>$${parseFloat(item.price).toFixed(2)} x ${item.quantity}</p>
+                <div class="cart-item" style="display:flex; gap:1.5rem; margin-bottom:2rem; align-items:center;">
+                    <img src="${item.image}" width="70" height="90" style="object-fit:cover;">
+                    <div style="flex:1">
+                        <h4 style="font-family:var(--font-heading); font-size:1rem;">${item.name}</h4>
+                        <p style="font-size:0.8rem; color:var(--gold)">$${item.price} x ${item.quantity}</p>
                     </div>
-                    <button onclick="removeFromCart(${item.id})" class="remove-btn" aria-label="Remove item">✕</button>
+                    <button onclick="removeFromCart(${item.id})" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">&times;</button>
                 </div>
             `).join('');
         }
     }
-    
+
+    // Update Total
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     if (cartTotalElement) cartTotalElement.textContent = `$${total.toFixed(2)}`;
 }
 
-window.removeFromCart = (id) => {
-    cart = cart.filter(item => item.id !== id);
-    saveCart();
-    updateCartUI();
-};
-
-// --- UI EFFECTS ---
-
-function showCart() {
-    cartModal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevent scroll
+function saveCart() {
+    localStorage.setItem('pacific_cart', JSON.stringify(cart));
 }
 
-function hideCart() {
-    cartModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+// --- 8. UI INTERACTIONS ---
+
+function openCart() {
+    cartDrawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
 }
 
-if (cartBtn) cartBtn.addEventListener('click', showCart);
-if (modalClose) modalClose.addEventListener('click', hideCart);
-if (modalOverlay) modalOverlay.addEventListener('click', hideCart);
+function closeCart() {
+    cartDrawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
 
-function initScrollEffects() {
+function setupEventListeners() {
+    document.getElementById('cartBtn')?.addEventListener('click', openCart);
+    document.getElementById('closeDrawer')?.addEventListener('click', closeCart);
+    document.getElementById('drawerOverlay')?.addEventListener('click', closeCart);
+}
+
+function initNavbarScroll() {
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');

@@ -1,168 +1,345 @@
-/* PACIFIC RADIANCE - Official Stylesheet
-  Theme: California Glow / Luxury Minimalist
+/* PACIFIC RADIANCE - Official Boutique Stylesheet
+  Theme: California Glow / Luxury Editorial
 */
 
 :root {
-    /* Brand Palette from Style Sheet */
-    --primary-gold: #D4AF37;   /* Soft Gold */
-    --bg-beige: #F5E6D3;       /* Warm Beige */
-    --text-navy: #1A2332;      /* Deep Navy for readability */
-    --accent-rose: #B76E79;    /* Rose Gold for CTAs */
-    --off-white: #FAFAF8;      /* Neutral Label Background */
-    
-    /* Functional Colors */
-    --white: #ffffff;
-    --text-muted: #57606f;
+    /* Primary Colors from Brand Sheet */
+    --gold: #D4AF37;       /* Soft Gold */
+    --beige: #F5E6D3;      /* Warm Beige */
+    --navy: #1A2332;       /* Deep Navy */
+    --rose: #B76E79;       /* Rose Gold */
+    --off-white: #FAFAF8;  /* Off-White */
     
     /* Typography */
     --font-heading: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-secondary: 'Montserrat', sans-serif;
+    --font-body: 'Open Sans', sans-serif;
     
-    /* Luxury Specs */
-    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    --shadow-soft: 0 15px 35px rgba(26, 35, 50, 0.05);
-    --shadow-hover: 0 25px 50px rgba(212, 175, 55, 0.12);
+    /* Animation & Luxe Details */
+    --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-luxe: 0 20px 40px rgba(26, 35, 50, 0.04);
 }
 
-/* --- Base & Reset --- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* --- Base Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
 
 body {
     font-family: var(--font-body);
-    color: var(--text-navy);
-    line-height: 1.7;
-    background-color: var(--white);
+    color: var(--navy);
+    line-height: 1.8;
+    background-color: #fff;
     overflow-x: hidden;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 4rem;
 }
 
-/* --- Global Elements --- */
-.gradient-text {
-    background: linear-gradient(135deg, var(--primary-gold), var(--accent-rose));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* --- Navigation: Luxury Minimalist --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
 }
 
-.section-label {
-    display: block;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 0.75rem;
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+}
+
+.logo {
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-main {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
     font-weight: 700;
-    color: var(--primary-gold);
-    margin-bottom: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--navy);
 }
 
-h1, h2, h3 { font-family: var(--font-heading); }
+.logo-tagline {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-top: -2px;
+}
 
-/* --- Luxury Buttons --- */
-.btn-primary {
-    background: var(--text-navy);
-    color: var(--white);
-    padding: 1rem 2.5rem;
-    border: none;
-    border-radius: 2px; /* Sharp corners feel more premium */
+.nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-family: var(--font-secondary);
+    font-size: 0.75rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--navy);
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--gold);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-action-link {
+    background: none;
+    border: none;
+    font-family: var(--font-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     cursor: pointer;
-    transition: var(--transition);
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
 }
 
-.btn-primary:hover {
-    background: var(--primary-gold);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    color: var(--navy);
 }
 
-/* --- Navigation --- */
-.navbar {
-    position: fixed;
-    top: 0; width: 100%; z-index: 1000;
-    background: rgba(250, 250, 248, 0.95);
-    backdrop-filter: blur(15px);
-    transition: var(--transition);
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: var(--rose);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 10px;
 }
 
-.navbar.scrolled { padding: 0.5rem 0; box-shadow: var(--shadow-soft); }
-
-.nav-content { height: 90px; display: flex; align-items: center; justify-content: space-between; }
-
-.nav-links { display: flex; gap: 3rem; }
-.nav-link { font-size: 0.9rem; font-weight: 500; color: var(--text-navy); opacity: 0.8; }
-.nav-link:hover { opacity: 1; color: var(--primary-gold); }
-
-/* --- Hero Section (California Sun Style) --- */
+/* --- Hero Section: Editorial Split --- */
 .hero {
     height: 100vh;
-    display: flex;
-    align-items: center;
-    background: linear-gradient(to right, var(--bg-beige) 50%, #fff 50%);
-    position: relative;
-    padding-top: 90px;
+    padding-top: 100px;
+    background-color: var(--off-white);
 }
 
-.hero-title { font-size: 4.5rem; line-height: 1; margin-bottom: 2rem; }
-
-/* --- Product Cards --- */
-.products-grid {
+.hero-split {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 3rem;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+}
+
+.hero-text-side {
+    display: flex;
+    align-items: center;
+    padding: 0 15%;
+}
+
+.hero-h1 {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    line-height: 1.1;
+    margin: 1.5rem 0;
+    font-weight: 400;
+}
+
+.hero-h1 em {
+    font-style: italic;
+    color: var(--gold);
+}
+
+.hero-p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    max-width: 400px;
+}
+
+.hero-image-side {
+    background: url('https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&q=80') center/cover no-repeat;
+    /* This color matches your brand's Warm Beige base */
+    background-color: var(--beige); 
+}
+
+/* --- Buttons --- */
+.btn-gold {
+    display: inline-block;
+    padding: 1.2rem 3rem;
+    background: var(--navy);
+    color: white;
+    text-decoration: none;
+    font-family: var(--font-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: var(--transition);
+}
+
+.btn-gold:hover {
+    background: var(--gold);
+    transform: translateY(-5px);
+}
+
+/* --- Product Grid: Clean Boutique --- */
+.shop-section {
+    padding: 10rem 0;
+}
+
+.shop-header {
+    text-align: center;
+    margin-bottom: 6rem;
+}
+
+.editorial-title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.editorial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
 }
 
 .product-card {
-    background: var(--white);
-    border: 1px solid var(--bg-beige);
+    text-align: center;
     transition: var(--transition);
-    padding-bottom: 2rem;
-}
-
-.product-card:hover {
-    box-shadow: var(--shadow-hover);
-    border-color: var(--primary-gold);
 }
 
 .product-image {
     background: var(--off-white);
     aspect-ratio: 4/5;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    margin-bottom: 1.5rem;
 }
 
 .product-image img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.8s ease;
+    width: 80%;
+    transition: transform 1s ease;
 }
 
-.product-card:hover img { transform: scale(1.05); }
-
-/* --- Cart Modal (Side Draw) --- */
-.modal-content {
-    background: var(--off-white);
-    border-left: 5px solid var(--primary-gold);
+.product-card:hover img {
+    transform: scale(1.1);
 }
 
-.cart-item img {
-    border-radius: 0; /* Keep it architectural */
-    border: 1px solid var(--bg-beige);
+.product-name {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
 }
 
-/* --- Features Section --- */
-.features { background: var(--off-white); padding: 5rem 0; }
-.feature-card { border-right: 1px solid var(--bg-beige); }
-.feature-card:last-child { border: none; }
+.product-price {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+}
 
-/* --- Mobile Fixes --- */
+/* --- Cart Drawer --- */
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    visibility: hidden;
+}
+
+.cart-drawer[aria-hidden="false"] {
+    visibility: visible;
+}
+
+.drawer-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 35, 50, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.drawer-content {
+    position: absolute;
+    right: -450px;
+    width: 450px;
+    height: 100%;
+    background: white;
+    padding: 3rem;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-drawer[aria-hidden="false"] .drawer-content {
+    right: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--beige);
+    padding-bottom: 1.5rem;
+}
+
+.btn-checkout {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--navy);
+    color: white;
+    border: none;
+    font-family: var(--font-secondary);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    margin-top: 2rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .editorial-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-h1 { font-size: 3.5rem; }
+    .container { padding: 0 2rem; }
+}
+
 @media (max-width: 768px) {
-    .hero { background: var(--bg-beige); text-align: center; }
-    .hero-title { font-size: 3rem; }
-    .hero-cta { justify-content: center; }
-    .nav-links { display: none; } /* Use a menu toggle in JS */
+    .hero-split { grid-template-columns: 1fr; }
+    .hero-image-side { display: none; }
+    .editorial-grid { grid-template-columns: 1fr; }
+    .drawer-content { width: 100%; right: -100%; }
 }
