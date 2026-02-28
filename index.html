@@ -3,175 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pacific Radiance - California-inspired luxury skincare. Discover our signature 8888 Brightening collection.">
-    <title>Pacific Radiance | California Glow Luxury Skincare</title>
-    
+    <meta name="description" content="ABC Cosmetics - Discover premium beauty products crafted with care. Luxurious cosmetics for your radiant glow.">
+    <title>ABC Cosmetics | Premium Beauty & Wellness</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
-        <div class="container nav-container">
-            <div class="nav-left">
-                <ul class="nav-links">
-                    <li><a href="#products">Shop All</a></li>
-                    <li><a href="#about">The Story</a></li>
-                </ul>
-            </div>
-
-            <div class="nav-center">
-                <a href="#home" class="logo">
-                    <span class="logo-main">PACIFIC RADIANCE</span>
-                    <span class="logo-tagline">CALIFORNIA GLOW</span>
-                </a>
-            </div>
-
-            <div class="nav-right">
-                <button class="nav-action-link" id="authBtn">The Glow Club</button>
-                <button class="icon-btn" id="cartBtn" aria-label="View Shopping Cart">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/>
-                        <path d="M3 6h18M16 10a4 4 0 01-8 0"/>
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="url(#gradient)" stroke-width="2.5"/>
+                        <path d="M14 20C14 16.6863 16.6863 14 20 14C23.3137 14 26 16.6863 26 20" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
+                                <stop offset="0%" stop-color="#d4a574"/>
+                                <stop offset="100%" stop-color="#c89665"/>
+                            </linearGradient>
+                        </defs>
                     </svg>
-                    <span class="cart-badge" id="cartCount">0</span>
-                </button>
+                    <span class="logo-text">ABC Cosmetics</span>
+                </div>
+
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#products" class="nav-link">Products</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <button class="icon-btn" id="searchBtn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </button>
+                    <button class="icon-btn cart-btn" id="cartBtn" aria-label="Cart">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 2L7 6"/>
+                            <path d="M15 2l2 4"/>
+                            <path d="M3 6h18v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"/>
+                        </svg>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="btn-primary">Sign In</button>
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
             </div>
-            
+
             <button class="menu-mobile-toggle" aria-label="Toggle Navigation">
                 <span></span><span></span>
             </button>
         </div>
     </nav>
 
-    <main>
-        <header class="hero" id="home">
-            <div class="hero-split">
-                <div class="hero-text-side">
-                    <div class="hero-inner-content">
-                        <span class="brand-label">New Collection</span>
-                        <h1 class="hero-h1">Radiance <br><em>Refined.</em></h1>
-                        <p class="hero-p">Experience luxury skincare crafted with the soul of the West Coast. Pure, potent, and ethically sourced for your natural glow.</p>
-                        <div class="hero-actions">
-                            <a href="#products" class="btn-gold">Shop the Edit</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-image-side">
-                    <div class="hero-visual-overlay"></div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-badge">✨ New Collection 2026</span>
+                <h1 class="hero-title">
+                    Discover Your
+                    <span class="gradient-text">Natural Radiance</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Premium cosmetics crafted with care. Elevate your beauty routine with our luxurious, sustainable products.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn-primary btn-large">Shop Collection</button>
+                    <button class="btn-secondary btn-large">Learn More</button>
                 </div>
             </div>
-        </header>
+            <div class="hero-image">
+                <div class="hero-product-card">
+                    <div class="product-image-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section class="values-bar">
-            <div class="container values-grid">
-                <div class="value-item">
-                    <span>Clean Formulas</span>
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌿</div>
+                    <h3>100% Natural</h3>
+                    <p>Plant-based ingredients sourced ethically</p>
                 </div>
-                <div class="value-item">
-                    <span>Cruelty Free</span>
+                <div class="feature-card">
+                    <div class="feature-icon">🐰</div>
+                    <h3>Cruelty Free</h3>
+                    <p>Never tested on animals</p>
                 </div>
-                <div class="value-item">
-                    <span>California Made</span>
+                <div class="feature-card">
+                    <div class="feature-icon">♻️</div>
+                    <h3>Sustainable</h3>
+                    <p>Eco-friendly packaging</p>
                 </div>
-                <div class="value-item">
-                    <span>Sustainable Luxe</span>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Premium Quality</h3>
+                    <p>Dermatologist tested formulas</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="shop-section" id="products">
-            <div class="container">
-                <div class="shop-header">
-                    <h2 class="editorial-title">The Essentials</h2>
-                    <p class="editorial-subtitle">Explore our signature brightening and hydration rituals.</p>
-                </div>
-                
-                <div class="editorial-grid" id="productsGrid">
-                    <div class="loader-container">
-                        <p>Preparing your glow...</p>
-                    </div>
-                </div>
+    <!-- Products Section -->
+    <section class="products-section" id="products">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Our Collection</span>
+                <h2 class="section-title">Featured Products</h2>
+                <p class="section-desc">Discover our most-loved beauty essentials</p>
             </div>
-        </section>
 
-        <section class="story-section" id="about">
-            <div class="story-container">
-                <div class="story-visual"></div>
-                <div class="story-content">
-                    <span class="brand-label">Our Philosophy</span>
-                    <h2 class="editorial-title">Beauty that <br>breathes.</h2>
-                    <p>Born in Los Angeles, Pacific Radiance combines high-performance Glutathione and Vitamin C with the effortless spirit of California. We believe in beauty that is both clinical and conscious.</p>
-                    <a href="#" class="link-underline">Discover the Lab</a>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be dynamically loaded by script.js -->
+            </div>
+
+            <div class="section-cta">
+                <button class="btn-secondary">View All Products</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <div class="about-image-placeholder"></div>
+                </div>
+                <div class="about-content">
+                    <span class="section-label">Our Story</span>
+                    <h2 class="section-title">Beauty That Cares</h2>
+                    <p>At ABC Cosmetics, we believe beauty should be both luxurious and responsible. Every product is crafted with premium natural ingredients and sustainable practices.</p>
+                    <p>Our mission is to empower you to look and feel your best while caring for the planet.</p>
+                    <ul class="about-list">
+                        <li>✔ FDA-compliant formulations</li>
+                        <li>✔ Dermatologist tested</li>
+                        <li>✔ Eco-conscious packaging</li>
+                        <li>✔ Ethically sourced ingredients</li>
+                    </ul>
+                    <button class="btn-primary">Learn More About Us</button>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <span class="logo-main">PACIFIC RADIANCE</span>
-                <p>California-inspired luxury for radiant, even-toned skin.</p>
-            </div>
-            <div class="footer-nav">
-                <h4>Shop</h4>
-                <ul>
-                    <li><a href="#">Brightening</a></li>
-                    <li><a href="#">Serums</a></li>
-                    <li><a href="#">Bundles</a></li>
-                </ul>
-            </div>
-            <div class="footer-nav">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Shipping</a></li>
-                    <li><a href="#">Returns</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-newsletter">
-                <h4>Stay Radiant</h4>
-                <p>Join our newsletter for exclusive launches.</p>
-                <form id="newsletterForm" class="minimal-form">
-                    <input type="email" placeholder="Email Address" required>
-                    <button type="submit">Join</button>
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Join Our Beauty Community</h2>
+                <p>Subscribe for exclusive offers, beauty tips, and product launches</p>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit" class="btn-primary">Subscribe</button>
                 </form>
             </div>
         </div>
-        <div class="footer-bottom">
-            <div class="container">
-                <p>&copy; 2026 Pacific Radiance. Los Angeles, CA.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="18" stroke="#d4a574" stroke-width="2.5"/>
+                            <path d="M14 20C14 16.6863 16.6863 14 20 14C23.3137 14 26 16.6863 26 20" stroke="#d4a574" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>ABC Cosmetics</span>
+                    </div>
+                    <p>Premium beauty products for your natural radiance.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                        <li><a href="#">Skincare</a></li>
+                        <li><a href="#">Makeup</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Returns</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ABC Cosmetics. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">📖</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
-        <div class="drawer-overlay" id="drawerOverlay"></div>
-        <div class="drawer-content">
-            <div class="drawer-header">
-                <h3>Your Glow Kit</h3>
-                <button class="close-drawer" id="closeDrawer">&times;</button>
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Shopping Cart</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
             </div>
-            <div class="drawer-body" id="cartItems">
-                <div class="empty-state">Your kit is currently empty.</div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be dynamically loaded -->
             </div>
-            <div class="drawer-footer">
-                <div class="cart-subtotal">
-                    <span>Subtotal</span>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
                     <span id="cartTotal">$0.00</span>
                 </div>
-                <button class="btn-checkout">Secure Checkout</button>
-                <p class="shipping-notice">Free shipping on orders over $50.</p>
+                <button class="btn-primary btn-block">Checkout</button>
             </div>
         </div>
-    </aside>
+    </div>
 
+    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
