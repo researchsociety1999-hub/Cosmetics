@@ -1,178 +1,421 @@
- /**
- * PACIFIC RADIANCE - Official Boutique Script
- * Core: Supabase Integration, Cart Drawer Logic, & Luxury UI Interactions
- */
+const SUPABASE_URL = "https://your-project-id.supabase.co";
+const SUPABASE_KEY = "your-anon-public-key";
 
-// --- 1. CONFIGURATION ---
-const SUPABASE_URL = 'https://your-project-id.supabase.co';
-const SUPABASE_KEY = 'your-anon-public-key';
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const supabase =
+  window.supabase && SUPABASE_URL !== "https://your-project-id.supabase.co"
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
 
-// --- 2. PRODUCT MASTER DATA (Mapped from your Pacific Radiance Sheets) ---
 const fallbackProducts = [
-    {
-        id: 1,
-        name: "8888 Brightening Lotion",
-        category: "Moisturizer",
-        price: 45.00,
-        image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
-        tag: "California Glow"
-    },
-    {
-        id: 2,
-        name: "Radiant Face Serum",
-        category: "Treatment",
-        price: 62.00,
-        image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
-        tag: "New Arrival"
-    }
+  {
+    id: 1,
+    name: "Celestial Glow Serum",
+    category: "Serum",
+    price: 68,
+    image:
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    tag: "Best Seller",
+    description: "A brightening serum for a luminous, soft-focus finish."
+  },
+  {
+    id: 2,
+    name: "Moon Veil Cleanser",
+    category: "Cleanser",
+    price: 42,
+    image:
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
+    tag: "Daily Ritual",
+    description: "A silky cleanser that removes buildup without stripping the skin."
+  },
+  {
+    id: 3,
+    name: "Golden Eclipse Mask",
+    category: "Mask",
+    price: 54,
+    image:
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80",
+    tag: "New",
+    description: "A glow-enhancing mask for weekly reset and visible radiance."
+  },
+  {
+    id: 4,
+    name: "Noir Velvet Body Elixir",
+    category: "Body",
+    price: 58,
+    image:
+      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+    tag: "Luxury Body",
+    description: "A rich body elixir with a satin finish and sensual fragrance."
+  },
+  {
+    id: 5,
+    name: "Mystic Night Cream",
+    category: "Skincare",
+    price: 72,
+    image:
+      "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80",
+    tag: "Overnight",
+    description: "An evening cream formulated for soft, deeply nourished skin."
+  },
+  {
+    id: 6,
+    name: "Midnight Renewal Set",
+    category: "Set",
+    price: 120,
+    image:
+      "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
+    tag: "Featured",
+    description: "A three-step ritual set designed for cleansing, treating, and restoring."
+  }
 ];
 
-// --- 3. STATE ---
-let cart = JSON.parse(localStorage.getItem('pacific_cart')) || [];
-let liveProducts = [];
+let products = [];
+let filteredProducts = [];
+let cart = JSON.parse(localStorage.getItem("mystic_cart")) || [];
+let promoDiscount = 0;
 
-// --- 4. DOM ELEMENTS ---
-const productsGrid = document.getElementById('productsGrid');
-const cartCount = document.getElementById('cartCount');
-const cartDrawer = document.getElementById('cartDrawer');
-const cartItemsContainer = document.getElementById('cartItems');
-const cartTotalElement = document.getElementById('cartTotal');
+const productsGrid = document.getElementById("productsGrid");
+const cartDrawer = document.getElementById("cartDrawer");
+const drawerOverlay = document.getElementById("drawerOverlay");
+const cartToggle = document.getElementById("cartToggle");
+const closeCart = document.getElementById("closeCart");
+const cartCount = document.getElementById("cartCount");
+const cartItems = document.getElementById("cartItems");
+const cartSubtotal = document.getElementById("cartSubtotal");
+const cartDiscount = document.getElementById("cartDiscount");
+const cartTotal = document.getElementById("cartTotal");
+const checkoutBtn = document.getElementById("checkoutBtn");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const promoCodeInput = document.getElementById("promoCode");
+const applyPromoBtn = document.getElementById("applyPromo");
+const searchToggle = document.getElementById("searchToggle");
+const searchModal = document.getElementById("searchModal");
+const closeSearch = document.getElementById("closeSearch");
+const modalSearchInput = document.getElementById("modalSearchInput");
+const mobileToggle = document.getElementById("mobileToggle");
+const navMenu = document.getElementById("navMenu");
+const newsletterForm = document.getElementById("newsletterForm");
 
-// --- 5. INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', async () => {
-    initLuxuryEffects();
-    await fetchBoutiqueProducts();
-    updateCartUI();
-    bindEvents();
+document.addEventListener("DOMContentLoaded", async () => {
+  bindEvents();
+  await loadProducts();
+  renderProducts(products);
+  updateCartUI();
+  setupScrollButtons();
 });
 
-// --- 6. DATA FETCHING ---
-async function fetchBoutiqueProducts() {
-    if (!productsGrid) return;
-    try {
-        if (supabase) {
-            const { data, error } = await supabase.from('products').select('*');
-            if (error) throw error;
-            liveProducts = data.length > 0 ? data : fallbackProducts;
-        } else {
-            liveProducts = fallbackProducts;
-        }
-    } catch (err) {
-        liveProducts = fallbackProducts;
+function bindEvents() {
+  if (cartToggle) cartToggle.addEventListener("click", openCart);
+  if (closeCart) closeCart.addEventListener("click", closeCartDrawer);
+  if (drawerOverlay) drawerOverlay.addEventListener("click", closeCartDrawer);
+
+  if (searchInput) searchInput.addEventListener("input", applyFilters);
+  if (categoryFilter) categoryFilter.addEventListener("change", applyFilters);
+
+  if (applyPromoBtn) {
+    applyPromoBtn.addEventListener("click", applyPromoCode);
+  }
+
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", handleCheckout);
+  }
+
+  if (searchToggle) {
+    searchToggle.addEventListener("click", () => {
+      searchModal.classList.add("active");
+      searchModal.setAttribute("aria-hidden", "false");
+      setTimeout(() => modalSearchInput?.focus(), 100);
+    });
+  }
+
+  if (closeSearch) {
+    closeSearch.addEventListener("click", closeSearchModal);
+  }
+
+  if (searchModal) {
+    searchModal.addEventListener("click", (e) => {
+      if (e.target === searchModal) closeSearchModal();
+    });
+  }
+
+  if (modalSearchInput) {
+    modalSearchInput.addEventListener("input", (e) => {
+      if (searchInput) searchInput.value = e.target.value;
+      applyFilters();
+    });
+  }
+
+  if (mobileToggle) {
+    mobileToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("open");
+    });
+  }
+
+  if (newsletterForm) {
+    newsletterForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("newsletterEmail")?.value.trim();
+      if (!email) return;
+      alert("Thanks for subscribing to Mystic.");
+      newsletterForm.reset();
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    const addToCartBtn = e.target.closest("[data-add-to-cart]");
+    const increaseBtn = e.target.closest("[data-increase]");
+    const decreaseBtn = e.target.closest("[data-decrease]");
+    const removeBtn = e.target.closest("[data-remove]");
+    const wishlistBtn = e.target.closest("[data-wishlist]");
+
+    if (addToCartBtn) {
+      const id = Number(addToCartBtn.dataset.addToCart);
+      addToCart(id);
     }
-    renderBoutique(liveProducts);
+
+    if (increaseBtn) {
+      const id = Number(increaseBtn.dataset.increase);
+      changeQuantity(id, 1);
+    }
+
+    if (decreaseBtn) {
+      const id = Number(decreaseBtn.dataset.decrease);
+      changeQuantity(id, -1);
+    }
+
+    if (removeBtn) {
+      const id = Number(removeBtn.dataset.remove);
+      removeFromCart(id);
+    }
+
+    if (wishlistBtn) {
+      alert("Wishlist feature placeholder added. You can connect this to Supabase later.");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeCartDrawer();
+      closeSearchModal();
+    }
+  });
 }
 
-function renderBoutique(products) {
-    productsGrid.innerHTML = products.map(product => `
-        <div class="product-card">
-            <div class="product-image">
-                <img src="${product.image}" alt="${product.name}" loading="lazy">
-            </div>
-            <div class="product-info">
-                <span class="product-tag">${product.tag || 'The Essentials'}</span>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-price">$${parseFloat(product.price).toFixed(2)}</p>
-                <button class="btn-gold" style="width: 100%; margin-top: 2rem;" onclick="addToCart(${product.id})">
-                    Add to Kit
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// --- 7. CART LOGIC ---
-window.addToCart = (productId) => {
-    const product = liveProducts.find(p => p.id === productId);
-    const existing = cart.find(item => item.id === productId);
-    
-    if (existing) {
-        existing.quantity += 1;
+async function loadProducts() {
+  try {
+    if (supabase) {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) throw error;
+      products = data?.length ? data : fallbackProducts;
     } else {
-        cart.push({ ...product, quantity: 1 });
+      products = fallbackProducts;
     }
-    
-    saveAndUpdate();
-    openCart();
-};
+  } catch (error) {
+    products = fallbackProducts;
+  }
 
-window.removeFromCart = (id) => {
-    cart = cart.filter(item => item.id !== id);
-    saveAndUpdate();
-};
+  filteredProducts = [...products];
+}
 
-function saveAndUpdate() {
-    localStorage.setItem('pacific_cart', JSON.stringify(cart));
-    updateCartUI();
+function renderProducts(list) {
+  if (!productsGrid) return;
+
+  if (!list.length) {
+    productsGrid.innerHTML = `
+      <div class="empty-cart">
+        <p>No products found. Try another search or category.</p>
+      </div>
+    `;
+    return;
+  }
+
+  productsGrid.innerHTML = list
+    .map(
+      (product) => `
+      <article class="product-card">
+        <div class="product-media">
+          <img src="${product.image}" alt="${product.name}" />
+          <span class="product-tag">${product.tag || "Mystic"}</span>
+          <button class="icon-button wishlist-btn" data-wishlist="${product.id}" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="product-body">
+          <p class="product-category">${product.category}</p>
+          <h3 class="product-title">${product.name}</h3>
+          <p class="product-desc">${product.description || "Luxury beauty essential."}</p>
+          <div class="product-bottom">
+            <span class="product-price">$${Number(product.price).toFixed(2)}</span>
+            <button class="btn btn-primary small-btn" data-add-to-cart="${product.id}">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </article>
+    `
+    )
+    .join("");
+}
+
+function applyFilters() {
+  const searchValue = (searchInput?.value || "").toLowerCase().trim();
+  const selectedCategory = categoryFilter?.value || "all";
+
+  filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchValue) ||
+      product.category.toLowerCase().includes(searchValue) ||
+      (product.description || "").toLowerCase().includes(searchValue);
+
+    const matchesCategory =
+      selectedCategory === "all" || product.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  renderProducts(filteredProducts);
+}
+
+function addToCart(productId) {
+  const existing = cart.find((item) => item.id === productId);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    const product = products.find((item) => item.id === productId);
+    if (!product) return;
+
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
+      image: product.image,
+      category: product.category,
+      quantity: 1
+    });
+  }
+
+  saveCart();
+  updateCartUI();
+  openCart();
+}
+
+function changeQuantity(productId, delta) {
+  const item = cart.find((entry) => entry.id === productId);
+  if (!item) return;
+
+  item.quantity += delta;
+
+  if (item.quantity <= 0) {
+    cart = cart.filter((entry) => entry.id !== productId);
+  }
+
+  saveCart();
+  updateCartUI();
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter((item) => item.id !== productId);
+  saveCart();
+  updateCartUI();
+}
+
+function saveCart() {
+  localStorage.setItem("mystic_cart", JSON.stringify(cart));
 }
 
 function updateCartUI() {
-    const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (cartCount) cartCount.textContent = totalQty;
-    
-    if (cartItemsContainer) {
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = `<div class="empty-state">Your kit is empty.</div>`;
-        } else {
-            cartItemsContainer.innerHTML = cart.map(item => `
-                <div class="cart-item" style="display:flex; gap:1rem; margin-bottom:1.5rem; align-items:center;">
-                    <img src="${item.image}" width="60" style="background:#f9f9f9;">
-                    <div style="flex:1">
-                        <h4 style="font-family:var(--font-heading); font-size:0.9rem;">${item.name}</h4>
-                        <p style="font-size:0.8rem; color:var(--gold)">$${item.price} x ${item.quantity}</p>
-                    </div>
-                    <button onclick="removeFromCart(${item.id})" style="background:none; border:none; cursor:pointer;">&times;</button>
-                </div>
-            `).join('');
-        }
-    }
-    
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    if (cartTotalElement) cartTotalElement.textContent = `$${total.toFixed(2)}`;
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  if (cartCount) cartCount.textContent = count;
+
+  if (!cartItems) return;
+
+  if (!cart.length) {
+    cartItems.innerHTML = `
+      <div class="empty-cart">
+        <p>Your cart is empty.</p>
+        <p>Add a few Mystic essentials to begin your ritual.</p>
+      </div>
+    `;
+  } else {
+    cartItems.innerHTML = cart
+      .map(
+        (item) => `
+        <article class="cart-item">
+          <img src="${item.image}" alt="${item.name}" />
+          <div>
+            <h4>${item.name}</h4>
+            <p>${item.category}</p>
+            <p>$${item.price.toFixed(2)}</p>
+            <div class="cart-item-controls">
+              <button class="qty-btn" data-decrease="${item.id}">−</button>
+              <span>${item.quantity}</span>
+              <button class="qty-btn" data-increase="${item.id}">+</button>
+              <button class="remove-btn" data-remove="${item.id}">Remove</button>
+            </div>
+          </div>
+          <strong>$${(item.price * item.quantity).toFixed(2)}</strong>
+        </article>
+      `
+      )
+      .join("");
+  }
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountAmount = subtotal * promoDiscount;
+  const total = subtotal - discountAmount;
+
+  if (cartSubtotal) cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+  if (cartDiscount) cartDiscount.textContent = `-$${discountAmount.toFixed(2)}`;
+  if (cartTotal) cartTotal.textContent = `$${total.toFixed(2)}`;
 }
 
-// --- 8. UI INTERACTIONS ---
+function applyPromoCode() {
+  const code = promoCodeInput?.value.trim().toUpperCase();
+
+  if (code === "MYSTIC10") {
+    promoDiscount = 0.1;
+    alert("Promo code applied: 10% off");
+  } else if (code === "GLOW15") {
+    promoDiscount = 0.15;
+    alert("Promo code applied: 15% off");
+  } else {
+    promoDiscount = 0;
+    alert("Invalid promo code");
+  }
+
+  updateCartUI();
+}
+
+function handleCheckout() {
+  if (!cart.length) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  alert("Checkout integration placeholder. Connect Stripe or your preferred checkout next.");
+}
+
 function openCart() {
-    cartDrawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+  cartDrawer.classList.add("active");
+  cartDrawer.setAttribute("aria-hidden", "false");
 }
 
-function closeCart() {
-    cartDrawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+function closeCartDrawer() {
+  cartDrawer.classList.remove("active");
+  cartDrawer.setAttribute("aria-hidden", "true");
 }
 
-function bindEvents() {
-    document.getElementById('cartBtn')?.addEventListener('click', openCart);
-    document.getElementById('closeDrawer')?.addEventListener('click', closeCart);
-    document.getElementById('drawerOverlay')?.addEventListener('click', closeCart);
+function closeSearchModal() {
+  if (!searchModal) return;
+  searchModal.classList.remove("active");
+  searchModal.setAttribute("aria-hidden", "true");
 }
 
-function initLuxuryEffects() {
-    // Smooth Navbar reveal on scroll
-    window.addEventListener('scroll', () => {
-        const nav = document.getElementById('navbar');
-        if (window.scrollY > 100) {
-            nav.style.padding = "0.5rem 0";
-            nav.style.boxShadow = "0 10px 30px rgba(0,0,0,0.02)";
-        } else {
-            nav.style.padding = "1rem 0";
-            nav.style.boxShadow = "none";
-        }
+function setupScrollButtons() {
+  document.querySelectorAll("[data-scroll]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = document.querySelector(button.dataset.scroll);
+      if (target) target.scrollIntoView({ behavior: "smooth" });
     });
+  });
 }
-// Toggle Cart Drawer
-function openCart() {
-    document.getElementById('cartDrawer').classList.add('active');
-    document.getElementById('drawerOverlay').classList.add('active');
-}
-
-function closeCart() {
-    document.getElementById('cartDrawer').classList.remove('active');
-    document.getElementById('drawerOverlay').classList.remove('active');
-}
-
-// Ensure the buttons work
-document.getElementById('cartBtn').addEventListener('click', openCart);
-document.getElementById('closeDrawer').addEventListener('click', closeCart);

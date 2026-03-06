@@ -1,177 +1,405 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pacific Radiance - California-inspired luxury skincare. Discover our signature 8888 Brightening collection.">
-    <title>Pacific Radiance | California Glow Luxury Skincare</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mystic — Where Beauty Transcends</title>
+  <meta
+    name="description"
+    content="Mystic is a luxury beauty ecommerce experience featuring radiant skincare, ritual-inspired essentials, and elevated self-care."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <p>Free U.S. shipping on orders over $75</p>
+        <p>Luxury rituals. Timeless glow.</p>
+      </div>
+    </header>
 
     <nav class="navbar" id="navbar">
-        <div class="container nav-container">
-            <div class="nav-left">
-                <ul class="nav-links">
-                    <li><a href="#products">Shop All</a></li>
-                    <li><a href="#about">The Story</a></li>
-                </ul>
-            </div>
+      <div class="container nav-inner">
+        <a href="#home" class="brand" aria-label="Mystic home">
+          <img src="LOGO-Mystic.jpg" alt="Mystic logo" class="brand-logo" />
+          <div class="brand-copy">
+            <span class="brand-name">MYSTIC</span>
+            <span class="brand-tag">Where Beauty Transcends</span>
+          </div>
+        </a>
 
-            <div class="nav-center">
-                <a href="#home" class="logo">
-                    <span class="logo-main">PACIFIC RADIANCE</span>
-                    <span class="logo-tagline">CALIFORNIA GLOW</span>
-                </a>
-            </div>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-            <div class="nav-right">
-                <button class="nav-action-link" id="authBtn">The Glow Club</button>
-                <button class="icon-btn" id="cartBtn" aria-label="View Shopping Cart">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/>
-                        <path d="M3 6h18M16 10a4 4 0 01-8 0"/>
-                    </svg>
-                    <span class="cart-badge" id="cartCount">0</span>
-                </button>
-            </div>
-            
-            <button class="menu-mobile-toggle" aria-label="Toggle Navigation">
-                <span></span><span></span>
-            </button>
+        <div class="nav-menu" id="navMenu">
+          <a href="#home">Home</a>
+          <a href="#shop">Shop</a>
+          <a href="#ritual">Ritual</a>
+          <a href="#about">About</a>
+          <a href="#faq">FAQ</a>
+          <a href="#contact">Contact</a>
         </div>
+
+        <div class="nav-actions">
+          <button class="icon-button" id="searchToggle" aria-label="Open search">
+            🔍
+          </button>
+          <button class="icon-button" id="wishlistToggle" aria-label="Open wishlist">
+            ♡
+          </button>
+          <button class="icon-button cart-button" id="cartToggle" aria-label="Open cart">
+            👜
+            <span class="badge" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
     </nav>
 
     <main>
-        <header class="hero" id="home">
-            <div class="hero-split">
-                <div class="hero-text-side">
-                    <div class="hero-inner-content">
-                        <span class="brand-label">New Collection</span>
-                        <h1 class="hero-h1">Radiance <br><em>Refined.</em></h1>
-                        <p class="hero-p">Experience luxury skincare crafted with the soul of the West Coast. Pure, potent, and ethically sourced for your natural glow.</p>
-                        <div class="hero-actions">
-                            <a href="#products" class="btn-gold">Shop the Edit</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-image-side">
-                    <div class="hero-visual-overlay"></div>
-                </div>
-            </div>
-        </header>
+      <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <p class="eyebrow">Luxury Beauty • Mystic Rituals</p>
+            <h1>Beauty reimagined in a world of shadow, gold, and glow.</h1>
+            <p class="hero-text">
+              Discover elevated skincare and beauty essentials designed to feel
+              ceremonial, indulgent, and unforgettable.
+            </p>
 
-        <section class="values-bar">
-            <div class="container values-grid">
-                <div class="value-item">
-                    <span>Clean Formulas</span>
-                </div>
-                <div class="value-item">
-                    <span>Cruelty Free</span>
-                </div>
-                <div class="value-item">
-                    <span>California Made</span>
-                </div>
-                <div class="value-item">
-                    <span>Sustainable Luxe</span>
-                </div>
+            <div class="hero-actions">
+              <a href="#shop" class="btn btn-primary">Shop Collection</a>
+              <a href="#about" class="btn btn-secondary">Our Story</a>
             </div>
-        </section>
 
-        <section class="shop-section" id="products">
-            <div class="container">
-                <div class="shop-header">
-                    <h2 class="editorial-title">The Essentials</h2>
-                    <p class="editorial-subtitle">Explore our signature brightening and hydration rituals.</p>
-                </div>
-                
-                <div class="editorial-grid" id="productsGrid">
-                    <div class="loader-container">
-                        <p>Preparing your glow...</p>
-                    </div>
-                </div>
+            <div class="hero-points">
+              <div>
+                <strong>Premium</strong>
+                <span>Luxury-inspired formulas</span>
+              </div>
+              <div>
+                <strong>Curated</strong>
+                <span>Signature ritual collections</span>
+              </div>
+              <div>
+                <strong>Elegant</strong>
+                <span>Dark editorial design language</span>
+              </div>
             </div>
-        </section>
+          </div>
 
-        <section class="story-section" id="about">
-            <div class="story-container">
-                <div class="story-visual"></div>
-                <div class="story-content">
-                    <span class="brand-label">Our Philosophy</span>
-                    <h2 class="editorial-title">Beauty that <br>breathes.</h2>
-                    <p>Born in Los Angeles, Pacific Radiance combines high-performance Glutathione and Vitamin C with the effortless spirit of California. We believe in beauty that is both clinical and conscious.</p>
-                    <a href="#" class="link-underline">Discover the Lab</a>
-                </div>
+          <div class="hero-card glass-panel">
+            <p class="mini-label">Featured Ritual</p>
+            <h3>Midnight Renewal Set</h3>
+            <p>
+              A restorative trio for cleansing, brightening, and sealing in a soft luminous finish.
+            </p>
+            <button class="btn btn-primary" data-scroll="#shop">Explore Now</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intro-strip">
+        <div class="container intro-grid">
+          <div class="intro-block">
+            <span>01</span>
+            <h3>Luxury feel</h3>
+            <p>Dark, premium visuals inspired by your Mystic logo direction.</p>
+          </div>
+          <div class="intro-block">
+            <span>02</span>
+            <h3>Store-ready UI</h3>
+            <p>Product cards, filters, cart drawer, promo input, and newsletter.</p>
+          </div>
+          <div class="intro-block">
+            <span>03</span>
+            <h3>Easy to expand</h3>
+            <p>Structured so you can plug in Supabase, Stripe, and real inventory later.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shop-section" id="shop">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">The Collection</p>
+            <h2>Shop Mystic essentials</h2>
+            <p>
+              Browse signature beauty products crafted for radiance, ritual, and everyday elegance.
+            </p>
+          </div>
+
+          <div class="shop-toolbar glass-panel">
+            <div class="search-wrap">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search products..."
+                aria-label="Search products"
+              />
             </div>
-        </section>
+
+            <div class="filter-wrap">
+              <select id="categoryFilter" aria-label="Filter by category">
+                <option value="all">All Categories</option>
+                <option value="Skincare">Skincare</option>
+                <option value="Serum">Serum</option>
+                <option value="Cleanser">Cleanser</option>
+                <option value="Mask">Mask</option>
+                <option value="Body">Body</option>
+                <option value="Set">Set</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="products-grid" id="productsGrid"></div>
+        </div>
+      </section>
+
+      <section class="section feature-banner" id="ritual">
+        <div class="container feature-banner-grid">
+          <div>
+            <p class="eyebrow">Signature Experience</p>
+            <h2>Built for a premium ecommerce beauty brand</h2>
+            <p>
+              This homepage is designed to communicate mood, trust, premium pricing, and product discovery
+              while keeping the shopping flow simple and conversion-focused.
+            </p>
+          </div>
+
+          <div class="glass-panel feature-list">
+            <div>Elegant luxury branding</div>
+            <div>Responsive storefront layout</div>
+            <div>Cart drawer with quantity controls</div>
+            <div>Product search and category filtering</div>
+            <div>Local cart persistence</div>
+            <div>Newsletter and FAQ sections</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section about-section" id="about">
+        <div class="container about-grid">
+          <div class="about-card glass-panel">
+            <p class="eyebrow">Our Philosophy</p>
+            <h2>Where beauty transcends</h2>
+            <p>
+              Mystic is imagined as a beauty house where design, ritual, and performance meet.
+              The experience should feel cinematic, refined, and deeply memorable from the first visit.
+            </p>
+            <p>
+              This theme uses gold accents, smoky dark surfaces, glowing borders, and luxury typography
+              to reflect the direction shown in your attached logo.
+            </p>
+          </div>
+
+          <div class="benefits-grid">
+            <article class="benefit-card">
+              <h3>Premium aesthetic</h3>
+              <p>Dark palette with glowing gold accents and polished cards.</p>
+            </article>
+            <article class="benefit-card">
+              <h3>Conversion focused</h3>
+              <p>Clear calls to action, product grid, featured sections, and cart access.</p>
+            </article>
+            <article class="benefit-card">
+              <h3>Easy customization</h3>
+              <p>Edit product objects now, then connect live data later.</p>
+            </article>
+            <article class="benefit-card">
+              <h3>Mobile ready</h3>
+              <p>Responsive layout with compact navigation and stacked sections.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section testimonials-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Client Love</p>
+            <h2>What customers would say</h2>
+          </div>
+
+          <div class="testimonials-grid">
+            <article class="testimonial glass-panel">
+              <p>
+                “The experience feels rich and luxurious. The products look premium before I even add them to cart.”
+              </p>
+              <span>— Ava R.</span>
+            </article>
+            <article class="testimonial glass-panel">
+              <p>
+                “Exactly the kind of high-end beauty aesthetic I expect from a modern luxury brand.”
+              </p>
+              <span>— Sophia M.</span>
+            </article>
+            <article class="testimonial glass-panel">
+              <p>
+                “Elegant, dark, and memorable. The shopping flow feels clean and effortless.”
+              </p>
+              <span>— Elena T.</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq-section" id="faq">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Questions</p>
+            <h2>Frequently asked questions</h2>
+          </div>
+
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>Can I connect this to Supabase later?</summary>
+              <p>Yes. The JavaScript is structured so you can swap the fallback array for live database records.</p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Does this already support cart storage?</summary>
+              <p>Yes. The cart is stored in localStorage so users keep items during their session on the same browser.</p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can I connect real checkout?</summary>
+              <p>Yes. Add Stripe Checkout or your preferred payment integration in the checkout handler.</p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can I replace product images and text easily?</summary>
+              <p>Yes. Update the product array in script.js or load products dynamically from your backend.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section newsletter-section">
+        <div class="container newsletter-wrap glass-panel">
+          <div>
+            <p class="eyebrow">Stay Connected</p>
+            <h2>Join the Mystic circle</h2>
+            <p>Get first access to launches, rituals, and exclusive offers.</p>
+          </div>
+
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email" required />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <span class="logo-main">PACIFIC RADIANCE</span>
-                <p>California-inspired luxury for radiant, even-toned skin.</p>
+    <footer class="footer" id="contact">
+      <div class="container footer-grid">
+        <div>
+          <a href="#home" class="brand footer-brand">
+            <img src="LOGO-Mystic.jpg" alt="Mystic logo" class="brand-logo" />
+            <div class="brand-copy">
+              <span class="brand-name">MYSTIC</span>
+              <span class="brand-tag">Where Beauty Transcends</span>
             </div>
-            <div class="footer-nav">
-                <h4>Shop</h4>
-                <ul>
-                    <li><a href="#">Brightening</a></li>
-                    <li><a href="#">Serums</a></li>
-                    <li><a href="#">Bundles</a></li>
-                </ul>
-            </div>
-            <div class="footer-nav">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Shipping</a></li>
-                    <li><a href="#">Returns</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-newsletter">
-                <h4>Stay Radiant</h4>
-                <p>Join our newsletter for exclusive launches.</p>
-                <form id="newsletterForm" class="minimal-form">
-                    <input type="email" placeholder="Email Address" required>
-                    <button type="submit">Join</button>
-                </form>
-            </div>
+          </a>
+          <p class="footer-copy">
+            Luxury beauty ecommerce with a mystical editorial presence.
+          </p>
         </div>
-        <div class="footer-bottom">
-            <div class="container">
-                <p>&copy; 2026 Pacific Radiance. Los Angeles, CA.</p>
-            </div>
+
+        <div>
+          <h4>Shop</h4>
+          <a href="#shop">All Products</a>
+          <a href="#ritual">Featured Rituals</a>
+          <a href="#faq">FAQ</a>
         </div>
+
+        <div>
+          <h4>Company</h4>
+          <a href="#about">About</a>
+          <a href="#">Shipping</a>
+          <a href="#">Returns</a>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <a href="mailto:hello@mysticbeauty.com">hello@mysticbeauty.com</a>
+          <a href="tel:+10000000000">+1 (000) 000-0000</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+
+      <div class="container footer-bottom">
+        <p>© 2026 Mystic. All rights reserved.</p>
+      </div>
     </footer>
+  </div>
 
-    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
-        <div class="drawer-overlay" id="drawerOverlay"></div>
-        <div class="drawer-content">
-            <div class="drawer-header">
-                <h3>Your Glow Kit</h3>
-                <button class="close-drawer" id="closeDrawer">&times;</button>
-            </div>
-            <div class="drawer-body" id="cartItems">
-                <div class="empty-state">Your kit is currently empty.</div>
-            </div>
-            <div class="drawer-footer">
-                <div class="cart-subtotal">
-                    <span>Subtotal</span>
-                    <span id="cartTotal">$0.00</span>
-                </div>
-                <button class="btn-checkout">Secure Checkout</button>
-                <p class="shipping-notice">Free shipping on orders over $50.</p>
-            </div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <h3>Your Cart</h3>
+        <button class="icon-button" id="closeCart" aria-label="Close cart">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <div id="cartItems" class="cart-items"></div>
+      </div>
+
+      <div class="drawer-footer">
+        <div class="promo-row">
+          <input type="text" id="promoCode" placeholder="Promo code" />
+          <button id="applyPromo" class="btn btn-secondary small-btn">Apply</button>
         </div>
-    </aside>
 
-    <script src="script.js"></script>
+        <div class="cart-summary">
+          <div>
+            <span>Subtotal</span>
+            <strong id="cartSubtotal">$0.00</strong>
+          </div>
+          <div>
+            <span>Discount</span>
+            <strong id="cartDiscount">$0.00</strong>
+          </div>
+          <div class="total-row">
+            <span>Total</span>
+            <strong id="cartTotal">$0.00</strong>
+          </div>
+        </div>
+
+        <button class="btn btn-primary checkout-btn" id="checkoutBtn">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="search-modal" id="searchModal" aria-hidden="true">
+    <div class="search-box glass-panel">
+      <div class="search-modal-top">
+        <h3>Search Products</h3>
+        <button class="icon-button" id="closeSearch" aria-label="Close search">✕</button>
+      </div>
+      <input
+        type="text"
+        id="modalSearchInput"
+        placeholder="Search by product name or category..."
+      />
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
