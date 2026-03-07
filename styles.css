@@ -109,15 +109,20 @@ a {
   height: 56px;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid rgba(214, 168, 95, 0.5);
-  box-shadow: 0 0 24px rgba(214, 168, 95, 0.15);
+  background: linear-gradient(135deg, rgba(214, 168, 95, 0.1), rgba(240, 209, 154, 0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: sepia(0.3) hue-rotate(30deg) saturate(1.2) brightness(0.9);
+.logo-text {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold-soft);
+  opacity: 0.9;
+  text-shadow: 0 0 10px rgba(214, 168, 95, 0.3);
 }
 
 .logo-overlay {
@@ -126,8 +131,8 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(214, 168, 95, 0.2), rgba(240, 209, 154, 0.1));
-  mix-blend-mode: overlay;
+  background: linear-gradient(135deg, rgba(214, 168, 95, 0.15), rgba(240, 209, 154, 0.08));
+  mix-blend-mode: multiply;
 }
 
 .brand-copy {
@@ -440,7 +445,7 @@ a {
 
 .shop-toolbar {
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: 1fr min(220px, 30%);
   gap: 1rem;
   padding: 1rem;
   margin-bottom: 2rem;
@@ -934,6 +939,10 @@ a {
     height: 44px;
   }
 
+  .logo-text {
+    font-size: 1rem;
+  }
+
   .brand-name {
     font-size: 1.5rem;
   }
@@ -1024,5 +1033,14 @@ a {
   .topbar-inner {
     font-size: 0.75rem;
     padding: 0.5rem 0;
+  }
+
+  .brand-logo-blend {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-text {
+    font-size: 0.9rem;
   }
 }
