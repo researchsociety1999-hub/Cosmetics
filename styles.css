@@ -103,13 +103,31 @@ a {
   gap: 0.9rem;
 }
 
-.brand-logo {
+.brand-logo-blend {
+  position: relative;
   width: 56px;
   height: 56px;
-  object-fit: cover;
   border-radius: 50%;
+  overflow: hidden;
   border: 1px solid rgba(214, 168, 95, 0.5);
   box-shadow: 0 0 24px rgba(214, 168, 95, 0.15);
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.3) hue-rotate(30deg) saturate(1.2) brightness(0.9);
+}
+
+.logo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(214, 168, 95, 0.2), rgba(240, 209, 154, 0.1));
+  mix-blend-mode: overlay;
 }
 
 .brand-copy {
@@ -894,7 +912,28 @@ a {
   }
 }
 
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hero-card {
+    justify-self: center;
+    max-width: none;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 560px) {
+  .brand-logo-blend {
+    width: 44px;
+    height: 44px;
+  }
+
   .brand-name {
     font-size: 1.5rem;
   }
@@ -904,4 +943,26 @@ a {
     letter-spacing: 0.15em;
   }
 
-  .hero
+  .hero {
+    min-height: calc(100vh - 100px);
+    padding: 2rem 0 1.5rem;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(2rem, 10vw, 4rem);
+  }
+
+  .hero-text {
+    font-size: 1rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
