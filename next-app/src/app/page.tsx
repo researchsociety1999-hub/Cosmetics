@@ -80,46 +80,6 @@ export default function Home() {
       <div className="h-96 flex items-center justify-center text-[#b8ab95]">
         <p>More sections (products, FAQ, newsletter...) coming next...</p>
       </div>
-
-      <section id="shop" className="py-24">
-  <div className="max-w-7xl mx-auto px-6">
-    <div className="text-center mb-16">
-      <p className="uppercase tracking-widest text-[#f0d19a] mb-4 text-sm">Collections</p>
-      <h2 className="text-5xl font-['Cormorant_Garamond',serif] font-bold text-white">Featured Rituals</h2>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-      {/* Example product card */}
-      <div className="group bg-[#0f1319]/80 backdrop-blur-md border border-[#d6a85f]/20 rounded-3xl overflow-hidden hover:border-[#d6a85f]/50 transition-all">
-        <div className="relative h-80">
-          <Image
-            src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80"
-            alt="Celestial Glow Serum"
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-700"
-          />
-          <div className="absolute top-4 left-4 bg-[#d6a85f] text-black px-4 py-1 rounded-full text-sm font-bold">
-            Best Seller
-          </div>
-        </div>
-        <div className="p-8">
-          <h3 className="text-2xl font-['Cormorant_Garamond',serif] font-semibold mb-2 text-white">
-            Celestial Glow Serum
-          </h3>
-          <p className="text-[#b8ab95] mb-4">Brightening • Radiance</p>
-          <div className="flex justify-between items-center">
-            <span className="text-2xl font-bold text-[#f0d19a]">$68</span>
-            <button className="bg-[#d6a85f]/20 hover:bg-[#d6a85f]/40 text-[#d6a85f] px-6 py-3 rounded-full transition">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Duplicate 2 more cards for now */}
-    </div>
-  </div>
-</section>
     </div>
   );
 }
