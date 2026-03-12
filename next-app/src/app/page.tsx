@@ -1,15 +1,15 @@
 // src/app/page.tsx
-import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
-import { ProductCard } from "./components/ProductCard";
+// FIXED: Default import (no curly braces)
+import ProductCard from "./components/ProductCard";
+
 import {
   getActivePromo,
   getCategories,
-  getIngredients,
-  getPressmentions,
-  getProducts,
-} from "./lib/queries";
+  // ... your other named imports
+} from "./lib/data";
+
 import type { Product } from "./lib/types";
 
 export default async function HomePage() {
