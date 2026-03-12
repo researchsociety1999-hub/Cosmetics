@@ -1,18 +1,8 @@
-// src/app/page.tsx
-// Fix all red lines
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
-
-// src/app/page.tsx
-
+import { NewsletterForm } from "./components/NewsletterForm";
+import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
-import ProductCard from "./components/ProductCard";
+import ProductCard from "./components/productcard";
 
 import {
   getActivePromo,
@@ -22,19 +12,16 @@ import {
   getIngredients,
 } from "./lib/data";
 
-import type { Product } from "./lib/types";
-
 export default async function HomePage() {
-  const [products, categories, promo, press, ingredients] =
-    await Promise.all([
-      getProducts({ sortBy: "newest" }),
-      getCategories(),
-      getActivePromo(),
-      getPressmentions(),
-      getIngredients(),
-    ]);
+  const [products, categories, promo, press, ingredients] = await Promise.all([
+    getProducts(),
+    getCategories(),
+    getActivePromo(),
+    getPressmentions(),
+    getIngredients(),
+  ]);
 
-  const featuredProducts: Product[] = products.slice(0, 8);
+  const featuredProducts = products.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
@@ -42,7 +29,6 @@ export default async function HomePage() {
       <Navbar />
 
       <main>
-        {/* Hero */}
         <section
           id="home"
           className="relative overflow-hidden border-b border-[rgba(214,168,95,0.18)]"
@@ -51,20 +37,24 @@ export default async function HomePage() {
             <div className="absolute -left-10 top-10 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,#d6a85f33,transparent)] blur-2xl" />
             <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,#f0d19a22,transparent)] blur-3xl" />
           </div>
+
           <div className="relative mx-auto flex max-w-7xl flex-col gap-10 px-4 pb-20 pt-16 md:flex-row md:items-center md:gap-16 md:px-6 md:pb-24 md:pt-20">
             <div className="flex-1 space-y-8">
               <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
                 Luxury Beauty · Mystic Rituals
               </p>
+
               <h1 className="font-cormorant text-4xl leading-tight tracking-[0.08em] text-[#f5eee3] sm:text-5xl md:text-6xl">
                 Beauty reimagined in a world of{" "}
                 <span className="text-[#d6a85f]">shadow, gold, and glow.</span>
               </h1>
+
               <p className="max-w-xl text-sm text-[#b8ab95] md:text-base">
                 Discover elevated skincare and beauty essentials designed to
                 feel ceremonial, indulgent, and unforgettable—from your first
                 cleanse to your final veil of luminance.
               </p>
+
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
                   href="#shop"
@@ -72,6 +62,7 @@ export default async function HomePage() {
                 >
                   Shop the Ritual
                 </a>
+
                 <a
                   href="#about"
                   className="mystic-button-secondary inline-flex items-center justify-center px-10 py-3 text-xs uppercase tracking-[0.22em]"
@@ -79,6 +70,7 @@ export default async function HomePage() {
                   Discover the Story
                 </a>
               </div>
+
               <div className="mt-4 grid gap-4 text-xs text-[#b8ab95] sm:grid-cols-3">
                 <HeroProof
                   title="Free U.S. shipping"
@@ -119,7 +111,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Featured products */}
         <section
           id="shop"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80 py-16"
@@ -138,6 +129,7 @@ export default async function HomePage() {
                   seamlessly into your nightly ceremony.
                 </p>
               </div>
+
               <a
                 href="/shop"
                 className="mystic-button-secondary inline-flex items-center justify-center px-8 py-2 text-[0.7rem] uppercase tracking-[0.22em]"
@@ -161,7 +153,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Categories strip */}
         <section
           id="categories"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#04050a]/90 py-12"
@@ -172,19 +163,20 @@ export default async function HomePage() {
                 Choose your ritual path
               </h3>
             </header>
+
             {categories.length === 0 ? (
               <p className="text-sm text-[#b8ab95]">
                 No categories have been created yet.
               </p>
             ) : (
               <div className="flex gap-4 overflow-x-auto pb-2">
-                {categories.map((category) => (
+                {categories.map((category, index) => (
                   <a
-                    key={category.id}
-                    href={`/shop?category=${encodeURIComponent(category.slug)}`}
+                    key={index}
+                    href={`/shop?category=${encodeURIComponent(category)}`}
                     className="mystic-card flex min-w-[180px] items-center justify-between px-4 py-3 text-xs uppercase tracking-[0.2em] text-[#f5eee3]"
                   >
-                    <span>{category.name}</span>
+                    <span>{category}</span>
                     <span className="text-[0.65rem] text-[#b8ab95]">
                       Explore
                     </span>
@@ -195,7 +187,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Ingredients teaser */}
         <section
           id="ingredients"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#05060c] py-16"
@@ -210,6 +201,7 @@ export default async function HomePage() {
                   Ingredients that honor skin and story.
                 </h3>
               </div>
+
               <a
                 href="/ingredients"
                 className="mystic-button-secondary inline-flex items-center justify-center px-6 py-2 text-[0.7rem] uppercase tracking-[0.22em]"
@@ -225,24 +217,11 @@ export default async function HomePage() {
               </p>
             ) : (
               <div className="grid gap-6 md:grid-cols-3">
-                {ingredients.slice(0, 3).map((ingredient) => (
-                  <article
-                    key={ingredient.id}
-                    className="mystic-card h-full p-5"
-                  >
+                {ingredients.slice(0, 3).map((ingredientList, index) => (
+                  <article key={index} className="mystic-card h-full p-5">
                     <h4 className="font-cormorant text-xl tracking-[0.14em] text-[#f5eee3]">
-                      {ingredient.name}
+                      {ingredientList.join(", ")}
                     </h4>
-                    {ingredient.benefits && (
-                      <p className="mt-3 text-sm text-[#b8ab95]">
-                        {ingredient.benefits}
-                      </p>
-                    )}
-                    {ingredient.source && (
-                      <p className="mt-2 text-xs uppercase tracking-[0.22em] text-[#6b7280]">
-                        Source: {ingredient.source}
-                      </p>
-                    )}
                   </article>
                 ))}
               </div>
@@ -250,7 +229,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Press mentions */}
         <section
           id="press"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#05070d] py-14"
@@ -261,6 +239,7 @@ export default async function HomePage() {
                 As seen in
               </h3>
             </div>
+
             {press.length === 0 ? (
               <p className="text-sm text-[#b8ab95]">
                 Press features will appear here once they are added to your
@@ -276,16 +255,19 @@ export default async function HomePage() {
                     <p className="text-[0.7rem] uppercase tracking-[0.26em] text-[#d6a85f]">
                       {mention.source}
                     </p>
+
                     {mention.quote && (
                       <p className="mt-3 text-sm italic text-[#f5eee3]">
                         “{mention.quote}”
                       </p>
                     )}
+
                     {mention.published_at && (
                       <p className="mt-3 text-[0.7rem] text-[#6b7280]">
                         {new Date(mention.published_at).toLocaleDateString()}
                       </p>
                     )}
+
                     {mention.link && (
                       <a
                         href={mention.link}
@@ -303,7 +285,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* About preview / FAQ / Newsletter / Contact placeholders */}
         <section
           id="about"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#05060c] py-16"
@@ -325,6 +306,7 @@ export default async function HomePage() {
                   the mirror.
                 </p>
               </div>
+
               <div className="grid gap-4 text-sm text-[#b8ab95] md:grid-cols-2">
                 <div className="mystic-card p-4">
                   <p className="text-[0.7rem] uppercase tracking-[0.22em] text-[#d6a85f]">
@@ -335,6 +317,7 @@ export default async function HomePage() {
                     science.
                   </p>
                 </div>
+
                 <div className="mystic-card p-4">
                   <p className="text-[0.7rem] uppercase tracking-[0.22em] text-[#d6a85f]">
                     Night-first formulas
@@ -349,7 +332,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* FAQ + Newsletter placeholders (client accordions/forms can be added next) */}
         <section
           id="faq"
           className="border-b border-[rgba(17,24,39,0.9)] bg-[#04050a] py-14"
@@ -378,23 +360,8 @@ export default async function HomePage() {
                   Receive early access, rituals, and quiet offers.
                 </h3>
               </div>
-              <form
-                className="flex w-full flex-col gap-3 md:max-w-md md:flex-row"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email"
-                  className="mystic-input w-full text-sm"
-                />
-                <button
-                  type="submit"
-                  className="mystic-button-primary w-full px-6 py-2 text-[0.7rem] uppercase tracking-[0.22em] md:w-auto"
-                >
-                  Subscribe
-                </button>
-              </form>
+
+              <NewsletterForm />
             </div>
           </div>
         </section>
