@@ -1,18 +1,10 @@
 // src/app/page.tsx
 // Fix all red lines
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
 
-// src/app/page.tsx
 
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
-import ProductCard from "./components/ProductCard";
+import ProductCard from "./components/productcard";
 
 import {
   getActivePromo,
@@ -22,19 +14,19 @@ import {
   getIngredients,
 } from "./lib/data";
 
-import type { Product } from "./lib/types";
+// import type { Product } from "./lib/types";
 
 export default async function HomePage() {
   const [products, categories, promo, press, ingredients] =
     await Promise.all([
-      getProducts({ sortBy: "newest" }),
+      getProducts(),
       getCategories(),
-      getActivePromo(),
+      getActivePromo() as PromoyCampaign,
       getPressmentions(),
       getIngredients(),
     ]);
 
-  const featuredProducts: Product[] = products.slice(0, 8);
+  const featuredProducts = products.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
@@ -178,13 +170,13 @@ export default async function HomePage() {
               </p>
             ) : (
               <div className="flex gap-4 overflow-x-auto pb-2">
-                {categories.map((category) => (
+{categories.map((category, index) => (
                   <a
-                    key={category.id}
-                    href={`/shop?category=${encodeURIComponent(category.slug)}`}
+                    key={index}
+                    href={`/shop?category=${encodeURIComponent(category)}`}
                     className="mystic-card flex min-w-[180px] items-center justify-between px-4 py-3 text-xs uppercase tracking-[0.2em] text-[#f5eee3]"
                   >
-                    <span>{category.name}</span>
+                    <span>{category}</span>
                     <span className="text-[0.65rem] text-[#b8ab95]">
                       Explore
                     </span>
@@ -225,24 +217,14 @@ export default async function HomePage() {
               </p>
             ) : (
               <div className="grid gap-6 md:grid-cols-3">
-                {ingredients.slice(0, 3).map((ingredient) => (
+{ingredients.slice(0, 3).map((ingredientList, index) => (
                   <article
-                    key={ingredient.id}
+                    key={index}
                     className="mystic-card h-full p-5"
                   >
                     <h4 className="font-cormorant text-xl tracking-[0.14em] text-[#f5eee3]">
-                      {ingredient.name}
+                      {ingredientList.join(', ')}
                     </h4>
-                    {ingredient.benefits && (
-                      <p className="mt-3 text-sm text-[#b8ab95]">
-                        {ingredient.benefits}
-                      </p>
-                    )}
-                    {ingredient.source && (
-                      <p className="mt-2 text-xs uppercase tracking-[0.22em] text-[#6b7280]">
-                        Source: {ingredient.source}
-                      </p>
-                    )}
                   </article>
                 ))}
               </div>
@@ -404,6 +386,8 @@ export default async function HomePage() {
     </div>
   );
 }
+
+import { Footer } from "./components/Footer";
 
 function HeroProof({ title, body }: { title: string; body: string }) {
   return (
