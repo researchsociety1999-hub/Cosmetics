@@ -7,7 +7,6 @@ export function NewsletterForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: add your real submit logic here
     console.log("Subscribed:", email);
   }
 
