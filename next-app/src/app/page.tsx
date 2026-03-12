@@ -1,4 +1,13 @@
 // src/app/page.tsx
+// Fix all red lines
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
 // FIXED: Default import (no curly braces)
