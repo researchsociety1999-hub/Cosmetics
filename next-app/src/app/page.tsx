@@ -2,7 +2,7 @@ import { NewsletterForm } from "./components/NewsletterForm";
 import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
-import ProductCard from "./components/productcard";
+import ProductCard from "./components/ProductCard";
 
 import {
   getActivePromo,
