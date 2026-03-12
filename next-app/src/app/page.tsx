@@ -2,6 +2,9 @@
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
 // FIXED: Default import (no curly braces)
+import { PromoBanner } from "./components/PromoBanner";
+// import ProductCard from "./components/ProductCard";  // TEMP BYPASS
+
 import ProductCard from "./components/ProductCard";
 
 import {
