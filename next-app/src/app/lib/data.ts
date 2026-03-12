@@ -53,7 +53,7 @@ export async function getProducts(): Promise<Product[]> {
   ].sort((a, b) => b.price - a.price);
 }
 
-export async function getPressmentions(): Promise<PressMention[]> {
+export async function getPressMentions(): Promise<PressMention[]> {
   return [
     {
       id: "press-1",
