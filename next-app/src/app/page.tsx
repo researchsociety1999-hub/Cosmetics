@@ -19,6 +19,9 @@ import ProductCard from "./components/ProductCard";
 import {
   getActivePromo,
   getCategories,
+  getProducts,
+  getPressmentions,
+  getIngredients,
   // ... your other named imports
 } from "./lib/data";
 
