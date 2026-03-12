@@ -1,7 +1,8 @@
 // src/app/page.tsx
 // Fix all red lines
 
-
+import { NewsletterForm } from "./components/NewsletterForm";
+import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { PromoBanner } from "./components/PromoBanner";
 import ProductCard from "./components/productcard";
@@ -169,8 +170,8 @@ export default async function HomePage() {
                 No categories have been created yet.
               </p>
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-2">
-{categories.map((category, index) => (
+              <div className="flex gap-4 overflow-x-auto pb-2"> 
+              {categories.map((category, index) => (
                   <a
                     key={index}
                     href={`/shop?category=${encodeURIComponent(category)}`}
@@ -387,7 +388,7 @@ export default async function HomePage() {
   );
 }
 
-import { Footer } from "./components/Footer";
+
 
 function HeroProof({ title, body }: { title: string; body: string }) {
   return (
