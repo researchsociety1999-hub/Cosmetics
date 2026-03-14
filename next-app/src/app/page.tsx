@@ -5,11 +5,11 @@ import { PromoBanner } from "./components/PromoBanner";
 import ProductCard from "./components/ProductCard";
 
 import {
-  getActivePromo,
   getCategories,
   getProducts,
-  getPressmentions,
+  getPressMentions,
   getIngredients,
+  getActivePromo,
 } from "./lib/data";
 
 export default async function HomePage() {
@@ -17,7 +17,7 @@ export default async function HomePage() {
     getProducts(),
     getCategories(),
     getActivePromo(),
-    getPressmentions(),
+    getPressMentions(),
     getIngredients(),
   ]);
 
