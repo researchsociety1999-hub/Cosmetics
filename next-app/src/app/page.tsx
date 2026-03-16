@@ -12,6 +12,7 @@ import {
   getIngredients,
 } from "./lib/queries";
 
+export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   const [products, categories, promo, press, ingredients] = await Promise.all([
     getProducts(),
