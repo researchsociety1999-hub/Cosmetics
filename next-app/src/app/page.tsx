@@ -176,7 +176,7 @@ export default async function HomePage() {
                     href={`/shop?category=${encodeURIComponent(category.name)}`}
                     className="mystic-card flex min-w-[180px] items-center justify-between px-4 py-3 text-xs uppercase tracking-[0.2em] text-[#f5eee3]"
                   >
-                    <span>{category}</span>
+                    <span>{category.name}</span>
                     <span className="text-[0.65rem] text-[#b8ab95]">
                       Explore
                     </span>
