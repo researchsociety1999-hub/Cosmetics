@@ -10,7 +10,7 @@ import {
   getProducts,
   getPressmentions,
   getIngredients,
-} from "./lib/data";
+} from "./lib/queries";
 
 export default async function HomePage() {
   const [products, categories, promo, press, ingredients] = await Promise.all([
@@ -173,7 +173,7 @@ export default async function HomePage() {
                 {categories.map((category, index) => (
                   <a
                     key={index}
-                    href={`/shop?category=${encodeURIComponent(category)}`}
+                    href={`/shop?category=${encodeURIComponent(category.name)}`}
                     className="mystic-card flex min-w-[180px] items-center justify-between px-4 py-3 text-xs uppercase tracking-[0.2em] text-[#f5eee3]"
                   >
                     <span>{category}</span>
@@ -217,10 +217,10 @@ export default async function HomePage() {
               </p>
             ) : (
               <div className="grid gap-6 md:grid-cols-3">
-                {ingredients.slice(0, 3).map((ingredientList, index) => (
+                {ingredients.slice(0, 3).map((ingredient, index) => (
                   <article key={index} className="mystic-card h-full p-5">
                     <h4 className="font-cormorant text-xl tracking-[0.14em] text-[#f5eee3]">
-                      {ingredientList.join(", ")}
+                      {ingredient.name}
                     </h4>
                   </article>
                 ))}
