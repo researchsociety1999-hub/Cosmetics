@@ -7,5 +7,9 @@
     "start": "npm --prefix next-app run start",
     "lint": "npm --prefix next-app run lint",
     "install": "npm --prefix next-app install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0"
   }
 }
