@@ -7,9 +7,9 @@ import ProductCard from "./components/productcard";
 import {
   getActivePromo,
   getCategories,
-  getProducts,
-  getPressmentions,
   getIngredients,
+  getPressmentions,
+  getProducts,
 } from "./lib/queries";
 
 export const dynamic = 'force-dynamic';
