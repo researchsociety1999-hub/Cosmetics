@@ -146,31 +146,26 @@ interface NavLinkProps {
 
 function NavLink({ href, label }: NavLinkProps) {
   return (
-    <Link
+    <a
       href={href}
       className="relative text-xs uppercase tracking-[0.22em] text-[#b8ab95] transition hover:text-[#f0d19a]"
     >
       {label}
-    </Link>
+    </a>
   );
-}
-
-interface MobileNavLinkProps extends NavLinkProps {
-  onClick: () => void;
 }
 
 function MobileNavLink({ href, label, onClick }: MobileNavLinkProps) {
   return (
-    <Link
+    <a
       href={href}
       onClick={onClick}
       className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.22em] text-[#f5eee3] hover:bg-[rgba(214,168,95,0.12)]"
     >
       {label}
-    </Link>
+    </a>
   );
 }
-
 interface IconButtonProps {
   children: React.ReactNode;
   badge?: number;
