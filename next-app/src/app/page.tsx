@@ -45,7 +45,7 @@ export default async function HomePage() {
               </p>
 
               <h1 className="font-cormorant text-4xl leading-tight tracking-[0.08em] text-[#f5eee3] sm:text-5xl md:text-6xl">
-                Beauty reimagined in a world of{" "}
+                Where Beauty Transends{" "}
                 <span className="text-[#d6a85f]">shadow, gold, and glow.</span>
               </h1>
 
