@@ -16,6 +16,8 @@ export interface Promo {
   discount: number;
 }
 
+import type { PressMention } from "./types";
+
 // MOCK DATA - Replace with Supabase later
 export const getActivePromo = async (): Promise<Promo | null> => {
   return {
@@ -29,7 +31,7 @@ export const getCategories = async (): Promise<string[]> => {
   return ["Serums", "Mists", "Creams", "Masks"];
 };
 
-export const getActiveProducts = async (): Promise<Product[]> => {
+export async function getProducts(): Promise<Product[]> {
   return [
     {
       id: "glow-serum",
@@ -48,8 +50,21 @@ export const getActiveProducts = async (): Promise<Product[]> => {
       image: "/assets/products/hydration-mist.jpg",
       category: "Mists"
     }
-  ].sort((a, b) => b.price - a.price); // Most expensive first
-};
+  ].sort((a, b) => b.price - a.price);
+}
+
+export async function getPressmentions(): Promise<PressMention[]> {
+  return [
+    {
+      id: "press-1",
+      title: "Vogue Korea Features Mystic",
+      source: "Vogue Korea",
+      quote: "MYSTIC captures the essence of modern K-Beauty luxury.",
+      link: null,
+      published_at: new Date().toISOString(),
+    }
+  ];
+}
 
 export const getIngredients = async (): Promise<string[][]> => {
   return [
