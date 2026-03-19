@@ -1,3 +1,5 @@
+import { getProducts } from 'lib/data';
+
 // src/app/page.tsx
 // Fix all red lines
 interface Product {
