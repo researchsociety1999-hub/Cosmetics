@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { BrandLogo } from "./BrandLogo";
 
 export function Footer() {
   return (
@@ -7,20 +8,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
         <div className="grid gap-10 md:grid-cols-5">
           <div className="space-y-5 md:col-span-2">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(255,255,255,0.03)]">
-                <span className="font-cormorant text-lg tracking-[0.3em] text-[#d6a85f]">
-                  M
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-cormorant text-lg font-semibold tracking-[0.25em] text-[#d6a85f]">
-                  MYSTIQUE
-                </span>
-                <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[#b8ab95]">
-                  California-born ritual skincare
-                </span>
-              </div>
+            <div className="max-w-[320px]">
+              <BrandLogo />
             </div>
             <p className="max-w-sm text-sm text-[#b8ab95]">
               A dark-luxury K-beauty experience shaped around bloom skin, regenerative

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { NewsletterForm } from "./components/NewsletterForm";
+import { BrandLogo } from "./components/BrandLogo";
 import ProductCard from "./components/productcard";
 import { PromoBanner } from "./components/PromoBanner";
 import { SiteChrome } from "./components/SiteChrome";
@@ -48,7 +49,9 @@ export default async function HomePage() {
 function HeroSection() {
   return (
     <section className="relative overflow-hidden border-b border-[rgba(214,168,95,0.18)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(214,168,95,0.14),transparent_24%),radial-gradient(circle_at_85%_20%,rgba(240,209,154,0.08),transparent_22%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(214,168,95,0.22),transparent_18%),radial-gradient(circle_at_84%_24%,rgba(240,209,154,0.1),transparent_24%),linear-gradient(180deg,rgba(3,4,6,0.2),rgba(3,4,6,0.78))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.08] mix-blend-screen" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_32%,rgba(3,4,6,0.18)_58%,rgba(3,4,6,0.46)_100%)]" />
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:px-6 md:pb-28 md:pt-24">
         <div className="relative z-10 space-y-8">
           <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
@@ -87,20 +90,22 @@ function HeroSection() {
 
         <div className="relative z-10">
           <div className="mystic-card relative overflow-hidden p-6">
-            <div className="aspect-[4/5] rounded-[18px] bg-[linear-gradient(180deg,#0f131a,#04060b)]" />
-            <div className="absolute inset-6 rounded-[18px] bg-[radial-gradient(circle_at_20%_15%,rgba(214,168,95,0.25),transparent_35%),radial-gradient(circle_at_80%_90%,rgba(240,209,154,0.2),transparent_35%)]" />
-            <div className="absolute inset-0 flex flex-col justify-between p-10">
-              <div className="flex justify-between text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
-                <span>Evening ritual</span>
-                <span>01</span>
+            <div className="aspect-[4/5] rounded-[24px] bg-[linear-gradient(180deg,#090b0f,#030406)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_38%,rgba(255,161,46,0.26),transparent_18%),radial-gradient(circle_at_82%_75%,rgba(240,209,154,0.18),transparent_22%)]" />
+            <div className="absolute inset-0 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.24] mix-blend-screen" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,3,5,0.18),rgba(2,3,5,0.84))]" />
+            <div className="absolute inset-0 flex flex-col justify-between p-8">
+              <div className="flex justify-between text-[0.72rem] uppercase tracking-[0.24em] text-[#d8b37a]">
+                <span>Signature identity</span>
+                <span>Gold ritual</span>
               </div>
-              <div>
-                <p className="font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3]">
-                  Bloom Skin
-                </p>
-                <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#b8ab95]">
-                  Plush hydration, luminous texture, and a quiet gold finish
-                  designed to look expensive by morning.
+              <div className="space-y-5">
+                <div className="max-w-[320px]">
+                  <BrandLogo />
+                </div>
+                <p className="max-w-sm text-sm leading-relaxed text-[#d8c6aa]">
+                  The site now follows the same visual world as the mark itself:
+                  black smoke, molten gold, and a ceremonial luxury finish.
                 </p>
               </div>
             </div>
