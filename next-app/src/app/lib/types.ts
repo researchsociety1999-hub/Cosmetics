@@ -14,6 +14,10 @@ export interface Product {
   is_published: boolean | null;
   created_at: string;
   updated_at: string | null;
+  key_ingredients?: string[] | null;
+  benefits?: string[] | null;
+  routine_step?: string | null;
+  skin_types?: string[] | null;
 }
 
 export interface ProductVariant {
@@ -41,6 +45,27 @@ export interface CartItem {
   quantity: number;
   created_at: string;
   updated_at: string | null;
+}
+
+export interface CartCookieItem {
+  productId: number;
+  quantity: number;
+  variantId?: number | null;
+}
+
+export interface CartLine {
+  product: Product;
+  quantity: number;
+  variantId: number | null;
+  unitPriceCents: number;
+  lineTotalCents: number;
+}
+
+export interface CartSummary {
+  items: CartCookieItem[];
+  lines: CartLine[];
+  itemCount: number;
+  subtotalCents: number;
 }
 
 export type OrderStatus =
@@ -172,4 +197,12 @@ export interface AnalyticsEvent {
   event_type: string;
   event_data: unknown | null;
   occurred_at: string;
+}
+
+export interface JournalEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  readTime: string;
 }

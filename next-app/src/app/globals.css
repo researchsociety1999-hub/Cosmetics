@@ -50,6 +50,30 @@ body {
   font-family: var(--font-cormorant), "Cormorant Garamond", serif;
 }
 
+::selection {
+  background: rgba(214, 168, 95, 0.25);
+  color: var(--mystic-text);
+}
+
+a,
+button,
+input,
+textarea,
+select,
+summary {
+  transition: all 0.25s ease;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid rgba(214, 168, 95, 0.7);
+  outline-offset: 2px;
+}
+
 /* Scrollbar styling */
 * {
   scrollbar-width: thin;
@@ -125,6 +149,12 @@ body {
 .mystic-glass {
   backdrop-filter: blur(22px);
   background: rgba(0, 0, 0, 0.6);
+}
+
+.mystic-section-title {
+  font-family: var(--font-cormorant), "Cormorant Garamond", serif;
+  letter-spacing: 0.12em;
+  color: var(--mystic-text);
 }
 
 /* Skeleton loading shimmer */

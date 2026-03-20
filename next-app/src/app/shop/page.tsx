@@ -1,15 +1,29 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
 import ProductCard from "../components/productcard";
-import { getCategories, getProducts } from "../lib/queries";
+import { SiteChrome } from "../components/SiteChrome";
+import { getCategoryBySlug, getCategories, getProducts, type ProductSort } from "../lib/queries";
 
 type SearchParams = Promise<{
   category?: string;
   search?: string;
+  sort?: ProductSort;
+  page?: string;
 }>;
 
-export const dynamic = "force-dynamic";
+const SORT_OPTIONS: { label: string; value: ProductSort }[] = [
+  { label: "Newest", value: "newest" },
+  { label: "Price low to high", value: "price_asc" },
+  { label: "Price high to low", value: "price_desc" },
+  { label: "Featured", value: "featured" },
+];
+
+export const metadata: Metadata = {
+  title: "Shop",
+  description: "Shop the Mystique ritual collection by category, search, and sort.",
+};
+
+export const revalidate = 300;
 
 export default async function ShopPage({
   searchParams,
@@ -17,54 +31,111 @@ export default async function ShopPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const selectedCategory = params.category ?? "";
+  const page = Number(params.page ?? "1") || 1;
+  const sort = SORT_OPTIONS.some((option) => option.value === params.sort)
+    ? (params.sort as ProductSort)
+    : "newest";
   const categories = await getCategories();
-  const matchedCategory = categories.find(
-    (category) => category.slug === selectedCategory,
-  );
+  const matchedCategory = params.category
+    ? await getCategoryBySlug(params.category)
+    : null;
   const products = await getProducts({
     categoryId: matchedCategory?.id,
     search: params.search,
-    sortBy: "price_asc",
+    sortBy: sort,
+    page,
+    limit: 12,
   });
 
   return (
-    <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
-      <Navbar />
+    <SiteChrome>
       <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
         <header className="mb-10 space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Shop Mystic
+            Shop Mystique
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-            A storefront wired to your product schema.
+          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+            Build your ritual by texture, need, and mood.
           </h1>
-          <p className="max-w-3xl text-sm text-[#b8ab95] md:text-base">
-            This page reads products and categories from Supabase when available
-            and falls back to local seed content while your tables are still
-            being populated.
+          <p className="max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
+            Explore the catalog by category, search for a product, or sort by newest
+            arrivals and price. The page is ready for seeded Supabase data and
+            falls back gracefully when content is still being populated.
           </p>
         </header>
 
+        <section className="mystic-card mb-8 grid gap-4 p-5 md:grid-cols-[1fr_auto_auto]">
+          <form action="/shop">
+            <label className="sr-only" htmlFor="shop-search">
+              Search products
+            </label>
+            <input
+              id="shop-search"
+              name="search"
+              defaultValue={params.search ?? ""}
+              placeholder="Search serums, bloom skin, peptides..."
+              className="mystic-input w-full text-sm"
+            />
+          </form>
+          <form action="/shop">
+            <input type="hidden" name="search" value={params.search ?? ""} />
+            <label className="sr-only" htmlFor="shop-category">
+              Category
+            </label>
+            <select
+              id="shop-category"
+              name="category"
+              defaultValue={matchedCategory?.slug ?? ""}
+              className="mystic-input min-h-[50px] px-4 text-sm"
+            >
+              <option value="">All categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.slug}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </form>
+          <form action="/shop">
+            <input type="hidden" name="search" value={params.search ?? ""} />
+            <input type="hidden" name="category" value={matchedCategory?.slug ?? ""} />
+            <label className="sr-only" htmlFor="shop-sort">
+              Sort
+            </label>
+            <select
+              id="shop-sort"
+              name="sort"
+              defaultValue={sort}
+              className="mystic-input min-h-[50px] px-4 text-sm"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </form>
+        </section>
+
         <section className="mb-8 flex flex-wrap gap-3">
-          <CategoryPill href="/shop" active={!matchedCategory}>
+          <CategoryChip href="/shop" active={!matchedCategory}>
             All
-          </CategoryPill>
+          </CategoryChip>
           {categories.map((category) => (
-            <CategoryPill
+            <CategoryChip
               key={category.id}
               href={`/shop?category=${encodeURIComponent(category.slug)}`}
-              active={matchedCategory?.id === category.id}
+              active={matchedCategory?.slug === category.slug}
             >
               {category.name}
-            </CategoryPill>
+            </CategoryChip>
           ))}
         </section>
 
         {products.length === 0 ? (
           <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No products matched this category yet. Once `products` and
-            `categories` are seeded in Supabase, they will appear here.
+            No products matched your filters yet. [REPLACE LATER] Seed the `products`
+            table or broaden the current search.
           </div>
         ) : (
           <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -74,12 +145,11 @@ export default async function ShopPage({
           </section>
         )}
       </main>
-      <Footer />
-    </div>
+    </SiteChrome>
   );
 }
 
-function CategoryPill({
+function CategoryChip({
   href,
   active,
   children,
@@ -91,10 +161,10 @@ function CategoryPill({
   return (
     <a
       href={href}
-      className={`inline-flex rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition ${
+      className={`inline-flex rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] ${
         active
           ? "border-[#d6a85f] bg-[rgba(214,168,95,0.12)] text-[#f5eee3]"
-          : "border-[rgba(214,168,95,0.28)] text-[#b8ab95] hover:text-[#f5eee3]"
+          : "border-[rgba(214,168,95,0.18)] text-[#b8ab95] hover:text-[#f5eee3]"
       }`}
     >
       {children}
