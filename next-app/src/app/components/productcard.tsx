@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { addToCartAction } from "../actions/cart";
-import { formatMoney, getDisplayPrice } from "../lib/format";
+import { formatMoney, getDisplayPrice, isSafeImageSrc } from "../lib/format";
 import type { Product } from "../lib/types";
 
 interface ProductCardProps {
@@ -11,7 +11,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const displayPrice = getDisplayPrice(product);
   const hasSale = product.sale_price_cents != null;
-  const imgSrc = product.image_url;
+  const imgSrc = isSafeImageSrc(product.image_url) ? product.image_url : null;
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-[24px] border border-[rgba(214,168,95,0.18)] bg-[#0b0e14] shadow-[0_18px_45px_rgba(0,0,0,0.45)] transition duration-500 hover:-translate-y-1 hover:border-[rgba(214,168,95,0.45)]">
