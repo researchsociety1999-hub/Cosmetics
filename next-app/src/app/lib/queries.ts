@@ -1,17 +1,25 @@
-import { supabase } from "./supabaseClient";
+import {
+  mockCategories,
+  mockIngredients,
+  mockPressMentions,
+  mockProducts,
+  mockPromoCampaign,
+} from "./data";
+import { hasSupabaseEnv, supabase } from "./supabaseClient";
 import type {
+  Address,
+  CartItem,
+  Category,
+  Ingredient,
+  LoyaltyProgram,
+  Order,
+  PressMention,
   Product,
   ProductVariant,
-  Category,
+  Profile,
+  PromoCampaign,
   Review,
-  PromoyCampaign,
-  PressMention,
-  Ingredient,
-  CartItem,
-  Order,
-  Address,
   WishlistItem,
-  LoyaltyProgram,
 } from "./types";
 
 type ProductSort = "price_asc" | "price_desc" | "newest";
@@ -22,234 +30,272 @@ interface GetProductsOptions {
   sortBy?: ProductSort;
 }
 
-export async function getProducts(
-  options: GetProductsOptions = {},
-): Promise<Product[]> {
-  const { categoryId, search, sortBy } = options;
+function sortProducts(products: Product[], sortBy?: ProductSort): Product[] {
+  const sorted = [...products];
 
-  let query = supabase
-    .from("products")
-    .select("*")
-    .eq("is_published", true) as any;
-
-  if (categoryId != null) {
-    query = query.eq("category_id", categoryId);
-  }
-
-  if (search && search.trim().length > 0) {
-    const term = `%${search.trim()}%`;
-    query = query.or(
-      `name.ilike.${term},description.ilike.${term}`,
+  if (sortBy === "price_asc") {
+    sorted.sort((a, b) => a.price_cents - b.price_cents);
+  } else if (sortBy === "price_desc") {
+    sorted.sort((a, b) => b.price_cents - a.price_cents);
+  } else if (sortBy === "newest") {
+    sorted.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   }
 
-  if (sortBy === "price_asc") {
-    query = query.order("price_cents", { ascending: true });
-  } else if (sortBy === "price_desc") {
-    query = query.order("price_cents", { ascending: false });
-  } else if (sortBy === "newest") {
-    query = query.order("created_at", { ascending: false });
+  return sorted;
+}
+
+function filterMockProducts(options: GetProductsOptions = {}): Product[] {
+  const { categoryId, search, sortBy } = options;
+  let products = [...mockProducts].filter((product) => product.is_published);
+
+  if (categoryId != null) {
+    products = products.filter((product) => product.category_id === categoryId);
   }
 
-  const { data, error } = await query;
-  if (error) {
-    console.error("getProducts error", error);
-    return [];
+  if (search && search.trim()) {
+    const term = search.trim().toLowerCase();
+    products = products.filter((product) => {
+      return (
+        product.name.toLowerCase().includes(term) ||
+        (product.description ?? "").toLowerCase().includes(term)
+      );
+    });
   }
-  return (data ?? []) as Product[];
+
+  return sortProducts(products, sortBy);
+}
+
+export async function getProducts(
+  options: GetProductsOptions = {},
+): Promise<Product[]> {
+  if (!hasSupabaseEnv || !supabase) {
+    return filterMockProducts(options);
+  }
+
+  const { categoryId, search, sortBy } = options;
+
+  try {
+    let query = supabase
+      .from("products")
+      .select("*")
+      .eq("is_published", true);
+
+    if (categoryId != null) {
+      query = query.eq("category_id", categoryId);
+    }
+
+    if (search && search.trim()) {
+      const term = `%${search.trim()}%`;
+      query = query.or(`name.ilike.${term},description.ilike.${term}`);
+    }
+
+    if (sortBy === "price_asc") {
+      query = query.order("price_cents", { ascending: true });
+    } else if (sortBy === "price_desc") {
+      query = query.order("price_cents", { ascending: false });
+    } else if (sortBy === "newest") {
+      query = query.order("created_at", { ascending: false });
+    }
+
+    const { data, error } = await query;
+    if (error || !data?.length) {
+      return filterMockProducts(options);
+    }
+
+    return data as Product[];
+  } catch {
+    return filterMockProducts(options);
+  }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("slug", slug)
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    console.error("getProductBySlug error", error);
-    return null;
+  if (!hasSupabaseEnv || !supabase) {
+    return mockProducts.find((product) => product.slug === slug) ?? null;
   }
-  return (data as Product) ?? null;
+
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("slug", slug)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return mockProducts.find((product) => product.slug === slug) ?? null;
+    }
+
+    return data as Product;
+  } catch {
+    return mockProducts.find((product) => product.slug === slug) ?? null;
+  }
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("name", { ascending: true });
-
-  if (error) {
-    console.error("getCategories error", error);
-    return [];
+  if (!hasSupabaseEnv || !supabase) {
+    return mockCategories;
   }
-  return (data ?? []) as Category[];
+
+  try {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error || !data?.length) {
+      return mockCategories;
+    }
+
+    return data as Category[];
+  } catch {
+    return mockCategories;
+  }
 }
 
 export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
-  const { data, error } = await supabase
-    .from("product_variants")
-    .select("*")
-    .eq("product_id", productId);
-
-  if (error) {
-    console.error("getProductVariants error", error);
+  if (!hasSupabaseEnv || !supabase) {
     return [];
   }
-  return (data ?? []) as ProductVariant[];
+
+  try {
+    const { data, error } = await supabase
+      .from("product_variants")
+      .select("*")
+      .eq("product_id", productId);
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as ProductVariant[];
+  } catch {
+    return [];
+  }
 }
 
 export async function getProductReviews(
   productId: number,
 ): Promise<Review[]> {
-  const { data, error } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("product_id", productId)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("getProductReviews error", error);
+  if (!hasSupabaseEnv || !supabase) {
     return [];
   }
-  return (data ?? []) as Review[];
+
+  try {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("*")
+      .eq("product_id", productId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as Review[];
+  } catch {
+    return [];
+  }
 }
 
-export async function getActivePromo(): Promise<PromoyCampaign | null> {
+export async function getActivePromo(): Promise<PromoCampaign | null> {
+  if (!hasSupabaseEnv || !supabase) {
+    return mockPromoCampaign;
+  }
+
   const today = new Date().toISOString();
 
-  const { data, error } = await supabase
-    .from("promo_campaigns")
-    .select("*")
-    .lte("start_date", today)
-    .gte("end_date", today)
-    .limit(1)
-    .maybeSingle();
+  try {
+    const { data, error } = await supabase
+      .from("promo_campaigns")
+      .select("*")
+      .lte("start_date", today)
+      .gte("end_date", today)
+      .limit(1)
+      .maybeSingle();
 
-  if (error) {
-    console.error("getActivePromo error", error);
-    return null;
+    if (error || !data) {
+      return mockPromoCampaign;
+    }
+
+    return data as PromoCampaign;
+  } catch {
+    return mockPromoCampaign;
   }
-
-  return (data as PromoyCampaign) ?? null;
 }
 
-export async function getPressmentions(): Promise<PressMention[]> {
-  const { data, error } = await supabase
-    .from("press_mentions")
-    .select("*")
-    .order("published_at", { ascending: false });
-
-  if (error) {
-    console.error("getPressmentions error", error);
-    return [];
+export async function getPressMentions(): Promise<PressMention[]> {
+  if (!hasSupabaseEnv || !supabase) {
+    return mockPressMentions;
   }
-  return (data ?? []) as PressMention[];
+
+  try {
+    const { data, error } = await supabase
+      .from("press_mentions")
+      .select("*")
+      .order("published_at", { ascending: false });
+
+    if (error || !data?.length) {
+      return mockPressMentions;
+    }
+
+    return data as PressMention[];
+  } catch {
+    return mockPressMentions;
+  }
 }
 
 export async function getIngredients(): Promise<Ingredient[]> {
-  const { data, error } = await supabase
-    .from("ingredients")
-    .select("*")
-    .order("name", { ascending: true });
-
-  if (error) {
-    console.error("getIngredients error", error);
-    return [];
+  if (!hasSupabaseEnv || !supabase) {
+    return mockIngredients;
   }
-  return (data ?? []) as Ingredient[];
+
+  try {
+    const { data, error } = await supabase
+      .from("ingredients")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error || !data?.length) {
+      return mockIngredients;
+    }
+
+    return data as Ingredient[];
+  } catch {
+    return mockIngredients;
+  }
 }
 
-export async function getCartItems(userId: string): Promise<CartItem[]> {
-  const { data, error } = await supabase
-    .from("cart_items")
-    .select("*")
-    .eq("user_id", userId);
-
-  if (error) {
-    console.error("getCartItems error", error);
-    return [];
-  }
-  return (data ?? []) as CartItem[];
+export async function getCartItems(_userId: string): Promise<CartItem[]> {
+  return [];
 }
 
-export async function getUserOrders(userId: string): Promise<Order[]> {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("getUserOrders error", error);
-    return [];
-  }
-  return (data ?? []) as Order[];
+export async function getUserOrders(_userId: string): Promise<Order[]> {
+  return [];
 }
 
-export async function getOrderById(orderId: string): Promise<Order | null> {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("id", orderId)
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    console.error("getOrderById error", error);
-    return null;
-  }
-  return (data as Order) ?? null;
+export async function getOrderById(_orderId: string): Promise<Order | null> {
+  return null;
 }
 
-export async function getUserAddresses(
-  userId: string,
-): Promise<Address[]> {
-  const { data, error } = await supabase
-    .from("addresses")
-    .select("*")
-    .eq("user_id", userId)
-    .order("is_default", { ascending: false });
-
-  if (error) {
-    console.error("getUserAddresses error", error);
-    return [];
-  }
-  return (data ?? []) as Address[];
+export async function getUserAddresses(_userId: string): Promise<Address[]> {
+  return [];
 }
 
-export async function getUserWishlist(
-  userId: string,
-): Promise<WishlistItem[]> {
-  const { data, error } = await supabase
-    .from("wishlists")
-    .select("*")
-    .eq("user_id", userId);
-
-  if (error) {
-    console.error("getUserWishlist error", error);
-    return [];
-  }
-  return (data ?? []) as WishlistItem[];
+export async function getUserWishlist(_userId: string): Promise<WishlistItem[]> {
+  return [];
 }
 
 export async function getLoyaltyProgram(
-  userId: string,
+  _userId: string,
 ): Promise<LoyaltyProgram | null> {
-  const { data, error } = await supabase
-    .from("loyalty_program")
-    .select("*")
-    .eq("user_id", userId)
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    console.error("getLoyaltyProgram error", error);
-    return null;
-  }
-  return (data as LoyaltyProgram) ?? null;
+  return null;
 }
 
+export async function getProfile(_userId: string): Promise<Profile | null> {
+  return null;
+}

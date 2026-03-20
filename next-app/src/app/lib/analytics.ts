@@ -13,6 +13,10 @@ export async function trackEvent(
   eventData?: Record<string, unknown>,
   userId?: string,
 ): Promise<void> {
+  if (!supabase) {
+    return;
+  }
+
   try {
     const payload = {
       user_id: userId ?? null,
@@ -21,9 +25,7 @@ export async function trackEvent(
       occurred_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase
-      .from("analytics_events")
-      .insert(payload);
+    const { error } = await supabase.from("analytics_events").insert(payload);
 
     if (error) {
       console.error("trackEvent error", error);
@@ -32,4 +34,3 @@ export async function trackEvent(
     console.error("trackEvent unexpected error", err);
   }
 }
-

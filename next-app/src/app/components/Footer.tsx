@@ -1,11 +1,11 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-[rgba(214,168,95,0.18)] bg-[#05060a]">
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
         <div className="grid gap-10 md:grid-cols-4">
-          {/* Brand */}
           <div className="space-y-5">
             <div>
               <div className="flex items-center gap-3">
@@ -35,26 +35,23 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Shop */}
           <FooterColumn title="Shop">
             <FooterLink href="/shop">All Products</FooterLink>
-            <FooterLink href="/shop?category=skincare">Skincare</FooterLink>
-            <FooterLink href="/shop?category=body">Body Rituals</FooterLink>
-            <FooterLink href="/shop?category=tools">Tools &amp; Accessories</FooterLink>
+            <FooterLink href="/shop?category=serums">Serums</FooterLink>
+            <FooterLink href="/shop?category=body-rituals">Body Rituals</FooterLink>
+            <FooterLink href="/shop?category=masks">Masks</FooterLink>
           </FooterColumn>
 
-          {/* Company */}
           <FooterColumn title="Company">
-            <FooterLink href="#about">About Mystic</FooterLink>
+            <FooterLink href="/#about">About Mystic</FooterLink>
             <FooterLink href="/press">Press</FooterLink>
             <FooterLink href="/ingredients">Ingredients</FooterLink>
-            <FooterLink href="#careers">Careers</FooterLink>
+            <FooterLink href="/careers">Careers</FooterLink>
           </FooterColumn>
 
-          {/* Support */}
           <FooterColumn title="Support">
-            <FooterLink href="#faq">FAQ</FooterLink>
-            <FooterLink href="#contact">Contact</FooterLink>
+            <FooterLink href="/#faq">FAQ</FooterLink>
+            <FooterLink href="/#contact">Contact</FooterLink>
             <FooterLink href="/account/orders">Returns</FooterLink>
             <FooterLink href="/account/orders">Track Order</FooterLink>
           </FooterColumn>
@@ -62,7 +59,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-[rgba(148,163,184,0.28)] pt-6 text-xs text-[#8b8b99] md:flex md:items-center md:justify-between">
           <p className="mb-3 md:mb-0">
-            © {new Date().getFullYear()} Mystic. All rights reserved.
+            Copyright {new Date().getFullYear()} Mystic. All rights reserved.
           </p>
           <div className="flex flex-wrap gap-4">
             <FooterLink href="/privacy">Privacy Policy</FooterLink>
@@ -80,7 +77,7 @@ function FooterColumn({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div>
@@ -99,21 +96,8 @@ function FooterLink({
   children,
 }: {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const isHash = href.startsWith("#");
-
-  if (isHash) {
-    return (
-      <a
-        href={href}
-        className="text-xs uppercase tracking-[0.18em] text-[#b8ab95] hover:text-[#f0d19a]"
-      >
-        {children}
-      </a>
-    );
-  }
-
   return (
     <Link
       href={href}
@@ -136,4 +120,3 @@ function SocialIcon({ label }: { label: string }) {
     </button>
   );
 }
-
