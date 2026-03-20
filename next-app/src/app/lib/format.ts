@@ -3,6 +3,7 @@ import type { Product } from "./types";
 const ALLOWED_IMAGE_HOSTS = [
   "images.unsplash.com",
   "via.placeholder.com",
+  "placehold.co",
 ];
 
 export function formatMoney(cents: number): string {

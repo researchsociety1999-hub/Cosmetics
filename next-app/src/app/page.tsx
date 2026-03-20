@@ -9,7 +9,6 @@ import { mockTestimonials } from "./lib/data";
 import {
   getActivePromo,
   getCategories,
-  getIngredients,
   getProducts,
 } from "./lib/queries";
 
@@ -91,21 +90,21 @@ function HeroSection() {
           <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
             <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
               <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
-                Visual mood
+                Clean formulas
               </p>
-              <p className="mt-2 text-sm">Black smoke, molten halo, and a softened feminine shadow.</p>
+              <p className="mt-2 text-sm">No parabens, no sulfates, no compromise.</p>
             </div>
             <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
               <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
-                Signature finish
+                Cruelty free
               </p>
-              <p className="mt-2 text-sm">Warm gold detail with a polished, after-dark elegance.</p>
+              <p className="mt-2 text-sm">Tested with care, never on animals.</p>
             </div>
           </div>
           <div className="grid gap-4 text-sm text-[#b8ab95] sm:grid-cols-3">
-            <HeroProof title="Bloom skin" body="Softly radiant, never greasy." />
-            <HeroProof title="Regenerative story" body="PDRN, exosomes, peptides, centella." />
-            <HeroProof title="Fast ritual" body="Curated for morning and evening flow." />
+            <HeroProof title="Dermatologist-informed" body="Science-led, ritual-inspired." />
+            <HeroProof title="K-beauty ritual" body="5-step layering system, designed to layer." />
+            <HeroProof title="Free U.S. shipping" body="On all orders over $75." />
           </div>
         </div>
 
@@ -262,10 +261,30 @@ async function RitualStripSection() {
 }
 
 async function IngredientSpotlightSection() {
-  const [ingredients, categories] = await Promise.all([
-    getIngredients(),
-    getCategories(),
-  ]);
+  const categories = await getCategories();
+  const ingredients = [
+    {
+      id: "hyaluronic-acid",
+      source: "Humectant",
+      name: "Hyaluronic Acid",
+      description: "Draws in lasting hydration for a plump, dewy finish.",
+      benefits: "Hydration, bounce, smoothness",
+    },
+    {
+      id: "centella-asiatica",
+      source: "Leaf extract",
+      name: "Centella Asiatica",
+      description: "Helps calm visible redness and support a comfort-first ritual.",
+      benefits: "Soothing, recovery, softness",
+    },
+    {
+      id: "niacinamide",
+      source: "Vitamin B3",
+      name: "Niacinamide",
+      description: "Refines the look of tone and texture for polished radiance.",
+      benefits: "Brightness, clarity, barrier support",
+    },
+  ];
 
   return (
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05060c]">
@@ -278,7 +297,8 @@ async function IngredientSpotlightSection() {
           ctaLabel="See ingredient library"
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {ingredients.slice(0, 5).map((ingredient) => (
+          {/* TODO: wire to skincare-filtered query once ingredient categories are available. */}
+          {ingredients.map((ingredient) => (
             <article key={ingredient.id} className="mystic-card p-6">
               <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
                 {ingredient.source ?? "Active"}
@@ -343,7 +363,12 @@ function NewsletterSection() {
               Join for launch edits, routine notes, and private access to future Mystique releases.
             </p>
           </div>
-          <NewsletterForm />
+          <div>
+            <NewsletterForm />
+            <p className="mt-3 text-xs text-[#8f8576]">
+              No spam. Unsubscribe anytime.
+            </p>
+          </div>
         </div>
       </div>
     </section>

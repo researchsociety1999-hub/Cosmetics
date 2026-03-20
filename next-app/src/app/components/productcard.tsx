@@ -8,27 +8,26 @@ interface ProductCardProps {
   product: Product;
 }
 
+const FALLBACK_PRODUCT_IMAGE =
+  "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique";
+
 export default function ProductCard({ product }: ProductCardProps) {
   const displayPrice = getDisplayPrice(product);
   const hasSale = product.sale_price_cents != null;
-  const imgSrc = isSafeImageSrc(product.image_url) ? product.image_url : null;
+  const imgSrc = isSafeImageSrc(product.image_url)
+    ? product.image_url
+    : FALLBACK_PRODUCT_IMAGE;
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-[24px] border border-[rgba(214,168,95,0.18)] bg-[#0b0e14] shadow-[0_18px_45px_rgba(0,0,0,0.45)] transition duration-500 hover:-translate-y-1 hover:border-[rgba(214,168,95,0.45)]">
       <Link href={`/products/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-[#11151d]">
-        {imgSrc ? (
-          <Image
-            src={imgSrc}
-            alt={`${product.name} product shot`}
-            fill
-            className="object-cover transition duration-700 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-5xl text-[#d6a85f]/30">
-            M
-          </div>
-        )}
+        <Image
+          src={imgSrc}
+          alt={`${product.name} product shot`}
+          fill
+          className="object-cover transition duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+        />
         <div className="absolute left-3 top-3 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.82)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.22em] text-[#f0d19a]">
           {product.routine_step ?? "Ritual"}
         </div>

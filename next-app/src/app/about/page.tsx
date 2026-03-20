@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteChrome } from "../components/SiteChrome";
 
@@ -57,6 +58,19 @@ export default function AboutPage() {
               layerable, and designed for everyday use.
             </p>
           </article>
+        </section>
+        <section className="mt-12 text-center">
+          <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+            Ready to start your ritual?
+          </h2>
+          <div className="mt-6">
+            <Link
+              href="/shop"
+              className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+            >
+              Shop the collection
+            </Link>
+          </div>
         </section>
       </main>
     </SiteChrome>

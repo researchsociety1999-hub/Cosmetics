@@ -9,6 +9,8 @@ import type {
 } from "./types";
 
 const now = new Date();
+const fallbackProductImage =
+  "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique";
 
 export const mockCategories: Category[] = [
   { id: 1, name: "Serums", slug: "serums", image_url: null },
@@ -26,11 +28,10 @@ export const mockProducts: Product[] = [
       "A luminous treatment serum that layers niacinamide, PDRN-inspired regeneration messaging, and hydration for bloom-skin radiance.",
     price_cents: 6800,
     sale_price_cents: 5800,
-    image_url:
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
+      fallbackProductImage,
     ],
     slug: "celestial-glow-serum",
     category_id: 1,
@@ -52,10 +53,9 @@ export const mockProducts: Product[] = [
       "A cloud-soft gel cleanser designed for the first ritual step, removing makeup and SPF while leaving skin cushioned.",
     price_cents: 4200,
     sale_price_cents: null,
-    image_url:
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1626784215021-2e39ccf971cd?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
     ],
     slug: "moon-veil-cleanser",
     category_id: 2,
@@ -77,10 +77,9 @@ export const mockProducts: Product[] = [
       "A reset mask with enzymes and mineral clays for texture refinement, brightness, and a polished post-facial feel.",
     price_cents: 5400,
     sale_price_cents: null,
-    image_url:
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
     ],
     slug: "golden-eclipse-mask",
     category_id: 3,
@@ -102,10 +101,9 @@ export const mockProducts: Product[] = [
       "A featherlight moisturizer with peptides and ceramides that leaves skin cocooned, smooth, and softly reflective.",
     price_cents: 5800,
     sale_price_cents: null,
-    image_url:
-      "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
     ],
     slug: "noir-velvet-emulsion",
     category_id: 4,
@@ -127,10 +125,9 @@ export const mockProducts: Product[] = [
       "A dewy final-step protector with niacinamide and hyaluronic support, designed for luminous daily wear.",
     price_cents: 7200,
     sale_price_cents: 6400,
-    image_url:
-      "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
     ],
     slug: "bloom-screen-essence-spf",
     category_id: 5,
@@ -152,10 +149,9 @@ export const mockProducts: Product[] = [
       "A concentrated evening ampoule inspired by regenerative aesthetics, built around peptides and exosome-inspired storytelling.",
     price_cents: 9200,
     sale_price_cents: 8400,
-    image_url:
-      "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
+    image_url: fallbackProductImage,
     extra_images: [
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&q=80",
+      fallbackProductImage,
     ],
     slug: "midnight-recovery-ampoule",
     category_id: 1,
