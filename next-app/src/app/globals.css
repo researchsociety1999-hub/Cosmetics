@@ -116,6 +116,55 @@ summary:focus-visible {
   box-shadow: var(--mystic-shadow-soft);
 }
 
+.mystic-section {
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+}
+
+.mystic-section-shell {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+}
+
+.mystic-kicker {
+  color: var(--mystic-text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.mystic-intro {
+  max-width: 42rem;
+}
+
+.mystic-panel {
+  border-radius: 28px;
+  border: 1px solid rgba(214, 168, 95, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)),
+    radial-gradient(circle at top left, rgba(214,168,95,0.08), transparent 38%);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.34);
+}
+
+.mystic-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(214, 168, 95, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.55rem 0.9rem;
+  color: #d8c6aa;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.mystic-hairline {
+  border-top: 1px solid rgba(214, 168, 95, 0.12);
+}
+
 .mystic-button-primary {
   border-radius: var(--mystic-radius-button);
   background: var(--mystic-gold);
@@ -161,6 +210,17 @@ summary:focus-visible {
   font-family: var(--font-cormorant), "Cormorant Garamond", serif;
   letter-spacing: 0.12em;
   color: var(--mystic-text);
+}
+
+@media (min-width: 768px) {
+  .mystic-section {
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
+  }
+
+  .mystic-section-shell {
+    padding-inline: 1.5rem;
+  }
 }
 
 /* Skeleton loading shimmer */

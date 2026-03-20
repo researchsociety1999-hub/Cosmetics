@@ -6,14 +6,14 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-[rgba(214,168,95,0.18)] bg-[#05060a]">
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
-        <div className="grid gap-10 md:grid-cols-5">
-          <div className="space-y-5 md:col-span-2">
-            <div className="max-w-[320px]">
+        <div className="grid gap-10 md:grid-cols-[1.3fr_0.8fr_0.8fr_0.8fr] md:gap-8">
+          <div className="space-y-5 md:pr-8">
+            <div className="max-w-[280px]">
               <BrandLogo />
             </div>
             <p className="max-w-sm text-sm text-[#b8ab95]">
-              A dark-luxury K-beauty experience shaped around bloom skin, regenerative
-              science storytelling, and nightly ritual.
+              Mystique is luxury K-beauty for calm, luminous skin, shaped through
+              plush textures, guided layering, and an after-dark editorial mood.
             </p>
           </div>
 
@@ -41,7 +41,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-[rgba(148,163,184,0.18)] pt-6 text-xs text-[#8b8b99] md:flex-row md:items-center md:justify-between">
           <p>Copyright {new Date().getFullYear()} Mystique. All rights reserved.</p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 md:justify-end">
             <FooterLink href="/privacy">Privacy Policy</FooterLink>
             <FooterLink href="/terms">Terms of Service</FooterLink>
             <FooterLink href="/cookies">Cookie Policy</FooterLink>
@@ -60,7 +60,7 @@ function FooterColumn({
   children: ReactNode;
 }) {
   return (
-    <div>
+    <div className="border-t border-[rgba(214,168,95,0.12)] pt-5 md:border-none md:pt-0">
       <h3 className="font-cormorant text-lg tracking-[0.16em] text-[#f5eee3]">
         {title}
       </h3>

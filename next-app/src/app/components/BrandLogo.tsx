@@ -15,21 +15,21 @@ export function BrandLogo({
       href={href}
       aria-label="Mystique home"
       className={`group relative inline-flex items-center transition-opacity duration-300 ${
-        compact ? "max-w-[270px] md:max-w-[320px]" : "max-w-[360px] md:max-w-[430px]"
+        compact ? "max-w-[236px] md:max-w-[280px]" : "max-w-[300px] md:max-w-[390px]"
       }`}
     >
       <span
         aria-hidden="true"
         className={`pointer-events-none absolute left-[10%] top-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,173,66,0.2),rgba(255,173,66,0.06)_42%,transparent_72%)] blur-3xl ${
-          compact ? "h-16 w-16" : "h-24 w-24"
+          compact ? "h-14 w-14" : "h-20 w-20"
         }`}
       />
-      <span className="relative overflow-hidden rounded-[999px]">
+      <span className="relative flex w-full items-center overflow-hidden rounded-[999px]">
         <Image
           src={LOGO_SRC}
           alt="Mystique logo"
-          width={compact ? 320 : 430}
-          height={compact ? 128 : 172}
+          width={compact ? 280 : 390}
+          height={compact ? 112 : 156}
           priority={compact}
           className={`relative h-auto w-full object-contain opacity-[0.9] mix-blend-screen brightness-[0.98] contrast-[0.94] saturate-[0.92] transition duration-300 group-hover:opacity-100 group-hover:brightness-[1.04] ${
             compact ? "drop-shadow-[0_0_22px_rgba(255,170,70,0.14)]" : "drop-shadow-[0_0_30px_rgba(255,170,70,0.18)]"

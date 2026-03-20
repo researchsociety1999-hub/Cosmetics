@@ -56,48 +56,50 @@ function HeroSection() {
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] md:block">
         <HeroSilhouette />
       </div>
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:px-6 md:pb-28 md:pt-24">
-        <div className="relative z-10 space-y-8">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-[4.5rem] pt-14 md:grid-cols-[1.08fr_0.92fr] md:px-6 md:pb-[6.5rem] md:pt-20">
+        <div className="relative z-10 max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(214,168,95,0.18)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#d8c6aa] backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-[#d6a85f] shadow-[0_0_16px_rgba(214,168,95,0.9)]" />
             California luxury K-beauty
           </div>
-          <div className="space-y-5">
+          <div className="space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[#b8ab95]">
+              Rituals for radiant skin
+            </p>
             <h1 className="font-cormorant text-5xl leading-[0.95] tracking-[0.08em] text-[#f5eee3] sm:text-6xl md:text-7xl">
               Where Beauty Transcends
             </h1>
             <p className="max-w-2xl text-base leading-relaxed text-[#b8ab95] md:text-lg">
-              Luxury dermatological skincare with a mystical edge. Mystique
-              channels regenerative science, ritual layering, and bloom-skin
-              finish into a dark-luxury experience built for modern routines.
+              Plush textures, guided layering, and a darker luxury finish come
+              together in routines designed to leave skin calm, luminous, and polished.
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
             <a
               href="/shop"
-              className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+              className="mystic-button-primary inline-flex min-h-[52px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
               Shop rituals
             </a>
             <a
               href="/ingredients"
-              className="mystic-button-secondary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+              className="mystic-button-secondary inline-flex min-h-[52px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
               Explore ingredients
             </a>
           </div>
-          <div className="flex flex-wrap gap-6 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa]">
-            <div>
+          <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
+            <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
               <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
                 Visual mood
               </p>
-              <p className="mt-2 text-sm">Black smoke, molten halo, feminine shadow.</p>
+              <p className="mt-2 text-sm">Black smoke, molten halo, and a softened feminine shadow.</p>
             </div>
-            <div>
+            <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
               <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
                 Signature finish
               </p>
-              <p className="mt-2 text-sm">A richer luxury frame with warmer gold highlights.</p>
+              <p className="mt-2 text-sm">Warm gold detail with a polished, after-dark elegance.</p>
             </div>
           </div>
           <div className="grid gap-4 text-sm text-[#b8ab95] sm:grid-cols-3">
@@ -107,7 +109,7 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 min-h-[380px] md:min-h-[560px]" />
+        <div className="relative z-10 min-h-[320px] md:min-h-[560px]" />
       </div>
     </section>
   );
@@ -179,12 +181,12 @@ async function FeaturedProductsSection() {
   const products = await getProducts({ sortBy: "newest", limit: 6 });
 
   return (
-    <section className="border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80 py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80">
+      <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Featured collections"
-          title="Newest rituals for glow, texture, and nightly reset."
-          body="A launch edit drawn from the latest Mystique formulas and designed to feel premium from the first click."
+          title="Rituals for radiant skin."
+          body="Begin with a cleanser, then build your routine step by step with the formulas that fit your texture and finish goals."
           ctaHref="/shop"
           ctaLabel="View all"
         />
@@ -212,12 +214,12 @@ async function RitualStripSection() {
   }));
 
   return (
-    <section className="border-b border-[rgba(17,24,39,0.9)] bg-[#04050a] py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a]">
+      <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ritual sequence"
-          title="Move through the routine with intention."
-          body="A horizontal ritual map designed for skincare discovery, layering guidance, and better product storytelling."
+          title="Build your ritual with ease."
+          body="Each step has a clear role, so shoppers can move from first cleanse to final protection with confidence."
         />
         <div className="flex gap-4 overflow-x-auto pb-2">
           {ritualSteps.map(({ step, product }, index) => (
@@ -225,18 +227,32 @@ async function RitualStripSection() {
               key={step}
               className="mystic-card min-w-[240px] flex-1 p-5"
             >
-              <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                {String(index + 1).padStart(2, "0")}
+              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                Step {index + 1}
+              </p>
+              <p className="mt-2 text-[0.7rem] uppercase tracking-[0.22em] text-[#9f927f]">
+                {step}
               </p>
               <h3 className="mt-3 font-cormorant text-3xl tracking-[0.12em]">
                 {step}
               </h3>
               <p className="mt-3 text-sm text-[#b8ab95]">
-                {product?.name ?? `[REPLACE LATER] ${step} product`}
+                {getStepGuidance(step)}
               </p>
-              <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
-                {product ? formatMoney(product.sale_price_cents ?? product.price_cents) : "Coming soon"}
+              <p className="mt-3 text-sm text-[#f5eee3]">
+                {product?.name ?? `${step} ritual essential`}
               </p>
+              <div className="mt-3 flex items-center justify-between gap-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
+                  {product ? formatMoney(product.sale_price_cents ?? product.price_cents) : "Explore selection"}
+                </p>
+                <a
+                  href={getStepHref(step)}
+                  className="text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f]"
+                >
+                  {getStepLinkLabel(step)}
+                </a>
+              </div>
             </article>
           ))}
         </div>
@@ -252,12 +268,12 @@ async function IngredientSpotlightSection() {
   ]);
 
   return (
-    <section className="border-b border-[rgba(17,24,39,0.9)] bg-[#05060c] py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05060c]">
+      <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ingredient spotlight"
-          title="Regenerative language meets comfort-first formulation."
-          body={`Mystique centers ingredient stories that speak to bloom skin, barrier support, and ritual elegance across ${categories.length} collection categories.`}
+          title="Ingredients with intention."
+          body={`Mystique frames bloom-skin ingredients around comfort, elegant layering, and a refined finish across ${categories.length} collection categories.`}
           ctaHref="/ingredients"
           ctaLabel="See ingredient library"
         />
@@ -286,12 +302,12 @@ async function IngredientSpotlightSection() {
 
 function SocialProofSection() {
   return (
-    <section className="border-b border-[rgba(17,24,39,0.9)] bg-[#05070d] py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]">
+      <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Client notes"
-          title="What early ritual devotees are saying."
-          body="[REPLACE LATER] These testimonials can be swapped for live review excerpts once the reviews table is fully seeded."
+          title="What clients notice first."
+          body="The earliest reactions point to the same strengths: refined textures, calm layering, and skin that looks quietly luminous."
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {mockTestimonials.map((testimonial) => (
@@ -313,8 +329,8 @@ function SocialProofSection() {
 
 function NewsletterSection() {
   return (
-    <section className="py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="mystic-section">
+      <div className="mystic-section-shell">
         <div className="mystic-card grid gap-8 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -324,8 +340,7 @@ function NewsletterSection() {
               Early access to rituals and seasonal drops.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
-              Join the list for launch edits, ingredient stories, and private access
-              to future Mystique releases.
+              Join for launch edits, routine notes, and private access to future Mystique releases.
             </p>
           </div>
           <NewsletterForm />
@@ -350,14 +365,14 @@ function SectionIntro({
 }) {
   return (
     <header className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div className="max-w-2xl">
+      <div className="max-w-2xl space-y-3">
         <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
           {eyebrow}
         </p>
-        <h2 className="mt-3 font-cormorant text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
+        <h2 className="font-cormorant text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
           {title}
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">{body}</p>
+        <p className="text-sm leading-relaxed text-[#b8ab95]">{body}</p>
       </div>
       {ctaHref && ctaLabel ? (
         <a
@@ -369,6 +384,66 @@ function SectionIntro({
       ) : null}
     </header>
   );
+}
+
+function getStepGuidance(step: string): string {
+  if (step === "Cleanse") {
+    return "Sweep away buildup while keeping the skin feeling cushioned and calm.";
+  }
+
+  if (step === "Tone") {
+    return "Prep the skin so every layer that follows feels smoother and more even.";
+  }
+
+  if (step === "Treat") {
+    return "Layer targeted actives where glow, firmness, and recovery matter most.";
+  }
+
+  if (step === "Moisturize") {
+    return "Seal in hydration with a finish that feels plush, not heavy.";
+  }
+
+  return "Finish with daily protection to keep radiance looking fresh and refined.";
+}
+
+function getStepHref(step: string): string {
+  if (step === "Cleanse") {
+    return "/shop?category=cleansers";
+  }
+
+  if (step === "Treat") {
+    return "/shop?category=serums";
+  }
+
+  if (step === "Moisturize") {
+    return "/shop?category=moisturizers";
+  }
+
+  if (step === "Protect") {
+    return "/shop?category=protect";
+  }
+
+  return "/shop";
+}
+
+function getStepLinkLabel(step: string): string {
+  if (step === "Cleanse") {
+    return "View cleansers";
+  }
+
+  if (step === "Treat") {
+    return "View serums";
+  }
+
+  if (step === "Moisturize") {
+    return "View creams";
+  }
+
+  if (step === "Protect") {
+    return "View SPF";
+  }
+
+  return "View rituals";
 }
 
 function HeroProof({ title, body }: { title: string; body: string }) {

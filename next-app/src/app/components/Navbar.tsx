@@ -9,12 +9,12 @@ interface NavbarProps {
 export function Navbar({ cartCount = 0 }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.14)] bg-[linear-gradient(180deg,rgba(4,5,7,0.9),rgba(6,8,12,0.72))] backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
-        <div className="max-w-[250px] flex-1 opacity-90 md:max-w-[280px]">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:gap-8 md:px-6 md:py-4">
+        <div className="max-w-[228px] flex-1 opacity-90 md:max-w-[280px]">
           <BrandLogo compact />
         </div>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 lg:gap-8 md:flex">
           <NavLink href="/shop" label="Shop" />
           <NavLink href="/ingredients" label="Ingredients" />
           <NavLink href="/journal" label="Journal" />
@@ -23,7 +23,7 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
           <NavLink href="/contact" label="Contact" />
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           <IconLink href="/search" label="Search">
             <SearchIcon />
           </IconLink>
@@ -33,7 +33,7 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
         </div>
 
         <details className="relative md:hidden">
-          <summary className="flex list-none items-center gap-3 rounded-full border border-[rgba(214,168,95,0.28)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#f5eee3]">
+          <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.24)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3]">
             Menu
           </summary>
           <div className="absolute right-0 top-[calc(100%+0.75rem)] w-[280px] rounded-[22px] border border-[rgba(214,168,95,0.18)] bg-[#090c12] p-4 shadow-[0_22px_60px_rgba(0,0,0,0.55)]">
@@ -58,7 +58,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="text-xs uppercase tracking-[0.22em] text-[#b8ab95] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a]"
+      className="text-[0.68rem] uppercase tracking-[0.24em] text-[#b8ab95] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a]"
     >
       {label}
     </Link>
@@ -93,7 +93,7 @@ function IconLink({
     <Link
       href={href}
       aria-label={label}
-      className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(214,168,95,0.32)] bg-[rgba(255,255,255,0.03)] text-[#f5eee3] transition hover:border-[rgba(214,168,95,0.6)] hover:text-[#f0d19a]"
+      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.28)] bg-[rgba(255,255,255,0.03)] text-[#f5eee3] transition hover:border-[rgba(214,168,95,0.6)] hover:text-[#f0d19a]"
     >
       {children}
       {showBadge ? (

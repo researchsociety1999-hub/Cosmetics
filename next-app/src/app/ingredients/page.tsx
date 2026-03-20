@@ -14,20 +14,45 @@ export default async function IngredientsPage() {
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
-        <header className="mb-10 max-w-3xl space-y-4">
+      <main className="mystic-section-shell mystic-section">
+        <header className="mystic-intro space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Ingredients
           </p>
           <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
-            The ingredient library behind the ritual.
+            Ingredients with intention.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Mystique combines comfort-first hydration, regenerative-science language,
-            and clean-texture layering to support bloom skin and polished radiance.
+            Thoughtful, comfort-first formulas meet the layering sensibility of K-beauty
+            to support skin that looks calm, luminous, and refined.
           </p>
         </header>
-        <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <section className="mystic-panel mt-10 grid gap-6 p-6 md:grid-cols-[0.85fr_1.15fr] md:p-8">
+          <div className="space-y-4">
+            <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
+              Ingredient philosophy
+            </p>
+            <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+              Clean-feeling formulas, layered with care.
+            </h2>
+            <p className="text-sm leading-relaxed text-[#b8ab95]">
+              Mystique focuses on thoughtful formulations, sensorial textures, and
+              ritual-friendly layering rather than aggressive claims or overcomplication.
+            </p>
+          </div>
+          <div className="grid gap-4 text-sm text-[#cdbca1] sm:grid-cols-3">
+            <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
+              Hydration-first textures
+            </div>
+            <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
+              Regenerative-inspired storytelling
+            </div>
+            <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
+              Layering that stays elegant on skin
+            </div>
+          </div>
+        </section>
+        <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {ingredients.map((ingredient) => (
             <article key={ingredient.id} className="mystic-card p-6">
               <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
