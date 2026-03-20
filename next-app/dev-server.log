@@ -2,16 +2,19 @@
 > next-app@0.1.0 dev
 > next dev --webpack
 
-Error: spawn EPERM
-    at ChildProcess.spawn (node:internal/child_process:421:11)
-    at spawn (node:child_process:796:9)
-    at fork (node:child_process:174:10)
-    at C:\Users\hrush\Desktop\New folder\Mystic\Site\Cosmetics\next-app\node_modules\next\dist\cli\next-dev.js:243:45
-    at new Promise (<anonymous>)
-    at startServer (C:\Users\hrush\Desktop\New folder\Mystic\Site\Cosmetics\next-app\node_modules\next\dist\cli\next-dev.js:212:16)
-    at runDevServer (C:\Users\hrush\Desktop\New folder\Mystic\Site\Cosmetics\next-app\node_modules\next\dist\cli\next-dev.js:334:23)
-    at Module.nextDev (C:\Users\hrush\Desktop\New folder\Mystic\Site\Cosmetics\next-app\node_modules\next\dist\cli\next-dev.js:342:11) {
-  errno: -4048,
-  code: 'EPERM',
-  syscall: 'spawn'
-}
+▲ Next.js 16.1.6 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.156:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 4.8s
+○ Compiling / ...
+ GET / 200 in 7.4s (compile: 5.1s, render: 2.3s)
+ GET /shop 200 in 2.7s (compile: 1893ms, render: 764ms)
+[ProductPage] slug lookup { slug: 'celestial-glow-serum', found: 'celestial-glow-serum' }
+ GET /products/celestial-glow-serum 200 in 3.0s (compile: 2.3s, render: 678ms)
+ GET /routines 200 in 1017ms (compile: 700ms, render: 317ms)
+ GET /about 200 in 1138ms (compile: 916ms, render: 222ms)
+ GET /faq 200 in 1921ms (compile: 1304ms, render: 617ms)
+ GET /contact 200 in 1338ms (compile: 1060ms, render: 278ms)
