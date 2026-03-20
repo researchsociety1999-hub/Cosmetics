@@ -8,9 +8,9 @@ interface NavbarProps {
 
 export function Navbar({ cartCount = 0 }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.18)] bg-[linear-gradient(180deg,rgba(4,5,7,0.94),rgba(6,8,12,0.82))] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.14)] bg-[linear-gradient(180deg,rgba(4,5,7,0.9),rgba(6,8,12,0.72))] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
-        <div className="max-w-[250px] flex-1 md:max-w-[280px]">
+        <div className="max-w-[250px] flex-1 opacity-90 md:max-w-[280px]">
           <BrandLogo compact />
         </div>
 

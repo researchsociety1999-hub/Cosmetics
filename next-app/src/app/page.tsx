@@ -49,7 +49,7 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden border-b border-[rgba(214,168,95,0.18)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(214,168,95,0.18),transparent_18%),radial-gradient(circle_at_86%_28%,rgba(240,209,154,0.08),transparent_24%),radial-gradient(circle_at_48%_74%,rgba(255,143,38,0.08),transparent_24%),linear-gradient(180deg,rgba(3,4,6,0.16),rgba(3,4,6,0.82))]" />
-      <div className="pointer-events-none absolute left-[42%] top-1/2 h-[92%] w-[96%] -translate-x-1/2 -translate-y-1/2 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.07] mix-blend-screen" />
+      <div className="pointer-events-none absolute left-[42%] top-1/2 h-[92%] w-[96%] -translate-x-1/2 -translate-y-1/2 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.045] mix-blend-screen blur-[1px]" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-[56%] bg-[radial-gradient(circle_at_50%_46%,rgba(255,168,59,0.16),transparent_17%),radial-gradient(circle_at_38%_58%,rgba(214,168,95,0.1),transparent_28%)] blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_32%,rgba(3,4,6,0.18)_58%,rgba(3,4,6,0.46)_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(6,8,12,0),rgba(6,8,12,0.82))]" />
