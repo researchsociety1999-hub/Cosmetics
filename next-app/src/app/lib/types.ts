@@ -5,7 +5,7 @@ export interface Product {
   price_cents: number;
   sale_price_cents: number | null;
   image_url: string | null;
-  extra_images: unknown | null;
+  extra_images: string[] | null;
   slug: string;
   category_id: number | null;
   sku: string | null;
@@ -157,7 +157,7 @@ export interface Ingredient {
   source: string | null;
 }
 
-export interface PromoyCampaign {
+export interface PromoCampaign {
   id: string;
   name: string;
   description: string | null;
@@ -173,4 +173,3 @@ export interface AnalyticsEvent {
   event_data: unknown | null;
   occurred_at: string;
 }
-

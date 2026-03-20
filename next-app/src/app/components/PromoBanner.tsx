@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { PromoyCampaign } from "../lib/types";
+import type { PromoCampaign } from "../lib/types";
 
 interface PromoBannerProps {
-  promo: PromoyCampaign;
+  promo: PromoCampaign;
 }
 
 export function PromoBanner({ promo }: PromoBannerProps) {
@@ -54,4 +54,3 @@ export function PromoBanner({ promo }: PromoBannerProps) {
     </div>
   );
 }
-

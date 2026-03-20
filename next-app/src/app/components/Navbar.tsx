@@ -49,8 +49,7 @@ export function Navbar({ cartCount, wishlistCount }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.2)] bg-black/60 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6">
-        {/* Left: Logo */}
-        <Link href="#home" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(255,255,255,0.03)] shadow-[0_0_25px_rgba(214,168,95,0.25)]">
             <span className="font-cormorant text-xl tracking-[0.3em] text-[#d6a85f]">
               M
@@ -66,67 +65,67 @@ export function Navbar({ cartCount, wishlistCount }: NavbarProps) {
           </div>
         </Link>
 
-        {/* Center: Desktop nav */}
         <nav className="hidden gap-8 text-sm text-[#b8ab95] md:flex">
-          <NavLink href="#home" label="Home" />
-          <NavLink href="#shop" label="Shop" />
-          <NavLink href="#ingredients" label="Ingredients" />
-          <NavLink href="#press" label="Press" />
-          <NavLink href="#about" label="About" />
-          <NavLink href="#faq" label="FAQ" />
-          <NavLink href="#contact" label="Contact" />
+          <NavLink href="/" label="Home" />
+          <NavLink href="/shop" label="Shop" />
+          <NavLink href="/ingredients" label="Ingredients" />
+          <NavLink href="/press" label="Press" />
+          <NavLink href="/#about" label="About" />
+          <NavLink href="/#faq" label="FAQ" />
+          <NavLink href="/#contact" label="Contact" />
         </nav>
 
-        {/* Right: Actions */}
         <div className="flex items-center gap-3 md:gap-5">
-          <IconButton ariaLabel="Search">
-            <span className="text-lg">🔍</span>
-          </IconButton>
-
-          <IconButton ariaLabel="Wishlist" badge={effectiveWishlistCount}>
-            <span className="text-lg">♡</span>
-          </IconButton>
-
-          <IconButton ariaLabel="Cart" badge={effectiveCartCount}>
-            <span className="text-lg">🛒</span>
-          </IconButton>
+          <IconButton ariaLabel="Search" shortLabel="Srch" />
+          <IconButton
+            ariaLabel="Wishlist"
+            shortLabel="Wish"
+            badge={effectiveWishlistCount}
+          />
+          <IconButton
+            ariaLabel="Cart"
+            shortLabel="Cart"
+            badge={effectiveCartCount}
+          />
 
           <Link
-            href="/auth/login"
+            href="/account/login"
             className="hidden rounded-full border border-[rgba(214,168,95,0.5)] px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-[#f5eee3] hover:bg-[rgba(214,168,95,0.08)] md:inline-flex"
           >
             Login
           </Link>
 
-          {/* Mobile menu button */}
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(214,168,95,0.5)] bg-black/40 text-[#f5eee3] md:hidden"
+            className="inline-flex h-9 w-12 items-center justify-center rounded-full border border-[rgba(214,168,95,0.5)] bg-black/40 text-[0.6rem] uppercase tracking-[0.12em] text-[#f5eee3] md:hidden"
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
-            <span className="text-lg">{mobileOpen ? "✕" : "☰"}</span>
+            {mobileOpen ? "Close" : "Menu"}
           </button>
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {mobileOpen && (
         <div className="mystic-glass border-t border-[rgba(214,168,95,0.2)] md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 text-sm text-[#f5eee3]">
-            <MobileNavLink href="#home" label="Home" onClick={() => setMobileOpen(false)} />
-            <MobileNavLink href="#shop" label="Shop" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink href="/" label="Home" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink href="/shop" label="Shop" onClick={() => setMobileOpen(false)} />
             <MobileNavLink
-              href="#ingredients"
+              href="/ingredients"
               label="Ingredients"
               onClick={() => setMobileOpen(false)}
             />
-            <MobileNavLink href="#press" label="Press" onClick={() => setMobileOpen(false)} />
-            <MobileNavLink href="#about" label="About" onClick={() => setMobileOpen(false)} />
-            <MobileNavLink href="#faq" label="FAQ" onClick={() => setMobileOpen(false)} />
-            <MobileNavLink href="#contact" label="Contact" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink href="/press" label="Press" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink href="/#about" label="About" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink href="/#faq" label="FAQ" onClick={() => setMobileOpen(false)} />
+            <MobileNavLink
+              href="/#contact"
+              label="Contact"
+              onClick={() => setMobileOpen(false)}
+            />
             <Link
-              href="/auth/login"
+              href="/account/login"
               onClick={() => setMobileOpen(false)}
               className="mt-3 inline-flex items-center justify-center rounded-full border border-[rgba(214,168,95,0.5)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f5eee3] hover:bg-[rgba(214,168,95,0.08)]"
             >
@@ -171,22 +170,24 @@ function MobileNavLink({ href, label, onClick }: MobileNavLinkProps) {
   );
 }
 
-interface IconButtonProps {
-  children: React.ReactNode;
+function IconButton({
+  badge,
+  ariaLabel,
+  shortLabel,
+}: {
   badge?: number;
   ariaLabel: string;
-}
-
-function IconButton({ children, badge, ariaLabel }: IconButtonProps) {
+  shortLabel: string;
+}) {
   const showBadge = (badge ?? 0) > 0;
 
   return (
     <button
       type="button"
       aria-label={ariaLabel}
-      className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(214,168,95,0.5)] bg-black/40 text-[#f5eee3] hover:bg-[rgba(214,168,95,0.12)]"
+      className="relative inline-flex h-9 w-12 items-center justify-center rounded-full border border-[rgba(214,168,95,0.5)] bg-black/40 text-[0.6rem] uppercase tracking-[0.12em] text-[#f5eee3] hover:bg-[rgba(214,168,95,0.12)]"
     >
-      {children}
+      {shortLabel}
       {showBadge && (
         <span className="absolute -right-1 -top-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#d6a85f] px-1 text-[0.6rem] font-semibold text-black shadow-[0_0_0_1px_rgba(0,0,0,0.6)]">
           {badge}
@@ -195,4 +196,3 @@ function IconButton({ children, badge, ariaLabel }: IconButtonProps) {
     </button>
   );
 }
-
