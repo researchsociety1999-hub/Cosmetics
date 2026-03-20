@@ -34,7 +34,7 @@ export function Footer() {
           <FooterColumn title="Support">
             <FooterLink href="/faq">FAQ</FooterLink>
             <FooterLink href="/contact">Contact</FooterLink>
-            <FooterLink href="/checkout">Shipping & Returns</FooterLink>
+            <FooterLink href="/faq">Shipping & Returns</FooterLink>
             <FooterLink href="/cart">Cart</FooterLink>
           </FooterColumn>
         </div>

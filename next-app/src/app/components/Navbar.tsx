@@ -16,6 +16,7 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
 
         <nav className="hidden items-center gap-6 lg:gap-8 md:flex">
           <NavLink href="/shop" label="Shop" />
+          <NavLink href="/routines" label="Routines" />
           <NavLink href="/ingredients" label="Ingredients" />
           <NavLink href="/journal" label="Journal" />
           <NavLink href="/about" label="About" />
@@ -39,6 +40,7 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
           <div className="absolute right-0 top-[calc(100%+0.75rem)] w-[280px] rounded-[22px] border border-[rgba(214,168,95,0.18)] bg-[#090c12] p-4 shadow-[0_22px_60px_rgba(0,0,0,0.55)]">
             <nav className="flex flex-col gap-2">
               <MobileNavLink href="/shop" label="Shop" />
+              <MobileNavLink href="/routines" label="Routines" />
               <MobileNavLink href="/ingredients" label="Ingredients" />
               <MobileNavLink href="/journal" label="Journal" />
               <MobileNavLink href="/about" label="About" />

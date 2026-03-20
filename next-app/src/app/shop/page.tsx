@@ -58,9 +58,8 @@ export default async function ShopPage({
             Build your ritual by texture, need, and mood.
           </h1>
           <p className="max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Explore the catalog by category, search for a product, or sort by newest
-            arrivals and price. The page is ready for seeded Supabase data and
-            falls back gracefully when content is still being populated.
+            Explore the full Mystique catalog. Filter by category, discover your
+            ritual step, or search by texture and concern.
           </p>
         </header>
 

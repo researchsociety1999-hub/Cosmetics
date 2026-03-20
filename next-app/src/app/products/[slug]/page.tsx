@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import Link from "next/link";
 import { addToCartAction } from "../../actions/cart";
 import ProductCard from "../../components/productcard";
 import { SiteChrome } from "../../components/SiteChrome";
@@ -12,6 +12,9 @@ import {
 } from "../../lib/queries";
 
 export const revalidate = 300;
+
+const FALLBACK_PRODUCT_IMAGE =
+  "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique";
 
 export async function generateMetadata({
   params,
@@ -42,16 +45,60 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug);
 
   if (!product) {
-    notFound();
+    return (
+      <SiteChrome>
+        <main className="mx-auto max-w-4xl px-4 py-14 md:px-6">
+          <section className="mystic-card p-8 text-center">
+            <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+              Product not found
+            </p>
+            <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3]">
+              We couldn&apos;t find that ritual.
+            </h1>
+            <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
+              The product for slug &quot;{slug}&quot; is not available right now.
+              Browse the full collection to keep exploring Mystique.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/shop"
+                className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+              >
+                Shop the collection
+              </Link>
+            </div>
+          </section>
+        </main>
+      </SiteChrome>
+    );
   }
 
-  const [relatedProducts, reviews] = await Promise.all([
+  console.log("[ProductPage] slug lookup", { slug, found: product.slug });
+
+  const [relatedProductsResult, reviewsResult] = await Promise.all([
     getRelatedProducts(product, 4),
     getProductReviews(product.id),
   ]);
 
+  const relatedProducts = Array.isArray(relatedProductsResult)
+    ? relatedProductsResult
+    : [];
+  const reviews = Array.isArray(reviewsResult) ? reviewsResult : [];
   const images = getProductImages(product);
+  const galleryImages = images.length ? images : [FALLBACK_PRODUCT_IMAGE];
   const hasSale = product.sale_price_cents != null;
+  const benefits = Array.isArray(product.benefits) ? product.benefits : [];
+  const keyIngredients = Array.isArray(product.key_ingredients)
+    ? product.key_ingredients
+    : [];
+  const skinTypes = Array.isArray(product.skin_types) ? product.skin_types : [];
+  const description = product.description ?? "";
+  const productName = product.name ?? "Mystique product";
+  const routineStep = product.routine_step ?? "Ritual";
+  const stockLabel =
+    typeof product.stock === "number" && product.stock > 5
+      ? "In stock"
+      : "Low stock";
 
   return (
     <SiteChrome>
@@ -59,26 +106,24 @@ export default async function ProductPage({
         <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-4">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-[rgba(214,168,95,0.18)] bg-[#0d1118]">
-              {images[0] ? (
-                <Image
-                  src={images[0]}
-                  alt={`${product.name} hero image`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              ) : null}
+              <Image
+                src={galleryImages[0]}
+                alt={`${productName} hero image`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
-            {images.length > 1 ? (
+            {galleryImages.length > 1 ? (
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {images.slice(1).map((image) => (
+                {galleryImages.slice(1).map((image, index) => (
                   <div
-                    key={image}
+                    key={`${image}-${index}`}
                     className="relative aspect-square overflow-hidden rounded-[18px] border border-[rgba(214,168,95,0.14)] bg-[#0d1118]"
                   >
                     <Image
                       src={image}
-                      alt={`${product.name} alternate image`}
+                      alt={`${productName} alternate image`}
                       fill
                       className="object-cover"
                       sizes="25vw"
@@ -92,13 +137,13 @@ export default async function ProductPage({
           <div className="space-y-8">
             <div>
               <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-                {product.routine_step ?? "Ritual"} step
+                {routineStep} step
               </p>
               <h1 className="mt-3 font-cormorant text-5xl tracking-[0.12em] text-[#f5eee3]">
-                {product.name}
+                {productName}
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#b8ab95]">
-                {product.description}
+                {description}
               </p>
             </div>
 
@@ -120,7 +165,7 @@ export default async function ProductPage({
                 )}
               </div>
               <span className="rounded-full border border-[rgba(214,168,95,0.18)] px-4 py-2 text-xs uppercase tracking-[0.22em] text-[#f5eee3]">
-                {product.stock && product.stock > 5 ? "In stock" : "Low stock"}
+                {stockLabel}
               </span>
             </div>
 
@@ -149,31 +194,16 @@ export default async function ProductPage({
             </form>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <InfoBlock
-                title="Benefits"
-                items={product.benefits ?? ["Glow support", "Comfort-first finish", "[REPLACE LATER]"]}
-              />
-              <InfoBlock
-                title="Key ingredients"
-                items={
-                  product.key_ingredients ?? [
-                    "Peptides",
-                    "Centella asiatica",
-                    "[REPLACE LATER]",
-                  ]
-                }
-              />
+              <InfoBlock title="Benefits" items={benefits} />
+              <InfoBlock title="Key ingredients" items={keyIngredients} />
               <InfoBlock
                 title="How to use"
                 items={[
-                  `Use during the ${product.routine_step?.toLowerCase() ?? "ritual"} step.`,
+                  `Use during the ${routineStep.toLowerCase()} step.`,
                   "Layer after lighter textures and before heavier creams.",
                 ]}
               />
-              <InfoBlock
-                title="Skin types"
-                items={product.skin_types ?? ["All skin types", "[REPLACE LATER]"]}
-              />
+              <InfoBlock title="Skin types" items={skinTypes} />
             </div>
           </div>
         </section>
@@ -191,36 +221,37 @@ export default async function ProductPage({
             {reviews.length ? (
               reviews.map((review) => (
                 <article key={review.id} className="mystic-card p-5">
-                  <p className="text-sm text-[#d6a85f]">{"★".repeat(review.rating)}</p>
+                  <p className="text-sm text-[#d6a85f]">{"*".repeat(review.rating)}</p>
                   <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-                    {review.comment}
+                    {review.comment ?? ""}
                   </p>
                 </article>
               ))
             ) : (
               <article className="mystic-card p-5 text-sm text-[#b8ab95]">
-                [REPLACE LATER] Product reviews will appear here once the `reviews`
-                table is seeded.
+                No reviews yet for this ritual.
               </article>
             )}
           </div>
         </section>
 
-        <section className="mt-16">
-          <header className="mb-8">
-            <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-              Related products
-            </p>
-            <h2 className="mt-3 font-cormorant text-3xl tracking-[0.12em]">
-              Continue the ritual
-            </h2>
-          </header>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {relatedProducts.map((item) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
-          </div>
-        </section>
+        {relatedProducts.length ? (
+          <section className="mt-16">
+            <header className="mb-8">
+              <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+                Related products
+              </p>
+              <h2 className="mt-3 font-cormorant text-3xl tracking-[0.12em]">
+                Continue the ritual
+              </h2>
+            </header>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {relatedProducts.map((item) => (
+                <ProductCard key={item.id} product={item} />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </main>
     </SiteChrome>
   );
@@ -232,11 +263,15 @@ function InfoBlock({ title, items }: { title: string; items: string[] }) {
       <h2 className="font-cormorant text-2xl tracking-[0.1em] text-[#f5eee3]">
         {title}
       </h2>
-      <ul className="mt-4 space-y-2 text-sm text-[#b8ab95]">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      {items.length ? (
+        <ul className="mt-4 space-y-2 text-sm text-[#b8ab95]">
+          {items.map((item, index) => (
+            <li key={`${title}-${index}`}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-4 text-sm text-[#b8ab95]">Details coming soon.</p>
+      )}
     </article>
   );
 }
