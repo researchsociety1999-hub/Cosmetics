@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { BrandLogo } from "./BrandLogo";
 
 interface NavbarProps {
   cartCount?: number;
@@ -7,23 +8,11 @@ interface NavbarProps {
 
 export function Navbar({ cartCount = 0 }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.2)] bg-[rgba(6,8,12,0.82)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[rgba(214,168,95,0.18)] bg-[linear-gradient(180deg,rgba(4,5,7,0.94),rgba(6,8,12,0.82))] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
-        <Link href="/" className="flex items-center gap-3" aria-label="Mystique home">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(255,255,255,0.03)] shadow-[0_0_25px_rgba(214,168,95,0.25)]">
-            <span className="font-cormorant text-xl tracking-[0.3em] text-[#d6a85f]">
-              M
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-cormorant text-xl font-semibold tracking-[0.25em] text-[#d6a85f]">
-              MYSTIQUE
-            </span>
-            <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[#b8ab95]">
-              Where Beauty Transcends
-            </span>
-          </div>
-        </Link>
+        <div className="max-w-[250px] flex-1 md:max-w-[280px]">
+          <BrandLogo compact />
+        </div>
 
         <nav className="hidden items-center gap-8 md:flex">
           <NavLink href="/shop" label="Shop" />
