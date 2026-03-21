@@ -11,7 +11,7 @@ export default function FaqPage() {
   const faqCopy: Record<string, { question: string; answer: string }> = {
     "How long does shipping take?": {
       question: "How quickly will my order arrive?",
-      answer: "Most U.S. orders arrive within 3 to 5 business days, and we’ll always aim to keep the ritual moving smoothly.",
+      answer: "Most U.S. orders arrive within 3 to 5 business days, and we'll always aim to keep the ritual moving smoothly.",
     },
     "What is your returns policy?": {
       question: "Can I return my order?",

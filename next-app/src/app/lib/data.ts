@@ -264,18 +264,18 @@ export const mockTestimonials = [
     name: "Sophie T.",
     title: "Luxury beauty collector",
     quote:
-      "Mystique feels editorial and ritualistic without becoming impractical. It’s polished in the best way.",
+      "Mystique feels editorial and ritualistic without becoming impractical. It's polished in the best way.",
   },
 ];
 
 export const mockFaqs = [
   {
     question: "How long does shipping take?",
-    answer: "Most U.S. orders arrive within 3 to 5 business days. [REPLACE LATER]",
+    answer: "Most U.S. orders arrive within 3 to 5 business days with tracking sent as soon as your order ships.",
   },
   {
     question: "What is your returns policy?",
-    answer: "Returns are accepted within 30 days on eligible unopened items. [REPLACE LATER]",
+    answer: "Returns are accepted within 30 days on eligible unopened items in their original condition.",
   },
   {
     question: "How should I layer the ritual?",

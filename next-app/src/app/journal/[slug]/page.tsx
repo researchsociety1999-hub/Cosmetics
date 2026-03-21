@@ -45,8 +45,7 @@ export default async function JournalEntryPage({
         <article className="mystic-card mt-10 p-8 text-sm leading-relaxed text-[#b8ab95] md:text-base">
           <p>{entry.excerpt}</p>
           <p className="mt-5">
-            [REPLACE LATER] This journal detail route is live and ready for real
-            CMS or Supabase-backed article content.
+            This article is being prepared. Check back soon for the full guide.
           </p>
         </article>
       </main>

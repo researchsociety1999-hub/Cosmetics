@@ -50,7 +50,8 @@ export default async function ContactPage({
             </button>
             {params.status === "sent" ? (
               <p className="text-sm text-[#d6a85f]">
-                Message received. [REPLACE LATER] Connect this to email or a CRM.
+                Thank you for reaching out. Our team will get back to you within
+                1–2 business days.
               </p>
             ) : null}
             {params.status === "missing" ? (
@@ -63,9 +64,9 @@ export default async function ContactPage({
             <p className="text-[0.72rem] uppercase tracking-[0.22em] text-[#d6a85f]">
               Support
             </p>
-            <p className="mt-4">Email: hello@mystique.skin [REPLACE LATER]</p>
-            <p className="mt-2">Press: press@mystique.skin [REPLACE LATER]</p>
-            <p className="mt-2">Hours: Mon-Fri, 9am-5pm PT [REPLACE LATER]</p>
+            <p className="mt-4">Email: hello@mystique.com</p>
+            <p className="mt-2">Press: hello@mystique.com</p>
+            <p className="mt-2">Hours: Monday – Friday, 9am – 6pm PT</p>
           </aside>
         </div>
       </main>

@@ -73,8 +73,6 @@ export default async function ProductPage({
     );
   }
 
-  console.log("[ProductPage] slug lookup", { slug, found: product.slug });
-
   const [relatedProductsResult, reviewsResult] = await Promise.all([
     getRelatedProducts(product, 4),
     getProductReviews(product.id),
