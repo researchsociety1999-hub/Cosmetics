@@ -41,9 +41,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             {product.name}
           </Link>
-          <p className="line-clamp-3 text-sm leading-relaxed text-[#b8ab95]">
-            {product.description ?? "[REPLACE LATER] Product description"}
-          </p>
+          {product.description ? (
+            <p className="line-clamp-3 text-sm leading-relaxed text-[#b8ab95]">
+              {product.description}
+            </p>
+          ) : null}
         </div>
 
         <div className="mt-auto flex items-end justify-between gap-4 border-t border-[rgba(214,168,95,0.12)] pt-4">

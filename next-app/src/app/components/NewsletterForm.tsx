@@ -39,7 +39,7 @@ export function NewsletterForm() {
       </p>
       {submitted ? (
         <p className="mt-2 text-sm text-[#d6a85f]">
-          Thanks for subscribing. [REPLACE LATER: connect to your email platform]
+          You're on the list. Expect early access, ritual drops, and seasonal notes.
         </p>
       ) : null}
     </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { NewsletterForm } from "./components/NewsletterForm";
@@ -74,18 +75,18 @@ function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <a
+            <Link
               href="/shop"
               className="mystic-button-primary inline-flex min-h-[52px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
               Shop rituals
-            </a>
-            <a
+            </Link>
+            <Link
               href="/ingredients"
               className="mystic-button-secondary inline-flex min-h-[52px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
               Explore ingredients
-            </a>
+            </Link>
           </div>
           <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
             <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
@@ -245,12 +246,12 @@ async function RitualStripSection() {
                 <p className="text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
                   {product ? formatMoney(product.sale_price_cents ?? product.price_cents) : "Explore selection"}
                 </p>
-                <a
+                <Link
                   href={getStepHref(step)}
                   className="text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f]"
                 >
                   {getStepLinkLabel(step)}
-                </a>
+                </Link>
               </div>
             </article>
           ))}
@@ -400,12 +401,12 @@ function SectionIntro({
         <p className="text-sm leading-relaxed text-[#b8ab95]">{body}</p>
       </div>
       {ctaHref && ctaLabel ? (
-        <a
+        <Link
           href={ctaHref}
           className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-[0.7rem] uppercase tracking-[0.22em]"
         >
           {ctaLabel}
-        </a>
+        </Link>
       ) : null}
     </header>
   );

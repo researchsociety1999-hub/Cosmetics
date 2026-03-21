@@ -43,9 +43,9 @@ export default async function CheckoutPage() {
             <Input label="Postal code" name="postal_code" />
             <Input label="Country" name="country" defaultValue="United States" />
             <div className="md:col-span-2 rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95]">
-              Stripe test mode integration is the next step here. [REPLACE LATER]
-              Create a checkout session, persist `payments`, and generate an
-              `orders` record after confirmation.
+              Secure payment powered by Stripe - coming soon. Your shipping
+              details will be reviewed at the next step before payment is
+              finalized.
             </div>
             <button
               type="submit"
@@ -76,7 +76,7 @@ export default async function CheckoutPage() {
               </div>
               <div className="mt-3 flex justify-between">
                 <span>Estimated shipping</span>
-                <span>[REPLACE LATER]</span>
+                <span>Calculated at next step</span>
               </div>
             </div>
           </aside>

@@ -18,3 +18,18 @@
  GET /about 200 in 1138ms (compile: 916ms, render: 222ms)
  GET /faq 200 in 1921ms (compile: 1304ms, render: 617ms)
  GET /contact 200 in 1338ms (compile: 1060ms, render: 278ms)
+ GET /shop?category=skincare 200 in 1198ms (compile: 108ms, render: 1090ms)
+⨯ The requested resource "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+ GET / 200 in 641ms (compile: 26ms, render: 616ms)
+⨯ The requested resource "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+ GET / 200 in 1506ms (compile: 693ms, render: 812ms)
+ GET / 200 in 341ms (compile: 9ms, render: 333ms)
+ GET / 200 in 326ms (compile: 9ms, render: 317ms)
+ GET / 200 in 763ms (compile: 174ms, render: 590ms)
+ GET / 200 in 270ms (compile: 12ms, render: 258ms)
+ GET / 200 in 724ms (compile: 178ms, render: 546ms)
+ GET / 200 in 1318ms (compile: 287ms, render: 1030ms)
+ GET / 200 in 1206ms (compile: 17ms, render: 1189ms)
+ GET / 200 in 1258ms (compile: 16ms, render: 1243ms)
+ GET / 200 in 2.5s (compile: 43ms, render: 2.5s)
+ GET / 200 in 1563ms (compile: 446ms, render: 1117ms)

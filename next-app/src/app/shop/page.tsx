@@ -133,8 +133,8 @@ export default async function ShopPage({
 
         {products.length === 0 ? (
           <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No products matched your filters yet. [REPLACE LATER] Seed the `products`
-            table or broaden the current search.
+            No products found for that search. Try a different category or browse
+            the full collection.
           </div>
         ) : (
           <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
