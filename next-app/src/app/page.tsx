@@ -62,7 +62,7 @@ function HeroSection() {
         <div className="relative z-10 max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(214,168,95,0.18)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#d8c6aa] backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-[#d6a85f] shadow-[0_0_16px_rgba(214,168,95,0.9)]" />
-            California luxury Mystique-beauty
+            California luxury K-beauty
           </div>
           <div className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[#b8ab95]">
@@ -106,7 +106,7 @@ function HeroSection() {
           </div>
           <div className="grid gap-4 text-sm text-[#b8ab95] sm:grid-cols-3">
             <HeroProof title="Dermatologist-informed" body="Science-led, ritual-inspired." />
-            <HeroProof title="Mistique ritual" body="5-step layering system, designed to layer." />
+            <HeroProof title="K-beauty ritual" body="5-step layering system, designed to layer." />
             <HeroProof title="Free U.S. shipping" body="On all orders over $75." />
           </div>
         </div>
