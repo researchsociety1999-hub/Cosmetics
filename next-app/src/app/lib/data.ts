@@ -295,6 +295,36 @@ export const mockJournalEntries: JournalEntry[] = [
       "A five-step sequence for cleansing away the day and waking up visibly luminous.",
     category: "Ritual",
     readTime: "4 min read",
+    content: [
+      {
+        heading: "Start with a full cleanse",
+        paragraphs: [
+          "Evening skin usually carries sunscreen, makeup, excess oil, and the residue of a long day. Begin with a cleanser that lifts everything away without leaving the face tight or squeaky.",
+          "Massage for a full minute, especially around the nose, chin, and hairline, then rinse with lukewarm water. The goal is clean skin that still feels comfortable.",
+        ],
+      },
+      {
+        heading: "Layer hydration before treatment",
+        paragraphs: [
+          "After cleansing, move straight into your first hydrating layer while the skin is still slightly damp. This helps the routine feel plush instead of heavy.",
+          "A light essence or watery serum creates slip, supports the barrier, and makes stronger treatment steps feel more balanced.",
+        ],
+      },
+      {
+        heading: "Use treatment where it matters most",
+        paragraphs: [
+          "Evening is a strong time for targeted serums and ampoules. Focus on formulas that support tone, texture, brightness, and overnight comfort.",
+          "Apply from the center of the face outward, then press what remains into the neck so the finish looks consistent and intentional.",
+        ],
+      },
+      {
+        heading: "Seal the routine with comfort",
+        paragraphs: [
+          "Finish with a moisturizer that locks in water and leaves the skin looking calm, not overloaded. This final layer is what gives bloom skin its smooth, rested finish by morning.",
+          "If skin is especially dry, add a little more around the cheeks and along the jaw before bed.",
+        ],
+      },
+    ],
   },
   {
     slug: "pdrn-101",
@@ -303,6 +333,29 @@ export const mockJournalEntries: JournalEntry[] = [
       "A grounded primer on the language behind modern skin-renewal categories.",
     category: "Science",
     readTime: "5 min read",
+    content: [
+      {
+        heading: "Why the term shows up so often",
+        paragraphs: [
+          "PDRN appears in modern skincare conversations because brands are leaning into repair-minded, regeneration-adjacent language. It signals a category centered on recovery, bounce, and skin that looks well-rested.",
+          "For most shoppers, the important takeaway is not the buzzword itself, but what the formula is trying to achieve in the routine.",
+        ],
+      },
+      {
+        heading: "What to look for in practice",
+        paragraphs: [
+          "When you see this kind of storytelling, look at the rest of the formula. Supportive ingredients like peptides, humectants, and calming actives usually tell you more about the day-to-day experience than the headline alone.",
+          "A good regenerative-style serum should still fit comfortably into the rest of your routine and leave skin feeling smoother, softer, and less stressed.",
+        ],
+      },
+      {
+        heading: "How Mystique frames it",
+        paragraphs: [
+          "Mystique uses this language as part of a glow-and-recovery ritual story rather than as a promise of dramatic overnight transformation.",
+          "That keeps the tone aspirational while staying focused on texture, comfort, and visible polish.",
+        ],
+      },
+    ],
   },
   {
     slug: "bloom-skin-guide",
@@ -311,6 +364,29 @@ export const mockJournalEntries: JournalEntry[] = [
       "How to build a routine that looks hydrated, refined, and softly radiant rather than shiny.",
     category: "Glow",
     readTime: "6 min read",
+    content: [
+      {
+        heading: "Bloom skin is glow with restraint",
+        paragraphs: [
+          "Bloom skin is not about looking wet or reflective everywhere. It is a softer finish that makes skin look hydrated, even, and quietly luminous.",
+          "The easiest way to get there is by balancing water, barrier support, and a final layer that smooths rather than smothers.",
+        ],
+      },
+      {
+        heading: "Choose textures that layer cleanly",
+        paragraphs: [
+          "Stacking too many rich products can flatten the finish and make the face feel heavy. Start with lighter hydration, then move into one focused treatment, then seal everything with a moisturizer that feels elegant on the skin.",
+          "If you wear makeup, bloom skin routines should sit well underneath base products instead of causing pilling or buildup.",
+        ],
+      },
+      {
+        heading: "Protect the finish in the morning",
+        paragraphs: [
+          "Sunscreen matters because it helps preserve the clarity and smoothness you are building. A good SPF should look luminous but still wearable every day.",
+          "Think polished radiance, not shine for the sake of shine.",
+        ],
+      },
+    ],
   },
   {
     slug: "layering-essence-serum",
@@ -319,6 +395,29 @@ export const mockJournalEntries: JournalEntry[] = [
       "The easiest way to stack hydration and treatment without overwhelming the skin.",
     category: "Routine",
     readTime: "3 min read",
+    content: [
+      {
+        heading: "Go from thinnest to richest",
+        paragraphs: [
+          "The simplest rule is still the best one: start with the lightest texture and move toward the richest. Essence usually comes first, then serum, then cream.",
+          "That order keeps each layer close to the skin and helps thicker formulas seal in the steps below them.",
+        ],
+      },
+      {
+        heading: "Give each layer a few seconds",
+        paragraphs: [
+          "You do not need long wait times, but it helps to let each layer settle for a few seconds before moving on. This reduces pilling and makes the routine feel more intentional.",
+          "If a step still feels very wet, press it in instead of immediately adding the next product.",
+        ],
+      },
+      {
+        heading: "Adjust by skin condition",
+        paragraphs: [
+          "On oilier days, you may only need essence and serum. On drier nights, cream becomes the step that keeps everything feeling finished and comfortable.",
+          "A good routine is flexible enough to match the day instead of forcing the same amount every time.",
+        ],
+      },
+    ],
   },
 ];
 

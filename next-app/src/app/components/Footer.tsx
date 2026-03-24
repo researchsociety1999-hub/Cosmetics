@@ -27,9 +27,9 @@ export function Footer() {
 
             <FooterColumn title="Shop">
               <FooterLink href="/shop">All Products</FooterLink>
-              <FooterLink href="/shop?category=serums">Serums</FooterLink>
-              <FooterLink href="/shop?category=cleansers">Cleansers</FooterLink>
-              <FooterLink href="/shop?category=moisturizers">Moisturizers</FooterLink>
+              <FooterLink href="/shop?search=serum">Serums</FooterLink>
+              <FooterLink href="/shop?search=cleanser">Cleansers</FooterLink>
+              <FooterLink href="/shop?search=moisturizer">Moisturizers</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="Brand">

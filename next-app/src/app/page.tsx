@@ -14,7 +14,9 @@ import {
 } from "./lib/queries";
 
 export const metadata: Metadata = {
-  title: "Where Beauty Transcends",
+  title: {
+    absolute: "Mystique | Where Beauty Transcends",
+  },
   description:
     "Luxury dermatological skincare with a mystical edge, rooted in ritual and bloom-skin storytelling.",
 };
@@ -49,7 +51,7 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden border-b border-[rgba(214,168,95,0.18)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(214,168,95,0.18),transparent_18%),radial-gradient(circle_at_86%_28%,rgba(240,209,154,0.08),transparent_24%),radial-gradient(circle_at_48%_74%,rgba(255,143,38,0.08),transparent_24%),linear-gradient(180deg,rgba(3,4,6,0.16),rgba(3,4,6,0.82))]" />
-      <div className="pointer-events-none absolute left-[42%] top-1/2 h-[92%] w-[96%] -translate-x-1/2 -translate-y-1/2 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.045] mix-blend-screen blur-[1px]" />
+      <div className="pointer-events-none absolute left-[42%] top-1/2 h-[92%] w-[96%] -translate-x-1/2 -translate-y-1/2 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.09] mix-blend-screen blur-[1px]" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-[56%] bg-[radial-gradient(circle_at_50%_46%,rgba(255,168,59,0.16),transparent_17%),radial-gradient(circle_at_38%_58%,rgba(214,168,95,0.1),transparent_28%)] blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_32%,rgba(3,4,6,0.18)_58%,rgba(3,4,6,0.46)_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(6,8,12,0),rgba(6,8,12,0.82))]" />
@@ -60,7 +62,7 @@ function HeroSection() {
         <div className="relative z-10 max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(214,168,95,0.18)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#d8c6aa] backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-[#d6a85f] shadow-[0_0_16px_rgba(214,168,95,0.9)]" />
-            California luxury K-beauty
+            California luxury Mystique-beauty
           </div>
           <div className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[#b8ab95]">
@@ -104,10 +106,11 @@ function HeroSection() {
           </div>
           <div className="grid gap-4 text-sm text-[#b8ab95] sm:grid-cols-3">
             <HeroProof title="Dermatologist-informed" body="Science-led, ritual-inspired." />
-            <HeroProof title="K-beauty ritual" body="5-step layering system, designed to layer." />
+            <HeroProof title="Mistique ritual" body="5-step layering system, designed to layer." />
             <HeroProof title="Free U.S. shipping" body="On all orders over $75." />
           </div>
         </div>
+        
 
         <div className="relative z-10 min-h-[320px] md:min-h-[560px]" />
       </div>
@@ -170,7 +173,7 @@ function HeroSilhouette() {
         <ellipse cx="215" cy="336" rx="126" ry="214" fill="url(#womanGlow)" />
         <ellipse cx="177" cy="186" rx="108" ry="98" fill="url(#womanGlow)" />
       </svg>
-      <div className="absolute bottom-[18%] right-[14%] h-[46%] w-[46%] bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.08] mix-blend-screen blur-[1px]" />
+      <div className="absolute bottom-[18%] right-[14%] h-[46%] w-[46%] bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.14] mix-blend-screen blur-[1px]" />
       <div className="absolute bottom-[10%] right-[6%] h-[70%] w-[72%] bg-[radial-gradient(circle_at_40%_24%,rgba(255,168,59,0.16),transparent_10%),radial-gradient(circle_at_36%_52%,rgba(214,168,95,0.1),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.04),rgba(5,7,11,0.5))]" />
       <div className="absolute bottom-[22%] right-[17%] h-3 w-3 rounded-full bg-[#d6a85f] shadow-[0_0_18px_rgba(214,168,95,0.8)]" />
     </div>
@@ -434,19 +437,19 @@ function getStepGuidance(step: string): string {
 
 function getStepHref(step: string): string {
   if (step === "Cleanse") {
-    return "/shop?category=cleansers";
+    return "/shop?search=cleanser";
   }
 
   if (step === "Treat") {
-    return "/shop?category=serums";
+    return "/shop?search=serum";
   }
 
   if (step === "Moisturize") {
-    return "/shop?category=moisturizers";
+    return "/shop?search=moisturizer";
   }
 
   if (step === "Protect") {
-    return "/shop?category=protect";
+    return "/shop?search=spf";
   }
 
   return "/shop";

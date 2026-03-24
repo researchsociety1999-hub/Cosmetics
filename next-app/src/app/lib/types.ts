@@ -205,4 +205,8 @@ export interface JournalEntry {
   excerpt: string;
   category: string;
   readTime: string;
+  content?: Array<{
+    heading: string;
+    paragraphs: string[];
+  }>;
 }

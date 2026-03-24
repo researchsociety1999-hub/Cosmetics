@@ -1,40 +1,41 @@
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
+import { LegalPage } from "../components/LegalPage";
 
 export default function PrivacyPage() {
   return (
-    <StaticInfoPage
+    <LegalPage
       title="Privacy Policy"
       eyebrow="Privacy"
-      body="This placeholder page is live so the storefront no longer drops visitors onto a 404. Replace this copy with your final privacy policy whenever you are ready."
+      intro="This policy explains how Mystique collects, uses, and protects personal information when you browse the site, place an order, join the newsletter, or contact the team."
+      sections={[
+        {
+          heading: "Information we collect",
+          paragraphs: [
+            "We may collect details you provide directly, including your name, email address, shipping information, and any message you send through the contact form or checkout flow.",
+            "We may also collect basic technical information such as browser type, device details, referral source, and on-site activity to understand how the storefront is being used.",
+          ],
+        },
+        {
+          heading: "How we use it",
+          paragraphs: [
+            "Mystique uses this information to respond to inquiries, process and confirm orders, provide customer support, send transactional emails, and improve the shopping experience.",
+            "If you subscribe to marketing updates, your email may also be used for launch notes, editorial updates, and promotional announcements until you unsubscribe.",
+          ],
+        },
+        {
+          heading: "Sharing and retention",
+          paragraphs: [
+            "We share data only with service providers that help operate the storefront, such as payment processors, email delivery providers, analytics tools, and hosting platforms.",
+            "We keep information only as long as needed for customer support, legal compliance, fraud prevention, tax or accounting records, and normal business operations.",
+          ],
+        },
+        {
+          heading: "Your choices",
+          paragraphs: [
+            "You may request access, correction, or deletion of personal information by contacting the Mystique team. Marketing emails also include an unsubscribe option.",
+            "If you have privacy questions, please reach out through the contact page so the team can review your request.",
+          ],
+        },
+      ]}
     />
-  );
-}
-
-function StaticInfoPage({
-  title,
-  eyebrow,
-  body,
-}: {
-  title: string;
-  eyebrow: string;
-  body: string;
-}) {
-  return (
-    <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
-      <Navbar />
-      <main className="mx-auto max-w-4xl px-4 py-14 md:px-6">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          {eyebrow}
-        </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-          {title}
-        </h1>
-        <div className="mystic-card mt-8 p-6 text-sm text-[#b8ab95] md:text-base">
-          {body}
-        </div>
-      </main>
-      <Footer />
-    </div>
   );
 }

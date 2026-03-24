@@ -38,6 +38,44 @@ export default async function CheckoutSuccessPage({
               Order reference: {params.order}
             </p>
           ) : null}
+          <div className="mt-8 grid gap-4 text-left md:grid-cols-3">
+            <div className="rounded-[18px] border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.02)] p-4">
+              <p className="text-[0.68rem] uppercase tracking-[0.22em] text-[#d6a85f]">
+                Confirmation email
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#b8ab95]">
+                Check your inbox for your order confirmation and keep your order
+                reference handy.
+              </p>
+            </div>
+            <div className="rounded-[18px] border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.02)] p-4">
+              <p className="text-[0.68rem] uppercase tracking-[0.22em] text-[#d6a85f]">
+                What happens next
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#b8ab95]">
+                The Mystique team will prepare your order and send another email
+                once it is on the way.
+              </p>
+            </div>
+            <div className="rounded-[18px] border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.02)] p-4">
+              <p className="text-[0.68rem] uppercase tracking-[0.22em] text-[#d6a85f]">
+                Shipping window
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#b8ab95]">
+                Most U.S. orders arrive within 3-5 business days after dispatch.
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 rounded-[18px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-5 text-left text-sm leading-relaxed text-[#b8ab95]">
+            <p className="text-[0.68rem] uppercase tracking-[0.22em] text-[#d6a85f]">
+              Need support?
+            </p>
+            <p className="mt-2">
+              If you need to update your shipping details or ask about your
+              order, contact the team and include your order reference for a
+              faster response.
+            </p>
+          </div>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/shop"
