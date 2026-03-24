@@ -1,23 +1,34 @@
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
+import { LegalPage } from "../components/LegalPage";
 
 export default function CookiesPage() {
   return (
-    <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
-      <Navbar />
-      <main className="mx-auto max-w-4xl px-4 py-14 md:px-6">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          Cookies
-        </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-          Cookie Policy
-        </h1>
-        <div className="mystic-card mt-8 p-6 text-sm text-[#b8ab95] md:text-base">
-          This route is now active. You can replace this placeholder with your
-          real cookie policy whenever needed.
-        </div>
-      </main>
-      <Footer />
-    </div>
+    <LegalPage
+      title="Cookie Policy"
+      eyebrow="Cookies"
+      intro="Mystique uses cookies and similar technologies to keep the storefront working, remember preferences, support cart behavior, and understand how shoppers use the site."
+      sections={[
+        {
+          heading: "Essential cookies",
+          paragraphs: [
+            "Some cookies are necessary for core storefront functions such as cart persistence, session continuity, page rendering, and security-related features.",
+            "Without these cookies, parts of the shopping experience may not work correctly.",
+          ],
+        },
+        {
+          heading: "Performance and analytics",
+          paragraphs: [
+            "Mystique may use analytics technologies to understand page views, product interest, checkout activity, and general storefront performance.",
+            "This information helps improve navigation, merchandising, and overall user experience.",
+          ],
+        },
+        {
+          heading: "Managing cookie choices",
+          paragraphs: [
+            "Most browsers allow you to review, block, or delete cookies through browser settings. Restricting cookies may affect how parts of the site behave.",
+            "If Mystique introduces additional cookie controls or consent tools, they will be reflected here.",
+          ],
+        },
+      ]}
+    />
   );
 }
