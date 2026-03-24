@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { submitOrderAction } from "../actions/order";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { formatMoney } from "../lib/format";
@@ -10,8 +11,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function CheckoutPage() {
+type SearchParams = Promise<{ status?: string; order?: string }>;
+
+export default async function CheckoutPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const cart = await getCartSummary();
+  const params = await searchParams;
 
   return (
     <SiteChrome>
@@ -24,13 +32,13 @@ export default async function CheckoutPage() {
             Shipping and payment
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
-            Guest checkout is available now. Stripe test mode and `payments`
-            table persistence are marked for the next implementation step.
+            Guest checkout now sends order emails and can hand off to Stripe
+            for payment when your Stripe key is configured.
           </p>
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <form className="mystic-card grid gap-5 p-6 md:grid-cols-2">
+          <form action={submitOrderAction} className="mystic-card grid gap-5 p-6 md:grid-cols-2">
             <h2 className="md:col-span-2 font-cormorant text-3xl tracking-[0.1em]">
               Shipping address
             </h2>
@@ -43,16 +51,51 @@ export default async function CheckoutPage() {
             <Input label="Postal code" name="postal_code" />
             <Input label="Country" name="country" defaultValue="United States" />
             <div className="md:col-span-2 rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95]">
-              Secure payment powered by Stripe - coming soon. Your shipping
-              details will be reviewed at the next step before payment is
-              finalized.
+              This step now sends the order details to your store inbox and a
+              confirmation email to the customer. If Stripe is configured, you
+              will be redirected to secure payment after submission.
             </div>
             <button
               type="submit"
               className="mystic-button-primary md:col-span-2 inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
-              Continue to payment
+              Place order
             </button>
+            {params.status === "placed" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                Order received{params.order ? `: ${params.order}` : ""}. The
+                store inbox and customer confirmation email have both been sent.
+              </p>
+            ) : null}
+            {params.status === "cancelled" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                Stripe checkout was cancelled. Your cart is still here, and you
+                can try again whenever you are ready.
+              </p>
+            ) : null}
+            {params.status === "missing" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                Please complete all required shipping fields before placing the
+                order.
+              </p>
+            ) : null}
+            {params.status === "empty" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                Your cart is empty. Add products before placing an order.
+              </p>
+            ) : null}
+            {params.status === "email-error" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                We could not send the order emails right now. Please check your
+                Resend settings and try again.
+              </p>
+            ) : null}
+            {params.status === "stripe-error" ? (
+              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+                We could not start Stripe checkout right now. Please confirm the
+                Stripe secret key and site URL, then try again.
+              </p>
+            ) : null}
           </form>
 
           <aside className="mystic-card h-fit p-6">
