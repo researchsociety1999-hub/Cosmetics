@@ -1,26 +1,54 @@
-import { NextResponse } from "next/server";
-import { searchProducts } from "../../lib/queries";
+import { Inter } from 'next/font/google';
+import { Metadata } from 'next';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q")?.trim() ?? "";
+const inter = Inter({ subsets: ['latin'] });
 
-  if (!query) {
-    return NextResponse.json({ products: [] });
-  }
-
-  const products = await searchProducts(query);
-
-  return NextResponse.json({
-    products: products.map((product) => ({
-      id: product.id,
-      slug: product.slug,
-      name: product.name,
-      description: product.description,
-      image_url: product.image_url,
-      price_cents: product.price_cents,
-      sale_price_cents: product.sale_price_cents,
-      routine_step: product.routine_step ?? "Ritual",
-    })),
-  });
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>MYSTIQUE RITUAL</title>
+        <Metadata
+          description="Luxury K-beauty products"
+          keywords="K-beauty, luxury skincare, ritual"
+        />
+      </head>
+      <body className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header container */}
+          <header className="w-full flex items-center justify-between px-4 py-4 bg-transparent">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <img
+                className="h-10 md:h-12"
+                src="/logo.svg"
+                alt="MYSTIQUE"
+              />
+            </div>
+            
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <button className="outline-none focus:outline-none">
+                {/* Menu icon */}
+              </button>
+            </div>
+          </header>
+          
+          {/* Main content */}
+          {children}
+          
+          {/* Footer */}
+          <footer className="w-full py-8 border-t-[1px] border-gray-800 bg-[var(--dark-bg)]">
+            {/* Footer content */}
+          </footer>
+        </div>
+      </body>
+    </html>
+  );
 }
