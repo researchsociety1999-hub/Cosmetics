@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProductCard from "../components/productcard";
+import { SearchExperience } from "./SearchExperience";
 import { SiteChrome } from "../components/SiteChrome";
 import { searchProducts } from "../lib/queries";
 
@@ -31,36 +31,8 @@ export default async function SearchPage({
           <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
             Find a ritual
           </h1>
-          <form action="/search" className="max-w-2xl">
-            <label className="sr-only" htmlFor="search-query">
-              Search query
-            </label>
-            <input
-              id="search-query"
-              name="q"
-              defaultValue={query}
-              placeholder="Search products, ingredients, or ritual steps"
-              className="mystic-input w-full text-sm"
-            />
-          </form>
         </header>
-
-        {!query ? (
-          <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            Begin with a product name, ingredient, or term like "bloom skin" or
-            "peptides."
-          </div>
-        ) : products.length === 0 ? (
-          <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No results for "{query}". Try a broader search.
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        <SearchExperience initialQuery={query} initialProducts={products} />
       </main>
     </SiteChrome>
   );

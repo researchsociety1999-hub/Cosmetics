@@ -43,10 +43,21 @@ export default async function JournalEntryPage({
           {entry.title}
         </h1>
         <article className="mystic-card mt-10 p-8 text-sm leading-relaxed text-[#b8ab95] md:text-base">
-          <p>{entry.excerpt}</p>
-          <p className="mt-5">
-            This article is being prepared. Check back soon for the full guide.
-          </p>
+          <p className="text-base text-[#d8c6aa]">{entry.excerpt}</p>
+          <div className="mt-8 space-y-8">
+            {(entry.content ?? []).map((section) => (
+              <section key={section.heading}>
+                <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+                  {section.heading}
+                </h2>
+                <div className="mt-4 space-y-4">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </article>
       </main>
     </SiteChrome>
