@@ -59,6 +59,12 @@ export default async function ContactPage({
                 Please complete all fields before submitting.
               </p>
             ) : null}
+            {params.status === "email-error" ? (
+              <p className="text-sm text-[#d6a85f]">
+                We could not send your message right now. Please check the email
+                configuration and try again.
+              </p>
+            ) : null}
           </form>
           <aside className="mystic-card p-6 text-sm text-[#b8ab95]">
             <p className="text-[0.72rem] uppercase tracking-[0.22em] text-[#d6a85f]">

@@ -42,6 +42,17 @@ export async function setCartItemsCookie(items: CartCookieItem[]): Promise<void>
   });
 }
 
+export async function clearCartItemsCookie(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set(CART_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
 export async function getCartSummary(): Promise<CartSummary> {
   const items = await getCartItemsFromCookie();
   const products = await getProductsByIds(items.map((item) => item.productId));

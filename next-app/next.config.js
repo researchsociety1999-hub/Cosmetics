@@ -1,37 +1,14 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const path = require("path");
+// next.config.js
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  outputFileTracingRoot: path.join(__dirname, ".."),
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.supabase.co",
-      },
-      {
-        protocol: "https",
-        hostname: "**.supabase.in",
-      },
-      {
-        protocol: "https",
-        hostname: "via.placeholder.com",
-      },
-      {
-        protocol: "https",
-        hostname: "placehold.co",
-      },
-      {
-        protocol: "https",
-        hostname: "**.cdninstagram.com",
-      },
-    ],
+const withImages = require('next-images');
+
+module.exports = withImages({
+  inlineImageLimit: 8192,
+  webpack(config, options) {
+    return config;
   },
-};
-
-module.exports = nextConfig;
+  images: {
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none';" // Adjust according to your needs
+  }
+});

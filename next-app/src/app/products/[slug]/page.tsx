@@ -85,10 +85,8 @@ export default async function ProductPage({
   const images = getProductImages(product);
   const galleryImages = images.length ? images : [FALLBACK_PRODUCT_IMAGE];
   const hasSale = product.sale_price_cents != null;
-  const benefits = Array.isArray(product.benefits) ? product.benefits : [];
-  const keyIngredients = Array.isArray(product.key_ingredients)
-    ? product.key_ingredients
-    : [];
+  const benefits = getProductBenefits(product);
+  const keyIngredients = getProductIngredients(product);
   const skinTypes = Array.isArray(product.skin_types) ? product.skin_types : [];
   const description = product.description ?? "";
   const productName = product.name ?? "Mystique product";
@@ -272,4 +270,77 @@ function InfoBlock({ title, items }: { title: string; items: string[] }) {
       )}
     </article>
   );
+}
+
+function getProductBenefits(product: {
+  benefits?: string[] | null;
+  description: string | null;
+  routine_step?: string | null;
+}): string[] {
+  if (Array.isArray(product.benefits) && product.benefits.length) {
+    return product.benefits;
+  }
+
+  if (product.routine_step === "Cleanse") {
+    return ["Removes buildup gently", "Supports a soft, comfortable finish", "Preps skin for the rest of the ritual"];
+  }
+
+  if (product.routine_step === "Treat") {
+    return ["Targets tone and texture", "Layers well under moisturizer", "Supports a luminous finish"];
+  }
+
+  if (product.routine_step === "Moisturize") {
+    return ["Locks in hydration", "Helps skin feel smooth and cushioned", "Leaves a refined, silky finish"];
+  }
+
+  if (product.routine_step === "Protect") {
+    return ["Helps shield skin during the day", "Supports comfortable daily wear", "Adds hydration without heaviness"];
+  }
+
+  return product.description
+    ? ["Supports a polished routine", "Designed for comfortable daily use", "Builds a smoother-looking finish"]
+    : [];
+}
+
+function getProductIngredients(product: {
+  key_ingredients?: string[] | null;
+  description: string | null;
+  routine_step?: string | null;
+}): string[] {
+  if (Array.isArray(product.key_ingredients) && product.key_ingredients.length) {
+    return product.key_ingredients;
+  }
+
+  const description = (product.description ?? "").toLowerCase();
+  const inferred: string[] = [];
+
+  if (description.includes("niacinamide")) inferred.push("Niacinamide");
+  if (description.includes("peptide")) inferred.push("Peptides");
+  if (description.includes("ceramide")) inferred.push("Ceramides");
+  if (description.includes("centella")) inferred.push("Centella asiatica");
+  if (description.includes("hyaluronic")) inferred.push("Hyaluronic acid");
+  if (description.includes("squalane")) inferred.push("Squalane");
+  if (description.includes("green tea")) inferred.push("Green tea");
+
+  if (inferred.length) {
+    return inferred;
+  }
+
+  if (product.routine_step === "Cleanse") {
+    return ["Calming botanical extracts", "Barrier-supporting hydrators", "Gentle cleansing agents"];
+  }
+
+  if (product.routine_step === "Treat") {
+    return ["Glow-supporting actives", "Hydration-support complex", "Texture-refining ingredients"];
+  }
+
+  if (product.routine_step === "Moisturize") {
+    return ["Barrier-supporting lipids", "Comforting emollients", "Smoothing hydrators"];
+  }
+
+  if (product.routine_step === "Protect") {
+    return ["Broad-spectrum UV filters", "Hydrating support ingredients", "Skin-comforting finish enhancers"];
+  }
+
+  return [];
 }
