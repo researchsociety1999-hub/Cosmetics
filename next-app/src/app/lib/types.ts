@@ -70,6 +70,8 @@ export interface CartSummary {
 
 export type OrderStatus =
   | "pending"
+  | "paid"
+  | "failed"
   | "processing"
   | "shipped"
   | "delivered"
@@ -79,18 +81,35 @@ export type OrderStatus =
 export interface Order {
   id: string;
   order_number: string;
-  user_id: string;
+  user_id: string | null;
+  email: string;
   status: OrderStatus;
+  currency: string;
   subtotal_cents: number;
   shipping_cents: number;
   discount_cents: number;
   total_cents: number;
+  subtotal_amount: number;
+  shipping_amount: number;
+  tax_amount: number;
+  total_amount: number;
+  full_name: string;
+  address_line1: string;
+  address_line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
   shipping_address_id: number | null;
   billing_address_id: number | null;
   payment_intent_id: string | null;
+  stripe_checkout_session_id: string | null;
+  stripe_payment_intent_id: string | null;
   tracking_number: string | null;
   estimated_delivery: string | null;
+  paid_at: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
 export interface OrderItem {
@@ -100,6 +119,29 @@ export interface OrderItem {
   variant_id: number | null;
   quantity: number;
   price_cents_at_time: number;
+  created_at?: string;
+}
+
+export interface OrderWithItems extends Order {
+  items: OrderItem[];
+}
+
+export interface ShippingDetails {
+  fullName: string;
+  email: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface OrderTotals {
+  subtotalAmount: number;
+  shippingAmount: number;
+  taxAmount: number;
+  totalAmount: number;
 }
 
 export interface Address {
