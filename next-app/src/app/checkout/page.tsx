@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { submitOrderAction } from "../actions/order";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
+import { getOrderTotals } from "../lib/checkout";
 import { formatMoney } from "../lib/format";
 import { isStripeConfigured } from "../lib/stripe";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Promise<{ status?: string; order?: string }>;
+type SearchParams = Promise<{ status?: string; order?: string; orderId?: string; message?: string }>;
 
 export default async function CheckoutPage({
   searchParams,
@@ -22,6 +23,7 @@ export default async function CheckoutPage({
   const cart = await getCartSummary();
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
+  const totals = getOrderTotals(cart);
 
   return (
     <SiteChrome>
@@ -53,64 +55,24 @@ export default async function CheckoutPage({
             <div className="md:col-span-2 rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95]">
               {stripeReady
                 ? "After you submit, you will be taken to secure payment to complete your order."
-                : "After you submit, our team will review your request and follow up by email with the next steps."}
+                : "Stripe checkout is not configured yet. Add your Stripe keys to enable secure payment."}
             </div>
             <button
               type="submit"
               className="mystic-button-primary md:col-span-2 inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+              disabled={!stripeReady}
             >
-              {stripeReady ? "Continue to payment" : "Submit order request"}
+              {stripeReady ? "Continue to payment" : "Stripe unavailable"}
             </button>
-            {params.status === "placed" ? (
-              <div className="md:col-span-2 rounded-[20px] border border-[rgba(214,168,95,0.2)] bg-[rgba(214,168,95,0.06)] p-5">
-                <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                  Order received
-                </p>
-                <h3 className="mt-2 font-cormorant text-2xl tracking-[0.08em] text-[#f5eee3]">
-                  Your order request is in.
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#d8c6aa]">
-                  We have sent a confirmation email and shared your order with
-                  the Mystique team. You will hear from us soon with the next
-                  step for payment and fulfillment.
-                </p>
-                {params.order ? (
-                  <p className="mt-4 text-sm uppercase tracking-[0.18em] text-[#f5eee3]">
-                    Order reference: {params.order}
-                  </p>
-                ) : null}
-                <div className="mt-5 grid gap-3 text-sm text-[#b8ab95] md:grid-cols-3">
-                  <div className="rounded-[16px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[#d6a85f]">
-                      Confirmation
-                    </p>
-                    <p className="mt-2">A confirmation email has been sent to the address entered at checkout.</p>
-                  </div>
-                  <div className="rounded-[16px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[#d6a85f]">
-                      Next update
-                    </p>
-                    <p className="mt-2">Expect a follow-up from the team within 1-2 business days.</p>
-                  </div>
-                  <div className="rounded-[16px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[#d6a85f]">
-                      Need help
-                    </p>
-                    <p className="mt-2">Questions about your order can be sent through the contact page anytime.</p>
-                  </div>
-                </div>
-              </div>
-            ) : null}
             {params.status === "cancelled" ? (
               <p className="md:col-span-2 text-sm text-[#d6a85f]">
                 Stripe checkout was cancelled. Your cart is still here, and you
                 can try again whenever you are ready.
               </p>
             ) : null}
-            {params.status === "missing" ? (
+            {params.status === "validation" ? (
               <p className="md:col-span-2 text-sm text-[#d6a85f]">
-                Please complete all required shipping fields before placing the
-                order.
+                {params.message ?? "Please review your shipping details and try again."}
               </p>
             ) : null}
             {params.status === "empty" ? (
@@ -118,10 +80,9 @@ export default async function CheckoutPage({
                 Your cart is empty. Add products before placing an order.
               </p>
             ) : null}
-            {params.status === "email-error" ? (
+            {params.status === "order-error" ? (
               <p className="md:col-span-2 text-sm text-[#d6a85f]">
-                We could not submit your order right now. Please try again in a
-                moment.
+                We could not create your order right now. Please try again in a moment.
               </p>
             ) : null}
             {params.status === "stripe-error" ? (
@@ -152,8 +113,16 @@ export default async function CheckoutPage({
                 <span>{formatMoney(cart.subtotalCents)}</span>
               </div>
               <div className="mt-3 flex justify-between">
-                <span>Estimated shipping</span>
-                <span>Calculated at next step</span>
+                <span>Shipping</span>
+                <span>{totals.shippingAmount === 0 ? "Free" : formatMoney(totals.shippingAmount)}</span>
+              </div>
+              <div className="mt-3 flex justify-between">
+                <span>Estimated tax</span>
+                <span>{formatMoney(totals.taxAmount)}</span>
+              </div>
+              <div className="mt-3 flex justify-between font-semibold text-[#f5eee3]">
+                <span>Total</span>
+                <span>{formatMoney(totals.totalAmount)}</span>
               </div>
             </div>
           </aside>
@@ -186,6 +155,7 @@ function Input({
         name={name}
         defaultValue={defaultValue}
         className="mystic-input w-full text-sm"
+        required
       />
     </label>
   );
