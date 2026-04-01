@@ -297,6 +297,29 @@ export async function getProductVariants(
   }
 }
 
+export async function getProductVariantsByIds(
+  ids: number[],
+): Promise<ProductVariant[]> {
+  if (!ids.length || !hasSupabaseEnv || !supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("product_variants")
+      .select("*")
+      .in("id", ids);
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as ProductVariant[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getProductReviews(productId: number): Promise<Review[]> {
   if (!hasSupabaseEnv || !supabase) {
     return mockReviews.filter((review) => review.product_id === productId);

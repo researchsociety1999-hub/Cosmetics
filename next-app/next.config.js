@@ -6,8 +6,7 @@
 // Exporting the plain Next config keeps the existing image settings while allowing
 // `next dev` to start without adding an unnecessary dependency.
 module.exports = {
-  inlineImageLimit: 8192,
-  webpack(config, options) {
+  webpack(config) {
     return config;
   },
   images: {
