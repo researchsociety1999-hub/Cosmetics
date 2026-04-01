@@ -53,8 +53,17 @@ export interface CartCookieItem {
   variantId?: number | null;
 }
 
+export interface CartSummaryItem {
+  id?: string;
+  productId: number;
+  quantity: number;
+  variantId?: number | null;
+}
+
 export interface CartLine {
+  cartItemId?: string;
   product: Product;
+  variant?: ProductVariant | null;
   quantity: number;
   variantId: number | null;
   unitPriceCents: number;
@@ -62,10 +71,12 @@ export interface CartLine {
 }
 
 export interface CartSummary {
-  items: CartCookieItem[];
+  items: CartSummaryItem[];
   lines: CartLine[];
   itemCount: number;
   subtotalCents: number;
+  source: "cookie" | "database";
+  userId: string | null;
 }
 
 export type OrderStatus =
@@ -157,6 +168,17 @@ export interface Address {
   country: string;
   phone: string | null;
   is_default: boolean | null;
+}
+
+export interface Payment {
+  id: string;
+  order_id: string;
+  stripe_payment_id: string | null;
+  amount_cents: number;
+  status: string;
+  payment_method: string | null;
+  created_at?: string;
+  updated_at?: string | null;
 }
 
 export type ProfileRole = "customer" | "admin";

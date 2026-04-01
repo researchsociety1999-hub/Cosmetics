@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
 
@@ -18,12 +19,12 @@ export default function LoginPage() {
             related account data. This placeholder route keeps navigation
             working until the auth flow is built.
           </p>
-          <a
+          <Link
             href="/"
             className="mystic-button-secondary inline-flex items-center justify-center px-6 py-2 text-xs uppercase tracking-[0.2em]"
           >
             Return home
-          </a>
+          </Link>
         </div>
       </main>
       <Footer />

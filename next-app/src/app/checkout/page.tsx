@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { submitOrderAction } from "../actions/order";
+import Link from "next/link";
+import { CheckoutClient } from "./CheckoutClient";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
 import { formatMoney } from "../lib/format";
+import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { isStripeConfigured } from "../lib/stripe";
 
 export const metadata: Metadata = {
@@ -20,10 +22,12 @@ export default async function CheckoutPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const user = await getAuthenticatedUser();
   const cart = await getCartSummary();
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
   const totals = getOrderTotals(cart);
+  const isAuthenticated = Boolean(user);
 
   return (
     <SiteChrome>
@@ -40,58 +44,53 @@ export default async function CheckoutPage({
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <form action={submitOrderAction} className="mystic-card grid gap-5 p-6 md:grid-cols-2">
-            <h2 className="md:col-span-2 font-cormorant text-3xl tracking-[0.1em]">
-              Shipping address
-            </h2>
-            <Input label="Full name" name="full_name" />
-            <Input label="Email" name="email" type="email" />
-            <Input label="Address line 1" name="address_line1" className="md:col-span-2" />
-            <Input label="Address line 2" name="address_line2" className="md:col-span-2" />
-            <Input label="City" name="city" />
-            <Input label="State" name="state" />
-            <Input label="Postal code" name="postal_code" />
-            <Input label="Country" name="country" defaultValue="United States" />
-            <div className="md:col-span-2 rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95]">
-              {stripeReady
-                ? "After you submit, you will be taken to secure payment to complete your order."
-                : "Stripe checkout is not configured yet. Add your Stripe keys to enable secure payment."}
-            </div>
-            <button
-              type="submit"
-              className="mystic-button-primary md:col-span-2 inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
-              disabled={!stripeReady}
-            >
-              {stripeReady ? "Continue to payment" : "Stripe unavailable"}
-            </button>
+          <div className="space-y-4">
+            <CheckoutClient
+              defaultEmail={user?.email ?? ""}
+              isAuthenticated={isAuthenticated}
+              stripeReady={stripeReady}
+            />
+            {!isAuthenticated ? (
+              <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#d6a85f]">
+                Sign in first so checkout can load your authenticated Supabase cart.
+                <div className="mt-4">
+                  <Link
+                    href="/account/login"
+                    className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+                  >
+                    Go to sign in
+                  </Link>
+                </div>
+              </div>
+            ) : null}
             {params.status === "cancelled" ? (
-              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+              <p className="text-sm text-[#d6a85f]">
                 Stripe checkout was cancelled. Your cart is still here, and you
                 can try again whenever you are ready.
               </p>
             ) : null}
             {params.status === "validation" ? (
-              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+              <p className="text-sm text-[#d6a85f]">
                 {params.message ?? "Please review your shipping details and try again."}
               </p>
             ) : null}
             {params.status === "empty" ? (
-              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+              <p className="text-sm text-[#d6a85f]">
                 Your cart is empty. Add products before placing an order.
               </p>
             ) : null}
             {params.status === "order-error" ? (
-              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+              <p className="text-sm text-[#d6a85f]">
                 We could not create your order right now. Please try again in a moment.
               </p>
             ) : null}
             {params.status === "stripe-error" ? (
-              <p className="md:col-span-2 text-sm text-[#d6a85f]">
+              <p className="text-sm text-[#d6a85f]">
                 We could not start secure checkout right now. Please try again
                 in a moment.
               </p>
             ) : null}
-          </form>
+          </div>
 
           <aside className="mystic-card h-fit p-6">
             <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
@@ -129,34 +128,5 @@ export default async function CheckoutPage({
         </div>
       </main>
     </SiteChrome>
-  );
-}
-
-function Input({
-  label,
-  name,
-  type = "text",
-  className = "",
-  defaultValue,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  className?: string;
-  defaultValue?: string;
-}) {
-  return (
-    <label className={className}>
-      <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]">
-        {label}
-      </span>
-      <input
-        type={type}
-        name={name}
-        defaultValue={defaultValue}
-        className="mystic-input w-full text-sm"
-        required
-      />
-    </label>
   );
 }

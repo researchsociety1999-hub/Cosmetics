@@ -3,11 +3,14 @@
 import { redirect } from "next/navigation";
 import { getCartSummary } from "../lib/cart";
 import {
-  buildOrderNumber,
-  getOrderTotals,
   validateShippingDetails,
 } from "../lib/checkout";
-import { attachStripeCheckoutSession, createPendingOrder } from "../lib/queries";
+import {
+  attachStripeCheckoutSessionToOrder,
+  createPendingOrderFromCart,
+  markOrderFailedForCheckout,
+} from "../lib/checkoutOrders";
+import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { createStripeCheckoutSession, isStripeConfigured } from "../lib/stripe";
 import type { ShippingDetails } from "../lib/types";
 
@@ -40,39 +43,37 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
     redirect("/checkout?status=stripe-error");
   }
 
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    redirect("/account/login");
+  }
+
   const cart = await getCartSummary();
 
   if (cart.lines.length === 0) {
     redirect("/checkout?status=empty");
   }
 
-  const orderNumber = buildOrderNumber();
-  const totals = getOrderTotals(cart);
-
   try {
-    const order = await createPendingOrder({
-      orderNumber,
+    const { order } = await createPendingOrderFromCart({
+      userId: user.id,
       shippingDetails,
       cart,
-      totals,
     });
 
-    const session = await createStripeCheckoutSession({
-      orderId: order.id,
-      orderNumber,
-      customerEmail: shippingDetails.email,
-      fullName: shippingDetails.fullName,
-      addressLine1: shippingDetails.addressLine1,
-      addressLine2: shippingDetails.addressLine2,
-      city: shippingDetails.city,
-      state: shippingDetails.state,
-      postalCode: shippingDetails.postalCode,
-      country: shippingDetails.country,
-      cart,
-    });
+    try {
+      const session = await createStripeCheckoutSession({
+        order,
+        cart,
+      });
 
-    await attachStripeCheckoutSession(order.id, session.id);
-    redirect(session.url);
+      await attachStripeCheckoutSessionToOrder(order.id, session.id);
+      redirect(session.url ?? `/checkout/success?session_id=${encodeURIComponent(session.id)}`);
+    } catch (stripeError) {
+      await markOrderFailedForCheckout(order.id);
+      throw stripeError;
+    }
   } catch (error) {
     console.error("submitOrderAction error", error);
     redirect("/checkout?status=order-error");
