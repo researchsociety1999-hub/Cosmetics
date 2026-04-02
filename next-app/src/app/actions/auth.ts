@@ -23,7 +23,7 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
 
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
-  const nextPath = normalizeField(formData.get("next")) || "/account/orders";
+  const nextPath = normalizeField(formData.get("next")) || "/account/login?status=confirmed";
 
   if (!email) {
     redirect("/account/login?status=missing-email");
@@ -40,13 +40,14 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
     headerStore.get("origin"),
     headerStore.get("host"),
   );
-  const callbackUrl = new URL("/auth/callback", origin);
+  const callbackUrl = new URL("/auth/confirm", origin);
   callbackUrl.searchParams.set("next", nextPath);
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: callbackUrl.toString(),
+      shouldCreateUser: true,
     },
   });
 

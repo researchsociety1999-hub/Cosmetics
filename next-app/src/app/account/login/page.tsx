@@ -74,8 +74,16 @@ function StatusMessage({
   if (status === "check-email") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        Check {email || "your inbox"} for the Mystique magic link, then come back to
-        finish checkout.
+        Check {email || "your inbox"} for your Mystique email. Use the confirmation
+        or sign-in link there to continue.
+      </p>
+    );
+  }
+
+  if (status === "confirmed") {
+    return (
+      <p className="text-sm text-[#d6a85f]">
+        Your email is confirmed. You can now sign in to your Mystique account.
       </p>
     );
   }
