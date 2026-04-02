@@ -1,6 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { hasSupabasePublicEnv } from "./supabaseClient";
 
 function getSupabaseUrl() {
   const value =
@@ -24,6 +25,10 @@ function getSupabaseAnonKey() {
 }
 
 export async function createSupabaseServerClient() {
+  if (!hasSupabasePublicEnv) {
+    return null;
+  }
+
   const cookieStore = await cookies();
 
   return createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
@@ -46,6 +51,11 @@ export async function createSupabaseServerClient() {
 
 export async function getAuthenticatedUser(): Promise<User | null> {
   const supabase = await createSupabaseServerClient();
+
+  if (!supabase) {
+    return null;
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
