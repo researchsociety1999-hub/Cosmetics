@@ -53,8 +53,17 @@ export interface CartCookieItem {
   variantId?: number | null;
 }
 
+export interface CartSummaryItem {
+  id?: string;
+  productId: number;
+  quantity: number;
+  variantId?: number | null;
+}
+
 export interface CartLine {
+  cartItemId?: string;
   product: Product;
+  variant?: ProductVariant | null;
   quantity: number;
   variantId: number | null;
   unitPriceCents: number;
@@ -62,14 +71,18 @@ export interface CartLine {
 }
 
 export interface CartSummary {
-  items: CartCookieItem[];
+  items: CartSummaryItem[];
   lines: CartLine[];
   itemCount: number;
   subtotalCents: number;
+  source: "cookie" | "database";
+  userId: string | null;
 }
 
 export type OrderStatus =
   | "pending"
+  | "paid"
+  | "failed"
   | "processing"
   | "shipped"
   | "delivered"
@@ -79,18 +92,35 @@ export type OrderStatus =
 export interface Order {
   id: string;
   order_number: string;
-  user_id: string;
+  user_id: string | null;
+  email: string;
   status: OrderStatus;
+  currency: string;
   subtotal_cents: number;
   shipping_cents: number;
   discount_cents: number;
   total_cents: number;
+  subtotal_amount: number;
+  shipping_amount: number;
+  tax_amount: number;
+  total_amount: number;
+  full_name: string;
+  address_line1: string;
+  address_line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
   shipping_address_id: number | null;
   billing_address_id: number | null;
   payment_intent_id: string | null;
+  stripe_checkout_session_id: string | null;
+  stripe_payment_intent_id: string | null;
   tracking_number: string | null;
   estimated_delivery: string | null;
+  paid_at: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
 export interface OrderItem {
@@ -100,6 +130,29 @@ export interface OrderItem {
   variant_id: number | null;
   quantity: number;
   price_cents_at_time: number;
+  created_at?: string;
+}
+
+export interface OrderWithItems extends Order {
+  items: OrderItem[];
+}
+
+export interface ShippingDetails {
+  fullName: string;
+  email: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface OrderTotals {
+  subtotalAmount: number;
+  shippingAmount: number;
+  taxAmount: number;
+  totalAmount: number;
 }
 
 export interface Address {
@@ -115,6 +168,17 @@ export interface Address {
   country: string;
   phone: string | null;
   is_default: boolean | null;
+}
+
+export interface Payment {
+  id: string;
+  order_id: string;
+  stripe_payment_id: string | null;
+  amount_cents: number;
+  status: string;
+  payment_method: string | null;
+  created_at?: string;
+  updated_at?: string | null;
 }
 
 export type ProfileRole = "customer" | "admin";

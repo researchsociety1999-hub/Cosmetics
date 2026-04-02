@@ -1,6 +1,13 @@
 import { cookies } from "next/headers";
-import { getProductsByIds } from "./queries";
-import type { CartCookieItem, CartLine, CartSummary } from "./types";
+import { createSupabaseServerClient, getAuthenticatedUser } from "./supabaseServer";
+import { getProductsByIds, getProductVariantsByIds } from "./queries";
+import type {
+  CartCookieItem,
+  CartLine,
+  CartItem,
+  CartSummary,
+  CartSummaryItem,
+} from "./types";
 
 const CART_COOKIE_NAME = "mystique-cart";
 
@@ -12,6 +19,21 @@ function normalizeItems(items: CartCookieItem[]): CartCookieItem[] {
       quantity: Math.max(1, Math.floor(item.quantity)),
       variantId: item.variantId ?? null,
     }));
+}
+
+function getVariantUnitPriceCents(variant: {
+  price_cents: number | null;
+  price: number | null;
+}): number | null {
+  if (typeof variant.price_cents === "number") {
+    return variant.price_cents;
+  }
+
+  if (typeof variant.price === "number") {
+    return Math.round(variant.price * 100);
+  }
+
+  return null;
 }
 
 export async function getCartItemsFromCookie(): Promise<CartCookieItem[]> {
@@ -53,7 +75,82 @@ export async function clearCartItemsCookie(): Promise<void> {
   });
 }
 
+async function getDatabaseCartSummary(userId: string): Promise<CartSummary> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("cart_items")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const cartItems = ((data ?? []) as CartItem[]).filter(
+    (item) => Number.isFinite(item.product_id) && item.quantity > 0,
+  );
+  const products = await getProductsByIds(cartItems.map((item) => item.product_id));
+  const variants = await getProductVariantsByIds(
+    cartItems
+      .map((item) => item.variant_id)
+      .filter((variantId): variantId is number => typeof variantId === "number"),
+  );
+  const productsById = new Map(products.map((product) => [product.id, product]));
+  const variantsById = new Map(variants.map((variant) => [variant.id, variant]));
+
+  const lines: CartLine[] = cartItems.flatMap((item) => {
+    const product = productsById.get(item.product_id);
+    if (!product) {
+      return [];
+    }
+
+    const variant =
+      typeof item.variant_id === "number"
+        ? variantsById.get(item.variant_id) ?? null
+        : null;
+    const unitPriceCents =
+      (variant ? getVariantUnitPriceCents(variant) : null) ??
+      product.sale_price_cents ??
+      product.price_cents;
+
+    return [
+      {
+        cartItemId: item.id,
+        product,
+        variant,
+        quantity: item.quantity,
+        variantId: item.variant_id,
+        unitPriceCents,
+        lineTotalCents: unitPriceCents * item.quantity,
+      },
+    ];
+  });
+
+  const items: CartSummaryItem[] = cartItems.map((item) => ({
+    id: item.id,
+    productId: item.product_id,
+    quantity: item.quantity,
+    variantId: item.variant_id,
+  }));
+
+  return {
+    items,
+    lines,
+    itemCount: lines.reduce((sum, line) => sum + line.quantity, 0),
+    subtotalCents: lines.reduce((sum, line) => sum + line.lineTotalCents, 0),
+    source: "database",
+    userId,
+  };
+}
+
 export async function getCartSummary(): Promise<CartSummary> {
+  const user = await getAuthenticatedUser();
+
+  if (user) {
+    return getDatabaseCartSummary(user.id);
+  }
+
   const items = await getCartItemsFromCookie();
   const products = await getProductsByIds(items.map((item) => item.productId));
   const productsById = new Map(products.map((product) => [product.id, product]));
@@ -82,5 +179,7 @@ export async function getCartSummary(): Promise<CartSummary> {
     lines,
     itemCount: lines.reduce((sum, line) => sum + line.quantity, 0),
     subtotalCents: lines.reduce((sum, line) => sum + line.lineTotalCents, 0),
+    source: "cookie",
+    userId: null,
   };
 }
