@@ -27,6 +27,11 @@ export async function addToCartAction(formData: FormData): Promise<void> {
 
   if (user) {
     const supabase = await createSupabaseServerClient();
+
+    if (!supabase) {
+      throw new Error("Supabase public auth client is not configured.");
+    }
+
     const query = supabase
       .from("cart_items")
       .select("id, quantity")
@@ -105,6 +110,11 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
 
   if (user) {
     const supabase = await createSupabaseServerClient();
+
+    if (!supabase) {
+      throw new Error("Supabase public auth client is not configured.");
+    }
+
     const query = supabase
       .from("cart_items")
       .select("id")
@@ -174,6 +184,11 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
 
   if (user) {
     const supabase = await createSupabaseServerClient();
+
+    if (!supabase) {
+      throw new Error("Supabase public auth client is not configured.");
+    }
+
     const query = supabase
       .from("cart_items")
       .delete()
