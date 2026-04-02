@@ -51,6 +51,12 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
   });
 
   if (error) {
+    console.error("Magic link request failed", {
+      email,
+      message: error.message,
+      status: error.status,
+      name: error.name,
+    });
     redirect("/account/login?status=error");
   }
 

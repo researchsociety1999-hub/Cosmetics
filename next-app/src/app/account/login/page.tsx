@@ -2,7 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
 import { SiteChrome } from "../../components/SiteChrome";
-import { hasSupabasePublicEnv } from "../../lib/supabaseClient";
+import {
+  hasInvalidSupabasePublicKey,
+  hasSupabasePublicEnv,
+} from "../../lib/supabaseClient";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type LoginPageProps = {
@@ -100,10 +103,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                     The sign-in link was invalid or expired. Request a fresh one.
                   </StatusBanner>
                 ) : null}
+                {hasInvalidSupabasePublicKey ? (
+                  <StatusBanner tone="warning">
+                    Your public Supabase key is misconfigured. Replace the
+                    `sb_secret_...` value in `.env.local` with your project&apos;s
+                    publishable or anon key.
+                  </StatusBanner>
+                ) : null}
                 {!hasSupabasePublicEnv || status === "not-configured" ? (
                   <StatusBanner tone="warning">
                     Supabase auth isn&apos;t configured yet. Add your public Supabase URL
-                    and anon key in `.env.local` to enable sign-in.
+                    and publishable key in `.env.local` to enable sign-in.
                   </StatusBanner>
                 ) : null}
 
