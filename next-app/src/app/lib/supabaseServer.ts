@@ -1,11 +1,10 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { hasSupabasePublicEnv } from "./supabaseClient";
+import { hasSupabasePublicEnv, resolvedSupabaseUrl } from "./supabaseClient";
 
 function getSupabaseUrl() {
-  const value =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const value = resolvedSupabaseUrl;
 
   if (!value) {
     throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_URL.");
