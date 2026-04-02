@@ -77,6 +77,11 @@ export async function clearCartItemsCookie(): Promise<void> {
 
 async function getDatabaseCartSummary(userId: string): Promise<CartSummary> {
   const supabase = await createSupabaseServerClient();
+
+  if (!supabase) {
+    throw new Error("Supabase public auth client is not configured.");
+  }
+
   const { data, error } = await supabase
     .from("cart_items")
     .select("*")
