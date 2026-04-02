@@ -44,6 +44,7 @@ export function getContactNotificationEmail(): string {
 
 export function getOrderNotificationEmail(): string {
   return (
+    process.env.ORDERS_ADMIN_EMAIL ??
     process.env.ORDER_NOTIFICATION_EMAIL ??
     process.env.CONTACT_NOTIFICATION_EMAIL ??
     getFromEmail()

@@ -56,6 +56,7 @@ export default async function CartPage() {
                     <div className="flex flex-wrap items-center gap-3">
                       <form action={updateCartQuantityAction} className="flex items-center gap-2">
                         <input type="hidden" name="productId" value={line.product.id} />
+                        <input type="hidden" name="variantId" value={line.variantId ?? ""} />
                         <label className="sr-only" htmlFor={`qty-${line.product.id}`}>
                           Quantity
                         </label>
@@ -76,6 +77,7 @@ export default async function CartPage() {
                       </form>
                       <form action={removeFromCartAction}>
                         <input type="hidden" name="productId" value={line.product.id} />
+                        <input type="hidden" name="variantId" value={line.variantId ?? ""} />
                         <button
                           type="submit"
                           className="rounded-full border border-[rgba(214,168,95,0.2)] px-4 py-2 text-xs uppercase tracking-[0.18em] text-[#b8ab95]"

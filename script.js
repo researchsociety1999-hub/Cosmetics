@@ -392,7 +392,9 @@ function handleCheckout() {
     return;
   }
 
-  alert("Checkout integration placeholder. Connect Stripe or your preferred checkout next.");
+  alert(
+    "Deprecated demo checkout. The real payment flow now lives in next-app and should be used instead of this static site.",
+  );
 }
 
 function openCart() {

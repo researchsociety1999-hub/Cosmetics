@@ -11,11 +11,15 @@ import { hasSupabaseEnv, supabase } from "./supabaseClient";
 import type {
   Address,
   CartItem,
+  CartSummary,
   Category,
   Ingredient,
   JournalEntry,
   LoyaltyProgram,
   Order,
+  OrderItem,
+  OrderTotals,
+  OrderWithItems,
   PressMention,
   Product,
   ProductVariant,
@@ -23,6 +27,7 @@ import type {
   PromoCampaign,
   Review,
   WishlistItem,
+  ShippingDetails,
 } from "./types";
 
 export type ProductSort = "price_asc" | "price_desc" | "newest" | "featured";
@@ -33,6 +38,23 @@ interface GetProductsOptions {
   sortBy?: ProductSort;
   limit?: number;
   page?: number;
+}
+
+export interface CreatePendingOrderInput {
+  orderNumber: string;
+  userId?: string | null;
+  shippingDetails: ShippingDetails;
+  cart: CartSummary;
+  currency?: string;
+  totals: OrderTotals;
+}
+
+function requireSupabase() {
+  if (!hasSupabaseEnv || !supabase) {
+    throw new Error("Supabase is not configured.");
+  }
+
+  return supabase;
 }
 
 function normalizeStringArray(value: unknown): string[] | null {
@@ -275,6 +297,29 @@ export async function getProductVariants(
   }
 }
 
+export async function getProductVariantsByIds(
+  ids: number[],
+): Promise<ProductVariant[]> {
+  if (!ids.length || !hasSupabaseEnv || !supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("product_variants")
+      .select("*")
+      .in("id", ids);
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as ProductVariant[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getProductReviews(productId: number): Promise<Review[]> {
   if (!hasSupabaseEnv || !supabase) {
     return mockReviews.filter((review) => review.product_id === productId);
@@ -373,32 +418,302 @@ export async function getJournalEntries(): Promise<JournalEntry[]> {
   return mockJournalEntries;
 }
 
-export async function getCartItems(_userId: string): Promise<CartItem[]> {
+export async function getCartItems(userId: string): Promise<CartItem[]> {
+  void userId;
   return [];
 }
 
 export async function getUserOrders(_userId: string): Promise<Order[]> {
-  return [];
+  if (!hasSupabaseEnv || !supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", _userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as Order[];
+  } catch {
+    return [];
+  }
 }
 
 export async function getOrderById(_orderId: string): Promise<Order | null> {
-  return null;
+  if (!hasSupabaseEnv || !supabase) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", _orderId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return data as Order;
+  } catch {
+    return null;
+  }
 }
 
-export async function getUserAddresses(_userId: string): Promise<Address[]> {
+export async function getUserAddresses(userId: string): Promise<Address[]> {
+  void userId;
   return [];
 }
 
-export async function getUserWishlist(_userId: string): Promise<WishlistItem[]> {
+export async function getUserWishlist(userId: string): Promise<WishlistItem[]> {
+  void userId;
   return [];
 }
 
 export async function getLoyaltyProgram(
-  _userId: string,
+  userId: string,
 ): Promise<LoyaltyProgram | null> {
+  void userId;
   return null;
 }
 
-export async function getProfile(_userId: string): Promise<Profile | null> {
+export async function getProfile(userId: string): Promise<Profile | null> {
+  void userId;
   return null;
+}
+
+export async function createPendingOrder({
+  orderNumber,
+  userId = null,
+  shippingDetails,
+  cart,
+  currency = "usd",
+  totals,
+}: CreatePendingOrderInput): Promise<Order> {
+  const client = requireSupabase();
+
+  const orderInsert = {
+    order_number: orderNumber,
+    user_id: userId,
+    email: shippingDetails.email,
+    status: "pending",
+    currency,
+    subtotal_cents: cart.subtotalCents,
+    shipping_cents: totals.shippingAmount,
+    discount_cents: 0,
+    total_cents: totals.totalAmount,
+    subtotal_amount: totals.subtotalAmount,
+    shipping_amount: totals.shippingAmount,
+    tax_amount: totals.taxAmount,
+    total_amount: totals.totalAmount,
+    full_name: shippingDetails.fullName,
+    address_line1: shippingDetails.addressLine1,
+    address_line2: shippingDetails.addressLine2 || null,
+    city: shippingDetails.city,
+    state: shippingDetails.state,
+    postal_code: shippingDetails.postalCode,
+    country: shippingDetails.country,
+  };
+
+  const { data: order, error: orderError } = await client
+    .from("orders")
+    .insert(orderInsert)
+    .select("*")
+    .single();
+
+  if (orderError || !order) {
+    throw new Error(orderError?.message ?? "Failed to create order.");
+  }
+
+  const itemRows = cart.lines.map((line) => ({
+    order_id: order.id,
+    product_id: line.product.id,
+    variant_id: line.variantId,
+    quantity: line.quantity,
+    price_cents_at_time: line.unitPriceCents,
+  }));
+
+  const { error: itemsError } = await client.from("order_items").insert(itemRows);
+
+  if (itemsError) {
+    await client.from("orders").delete().eq("id", order.id);
+    throw new Error(itemsError.message);
+  }
+
+  return order as Order;
+}
+
+export async function attachStripeCheckoutSession(
+  orderId: string,
+  sessionId: string,
+): Promise<void> {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("orders")
+    .update({
+      stripe_checkout_session_id: sessionId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", orderId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function getOrderByOrderNumber(
+  orderNumber: string,
+): Promise<Order | null> {
+  if (!hasSupabaseEnv || !supabase) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("order_number", orderNumber)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return data as Order;
+  } catch {
+    return null;
+  }
+}
+
+export async function getOrderByStripeCheckoutSessionId(
+  sessionId: string,
+): Promise<Order | null> {
+  if (!hasSupabaseEnv || !supabase) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("stripe_checkout_session_id", sessionId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return data as Order;
+  } catch {
+    return null;
+  }
+}
+
+export async function getOrderItems(orderId: string): Promise<OrderItem[]> {
+  if (!hasSupabaseEnv || !supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("order_items")
+      .select("*")
+      .eq("order_id", orderId);
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as OrderItem[];
+  } catch {
+    return [];
+  }
+}
+
+export async function getOrderWithItems(
+  orderId: string,
+): Promise<OrderWithItems | null> {
+  const order = await getOrderById(orderId);
+
+  if (!order) {
+    return null;
+  }
+
+  const items = await getOrderItems(order.id);
+
+  return {
+    ...order,
+    items,
+  };
+}
+
+export async function markOrderPaid({
+  orderId,
+  stripeCheckoutSessionId,
+  stripePaymentIntentId,
+}: {
+  orderId: string;
+  stripeCheckoutSessionId: string;
+  stripePaymentIntentId: string | null;
+}): Promise<Order> {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("orders")
+    .update({
+      status: "paid",
+      stripe_checkout_session_id: stripeCheckoutSessionId,
+      stripe_payment_intent_id: stripePaymentIntentId,
+      payment_intent_id: stripePaymentIntentId,
+      paid_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", orderId)
+    .select("*")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Failed to mark order paid.");
+  }
+
+  return data as Order;
+}
+
+export async function markOrderFailed(orderId: string): Promise<void> {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("orders")
+    .update({
+      status: "failed",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", orderId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function markOrderCancelled(orderId: string): Promise<void> {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("orders")
+    .update({
+      status: "cancelled",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", orderId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }
