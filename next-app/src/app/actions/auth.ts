@@ -21,6 +21,16 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
 
+function formatAuthErrorMessage(message: string) {
+  const normalized = message.trim().toLowerCase();
+
+  if (normalized === "fetch failed") {
+    return "Cannot connect to Supabase. Check your internet connection, firewall, VPN, or Supabase URL and try again.";
+  }
+
+  return message;
+}
+
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
   const nextPath = normalizeField(formData.get("next")) || "/account/login?status=confirmed";
@@ -61,7 +71,7 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
       name: error.name,
     });
     redirect(
-      `${statusPath}?status=error&message=${encodeURIComponent(error.message)}`,
+      `${statusPath}?status=error&message=${encodeURIComponent(formatAuthErrorMessage(error.message))}`,
     );
   }
 
