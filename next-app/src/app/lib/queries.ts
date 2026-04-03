@@ -77,6 +77,34 @@ function normalizeProduct(product: Product): Product {
   };
 }
 
+function mergeProducts(primary: Product[], fallback: Product[]): Product[] {
+  const merged = new Map<string, Product>();
+
+  fallback.forEach((product) => {
+    merged.set(product.slug, normalizeProduct(product));
+  });
+
+  primary.forEach((product) => {
+    merged.set(product.slug, normalizeProduct(product));
+  });
+
+  return Array.from(merged.values());
+}
+
+function mergeCategories(primary: Category[], fallback: Category[]): Category[] {
+  const merged = new Map<string, Category>();
+
+  fallback.forEach((category) => {
+    merged.set(category.slug, category);
+  });
+
+  primary.forEach((category) => {
+    merged.set(category.slug, category);
+  });
+
+  return Array.from(merged.values());
+}
+
 function sortProducts(products: Product[], sortBy: ProductSort = "newest"): Product[] {
   const sorted = [...products];
 
@@ -136,6 +164,13 @@ function filterMockProducts(options: GetProductsOptions = {}): Product[] {
   return paginateProducts(sortProducts(products, sortBy), page, limit);
 }
 
+function filterMockProductsUnpaginated(options: GetProductsOptions = {}): Product[] {
+  const { limit, page, ...rest } = options;
+  void limit;
+  void page;
+  return filterMockProducts(rest);
+}
+
 export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
@@ -175,7 +210,17 @@ export async function getProducts(
       return filterMockProducts(options);
     }
 
-    return ((data ?? []) as Product[]).map(normalizeProduct);
+    return paginateProducts(
+      sortProducts(
+        mergeProducts(
+          (data ?? []) as Product[],
+          filterMockProductsUnpaginated(options),
+        ),
+        sortBy,
+      ),
+      page,
+      limit,
+    );
   } catch {
     return filterMockProducts(options);
   }
@@ -199,13 +244,13 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
       .in("id", ids)
       .eq("is_published", true);
 
+    const fallbackProducts = mockProducts.filter((product) => ids.includes(product.id));
+
     if (error) {
-      return mockProducts
-        .filter((product) => ids.includes(product.id))
-        .map(normalizeProduct);
+      return fallbackProducts.map(normalizeProduct);
     }
 
-    return ((data ?? []) as Product[]).map(normalizeProduct);
+    return mergeProducts((data ?? []) as Product[], fallbackProducts);
   } catch {
     return mockProducts
       .filter((product) => ids.includes(product.id))
@@ -230,7 +275,9 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return mockProducts.find((product) => product.slug === slug) ?? null;
     }
 
-    return data ? normalizeProduct(data as Product) : null;
+    return data
+      ? normalizeProduct(data as Product)
+      : mockProducts.find((product) => product.slug === slug) ?? null;
   } catch {
     return mockProducts.find((product) => product.slug === slug) ?? null;
   }
@@ -263,7 +310,7 @@ export async function getCategories(): Promise<Category[]> {
       return mockCategories;
     }
 
-    return (data ?? []) as Category[];
+    return mergeCategories((data ?? []) as Category[], mockCategories);
   } catch {
     return mockCategories;
   }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { addToCartAction } from "../../actions/cart";
+import { AddToCartForm } from "../../components/AddToCartForm";
 import ProductCard from "../../components/productcard";
 import { SiteChrome } from "../../components/SiteChrome";
 import { formatMoney, getDisplayPrice, getProductImages } from "../../lib/format";
@@ -165,29 +166,7 @@ export default async function ProductPage({
               </span>
             </div>
 
-            <form action={addToCartAction} className="mystic-card space-y-5 p-6">
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="redirectTo" value="cart" />
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-[#b8ab95]">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  defaultValue="1"
-                  name="quantity"
-                  className="mystic-input w-24 text-sm"
-                />
-              </div>
-              <button
-                type="submit"
-                className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
-              >
-                Add to cart
-              </button>
-            </form>
+            <AddToCartForm action={addToCartAction} productId={product.id} />
 
             <div className="grid gap-4 md:grid-cols-2">
               <InfoBlock title="Benefits" items={benefits} />

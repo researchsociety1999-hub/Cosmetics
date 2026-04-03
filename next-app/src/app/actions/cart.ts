@@ -1,9 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient, getAuthenticatedUser } from "../lib/supabaseServer";
-import { getCartItemsFromCookie, setCartItemsCookie } from "../lib/cart";
+import { getCartItemsFromCookie } from "../lib/cart";
+import type { CartCookieItem } from "../lib/types";
+
+const CART_COOKIE_NAME = "mystique-cart";
 
 function revalidateCartRoutes() {
   revalidatePath("/");
@@ -27,6 +31,25 @@ function isSameCartLine(
   variantId: number | null,
 ) {
   return item.productId === productId && (item.variantId ?? null) === variantId;
+}
+
+async function persistGuestCart(items: CartCookieItem[]) {
+  const cookieStore = await cookies();
+  const normalized = items
+    .filter((item) => Number.isFinite(item.productId) && item.quantity > 0)
+    .map((item) => ({
+      productId: item.productId,
+      quantity: Math.max(1, Math.floor(item.quantity)),
+      variantId: item.variantId ?? null,
+    }));
+
+  cookieStore.set(CART_COOKIE_NAME, JSON.stringify(normalized), {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
 }
 
 export async function addToCartAction(formData: FormData): Promise<void> {
@@ -104,7 +127,7 @@ export async function addToCartAction(formData: FormData): Promise<void> {
     items.push({ productId, quantity, variantId });
   }
 
-  await setCartItemsCookie(items);
+  await persistGuestCart(items);
   revalidateCartRoutes();
 
   if (redirectTarget === "cart") {
@@ -182,7 +205,7 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
           isSameCartLine(item, productId, variantId) ? { ...item, quantity } : item,
         );
 
-  await setCartItemsCookie(nextItems);
+  await persistGuestCart(nextItems);
   revalidateCartRoutes();
 }
 
@@ -220,7 +243,7 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
   }
 
   const items = await getCartItemsFromCookie();
-  await setCartItemsCookie(
+  await persistGuestCart(
     items.filter((item) => !isSameCartLine(item, productId, variantId)),
   );
   revalidateCartRoutes();
