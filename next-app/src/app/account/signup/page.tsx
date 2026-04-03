@@ -5,7 +5,7 @@ import { Navbar } from "../../components/Navbar";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string }>;
 
-export default async function LoginPage({
+export default async function SignupPage({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -22,17 +22,16 @@ export default async function LoginPage({
           Account
         </p>
         <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3]">
-          Sign in to Mystique
+          Create your Mystique account
         </h1>
         <div className="mystic-card mt-8 space-y-5 p-6">
           <p className="text-sm leading-relaxed text-[#b8ab95]">
-            Use a secure magic link to sign in with your Mystique account. Once your
-            session is active, we&apos;ll take you back to the right page and load your
-            saved account experience.
+            Enter your email and we&apos;ll send you a secure magic link. If this is your
+            first time, Supabase will create your Mystique account automatically.
           </p>
           <form action={requestMagicLinkAction} className="space-y-4">
             <input type="hidden" name="next" value={nextPath} />
-            <input type="hidden" name="mode" value="login" />
+            <input type="hidden" name="mode" value="signup" />
             <label className="block">
               <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]">
                 Email
@@ -50,24 +49,18 @@ export default async function LoginPage({
               type="submit"
               className="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
-              Send magic link
+              Create account
             </button>
           </form>
+          <SignupStatusMessage status={params.status} email={email} />
           <p className="text-sm leading-relaxed text-[#b8ab95]">
-            New here? Use the same email flow to create your account in one step.
+            Already have an account?
           </p>
           <Link
-            href={`/account/signup?next=${encodeURIComponent(nextPath)}`}
+            href={`/account/login?next=${encodeURIComponent(nextPath)}`}
             className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
           >
-            Create an account
-          </Link>
-          <StatusMessage status={params.status} email={email} />
-          <Link
-            href="/"
-            className="mystic-button-secondary inline-flex items-center justify-center px-6 py-2 text-xs uppercase tracking-[0.2em]"
-          >
-            Return home
+            Go to sign in
           </Link>
         </div>
       </main>
@@ -76,7 +69,7 @@ export default async function LoginPage({
   );
 }
 
-function StatusMessage({
+function SignupStatusMessage({
   status,
   email,
 }: {
@@ -86,16 +79,8 @@ function StatusMessage({
   if (status === "check-email") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        Check {email || "your inbox"} for your Mystique email. Use the confirmation
-        or sign-in link there to continue.
-      </p>
-    );
-  }
-
-  if (status === "confirmed") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        Your email is confirmed. You can now sign in to your Mystique account.
+        Check {email || "your inbox"} for your Mystique link. We&apos;ll create your
+        account and sign you in from there.
       </p>
     );
   }
@@ -108,18 +93,10 @@ function StatusMessage({
     );
   }
 
-  if (status === "auth-error") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t verify that sign-in link. Request a fresh magic link and try again.
-      </p>
-    );
-  }
-
   if (status === "not-configured") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        Supabase public auth keys are missing. Add them to `.env.local` before signing in.
+        Supabase public auth keys are missing. Add them to `.env.local` before creating an account.
       </p>
     );
   }
@@ -127,7 +104,7 @@ function StatusMessage({
   if (status === "error") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t send the magic link right now. Check your Supabase auth settings and try again.
+        We couldn&apos;t send the account link right now. Check your Supabase auth settings and try again.
       </p>
     );
   }

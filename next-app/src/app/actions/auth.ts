@@ -24,15 +24,17 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
   const nextPath = normalizeField(formData.get("next")) || "/account/login?status=confirmed";
+  const mode = normalizeField(formData.get("mode")) === "signup" ? "signup" : "login";
+  const statusPath = mode === "signup" ? "/account/signup" : "/account/login";
 
   if (!email) {
-    redirect("/account/login?status=missing-email");
+    redirect(`${statusPath}?status=missing-email`);
   }
 
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    redirect("/account/login?status=not-configured");
+    redirect(`${statusPath}?status=not-configured`);
   }
 
   const headerStore = await headers();
@@ -58,8 +60,20 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
       status: error.status,
       name: error.name,
     });
-    redirect("/account/login?status=error");
+    redirect(`${statusPath}?status=error`);
   }
 
-  redirect(`/account/login?status=check-email&email=${encodeURIComponent(email)}`);
+  redirect(
+    `${statusPath}?status=check-email&email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}`,
+  );
+}
+
+export async function signOutAction(): Promise<void> {
+  const supabase = await createSupabaseServerClient();
+
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
+
+  redirect("/");
 }
