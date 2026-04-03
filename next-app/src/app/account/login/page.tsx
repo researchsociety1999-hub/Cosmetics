@@ -5,7 +5,7 @@ import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
-type SearchParams = Promise<{ status?: string; email?: string; next?: string }>;
+type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
 
 export default async function LoginPage({
   searchParams,
@@ -69,7 +69,7 @@ export default async function LoginPage({
           >
             Create an account
           </Link>
-          <StatusMessage status={params.status} email={email} />
+          <StatusMessage status={params.status} email={email} message={params.message} />
           <Link
             href="/"
             className="mystic-button-secondary inline-flex items-center justify-center px-6 py-2 text-xs uppercase tracking-[0.2em]"
@@ -86,9 +86,11 @@ export default async function LoginPage({
 function StatusMessage({
   status,
   email,
+  message,
 }: {
   status?: string;
   email: string;
+  message?: string;
 }) {
   if (status === "check-email") {
     return (
@@ -134,7 +136,8 @@ function StatusMessage({
   if (status === "error") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t send the magic link right now. Check your Supabase auth settings and try again.
+        We couldn&apos;t send the magic link right now.
+        {message ? ` Supabase says: ${message}` : " Check your Supabase auth settings and try again."}
       </p>
     );
   }

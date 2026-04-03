@@ -60,7 +60,9 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
       status: error.status,
       name: error.name,
     });
-    redirect(`${statusPath}?status=error`);
+    redirect(
+      `${statusPath}?status=error&message=${encodeURIComponent(error.message)}`,
+    );
   }
 
   redirect(
