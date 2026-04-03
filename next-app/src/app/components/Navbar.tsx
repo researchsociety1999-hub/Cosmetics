@@ -58,12 +58,12 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
           </details>
         </div>
 
-        <div className="relative hidden grid-cols-[1fr_auto_1fr] items-center gap-8 border-b border-[rgba(214,168,95,0.1)] pb-5 md:grid">
-          <div className="flex items-center justify-start gap-5 lg:gap-7">
+        <div className="relative hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 border-b border-[rgba(214,168,95,0.1)] pb-5 md:grid lg:gap-8">
+          <div className="flex min-w-0 items-center justify-start gap-4 lg:gap-6">
             <IconLink href="/search" label="Search">
               <SearchIcon />
             </IconLink>
-            <nav className="flex items-center gap-5 lg:gap-7">
+            <nav className="flex min-w-0 items-center gap-4 lg:gap-6">
               <NavLink href="/shop" label="Shop" />
               <NavLink href="/routines" label="Routines" />
               <NavLink href="/ingredients" label="Ingredients" />
@@ -72,11 +72,11 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
           </div>
 
           <div className="relative flex justify-center">
-            <BrandLogo compact className="mx-auto opacity-95" />
+            <BrandLogo compact className="mx-auto max-w-[240px] opacity-95 lg:max-w-[270px]" />
           </div>
 
-          <div className="flex items-center justify-end gap-4 lg:gap-6">
-            <nav className="flex items-center gap-5 lg:gap-7">
+          <div className="flex min-w-0 items-center justify-end gap-3 lg:gap-5">
+            <nav className="flex min-w-0 items-center gap-4 lg:gap-6">
               <NavLink href="/about" label="About" />
               <NavLink href="/faq" label="FAQ" />
               <NavLink href="/contact" label="Contact" />
@@ -90,7 +90,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
                 <form action={signOutAction}>
                   <button
                     type="submit"
-                    className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                    className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center whitespace-nowrap px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
                   >
                     Sign out
                   </button>
@@ -101,7 +101,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
                 <NavLink href="/account/login" label="Sign in" />
                 <Link
                   href="/account/signup"
-                  className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                  className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center whitespace-nowrap px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
                 >
                   Sign up
                 </Link>
@@ -122,7 +122,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="relative text-[0.68rem] uppercase tracking-[0.24em] text-[#c5b79f] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a]"
+      className="relative whitespace-nowrap text-[0.66rem] uppercase tracking-[0.22em] text-[#c5b79f] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a] lg:text-[0.68rem] lg:tracking-[0.24em]"
     >
       {label}
     </Link>
