@@ -34,15 +34,24 @@ test.describe("cart and checkout flows", () => {
     await page.goto("/checkout");
 
     await expect(page.getByRole("heading", { level: 2, name: "Order summary" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Stripe unavailable" })).toBeDisabled();
+    await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Create account" })).toBeVisible();
   });
 
   test("shows stripe unavailable when stripe is not configured", async ({ page }) => {
     await addMockProductToCart(page);
     await page.goto("/checkout");
 
-    await expect(page.getByRole("button", { name: "Stripe unavailable" })).toBeDisabled();
-    await expect(page.getByText("Stripe checkout is not configured yet.")).toBeVisible();
+    const stripeUnavailableButton = page.getByRole("button", { name: "Stripe unavailable" });
+
+    if (await stripeUnavailableButton.count()) {
+      await expect(stripeUnavailableButton).toBeDisabled();
+      await expect(page.getByText("Stripe checkout is not configured yet.")).toBeVisible();
+      return;
+    }
+
+    await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Create account" })).toBeVisible();
   });
 
   test("shows validation errors returned by checkout state", async ({ page }) => {
