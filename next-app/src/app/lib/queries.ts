@@ -171,11 +171,11 @@ export async function getProducts(
     }
 
     const { data, error } = await query;
-    if (error || !data?.length) {
+    if (error) {
       return filterMockProducts(options);
     }
 
-    return (data as Product[]).map(normalizeProduct);
+    return ((data ?? []) as Product[]).map(normalizeProduct);
   } catch {
     return filterMockProducts(options);
   }
@@ -199,13 +199,13 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
       .in("id", ids)
       .eq("is_published", true);
 
-    if (error || !data?.length) {
+    if (error) {
       return mockProducts
         .filter((product) => ids.includes(product.id))
         .map(normalizeProduct);
     }
 
-    return (data as Product[]).map(normalizeProduct);
+    return ((data ?? []) as Product[]).map(normalizeProduct);
   } catch {
     return mockProducts
       .filter((product) => ids.includes(product.id))
@@ -226,11 +226,11 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) {
+    if (error) {
       return mockProducts.find((product) => product.slug === slug) ?? null;
     }
 
-    return normalizeProduct(data as Product);
+    return data ? normalizeProduct(data as Product) : null;
   } catch {
     return mockProducts.find((product) => product.slug === slug) ?? null;
   }
@@ -259,11 +259,11 @@ export async function getCategories(): Promise<Category[]> {
       .select("*")
       .order("name", { ascending: true });
 
-    if (error || !data?.length) {
+    if (error) {
       return mockCategories;
     }
 
-    return data as Category[];
+    return (data ?? []) as Category[];
   } catch {
     return mockCategories;
   }
