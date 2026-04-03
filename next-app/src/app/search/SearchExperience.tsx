@@ -77,8 +77,8 @@ export function SearchExperience({
   }, [query]);
 
   return (
-    <>
-      <form className="max-w-2xl" onSubmit={(event) => event.preventDefault()}>
+    <section className="space-y-4">
+      <form className="max-w-4xl" onSubmit={(event) => event.preventDefault()}>
         <label className="sr-only" htmlFor="search-query">
           Search query
         </label>
@@ -88,21 +88,21 @@ export function SearchExperience({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search products, ingredients, or ritual steps"
-          className="mystic-input w-full text-sm"
+          className="mystic-input min-h-[54px] w-full text-sm"
         />
       </form>
 
       {!query.trim() ? (
-        <div className="mystic-card p-8 text-sm text-[#b8ab95]">
+        <div className="mystic-card max-w-6xl p-8 text-sm text-[#b8ab95]">
           Begin with a product name, ingredient, or term like &ldquo;bloom
           skin&rdquo; or &ldquo;peptides.&rdquo;
         </div>
       ) : isLoading ? (
-        <div className="mystic-card p-8 text-sm text-[#b8ab95]">
+        <div className="mystic-card max-w-6xl p-8 text-sm text-[#b8ab95]">
           Searching the Mystique ritual catalog...
         </div>
       ) : products.length === 0 ? (
-        <div className="mystic-card p-8 text-sm text-[#b8ab95]">
+        <div className="mystic-card max-w-6xl p-8 text-sm text-[#b8ab95]">
           No results for &ldquo;{query.trim()}&rdquo;. Try a broader search.
         </div>
       ) : (
@@ -157,6 +157,6 @@ export function SearchExperience({
           })}
         </div>
       )}
-    </>
+    </section>
   );
 }
