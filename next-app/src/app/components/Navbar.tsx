@@ -10,12 +10,11 @@ interface NavbarProps {
 
 export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
-    <header className="relative sticky top-0 z-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(3,4,6,0.78),rgba(3,4,6,0.36),transparent)]" />
-      <div className="mx-auto max-w-7xl px-3 pt-3 md:px-6 md:pt-4">
-        <div className="relative flex items-center justify-between gap-3 overflow-hidden rounded-[28px] border border-[rgba(214,168,95,0.12)] bg-[linear-gradient(180deg,rgba(7,9,13,0.76),rgba(7,9,13,0.52))] px-4 py-3 shadow-[0_18px_55px_rgba(0,0,0,0.36)] backdrop-blur-2xl md:gap-8 md:px-6 md:py-4">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_50%,rgba(255,170,70,0.12),transparent_16%),radial-gradient(circle_at_86%_28%,rgba(214,168,95,0.08),transparent_20%),linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))]" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.36),transparent)]" />
+    <header className="relative z-40">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(3,4,6,0.88),rgba(3,4,6,0.54),transparent)]" />
+      <div className="mx-auto max-w-7xl px-4 pt-4 md:px-6 md:pt-5">
+        <div className="relative flex items-center justify-between gap-3 px-1 py-3 md:gap-8 md:px-0 md:py-4">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.16),transparent)]" />
 
           <div className="relative max-w-[220px] flex-1 md:max-w-[280px]">
             <BrandLogo compact className="opacity-95" />
@@ -64,7 +63,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
           </div>
 
           <details className="relative md:hidden">
-            <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.04)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-md">
+            <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.55)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm">
               Menu
             </summary>
             <div className="absolute right-0 top-[calc(100%+0.75rem)] w-[280px] overflow-hidden rounded-[22px] border border-[rgba(214,168,95,0.16)] bg-[linear-gradient(180deg,rgba(9,12,18,0.94),rgba(7,9,13,0.88))] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
@@ -110,7 +109,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="relative text-[0.68rem] uppercase tracking-[0.24em] text-[#b8ab95] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a]"
+      className="relative text-[0.68rem] uppercase tracking-[0.24em] text-[#c5b79f] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a]"
     >
       {label}
     </Link>
@@ -145,7 +144,7 @@ function IconLink({
     <Link
       href={href}
       aria-label={label}
-      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.18)] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:border-[rgba(214,168,95,0.42)] hover:bg-[rgba(214,168,95,0.08)] hover:text-[#f0d19a]"
+      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(10,12,16,0.46)] text-[#f5eee3] transition hover:border-[rgba(214,168,95,0.36)] hover:bg-[rgba(214,168,95,0.06)] hover:text-[#f0d19a]"
     >
       {children}
       {showBadge ? (

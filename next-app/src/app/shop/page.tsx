@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
@@ -39,9 +40,10 @@ export default async function ShopPage({
   const matchedCategory = params.category
     ? await getCategoryBySlug(params.category)
     : null;
+  const currentSearch = params.search?.trim() ?? "";
   const products = await getProducts({
     categoryId: matchedCategory?.id,
-    search: params.search,
+    search: currentSearch,
     sortBy: sort,
     page,
     limit: 12,
@@ -63,21 +65,24 @@ export default async function ShopPage({
           </p>
         </header>
 
-        <section className="mystic-card mb-8 grid gap-4 p-5 md:grid-cols-[1fr_auto_auto]">
+        <section className="mb-8 grid gap-4 border-b border-[rgba(214,168,95,0.1)] pb-6 md:grid-cols-[1fr_auto_auto]">
           <form action="/shop">
+            <input type="hidden" name="category" value={matchedCategory?.slug ?? ""} />
+            <input type="hidden" name="sort" value={sort} />
             <label className="sr-only" htmlFor="shop-search">
               Search products
             </label>
             <input
               id="shop-search"
               name="search"
-              defaultValue={params.search ?? ""}
+              defaultValue={currentSearch}
               placeholder="Search serums, bloom skin, peptides..."
-              className="mystic-input w-full text-sm"
+              className="mystic-input min-h-[54px] w-full bg-[rgba(255,255,255,0.03)] text-sm"
             />
           </form>
           <form action="/shop">
-            <input type="hidden" name="search" value={params.search ?? ""} />
+            <input type="hidden" name="search" value={currentSearch} />
+            <input type="hidden" name="sort" value={sort} />
             <label className="sr-only" htmlFor="shop-category">
               Category
             </label>
@@ -85,7 +90,7 @@ export default async function ShopPage({
               id="shop-category"
               name="category"
               defaultValue={matchedCategory?.slug ?? ""}
-              className="mystic-input min-h-[50px] px-4 text-sm"
+              className="mystic-input min-h-[54px] min-w-[200px] bg-[rgba(255,255,255,0.03)] px-4 text-sm"
             >
               <option value="">All categories</option>
               {categories.map((category) => (
@@ -96,7 +101,7 @@ export default async function ShopPage({
             </select>
           </form>
           <form action="/shop">
-            <input type="hidden" name="search" value={params.search ?? ""} />
+            <input type="hidden" name="search" value={currentSearch} />
             <input type="hidden" name="category" value={matchedCategory?.slug ?? ""} />
             <label className="sr-only" htmlFor="shop-sort">
               Sort
@@ -105,7 +110,7 @@ export default async function ShopPage({
               id="shop-sort"
               name="sort"
               defaultValue={sort}
-              className="mystic-input min-h-[50px] px-4 text-sm"
+              className="mystic-input min-h-[54px] min-w-[180px] bg-[rgba(255,255,255,0.03)] px-4 text-sm"
             >
               {SORT_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -116,19 +121,39 @@ export default async function ShopPage({
           </form>
         </section>
 
-        <section className="mb-8 flex flex-wrap gap-3">
-          <CategoryChip href="/shop" active={!matchedCategory}>
+        <section className="mb-4 flex flex-wrap gap-3">
+          <CategoryChip
+            href={buildShopHref({ search: currentSearch, sort })}
+            active={!matchedCategory}
+          >
             All
           </CategoryChip>
           {categories.map((category) => (
             <CategoryChip
               key={category.id}
-              href={`/shop?category=${encodeURIComponent(category.slug)}`}
+              href={buildShopHref({
+                category: category.slug,
+                search: currentSearch,
+                sort,
+              })}
               active={matchedCategory?.slug === category.slug}
             >
               {category.name}
             </CategoryChip>
           ))}
+        </section>
+
+        <section className="mb-8">
+          <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
+            {matchedCategory
+              ? `${matchedCategory.name} products`
+              : "All database products"}
+          </p>
+          <p className="mt-2 text-sm text-[#8f8576]">
+            {matchedCategory
+              ? `Showing products from the ${matchedCategory.name} section.`
+              : "Showing every published product available in the database."}
+          </p>
         </section>
 
         {products.length === 0 ? (
@@ -158,7 +183,7 @@ function CategoryChip({
   children: ReactNode;
 }) {
   return (
-    <a
+    <Link
       href={href}
       className={`inline-flex rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] ${
         active
@@ -167,6 +192,33 @@ function CategoryChip({
       }`}
     >
       {children}
-    </a>
+    </Link>
   );
+}
+
+function buildShopHref({
+  category,
+  search,
+  sort,
+}: {
+  category?: string;
+  search?: string;
+  sort?: ProductSort;
+}) {
+  const params = new URLSearchParams();
+
+  if (category) {
+    params.set("category", category);
+  }
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (sort && sort !== "newest") {
+    params.set("sort", sort);
+  }
+
+  const query = params.toString();
+  return query ? `/shop?${query}` : "/shop";
 }
