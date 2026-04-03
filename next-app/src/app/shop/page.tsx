@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
-import { getCategoryBySlug, getCategories, getProducts, type ProductSort } from "../lib/queries";
+import { getCategories, getProducts, type ProductSort } from "../lib/queries";
 
 type SearchParams = Promise<{
   category?: string;
@@ -32,22 +32,31 @@ export default async function ShopPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const page = Number(params.page ?? "1") || 1;
   const sort = SORT_OPTIONS.some((option) => option.value === params.sort)
     ? (params.sort as ProductSort)
     : "newest";
-  const categories = await getCategories();
-  const matchedCategory = params.category
-    ? await getCategoryBySlug(params.category)
-    : null;
   const currentSearch = params.search?.trim() ?? "";
-  const products = await getProducts({
-    categoryId: matchedCategory?.id,
-    search: currentSearch,
-    sortBy: sort,
-    page,
-    limit: 12,
-  });
+  const [categories, filteredProducts] = await Promise.all([
+    getCategories(),
+    getProducts({
+      search: currentSearch,
+      sortBy: sort,
+    }),
+  ]);
+  const availableCategoryIds = new Set(
+    filteredProducts
+      .map((product) => product.category_id)
+      .filter((categoryId): categoryId is number => typeof categoryId === "number"),
+  );
+  const availableCategories = categories.filter((category) =>
+    availableCategoryIds.has(category.id),
+  );
+  const matchedCategory = params.category
+    ? availableCategories.find((category) => category.slug === params.category) ?? null
+    : null;
+  const products = matchedCategory
+    ? filteredProducts.filter((product) => product.category_id === matchedCategory.id)
+    : filteredProducts;
 
   return (
     <SiteChrome>
@@ -93,7 +102,7 @@ export default async function ShopPage({
               className="mystic-input min-h-[54px] min-w-[200px] bg-[rgba(255,255,255,0.03)] px-4 text-sm"
             >
               <option value="">All categories</option>
-              {categories.map((category) => (
+              {availableCategories.map((category) => (
                 <option key={category.id} value={category.slug}>
                   {category.name}
                 </option>
@@ -128,7 +137,7 @@ export default async function ShopPage({
           >
             All
           </CategoryChip>
-          {categories.map((category) => (
+          {availableCategories.map((category) => (
             <CategoryChip
               key={category.id}
               href={buildShopHref({
