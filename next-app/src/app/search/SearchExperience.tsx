@@ -52,6 +52,10 @@ export function SearchExperience({
       return;
     }
 
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", trimmedQuery);
+    window.history.replaceState({}, "", url);
+
     setIsLoading(true);
     const timeoutId = window.setTimeout(async () => {
       try {
@@ -60,9 +64,6 @@ export function SearchExperience({
         });
         const data = (await response.json()) as { products: SearchProduct[] };
         setProducts(data.products);
-        const url = new URL(window.location.href);
-        url.searchParams.set("q", trimmedQuery);
-        window.history.replaceState({}, "", url);
       } catch (error) {
         console.error("Search request failed", error);
       } finally {
