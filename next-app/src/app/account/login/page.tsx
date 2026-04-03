@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
 import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
+import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string }>;
 
@@ -13,6 +15,11 @@ export default async function LoginPage({
   const params = await searchParams;
   const email = params.email ? decodeURIComponent(params.email) : "";
   const nextPath = params.next || "/account/orders";
+  const user = await getAuthenticatedUser();
+
+  if (user) {
+    redirect(nextPath);
+  }
 
   return (
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
