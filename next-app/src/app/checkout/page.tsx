@@ -53,12 +53,18 @@ export default async function CheckoutPage({
             {!isAuthenticated ? (
               <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#d6a85f]">
                 Sign in first so checkout can load your authenticated Supabase cart.
-                <div className="mt-4">
+                <div className="mt-4 flex flex-wrap gap-3">
                   <Link
-                    href="/account/login"
+                    href="/account/login?next=%2Fcheckout"
                     className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
                   >
                     Go to sign in
+                  </Link>
+                  <Link
+                    href="/account/signup?next=%2Fcheckout"
+                    className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+                  >
+                    Create account
                   </Link>
                 </div>
               </div>

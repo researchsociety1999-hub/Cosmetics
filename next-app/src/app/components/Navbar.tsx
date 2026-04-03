@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { signOutAction } from "../actions/auth";
 import { BrandLogo } from "./BrandLogo";
 
 interface NavbarProps {
   cartCount?: number;
+  isAuthenticated?: boolean;
 }
 
-export function Navbar({ cartCount = 0 }: NavbarProps) {
+export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
     <header className="relative sticky top-0 z-40">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(3,4,6,0.78),rgba(3,4,6,0.36),transparent)]" />
@@ -30,6 +32,29 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
           </nav>
 
           <div className="relative hidden items-center gap-2 md:flex">
+            {isAuthenticated ? (
+              <>
+                <NavLink href="/account/orders" label="Account" />
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <NavLink href="/account/login" label="Sign in" />
+                <Link
+                  href="/account/signup"
+                  className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
             <IconLink href="/search" label="Search">
               <SearchIcon />
             </IconLink>
@@ -52,6 +77,24 @@ export function Navbar({ cartCount = 0 }: NavbarProps) {
                 <MobileNavLink href="/about" label="About" />
                 <MobileNavLink href="/faq" label="FAQ" />
                 <MobileNavLink href="/contact" label="Contact" />
+                {isAuthenticated ? (
+                  <>
+                    <MobileNavLink href="/account/orders" label="Account" />
+                    <form action={signOutAction}>
+                      <button
+                        type="submit"
+                        className="w-full rounded-full px-3 py-2 text-left text-xs uppercase tracking-[0.22em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
+                      >
+                        Sign out
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <MobileNavLink href="/account/login" label="Sign in" />
+                    <MobileNavLink href="/account/signup" label="Sign up" />
+                  </>
+                )}
                 <MobileNavLink href="/search" label="Search" />
                 <MobileNavLink href="/cart" label={`Cart (${cartCount})`} />
               </nav>

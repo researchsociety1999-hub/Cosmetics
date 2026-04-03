@@ -1,6 +1,7 @@
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -172,13 +173,30 @@ export function CheckoutClient({
             ? "After you submit, you'll be taken to secure Stripe Checkout to complete payment in test mode."
             : "Stripe checkout is not configured yet. Add your Stripe keys to enable secure payment."}
       </div>
-      <button
-        type="submit"
-        className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em] md:col-span-2"
-        disabled={!isAuthenticated || !stripeReady || isLoading}
-      >
-        {buttonLabel}
-      </button>
+      {isAuthenticated ? (
+        <button
+          type="submit"
+          className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em] md:col-span-2"
+          disabled={!stripeReady || isLoading}
+        >
+          {buttonLabel}
+        </button>
+      ) : (
+        <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
+          <Link
+            href="/account/login?next=%2Fcheckout"
+            className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
+          >
+            Sign in to checkout
+          </Link>
+          <Link
+            href="/account/signup?next=%2Fcheckout"
+            className="mystic-button-secondary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
+          >
+            Create account
+          </Link>
+        </div>
+      )}
       {error ? (
         <p className="text-sm text-[#d6a85f] md:col-span-2">{error}</p>
       ) : null}
