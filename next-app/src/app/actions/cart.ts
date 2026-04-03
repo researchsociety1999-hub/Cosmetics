@@ -12,11 +12,27 @@ function revalidateCartRoutes() {
   revalidatePath("/checkout");
 }
 
+function parseOptionalVariantId(value: FormDataEntryValue | null): number | null {
+  if (typeof value !== "string" || value.trim() === "") {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+}
+
+function isSameCartLine(
+  item: { productId: number; variantId?: number | null },
+  productId: number,
+  variantId: number | null,
+) {
+  return item.productId === productId && (item.variantId ?? null) === variantId;
+}
+
 export async function addToCartAction(formData: FormData): Promise<void> {
   const productId = Number(formData.get("productId"));
   const quantity = Math.max(1, Number(formData.get("quantity") ?? 1));
-  const variantIdValue = Number(formData.get("variantId"));
-  const variantId = Number.isFinite(variantIdValue) ? variantIdValue : null;
+  const variantId = parseOptionalVariantId(formData.get("variantId"));
   const redirectTarget = String(formData.get("redirectTo") ?? "");
 
   if (!Number.isFinite(productId)) {
@@ -80,12 +96,12 @@ export async function addToCartAction(formData: FormData): Promise<void> {
   }
 
   const items = await getCartItemsFromCookie();
-  const existing = items.find((item) => item.productId === productId);
+  const existing = items.find((item) => isSameCartLine(item, productId, variantId));
 
   if (existing) {
     existing.quantity += quantity;
   } else {
-    items.push({ productId, quantity, variantId: null });
+    items.push({ productId, quantity, variantId });
   }
 
   await setCartItemsCookie(items);
@@ -99,8 +115,7 @@ export async function addToCartAction(formData: FormData): Promise<void> {
 export async function updateCartQuantityAction(formData: FormData): Promise<void> {
   const productId = Number(formData.get("productId"));
   const quantity = Math.max(0, Number(formData.get("quantity") ?? 0));
-  const variantIdValue = Number(formData.get("variantId"));
-  const variantId = Number.isFinite(variantIdValue) ? variantIdValue : null;
+  const variantId = parseOptionalVariantId(formData.get("variantId"));
 
   if (!Number.isFinite(productId)) {
     return;
@@ -162,9 +177,9 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
   const items = await getCartItemsFromCookie();
   const nextItems =
     quantity <= 0
-      ? items.filter((item) => item.productId !== productId)
+      ? items.filter((item) => !isSameCartLine(item, productId, variantId))
       : items.map((item) =>
-          item.productId === productId ? { ...item, quantity } : item,
+          isSameCartLine(item, productId, variantId) ? { ...item, quantity } : item,
         );
 
   await setCartItemsCookie(nextItems);
@@ -173,8 +188,7 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
 
 export async function removeFromCartAction(formData: FormData): Promise<void> {
   const productId = Number(formData.get("productId"));
-  const variantIdValue = Number(formData.get("variantId"));
-  const variantId = Number.isFinite(variantIdValue) ? variantIdValue : null;
+  const variantId = parseOptionalVariantId(formData.get("variantId"));
 
   if (!Number.isFinite(productId)) {
     return;
@@ -206,6 +220,8 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
   }
 
   const items = await getCartItemsFromCookie();
-  await setCartItemsCookie(items.filter((item) => item.productId !== productId));
+  await setCartItemsCookie(
+    items.filter((item) => !isSameCartLine(item, productId, variantId)),
+  );
   revalidateCartRoutes();
 }
