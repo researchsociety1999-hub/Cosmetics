@@ -10,37 +10,55 @@ function getOtpType(type: string): EmailOtpType {
   return "magiclink";
 }
 
+function getSafeNextPath(next: string | null) {
+  if (!next || !next.startsWith("/")) {
+    return "/account/orders";
+  }
+
+  if (next.startsWith("//")) {
+    return "/account/orders";
+  }
+
+  return next;
+}
+
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  const requestUrl = new URL(request.url);
+  const { searchParams } = requestUrl;
+  const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/account/orders";
+  const next = getSafeNextPath(searchParams.get("next"));
 
-  if (!tokenHash || !type) {
-    return new NextResponse("Missing token_hash or type", { status: 400 });
+  if (!code && (!tokenHash || !type)) {
+    return NextResponse.redirect(
+      new URL("/account/login?status=auth-error", requestUrl),
+    );
   }
 
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
     return NextResponse.redirect(
-      new URL("/account/login?status=not-configured", request.url),
+      new URL("/account/login?status=not-configured", requestUrl),
     );
   }
 
-  const { error } = await supabase.auth.verifyOtp({
-    token_hash: tokenHash,
-    type: getOtpType(type),
-  });
+  const { error } = code
+    ? await supabase.auth.exchangeCodeForSession(code)
+    : await supabase.auth.verifyOtp({
+        token_hash: tokenHash!,
+        type: getOtpType(type!),
+      });
 
   if (error) {
     return NextResponse.redirect(
       new URL(
         `/auth/error?message=${encodeURIComponent(error.message)}`,
-        request.url,
+        requestUrl,
       ),
     );
   }
 
-  return NextResponse.redirect(new URL(next, request.url));
+  return NextResponse.redirect(new URL(next, requestUrl));
 }
