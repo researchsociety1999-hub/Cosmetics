@@ -63,6 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${cormorant.variable} ${inter.variable} scroll-smooth`}
     >
       <body className="bg-[#06080c] text-[#f5eee3] antialiased">
