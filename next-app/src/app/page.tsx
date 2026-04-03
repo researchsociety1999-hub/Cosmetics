@@ -3,12 +3,10 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
-import { PromoBanner } from "./components/PromoBanner";
 import { SiteChrome } from "./components/SiteChrome";
 import { formatMoney } from "./lib/format";
 import { mockTestimonials } from "./lib/data";
 import {
-  getActivePromo,
   getCategories,
   getProducts,
 } from "./lib/queries";
@@ -24,11 +22,8 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const promo = await getActivePromo();
-
   return (
     <SiteChrome>
-      {promo ? <PromoBanner promo={promo} /> : null}
       <main>
         <HeroSection />
         <Suspense fallback={<SectionLoading title="Featured collections" />}>

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { getCartSummary } from "../lib/cart";
 import { getAuthenticatedUser } from "../lib/supabaseServer";
+import { BackToTopButton } from "./BackToTopButton";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 
@@ -18,6 +19,7 @@ export async function SiteChrome({
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
       <Navbar cartCount={cart.itemCount} isAuthenticated={Boolean(user)} />
       {children}
+      <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>
   );
