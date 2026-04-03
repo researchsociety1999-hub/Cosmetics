@@ -5,7 +5,7 @@ import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
-type SearchParams = Promise<{ status?: string; email?: string; next?: string }>;
+type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
 
 export default async function SignupPage({
   searchParams,
@@ -59,7 +59,11 @@ export default async function SignupPage({
               Create account
             </button>
           </form>
-          <SignupStatusMessage status={params.status} email={email} />
+          <SignupStatusMessage
+            status={params.status}
+            email={email}
+            message={params.message}
+          />
           <p className="text-sm leading-relaxed text-[#b8ab95]">
             Already have an account?
           </p>
@@ -79,9 +83,11 @@ export default async function SignupPage({
 function SignupStatusMessage({
   status,
   email,
+  message,
 }: {
   status?: string;
   email: string;
+  message?: string;
 }) {
   if (status === "check-email") {
     return (
@@ -111,7 +117,8 @@ function SignupStatusMessage({
   if (status === "error") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t send the account link right now. Check your Supabase auth settings and try again.
+        We couldn&apos;t send the account link right now.
+        {message ? ` Supabase says: ${message}` : " Check your Supabase auth settings and try again."}
       </p>
     );
   }
