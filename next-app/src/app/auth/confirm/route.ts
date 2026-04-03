@@ -3,7 +3,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
 
 function getOtpType(type: string): EmailOtpType {
-  if (type === "email") {
+  if (type === "email" || type === "signup") {
     return "email";
   }
 
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/account/login?status=confirmed";
+  const next = searchParams.get("next") ?? "/account/orders";
 
   if (!tokenHash || !type) {
     return new NextResponse("Missing token_hash or type", { status: 400 });
