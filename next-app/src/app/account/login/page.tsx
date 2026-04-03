@@ -137,7 +137,7 @@ function StatusMessage({
     return (
       <p className="text-sm text-[#d6a85f]">
         We couldn&apos;t send the magic link right now.
-        {message ? ` Supabase says: ${message}` : " Check your Supabase auth settings and try again."}
+        {message ? ` ${message}` : " Check your Supabase auth settings and try again."}
       </p>
     );
   }
