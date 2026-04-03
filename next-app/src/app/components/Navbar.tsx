@@ -11,59 +11,16 @@ interface NavbarProps {
 export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
     <header className="relative z-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(3,4,6,0.88),rgba(3,4,6,0.54),transparent)]" />
-      <div className="mx-auto max-w-7xl px-4 pt-4 md:px-6 md:pt-5">
-        <div className="relative flex items-center justify-between gap-3 px-1 py-3 md:gap-8 md:px-0 md:py-4">
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.16),transparent)]" />
-
-          <div className="relative max-w-[220px] flex-1 md:max-w-[280px]">
-            <BrandLogo compact className="opacity-95" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(3,4,6,0.92),rgba(3,4,6,0.42),transparent)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.26),transparent)]" />
+      <div className="mx-auto max-w-7xl px-4 pt-5 md:px-6 md:pt-6">
+        <div className="relative flex items-center justify-between gap-3 border-b border-[rgba(214,168,95,0.1)] px-1 pb-4 md:hidden">
+          <div className="relative max-w-[220px] flex-1">
+            <BrandLogo compact className="mx-auto opacity-95" />
           </div>
 
-          <nav className="relative hidden items-center gap-6 lg:gap-8 md:flex">
-            <NavLink href="/shop" label="Shop" />
-            <NavLink href="/routines" label="Routines" />
-            <NavLink href="/ingredients" label="Ingredients" />
-            <NavLink href="/journal" label="Journal" />
-            <NavLink href="/about" label="About" />
-            <NavLink href="/faq" label="FAQ" />
-            <NavLink href="/contact" label="Contact" />
-          </nav>
-
-          <div className="relative hidden items-center gap-2 md:flex">
-            {isAuthenticated ? (
-              <>
-                <NavLink href="/account/orders" label="Account" />
-                <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
-                  >
-                    Sign out
-                  </button>
-                </form>
-              </>
-            ) : (
-              <>
-                <NavLink href="/account/login" label="Sign in" />
-                <Link
-                  href="/account/signup"
-                  className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
-                >
-                  Sign up
-                </Link>
-              </>
-            )}
-            <IconLink href="/search" label="Search">
-              <SearchIcon />
-            </IconLink>
-            <IconLink href="/cart" label="Cart" badge={cartCount}>
-              <CartIcon />
-            </IconLink>
-          </div>
-
-          <details className="relative md:hidden">
-            <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.55)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm">
+          <details className="relative">
+            <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.4)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm">
               Menu
             </summary>
             <div className="absolute right-0 top-[calc(100%+0.75rem)] w-[280px] overflow-hidden rounded-[22px] border border-[rgba(214,168,95,0.16)] bg-[linear-gradient(180deg,rgba(9,12,18,0.94),rgba(7,9,13,0.88))] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
@@ -99,6 +56,62 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
               </nav>
             </div>
           </details>
+        </div>
+
+        <div className="relative hidden grid-cols-[1fr_auto_1fr] items-center gap-8 border-b border-[rgba(214,168,95,0.1)] pb-5 md:grid">
+          <div className="flex items-center justify-start gap-5 lg:gap-7">
+            <IconLink href="/search" label="Search">
+              <SearchIcon />
+            </IconLink>
+            <nav className="flex items-center gap-5 lg:gap-7">
+              <NavLink href="/shop" label="Shop" />
+              <NavLink href="/routines" label="Routines" />
+              <NavLink href="/ingredients" label="Ingredients" />
+              <NavLink href="/journal" label="Journal" />
+            </nav>
+          </div>
+
+          <div className="relative flex justify-center">
+            <BrandLogo compact className="mx-auto opacity-95" />
+          </div>
+
+          <div className="flex items-center justify-end gap-4 lg:gap-6">
+            <nav className="flex items-center gap-5 lg:gap-7">
+              <NavLink href="/about" label="About" />
+              <NavLink href="/faq" label="FAQ" />
+              <NavLink href="/contact" label="Contact" />
+            </nav>
+
+            <div className="h-7 w-px bg-[rgba(214,168,95,0.12)]" />
+
+            {isAuthenticated ? (
+              <>
+                <NavLink href="/account/orders" label="Account" />
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <NavLink href="/account/login" label="Sign in" />
+                <Link
+                  href="/account/signup"
+                  className="mystic-button-secondary inline-flex min-h-[40px] items-center justify-center px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em]"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+
+            <IconLink href="/cart" label="Cart" badge={cartCount}>
+              <CartIcon />
+            </IconLink>
+          </div>
         </div>
       </div>
     </header>
