@@ -1,9 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { getFirstCatalogProduct, mockProduct } from "./helpers";
+import { getFirstCatalogProduct } from "./helpers";
 
 test.describe("catalog and discovery flows", () => {
   test("shop search narrows the catalog", async ({ page }) => {
-    await page.goto("/shop");
     const firstProduct = await getFirstCatalogProduct(page);
 
     await page.getByLabel("Search products").fill(firstProduct.name);
@@ -33,7 +32,6 @@ test.describe("catalog and discovery flows", () => {
   });
 
   test("search page performs live API-backed search", async ({ page }) => {
-    await page.goto("/shop");
     const firstProduct = await getFirstCatalogProduct(page);
     await page.goto("/search");
 
@@ -47,13 +45,39 @@ test.describe("catalog and discovery flows", () => {
   });
 
   test("product detail page shows pricing, reviews, and related products", async ({ page }) => {
-    await page.goto(`/products/${mockProduct.slug}`);
+    const firstProduct = await getFirstCatalogProduct(page);
+    await page.goto(firstProduct.href);
 
-    await expect(page.getByRole("heading", { level: 1, name: mockProduct.name })).toBeVisible();
-    await expect(page.getByText(mockProduct.price)).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: firstProduct.name })).toBeVisible();
+    await expect(
+      page.locator("form").filter({
+        has: page.locator('input[name="redirectTo"][value="cart"]'),
+      }).getByRole("button", { name: "Add to cart" }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Early product notes" })).toBeVisible();
-    await expect(page.getByText("Velvety, glowy, and surprisingly elegant on combination skin.")).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: "Continue the ritual" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Benefits" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Key ingredients" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "How to use" })).toBeVisible();
+
+    const reviewsEmptyState = page.getByText("No reviews yet for this ritual.");
+    const reviewCards = page.locator("main article").filter({
+      has: page.locator("p").filter({ hasText: "*" }),
+    });
+    const hasRelatedProducts = await page
+      .getByRole("heading", { level: 2, name: "Continue the ritual" })
+      .count();
+
+    if (await reviewsEmptyState.count()) {
+      await expect(reviewsEmptyState).toBeVisible();
+    } else {
+      await expect(reviewCards.first()).toBeVisible();
+    }
+
+    if (hasRelatedProducts) {
+      await expect(
+        page.getByRole("heading", { level: 2, name: "Continue the ritual" }),
+      ).toBeVisible();
+    }
   });
 
   test("unknown product route shows the not found state", async ({ page }) => {

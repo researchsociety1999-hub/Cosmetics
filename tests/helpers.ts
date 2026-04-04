@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 
-export const mockProduct = {
-  id: 1,
-  name: "Celestial Glow Serum",
-  slug: "celestial-glow-serum",
-  categorySlug: "serums",
-  price: "$58.00",
+export type CatalogProduct = {
+  name: string;
+  href: string;
+  slug: string;
 };
 
 export async function expectMainNav(page: Page) {
@@ -15,18 +13,23 @@ export async function expectMainNav(page: Page) {
   await expect(header.getByRole("link", { name: "Contact", exact: true })).toBeVisible();
 }
 
-export async function addMockProductToCart(page: Page) {
-  await page.goto("/products/celestial-glow-serum");
-  await expect(page.getByRole("heading", { level: 1, name: mockProduct.name })).toBeVisible();
+export async function addFirstCatalogProductToCart(page: Page) {
+  const product = await getFirstCatalogProduct(page);
+  await page.goto(product.href);
+  await expect(page.getByRole("heading", { level: 1, name: product.name })).toBeVisible();
+
   const productForm = page.locator("form").filter({
     has: page.locator('input[name="redirectTo"][value="cart"]'),
   });
+
   await productForm.getByRole("button", { name: "Add to cart" }).click();
   await page.waitForURL("**/cart");
   await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
 }
 
-export async function getFirstCatalogProduct(page: Page) {
+export async function getFirstCatalogProduct(page: Page): Promise<CatalogProduct> {
+  await page.goto("/shop");
+
   const firstCard = page.locator("main article").first();
   const productLink = firstCard.locator('a[href^="/products/"]').nth(1);
   const name = (await productLink.innerText()).trim();
@@ -36,7 +39,11 @@ export async function getFirstCatalogProduct(page: Page) {
     throw new Error("Expected the first catalog product to have an href.");
   }
 
-  return { name, href };
+  return {
+    name,
+    href,
+    slug: href.replace(/^\/products\//, ""),
+  };
 }
 
 export function escapeRegex(value: string) {
