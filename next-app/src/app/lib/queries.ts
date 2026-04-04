@@ -67,6 +67,24 @@ function normalizeStringArray(value: unknown): string[] | null {
 }
 
 function normalizeProduct(product: Product): Product {
+  const rawProduct = product as Product & {
+    category?: { slug?: string | null; name?: string | null } | null;
+    categories?: { slug?: string | null; name?: string | null } | null;
+    category_slug?: string | null;
+    category_name?: string | null;
+    category_label?: string | null;
+  };
+  const categoryRecord = rawProduct.category ?? rawProduct.categories ?? null;
+  const categorySlug =
+    rawProduct.category_slug ??
+    categoryRecord?.slug ??
+    null;
+  const categoryName =
+    rawProduct.category_name ??
+    rawProduct.category_label ??
+    categoryRecord?.name ??
+    null;
+
   return {
     ...product,
     extra_images: normalizeStringArray(product.extra_images),
@@ -74,6 +92,8 @@ function normalizeProduct(product: Product): Product {
     benefits: normalizeStringArray(product.benefits),
     skin_types: normalizeStringArray(product.skin_types),
     routine_step: product.routine_step ?? null,
+    category_slug: categorySlug,
+    category_name: categoryName,
   };
 }
 

@@ -184,13 +184,13 @@ export function CheckoutClient({
       ) : (
         <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
           <Link
-            href="/account/login?next=%2Fcheckout"
+            href="/account/login?next=%2Fcart"
             className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
           >
             Sign in to checkout
           </Link>
           <Link
-            href="/account/signup?next=%2Fcheckout"
+            href="/account/signup?next=%2Fcart"
             className="mystic-button-secondary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
           >
             Create account

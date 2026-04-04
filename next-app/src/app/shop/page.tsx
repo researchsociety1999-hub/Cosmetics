@@ -43,19 +43,14 @@ export default async function ShopPage({
       sortBy: sort,
     }),
   ]);
-  const availableCategoryIds = new Set(
-    filteredProducts
-      .map((product) => product.category_id)
-      .filter((categoryId): categoryId is number => typeof categoryId === "number"),
-  );
   const availableCategories = categories.filter((category) =>
-    availableCategoryIds.has(category.id),
+    filteredProducts.some((product) => productMatchesCategory(product, category)),
   );
   const matchedCategory = params.category
     ? availableCategories.find((category) => category.slug === params.category) ?? null
     : null;
   const products = matchedCategory
-    ? filteredProducts.filter((product) => product.category_id === matchedCategory.id)
+    ? filteredProducts.filter((product) => productMatchesCategory(product, matchedCategory))
     : filteredProducts;
 
   return (
@@ -180,6 +175,27 @@ export default async function ShopPage({
       </main>
     </SiteChrome>
   );
+}
+
+function productMatchesCategory(
+  product: {
+    category_id: number | null;
+    category_slug?: string | null;
+    category_name?: string | null;
+  },
+  category: { id: number; slug: string; name: string },
+) {
+  if (typeof product.category_id === "number" && product.category_id === category.id) {
+    return true;
+  }
+
+  const normalizedSlug = product.category_slug?.trim().toLowerCase();
+  if (normalizedSlug && normalizedSlug === category.slug.toLowerCase()) {
+    return true;
+  }
+
+  const normalizedName = product.category_name?.trim().toLowerCase();
+  return normalizedName === category.name.toLowerCase();
 }
 
 function CategoryChip({

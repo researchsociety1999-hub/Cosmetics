@@ -46,7 +46,7 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
   const user = await getAuthenticatedUser();
 
   if (!user) {
-    redirect("/account/login");
+    redirect("/account/login?next=%2Fcart");
   }
 
   const cart = await getCartSummary();
