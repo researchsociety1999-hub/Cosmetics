@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { addToCartAction } from "../actions/cart";
+import { AddToCartForm } from "./AddToCartForm";
 import { formatMoney, getDisplayPrice, isSafeImageSrc } from "../lib/format";
 import type { Product } from "../lib/types";
 
@@ -69,15 +70,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          <form action={addToCartAction}>
-            <input type="hidden" name="productId" value={product.id} />
-            <button
-              type="submit"
-              className="rounded-full border border-[rgba(214,168,95,0.45)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.14)]"
-            >
-              Add to cart
-            </button>
-          </form>
+          <AddToCartForm
+            action={addToCartAction}
+            productId={product.id}
+            redirectTo=""
+            showQuantity={false}
+            formClassName="contents"
+            buttonClassName="rounded-full border border-[rgba(214,168,95,0.45)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.14)]"
+          />
         </div>
       </div>
     </article>

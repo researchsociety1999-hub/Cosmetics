@@ -18,6 +18,8 @@ export interface Product {
   benefits?: string[] | null;
   routine_step?: string | null;
   skin_types?: string[] | null;
+  category_slug?: string | null;
+  category_name?: string | null;
 }
 
 export interface ProductVariant {

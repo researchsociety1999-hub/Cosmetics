@@ -7,7 +7,7 @@ test.describe("cart and checkout flows", () => {
     await page.getByRole("button", { name: "Add to cart" }).first().click();
     await page.goto("/cart");
 
-    await expect(page.getByRole("heading", { level: 2 })).toBeVisible();
+    await expect(page.locator("main article").getByRole("heading", { level: 2 }).first()).toBeVisible();
     await expect(page.getByText("Line total:")).toContainText("$");
     await expect(page.getByRole("link", { name: "Checkout" })).toBeVisible();
   });
@@ -45,6 +45,14 @@ test.describe("cart and checkout flows", () => {
     await expect(page.getByRole("heading", { level: 2, name: "Order summary" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Create account" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Sign in to checkout" })).toHaveAttribute(
+      "href",
+      "/account/login?next=%2Fcart",
+    );
+    await expect(page.getByRole("link", { name: "Create account" })).toHaveAttribute(
+      "href",
+      "/account/signup?next=%2Fcart",
+    );
   });
 
   test("shows stripe unavailable when stripe is not configured", async ({ page }) => {
