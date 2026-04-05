@@ -1,5 +1,8 @@
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
     // EMAIL INTEGRATION / DEV SERVER FIX:
     // `next/image` requires remote hosts to be explicitly allowed. The storefront
