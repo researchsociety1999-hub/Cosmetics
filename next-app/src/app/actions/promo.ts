@@ -16,21 +16,21 @@ function revalidatePromoRoutes() {
 }
 
 export async function applyPromoCodeAction(formData: FormData): Promise<void> {
+  const rawCode = String(formData.get("promoCode") ?? "");
+  const promoCode = normalizePromoCode(rawCode);
+  const cart = await getCartSummary();
+
+  if (!promoCode) {
+    redirect("/cart?promo-status=missing");
+  }
+
+  if (!cart.lines.length) {
+    await clearStoredPromoCode();
+    revalidatePromoRoutes();
+    redirect(`/cart?promo-status=empty&promo-code=${encodeURIComponent(promoCode)}`);
+  }
+
   try {
-    const rawCode = String(formData.get("promoCode") ?? "");
-    const promoCode = normalizePromoCode(rawCode);
-    const cart = await getCartSummary();
-
-    if (!promoCode) {
-      redirect("/cart?promo-status=missing");
-    }
-
-    if (!cart.lines.length) {
-      await clearStoredPromoCode();
-      revalidatePromoRoutes();
-      redirect(`/cart?promo-status=empty&promo-code=${encodeURIComponent(promoCode)}`);
-    }
-
     const result = await validatePromoCodeForSubtotal({
       code: promoCode,
       subtotalCents: cart.subtotalCents,

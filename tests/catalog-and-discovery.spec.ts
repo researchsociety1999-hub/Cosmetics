@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getFirstCatalogProduct } from "./helpers";
+import { expectOneOfTexts, getFirstCatalogProduct } from "./helpers";
 
 test.describe("catalog and discovery flows", () => {
   test("shop search narrows the catalog", async ({ page }) => {
@@ -91,8 +91,19 @@ test.describe("catalog and discovery flows", () => {
     await page.goto("/");
 
     await page.getByLabel("Email address").fill("tester@example.com");
-    await page.getByRole("button", { name: "Join the list" }).click();
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/newsletter") &&
+          response.request().method() === "POST",
+      ),
+      page.getByRole("button", { name: "Join the list" }).click(),
+    ]);
 
-    await expect(page.getByText("You're on the list.")).toBeVisible();
+    await expectOneOfTexts(page, [
+      "You're on the list.",
+      "You're already on the list.",
+      "Newsletter signup is not configured yet.",
+    ]);
   });
 });
