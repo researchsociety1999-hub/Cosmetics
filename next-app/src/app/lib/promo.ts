@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { supabase } from "./supabaseClient";
+import { hasSupabaseServiceEnv, supabaseAdmin } from "./supabaseClient";
 import type { AppliedPromo, PromoCode } from "./types";
 
 export const PROMO_COOKIE_NAME = "mystique-promo-code";
@@ -17,11 +17,11 @@ export type PromoValidationResult =
   | { ok: false; reason: PromoValidationFailure; message: string };
 
 function requireAdminClient() {
-  if (!supabase) {
-    throw new Error("Supabase is not configured.");
+  if (!supabaseAdmin || !hasSupabaseServiceEnv) {
+    throw new Error("Supabase service role is not configured.");
   }
 
-  return supabase;
+  return supabaseAdmin;
 }
 
 export function normalizePromoCode(code: string): string {
@@ -59,7 +59,7 @@ export function getPromoFailureMessage(reason: PromoValidationFailure, minimumSu
 export async function getPromoCodeByCode(code: string): Promise<PromoCode | null> {
   const normalizedCode = normalizePromoCode(code);
 
-  if (!normalizedCode || !supabase) {
+  if (!normalizedCode) {
     return null;
   }
 
@@ -198,6 +198,7 @@ export async function clearStoredPromoCode(): Promise<void> {
 export async function getAppliedPromoFromStoredCode(
   subtotalCents: number,
 ): Promise<{
+  storedCode: string | null;
   appliedPromo: AppliedPromo | null;
   invalidMessage: string | null;
 }> {
@@ -205,25 +206,47 @@ export async function getAppliedPromoFromStoredCode(
 
   if (!storedCode) {
     return {
+      storedCode: null,
       appliedPromo: null,
       invalidMessage: null,
     };
   }
 
-  const result = await validatePromoCodeForSubtotal({
-    code: storedCode,
-    subtotalCents,
-  });
+  if (subtotalCents <= 0) {
+    return {
+      storedCode,
+      appliedPromo: null,
+      invalidMessage: "Your cart is empty, so that promo code is no longer applied.",
+    };
+  }
+
+  let result: PromoValidationResult;
+  try {
+    result = await validatePromoCodeForSubtotal({
+      code: storedCode,
+      subtotalCents,
+    });
+  } catch (error) {
+    return {
+      storedCode,
+      appliedPromo: null,
+      invalidMessage:
+        error instanceof Error && error.message === "Supabase service role is not configured."
+          ? "Promo codes are not configured right now."
+          : "We couldn't validate your promo code right now.",
+    };
+  }
 
   if (!result.ok) {
-    await clearStoredPromoCode();
     return {
+      storedCode,
       appliedPromo: null,
       invalidMessage: result.message,
     };
   }
 
   return {
+    storedCode,
     appliedPromo: result.appliedPromo,
     invalidMessage: null,
   };

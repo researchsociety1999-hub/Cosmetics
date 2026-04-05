@@ -80,21 +80,12 @@ export async function createStripeCheckoutSession({
           {
             coupon: (
               await stripe.coupons.create(
-                appliedPromo.promo.discount_type === "percent"
-                  ? {
-                      duration: "once",
-                      percent_off: Math.min(
-                        Math.max(appliedPromo.promo.discount_value, 0),
-                        100,
-                      ),
-                      name: appliedPromo.promo.code,
-                    }
-                  : {
-                      duration: "once",
-                      amount_off: order.discount_cents,
-                      currency: CHECKOUT_CURRENCY,
-                      name: appliedPromo.promo.code,
-                    },
+                {
+                  duration: "once",
+                  amount_off: order.discount_cents,
+                  currency: CHECKOUT_CURRENCY,
+                  name: appliedPromo.promo.code,
+                },
               )
             ).id,
           },

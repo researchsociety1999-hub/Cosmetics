@@ -5,6 +5,7 @@ import {
   getOrderTotals,
 } from "./checkout";
 import { sendOrderPaidEmails } from "./orderNotifications";
+import { clearStoredPromoCode } from "./promo";
 import { supabase } from "./supabaseClient";
 import type {
   AppliedPromo,
@@ -331,6 +332,7 @@ export async function finalizePaidOrderFromStripe({
   }
 
   await clearCartItemsCookie();
+  await clearStoredPromoCode();
   await sendOrderPaidEmails({
     order: order as Order,
     items: orderWithItems.items,

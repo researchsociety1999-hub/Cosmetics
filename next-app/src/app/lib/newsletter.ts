@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabaseAdmin, hasSupabaseServiceEnv } from "./supabaseClient";
 import type { NewsletterSubscriber } from "./types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,11 +20,11 @@ export function validateNewsletterEmail(email: string): string | null {
 }
 
 function requireAdminClient() {
-  if (!supabase) {
-    throw new Error("Supabase is not configured.");
+  if (!supabaseAdmin || !hasSupabaseServiceEnv) {
+    throw new Error("Supabase service role is not configured.");
   }
 
-  return supabase;
+  return supabaseAdmin;
 }
 
 export async function subscribeToNewsletter({
@@ -36,17 +36,21 @@ export async function subscribeToNewsletter({
 }): Promise<{ status: "created" | "duplicate"; subscriber: NewsletterSubscriber | null }> {
   const client = requireAdminClient();
   const normalizedEmail = normalizeNewsletterEmail(email);
-  const existing = await client
+  const { data: existing, error: existingError } = await client
     .from("newsletter_subscribers")
     .select("*")
     .ilike("email", normalizedEmail)
     .limit(1)
     .maybeSingle();
 
-  if (existing.data) {
+  if (existingError) {
+    throw new Error(existingError.message);
+  }
+
+  if (existing) {
     return {
       status: "duplicate",
-      subscriber: existing.data as NewsletterSubscriber,
+      subscriber: existing as NewsletterSubscriber,
     };
   }
 

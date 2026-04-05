@@ -7,7 +7,7 @@ import {
   createPendingOrderFromCart,
   markOrderFailedForCheckout,
 } from "../../lib/checkoutOrders";
-import { getAppliedPromoFromStoredCode } from "../../lib/promo";
+import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 import { createStripeCheckoutSession, isStripeConfigured } from "../../lib/stripe";
 import type { ShippingDetails } from "../../lib/types";
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     }
 
     const cart = await getCartSummary();
-    const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
+    const { storedCode, appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
       cart.subtotalCents,
     );
 
@@ -80,6 +80,9 @@ export async function POST(request: Request) {
     }
 
     if (invalidMessage) {
+      if (storedCode) {
+        await clearStoredPromoCode();
+      }
       return NextResponse.json(
         { error: `Your promo code could not be applied: ${invalidMessage}` },
         { status: 400 },
