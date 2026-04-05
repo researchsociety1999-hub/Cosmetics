@@ -96,6 +96,7 @@ export interface Order {
   order_number: string;
   user_id: string | null;
   email: string;
+  promo_code: string | null;
   status: OrderStatus;
   currency: string;
   subtotal_cents: number;
@@ -152,6 +153,7 @@ export interface ShippingDetails {
 
 export interface OrderTotals {
   subtotalAmount: number;
+  discountAmount: number;
   shippingAmount: number;
   taxAmount: number;
   totalAmount: number;
@@ -211,6 +213,8 @@ export interface WishlistItem {
 
 export type CouponDiscountType = "percentage" | "fixed";
 
+export type PromoDiscountType = "percent" | "fixed";
+
 export interface Coupon {
   id: string;
   code: string;
@@ -221,6 +225,35 @@ export interface Coupon {
   uses_count: number | null;
   expires_at: string | null;
   is_active: boolean | null;
+}
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  discount_type: PromoDiscountType;
+  discount_value: number;
+  is_active: boolean | null;
+  starts_at: string | null;
+  expires_at: string | null;
+  minimum_subtotal: number | null;
+  created_at: string;
+}
+
+export interface AppliedPromo {
+  promo: PromoCode;
+  discountCents: number;
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  source: string | null;
+  created_at: string;
+}
+
+export interface PaymentSummary {
+  latestPayment: Payment | null;
+  paymentStatus: string;
 }
 
 export type LoyaltyTier = "Bronze" | "Silver" | "Gold";

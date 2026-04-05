@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { applyPromoCodeAction, removePromoCodeAction } from "../actions/promo";
 import { removeFromCartAction, updateCartQuantityAction } from "../actions/cart";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
+import { getOrderTotals } from "../lib/checkout";
 import { formatMoney } from "../lib/format";
+import { getAppliedPromoFromStoredCode } from "../lib/promo";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -12,8 +15,24 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function CartPage() {
+type SearchParams = Promise<{ "promo-status"?: string; "promo-code"?: string }>;
+
+export default async function CartPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const cart = await getCartSummary();
+  const params = await searchParams;
+  const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
+    cart.subtotalCents,
+  );
+  const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
+  const promoMessage = getPromoStatusMessage({
+    status: params["promo-status"],
+    code: params["promo-code"],
+    invalidMessage,
+  });
 
   return (
     <SiteChrome>
@@ -32,6 +51,9 @@ export default async function CartPage() {
             <p className="text-sm text-[#b8ab95]">
               Your cart is empty. Begin with the newest Mystique rituals.
             </p>
+            {promoMessage ? (
+              <p className="mt-4 text-sm text-[#d6a85f]">{promoMessage}</p>
+            ) : null}
             <Link
               href="/shop"
               className="mystic-button-secondary mt-6 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
@@ -107,14 +129,53 @@ export default async function CartPage() {
                   <span>Subtotal</span>
                   <span>{formatMoney(cart.subtotalCents)}</span>
                 </div>
+                {appliedPromo ? (
+                  <div className="flex justify-between text-[#d6a85f]">
+                    <span>Promo ({appliedPromo.promo.code})</span>
+                    <span>-{formatMoney(appliedPromo.discountCents)}</span>
+                  </div>
+                ) : null}
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>
+                    {totals.shippingAmount === 0 ? "Free" : formatMoney(totals.shippingAmount)}
+                  </span>
+                </div>
+                <div className="flex justify-between font-semibold text-[#f5eee3]">
+                  <span>Total</span>
+                  <span>{formatMoney(totals.totalAmount)}</span>
+                </div>
               </div>
               <label className="mt-6 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]">
                 Promo code
               </label>
-              <input
-                placeholder="MYSTIQUE10"
-                className="mystic-input mt-2 w-full text-sm"
-              />
+              <form action={applyPromoCodeAction} className="mt-2 space-y-3">
+                <input
+                  name="promoCode"
+                  placeholder="MYSTIQUE10"
+                  defaultValue={appliedPromo?.promo.code ?? params["promo-code"] ?? ""}
+                  className="mystic-input w-full text-sm"
+                />
+                <button
+                  type="submit"
+                  className="w-full rounded-full border border-[rgba(214,168,95,0.3)] px-4 py-3 text-xs uppercase tracking-[0.18em] text-[#f5eee3]"
+                >
+                  Apply code
+                </button>
+              </form>
+              {appliedPromo ? (
+                <form action={removePromoCodeAction} className="mt-3">
+                  <button
+                    type="submit"
+                    className="w-full rounded-full border border-[rgba(214,168,95,0.2)] px-4 py-3 text-xs uppercase tracking-[0.18em] text-[#b8ab95]"
+                  >
+                    Remove promo
+                  </button>
+                </form>
+              ) : null}
+              {promoMessage ? (
+                <p className="mt-3 text-sm text-[#d6a85f]">{promoMessage}</p>
+              ) : null}
               <Link
                 href="/checkout"
                 className="mystic-button-primary mt-6 inline-flex w-full items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
@@ -127,4 +188,56 @@ export default async function CartPage() {
       </main>
     </SiteChrome>
   );
+}
+
+function getPromoStatusMessage({
+  status,
+  code,
+  invalidMessage,
+}: {
+  status?: string;
+  code?: string;
+  invalidMessage: string | null;
+}) {
+  if (status === "applied" && code) {
+    return `${code} has been applied to your cart.`;
+  }
+
+  if (status === "removed") {
+    return "Promo code removed from your cart.";
+  }
+
+  if (status === "missing") {
+    return "Enter a promo code before applying it.";
+  }
+
+  if (status === "empty") {
+    return "Add products to your cart before applying a promo code.";
+  }
+
+  if (invalidMessage) {
+    return invalidMessage;
+  }
+
+  if (status === "not-found") {
+    return "We couldn't find that promo code.";
+  }
+
+  if (status === "inactive") {
+    return "That promo code is not active right now.";
+  }
+
+  if (status === "not-started") {
+    return "That promo code is not available yet.";
+  }
+
+  if (status === "expired") {
+    return "That promo code has expired.";
+  }
+
+  if (status === "minimum-subtotal") {
+    return "That promo code needs a higher cart subtotal before it can be applied.";
+  }
+
+  return null;
 }

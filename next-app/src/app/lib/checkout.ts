@@ -24,16 +24,21 @@ export function getShippingAmountCents(subtotalCents: number): number {
   return FLAT_SHIPPING_CENTS;
 }
 
-export function getOrderTotals(cart: CartSummary): OrderTotals {
+export function getOrderTotals(
+  cart: CartSummary,
+  discountCents = 0,
+): OrderTotals {
   const subtotalAmount = cart.subtotalCents;
+  const discountAmount = Math.min(Math.max(discountCents, 0), subtotalAmount);
   const shippingAmount = getShippingAmountCents(subtotalAmount);
   const taxAmount = 0;
 
   return {
     subtotalAmount,
+    discountAmount,
     shippingAmount,
     taxAmount,
-    totalAmount: subtotalAmount + shippingAmount + taxAmount,
+    totalAmount: subtotalAmount - discountAmount + shippingAmount + taxAmount,
   };
 }
 

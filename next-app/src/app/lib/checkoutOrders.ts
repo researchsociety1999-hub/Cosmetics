@@ -7,6 +7,7 @@ import {
 import { sendOrderPaidEmails } from "./orderNotifications";
 import { supabase } from "./supabaseClient";
 import type {
+  AppliedPromo,
   Address,
   CartSummary,
   Order,
@@ -91,10 +92,12 @@ export async function createPendingOrderFromCart({
   userId,
   shippingDetails,
   cart,
+  appliedPromo = null,
 }: {
   userId: string;
   shippingDetails: ShippingDetails;
   cart: CartSummary;
+  appliedPromo?: AppliedPromo | null;
 }): Promise<{ order: Order; items: OrderItem[] }> {
   const client = requireAdminClient();
 
@@ -106,18 +109,19 @@ export async function createPendingOrderFromCart({
     upsertDefaultAddress({ userId, type: "shipping", details: shippingDetails }),
     upsertDefaultAddress({ userId, type: "billing", details: shippingDetails }),
   ]);
-  const totals = getOrderTotals(cart);
+  const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
   const orderNumber = buildOrderNumber();
 
   const orderPayload = {
     order_number: orderNumber,
     user_id: userId,
     email: shippingDetails.email,
+    promo_code: appliedPromo?.promo.code ?? null,
     status: "pending",
     currency: CHECKOUT_CURRENCY,
     subtotal_cents: cart.subtotalCents,
     shipping_cents: totals.shippingAmount,
-    discount_cents: 0,
+    discount_cents: totals.discountAmount,
     total_cents: totals.totalAmount,
     subtotal_amount: totals.subtotalAmount,
     shipping_amount: totals.shippingAmount,

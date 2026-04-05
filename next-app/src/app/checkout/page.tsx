@@ -4,6 +4,7 @@ import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
 import { formatMoney } from "../lib/format";
+import { getAppliedPromoFromStoredCode } from "../lib/promo";
 import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { isStripeConfigured } from "../lib/stripe";
 
@@ -25,7 +26,10 @@ export default async function CheckoutPage({
   const cart = await getCartSummary();
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
-  const totals = getOrderTotals(cart);
+  const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
+    cart.subtotalCents,
+  );
+  const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
   const isAuthenticated = Boolean(user);
 
   return (
@@ -81,6 +85,11 @@ export default async function CheckoutPage({
                 in a moment.
               </p>
             ) : null}
+            {invalidMessage ? (
+              <p className="text-sm text-[#d6a85f]">
+                Your previous promo code could not be applied at checkout: {invalidMessage}
+              </p>
+            ) : null}
           </div>
 
           <aside className="mystic-card h-fit p-6">
@@ -102,6 +111,12 @@ export default async function CheckoutPage({
                 <span>Subtotal</span>
                 <span>{formatMoney(cart.subtotalCents)}</span>
               </div>
+              {appliedPromo ? (
+                <div className="mt-3 flex justify-between text-[#d6a85f]">
+                  <span>Promo ({appliedPromo.promo.code})</span>
+                  <span>-{formatMoney(appliedPromo.discountCents)}</span>
+                </div>
+              ) : null}
               <div className="mt-3 flex justify-between">
                 <span>Shipping</span>
                 <span>{totals.shippingAmount === 0 ? "Free" : formatMoney(totals.shippingAmount)}</span>

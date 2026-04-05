@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { CHECKOUT_CURRENCY, getShippingAmountCents } from "./checkout";
-import type { CartSummary, Order } from "./types";
+import type { AppliedPromo, CartSummary, Order } from "./types";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -64,14 +64,42 @@ export async function createStripeCheckoutSession({
   order,
   cart,
   origin,
+  appliedPromo = null,
 }: {
   order: Order;
   cart: CartSummary;
   origin?: string;
+  appliedPromo?: AppliedPromo | null;
 }) {
   const stripe = getStripeServerClient();
   const baseUrl = (origin ?? getSiteUrl()).replace(/\/$/, "");
-  const shippingAmountCents = getShippingAmountCents(cart.subtotalCents);
+  const shippingAmountCents = order.shipping_cents ?? getShippingAmountCents(cart.subtotalCents);
+  const discounts =
+    appliedPromo && order.discount_cents > 0
+      ? [
+          {
+            coupon: (
+              await stripe.coupons.create(
+                appliedPromo.promo.discount_type === "percent"
+                  ? {
+                      duration: "once",
+                      percent_off: Math.min(
+                        Math.max(appliedPromo.promo.discount_value, 0),
+                        100,
+                      ),
+                      name: appliedPromo.promo.code,
+                    }
+                  : {
+                      duration: "once",
+                      amount_off: order.discount_cents,
+                      currency: CHECKOUT_CURRENCY,
+                      name: appliedPromo.promo.code,
+                    },
+              )
+            ).id,
+          },
+        ]
+      : undefined;
 
   return stripe.checkout.sessions.create({
     mode: "payment",
@@ -85,7 +113,9 @@ export async function createStripeCheckoutSession({
       order_id: order.id,
       order_number: order.order_number,
       user_id: order.user_id ?? "",
+      promo_code: appliedPromo?.promo.code ?? "",
     },
+    discounts,
     shipping_address_collection: {
       allowed_countries: ["US"],
     },
