@@ -31,6 +31,30 @@ test.describe("cart and checkout flows", () => {
     await expect(page.getByRole("link", { name: "Continue shopping" })).toBeVisible();
   });
 
+  test("shows a validation message when applying an empty promo code", async ({ page }) => {
+    await addFirstCatalogProductToCart(page);
+
+    await page.getByRole("button", { name: "Apply code" }).click();
+
+    await expect(page.getByText("Enter a promo code before applying it.")).toBeVisible();
+  });
+
+  test("shows promo removal state from query string", async ({ page }) => {
+    await addFirstCatalogProductToCart(page);
+    await page.goto("/cart?promo-status=removed");
+
+    await expect(page.getByText("Promo code removed from your cart.")).toBeVisible();
+  });
+
+  test("shows promo unavailable state from query string", async ({ page }) => {
+    await addFirstCatalogProductToCart(page);
+    await page.goto("/cart?promo-status=unavailable");
+
+    await expect(
+      page.getByText("Promo codes are not configured right now. Please try again later."),
+    ).toBeVisible();
+  });
+
   test("validates empty checkout when cart has no items", async ({ page }) => {
     await page.goto("/checkout");
 
@@ -71,6 +95,13 @@ test.describe("cart and checkout flows", () => {
     await page.goto("/checkout?status=validation&message=Postal%20code%20is%20required.");
 
     await expect(page.getByText("Postal code is required.")).toBeVisible();
+  });
+
+  test("protects order detail page for signed-out visitors", async ({ page }) => {
+    await page.goto("/account/orders/test-order-id");
+
+    await expect(page).toHaveURL(/\/account\/login$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Sign in to Mystique" })).toBeVisible();
   });
 
   test("shows cancelled checkout state", async ({ page }) => {

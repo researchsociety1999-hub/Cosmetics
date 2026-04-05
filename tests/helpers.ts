@@ -49,3 +49,15 @@ export async function getFirstCatalogProduct(page: Page): Promise<CatalogProduct
 export function escapeRegex(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+export async function expectOneOfTexts(page: Page, texts: string[]) {
+  for (const text of texts) {
+    const locator = page.getByText(text, { exact: false });
+    if (await locator.count()) {
+      await expect(locator.first()).toBeVisible();
+      return;
+    }
+  }
+
+  throw new Error(`Expected one of these texts to be visible: ${texts.join(" | ")}`);
+}
