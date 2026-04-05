@@ -9,6 +9,7 @@ import {
 } from "./data";
 import { hasSupabaseEnv, supabase } from "./supabaseClient";
 import type {
+  AppliedPromo,
   Address,
   CartItem,
   CartSummary,
@@ -20,6 +21,7 @@ import type {
   OrderItem,
   OrderTotals,
   OrderWithItems,
+  Payment,
   PressMention,
   Product,
   ProductVariant,
@@ -47,6 +49,7 @@ export interface CreatePendingOrderInput {
   cart: CartSummary;
   currency?: string;
   totals: OrderTotals;
+  appliedPromo?: AppliedPromo | null;
 }
 
 function requireSupabase() {
@@ -564,6 +567,7 @@ export async function createPendingOrder({
   cart,
   currency = "usd",
   totals,
+  appliedPromo = null,
 }: CreatePendingOrderInput): Promise<Order> {
   const client = requireSupabase();
 
@@ -571,11 +575,12 @@ export async function createPendingOrder({
     order_number: orderNumber,
     user_id: userId,
     email: shippingDetails.email,
+    promo_code: appliedPromo?.promo.code ?? null,
     status: "pending",
     currency,
     subtotal_cents: cart.subtotalCents,
     shipping_cents: totals.shippingAmount,
-    discount_cents: 0,
+    discount_cents: totals.discountAmount,
     total_cents: totals.totalAmount,
     subtotal_amount: totals.subtotalAmount,
     shipping_amount: totals.shippingAmount,
@@ -707,6 +712,28 @@ export async function getOrderItems(orderId: string): Promise<OrderItem[]> {
   }
 }
 
+export async function getPaymentsForOrder(orderId: string): Promise<Payment[]> {
+  if (!hasSupabaseEnv || !supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return [];
+    }
+
+    return (data ?? []) as Payment[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getOrderWithItems(
   orderId: string,
 ): Promise<OrderWithItems | null> {
@@ -722,6 +749,41 @@ export async function getOrderWithItems(
     ...order,
     items,
   };
+}
+
+export async function getOrderWithItemsForUser({
+  userId,
+  orderId,
+}: {
+  userId: string;
+  orderId: string;
+}): Promise<OrderWithItems | null> {
+  if (!hasSupabaseEnv || !supabase) {
+    return null;
+  }
+
+  try {
+    const { data: order, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", orderId)
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !order) {
+      return null;
+    }
+
+    const items = await getOrderItems(orderId);
+
+    return {
+      ...(order as Order),
+      items,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function markOrderPaid({

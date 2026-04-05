@@ -10,6 +10,7 @@ import {
   createPendingOrderFromCart,
   markOrderFailedForCheckout,
 } from "../lib/checkoutOrders";
+import { getAppliedPromoFromStoredCode } from "../lib/promo";
 import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { createStripeCheckoutSession, isStripeConfigured } from "../lib/stripe";
 import type { ShippingDetails } from "../lib/types";
@@ -50,9 +51,16 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
   }
 
   const cart = await getCartSummary();
+  const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
+    cart.subtotalCents,
+  );
 
   if (cart.lines.length === 0) {
     redirect("/checkout?status=empty");
+  }
+
+  if (invalidMessage) {
+    redirect(`/checkout?status=validation&message=${encodeURIComponent(invalidMessage)}`);
   }
 
   try {
@@ -60,12 +68,14 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
       userId: user.id,
       shippingDetails,
       cart,
+      appliedPromo,
     });
 
     try {
       const session = await createStripeCheckoutSession({
         order,
         cart,
+        appliedPromo,
       });
 
       await attachStripeCheckoutSessionToOrder(order.id, session.id);

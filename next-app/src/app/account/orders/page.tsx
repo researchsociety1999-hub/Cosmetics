@@ -43,9 +43,17 @@ export default async function OrdersPage() {
                       Placed {new Date(order.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <p className="text-sm uppercase tracking-[0.22em] text-[#f0d19a]">
-                    {formatMoney(order.total_cents)}
-                  </p>
+                  <div className="flex flex-col items-start gap-3 md:items-end">
+                    <p className="text-sm uppercase tracking-[0.22em] text-[#f0d19a]">
+                      {formatMoney(order.total_cents)}
+                    </p>
+                    <Link
+                      href={`/account/orders/${order.id}`}
+                      className="text-xs uppercase tracking-[0.2em] text-[#d6a85f]"
+                    >
+                      View details
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}

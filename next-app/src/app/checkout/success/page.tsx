@@ -134,6 +134,12 @@ export default async function CheckoutSuccessPage({
                   <span>Subtotal</span>
                   <span>{formatMoney(order.subtotal_cents)}</span>
                 </div>
+                {order.discount_cents > 0 ? (
+                  <div className="mt-3 flex justify-between text-[#d6a85f]">
+                    <span>Promo{order.promo_code ? ` (${order.promo_code})` : ""}</span>
+                    <span>-{formatMoney(order.discount_cents)}</span>
+                  </div>
+                ) : null}
                 <div className="mt-3 flex justify-between">
                   <span>Shipping</span>
                   <span>{formatMoney(order.shipping_cents)}</span>
@@ -159,6 +165,14 @@ export default async function CheckoutSuccessPage({
             >
               Contact support
             </Link>
+            {order?.id ? (
+              <Link
+                href={`/account/orders/${order.id}`}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.28)] px-8 py-3 text-xs uppercase tracking-[0.22em] text-[#f5eee3]"
+              >
+                View order details
+              </Link>
+            ) : null}
           </div>
         </div>
       </main>
