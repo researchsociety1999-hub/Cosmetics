@@ -239,5 +239,9 @@ function getPromoStatusMessage({
     return "That promo code needs a higher cart subtotal before it can be applied.";
   }
 
+  if (status === "unavailable") {
+    return "Promo codes are not configured right now. Please try again later.";
+  }
+
   return null;
 }

@@ -26,6 +26,7 @@ const supabaseUrl = isValidHttpUrl(rawSupabaseUrl) ? rawSupabaseUrl : null;
 const supabaseKey = supabaseServiceKey ?? supabaseAnonKey;
 
 export const hasSupabaseEnv = Boolean(supabaseUrl && supabaseKey);
+export const hasSupabaseServiceEnv = Boolean(supabaseUrl && supabaseServiceKey);
 export const hasSupabasePublicEnv = Boolean(supabaseUrl && supabaseAnonKey);
 export const hasInvalidSupabaseUrl = Boolean(rawSupabaseUrl && !supabaseUrl);
 export const hasInvalidSupabasePublicKey = Boolean(
@@ -35,4 +36,8 @@ export const resolvedSupabaseUrl = supabaseUrl;
 
 export const supabase: SupabaseClient | null = hasSupabaseEnv
   ? createClient(supabaseUrl!, supabaseKey!)
+  : null;
+
+export const supabaseAdmin: SupabaseClient | null = hasSupabaseServiceEnv
+  ? createClient(supabaseUrl!, supabaseServiceKey!)
   : null;

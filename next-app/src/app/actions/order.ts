@@ -10,7 +10,7 @@ import {
   createPendingOrderFromCart,
   markOrderFailedForCheckout,
 } from "../lib/checkoutOrders";
-import { getAppliedPromoFromStoredCode } from "../lib/promo";
+import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../lib/promo";
 import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { createStripeCheckoutSession, isStripeConfigured } from "../lib/stripe";
 import type { ShippingDetails } from "../lib/types";
@@ -51,7 +51,7 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
   }
 
   const cart = await getCartSummary();
-  const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
+  const { storedCode, appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
     cart.subtotalCents,
   );
 
@@ -60,6 +60,9 @@ export async function submitOrderAction(formData: FormData): Promise<void> {
   }
 
   if (invalidMessage) {
+    if (storedCode) {
+      await clearStoredPromoCode();
+    }
     redirect(`/checkout?status=validation&message=${encodeURIComponent(invalidMessage)}`);
   }
 

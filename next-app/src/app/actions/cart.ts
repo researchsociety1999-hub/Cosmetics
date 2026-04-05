@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient, getAuthenticatedUser } from "../lib/supabaseServer";
-import { getCartItemsFromCookie } from "../lib/cart";
+import { getCartItemsFromCookie, getCartSummary } from "../lib/cart";
+import { clearStoredPromoCode, getStoredPromoCode, validatePromoCodeForSubtotal } from "../lib/promo";
 import type { CartCookieItem } from "../lib/types";
 
 const CART_COOKIE_NAME = "mystique-cart";
@@ -14,6 +15,28 @@ function revalidateCartRoutes() {
   revalidatePath("/shop");
   revalidatePath("/cart");
   revalidatePath("/checkout");
+}
+
+async function syncPromoCodeAfterCartMutation(subtotalCents: number) {
+  const storedCode = await getStoredPromoCode();
+
+  if (!storedCode) {
+    return;
+  }
+
+  if (subtotalCents <= 0) {
+    await clearStoredPromoCode();
+    return;
+  }
+
+  const result = await validatePromoCodeForSubtotal({
+    code: storedCode,
+    subtotalCents,
+  });
+
+  if (!result.ok) {
+    await clearStoredPromoCode();
+  }
 }
 
 function parseOptionalVariantId(value: FormDataEntryValue | null): number | null {
@@ -109,6 +132,8 @@ export async function addToCartAction(formData: FormData): Promise<void> {
       }
     }
 
+    const updatedCart = await getCartSummary();
+    await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
     revalidateCartRoutes();
 
     if (redirectTarget === "cart") {
@@ -128,6 +153,8 @@ export async function addToCartAction(formData: FormData): Promise<void> {
   }
 
   await persistGuestCart(items);
+  const updatedCart = await getCartSummary();
+  await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
   revalidateCartRoutes();
 
   if (redirectTarget === "cart") {
@@ -193,6 +220,8 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
       }
     }
 
+    const updatedCart = await getCartSummary();
+    await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
     revalidateCartRoutes();
     return;
   }
@@ -206,6 +235,8 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
         );
 
   await persistGuestCart(nextItems);
+  const updatedCart = await getCartSummary();
+  await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
   revalidateCartRoutes();
 }
 
@@ -238,13 +269,16 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
       throw new Error(error.message);
     }
 
+    const updatedCart = await getCartSummary();
+    await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
     revalidateCartRoutes();
     return;
   }
 
   const items = await getCartItemsFromCookie();
-  await persistGuestCart(
-    items.filter((item) => !isSameCartLine(item, productId, variantId)),
-  );
+  const nextItems = items.filter((item) => !isSameCartLine(item, productId, variantId));
+  await persistGuestCart(nextItems);
+  const updatedCart = await getCartSummary();
+  await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
   revalidateCartRoutes();
 }

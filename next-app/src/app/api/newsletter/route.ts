@@ -39,11 +39,25 @@ export async function POST(request: Request) {
       message: "You're on the list. Expect early access, ritual drops, and seasonal notes.",
     });
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "We couldn't read that signup request. Please refresh and try again.",
+        },
+        { status: 400 },
+      );
+    }
+
     console.error("newsletter signup error", error);
     return NextResponse.json(
       {
         success: false,
-        error: "We couldn't save your newsletter signup right now. Please try again in a moment.",
+        error:
+          error instanceof Error &&
+          error.message === "Supabase service role is not configured."
+            ? "Newsletter signup is not configured yet. Add the Supabase service role key to enable it."
+            : "We couldn't save your newsletter signup right now. Please try again in a moment.",
       },
       { status: 500 },
     );
