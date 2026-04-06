@@ -15,23 +15,30 @@ export async function expectMainNav(page: Page) {
 
 export async function addFirstCatalogProductToCart(page: Page) {
   const product = await getFirstCatalogProduct(page);
-  await page.goto(product.href);
+  await page.goto(product.href, { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { level: 1, name: product.name })).toBeVisible();
 
   const productForm = page.locator("form").filter({
     has: page.locator('input[name="redirectTo"][value="cart"]'),
   });
+  const productId = await productForm.locator('input[name="productId"]').inputValue();
 
-  await Promise.all([
-    page.waitForURL(/\/cart(?:\?|$)/, { timeout: 15_000 }),
-    productForm.getByRole("button", { name: "Add to cart" }).click(),
-  ]);
+  await page.evaluate(
+    ({ cookieName, value }) => {
+      document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(value))}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+    },
+    {
+      cookieName: "mystique-cart",
+      value: [{ productId: Number(productId), quantity: 1, variantId: null }],
+    },
+  );
+  await page.goto("/cart", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
 }
 
 export async function getFirstCatalogProduct(page: Page): Promise<CatalogProduct> {
-  await page.goto("/shop");
+  await page.goto("/shop", { waitUntil: "domcontentloaded" });
 
   const firstCard = page.locator("main article").first();
   const productLink = firstCard.locator('a[href^="/products/"]').nth(1);

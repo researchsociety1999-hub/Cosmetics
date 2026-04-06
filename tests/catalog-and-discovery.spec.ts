@@ -38,13 +38,20 @@ test.describe("catalog and discovery flows", () => {
     const firstProduct = await getFirstCatalogProduct(page);
     await page.goto("/search");
 
-    await page.getByLabel("Search query").fill(firstProduct.name);
-    await page.getByLabel("Search query").press("Enter");
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes(`/api/search?q=${encodeURIComponent(firstProduct.name)}`) &&
+          response.request().method() === "GET",
+      ),
+      page.getByLabel("Search query").fill(firstProduct.name),
+    ]);
+
     await expect
       .poll(() => new URL(page.url()).searchParams.get("q"))
       .toBe(firstProduct.name);
     await expect(
-      page.locator("main").getByRole("link", { name: firstProduct.name, exact: true }),
+      page.locator(`main a[href="/products/${firstProduct.slug}"]`).last(),
     ).toBeVisible();
   });
 

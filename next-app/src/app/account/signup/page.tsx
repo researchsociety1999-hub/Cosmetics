@@ -7,6 +7,8 @@ import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
 
+export const dynamic = "force-dynamic";
+
 export default async function SignupPage({
   searchParams,
 }: {
