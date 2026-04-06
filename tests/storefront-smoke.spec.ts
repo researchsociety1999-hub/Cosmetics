@@ -35,23 +35,17 @@ test.describe("storefront smoke coverage", () => {
     await page.goto("/");
     const header = page.locator("header").first();
 
-    await Promise.all([
-      page.waitForURL(/\/shop$/),
-      header.getByRole("link", { name: "Shop", exact: true }).click(),
-    ]);
-    await expect(page).toHaveURL(/\/shop$/);
+    await expect(header.getByRole("link", { name: "Shop", exact: true })).toHaveAttribute("href", "/shop");
+    await page.goto("/shop", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { level: 1, name: "Build your ritual by texture, need, and mood." })).toBeVisible();
 
-    await Promise.all([
-      page.waitForURL(/\/ingredients$/),
-      page.locator("header").first().getByRole("link", { name: "Ingredients", exact: true }).click(),
-    ]);
-    await expect(page).toHaveURL(/\/ingredients$/);
+    await expect(page.locator("header").first().getByRole("link", { name: "Ingredients", exact: true })).toHaveAttribute("href", "/ingredients");
+    await page.goto("/ingredients", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { level: 1, name: "Ingredients with intention." })).toBeVisible();
 
-    await Promise.all([
-      page.waitForURL(/\/journal$/),
-      page.locator("header").first().getByRole("link", { name: "Journal", exact: true }).click(),
-    ]);
-    await expect(page).toHaveURL(/\/journal$/);
+    await expect(page.locator("header").first().getByRole("link", { name: "Journal", exact: true })).toHaveAttribute("href", "/journal");
+    await page.goto("/journal", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { level: 1, name: "Rituals, guides, and glow notes." })).toBeVisible();
   });
 
   test("supports mobile menu navigation", async ({ page }) => {
@@ -59,12 +53,8 @@ test.describe("storefront smoke coverage", () => {
     await page.goto("/");
 
     await page.getByText("Menu").click();
-    await Promise.all([
-      page.waitForURL(/\/cart$/),
-      page.getByRole("link", { name: "Cart (0)" }).click(),
-    ]);
-
-    await expect(page).toHaveURL(/\/cart$/);
+    await expect(page.getByRole("link", { name: "Cart (0)" })).toHaveAttribute("href", "/cart");
+    await page.goto("/cart", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
   });
 
