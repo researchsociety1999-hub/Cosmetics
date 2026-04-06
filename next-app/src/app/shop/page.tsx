@@ -49,9 +49,13 @@ export default async function ShopPage({
   const matchedCategory = params.category
     ? availableCategories.find((category) => category.slug === params.category) ?? null
     : null;
-  const products = matchedCategory
+  const visibleProducts = matchedCategory
     ? filteredProducts.filter((product) => productMatchesCategory(product, matchedCategory))
     : filteredProducts;
+  const productSections = buildProductSections({
+    categories: matchedCategory ? [matchedCategory] : availableCategories,
+    products: visibleProducts,
+  });
 
   return (
     <SiteChrome>
@@ -151,26 +155,42 @@ export default async function ShopPage({
           <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
             {matchedCategory
               ? `${matchedCategory.name} products`
-              : "All database products"}
+              : "Shop by category"}
           </p>
           <p className="mt-2 text-sm text-[#8f8576]">
             {matchedCategory
               ? `Showing products from the ${matchedCategory.name} section.`
-              : "Showing every published product available in the database."}
+              : "Showing published Supabase products grouped by category."}
           </p>
         </section>
 
-        {products.length === 0 ? (
+        {productSections.length === 0 ? (
           <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No products found for that search. Try a different category or browse
-            the full collection.
+            No published Supabase products were found for that search or category.
           </div>
         ) : (
-          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className="space-y-12">
+            {productSections.map((section) => (
+              <section
+                key={section.key}
+                className="space-y-5 border-t border-[rgba(214,168,95,0.1)] pt-8 first:border-t-0 first:pt-0"
+              >
+                <div className="space-y-2">
+                  <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
+                    {section.productCount} product{section.productCount === 1 ? "" : "s"}
+                  </p>
+                  <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+                    {section.title}
+                  </h2>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {section.products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </section>
             ))}
-          </section>
+          </div>
         )}
       </main>
     </SiteChrome>
@@ -246,4 +266,47 @@ function buildShopHref({
 
   const query = params.toString();
   return query ? `/shop?${query}` : "/shop";
+}
+
+function buildProductSections({
+  categories,
+  products,
+}: {
+  categories: { id: number; slug: string; name: string }[];
+  products: {
+    id: number;
+    category_id: number | null;
+    category_slug?: string | null;
+    category_name?: string | null;
+  }[];
+}) {
+  const sections = categories
+    .map((category) => {
+      const categoryProducts = products.filter((product) =>
+        productMatchesCategory(product, category),
+      );
+
+      return {
+        key: category.slug,
+        title: category.name,
+        productCount: categoryProducts.length,
+        products: categoryProducts,
+      };
+    })
+    .filter((section) => section.productCount > 0);
+
+  const uncategorizedProducts = products.filter((product) => {
+    return !categories.some((category) => productMatchesCategory(product, category));
+  });
+
+  if (uncategorizedProducts.length) {
+    sections.push({
+      key: "uncategorized",
+      title: "Uncategorized",
+      productCount: uncategorizedProducts.length,
+      products: uncategorizedProducts,
+    });
+  }
+
+  return sections;
 }
