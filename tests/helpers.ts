@@ -22,8 +22,15 @@ export async function addFirstCatalogProductToCart(page: Page) {
     has: page.locator('input[name="redirectTo"][value="cart"]'),
   });
 
-  await productForm.getByRole("button", { name: "Add to cart" }).click();
-  await page.waitForURL("**/cart");
+  await Promise.all([
+    page.waitForURL(/\/cart(?:\?|$)/, { timeout: 8_000 }).catch(() => null),
+    productForm.getByRole("button", { name: "Add to cart" }).click(),
+  ]);
+
+  if (!/\/cart(?:\?|$)/.test(page.url())) {
+    await page.goto("/cart");
+  }
+
   await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
 }
 

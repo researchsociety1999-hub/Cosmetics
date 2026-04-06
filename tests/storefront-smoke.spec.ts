@@ -35,13 +35,22 @@ test.describe("storefront smoke coverage", () => {
     await page.goto("/");
     const header = page.locator("header").first();
 
-    await header.getByRole("link", { name: "Shop", exact: true }).click();
+    await Promise.all([
+      page.waitForURL(/\/shop$/),
+      header.getByRole("link", { name: "Shop", exact: true }).click(),
+    ]);
     await expect(page).toHaveURL(/\/shop$/);
 
-    await page.locator("header").first().getByRole("link", { name: "Ingredients", exact: true }).click();
+    await Promise.all([
+      page.waitForURL(/\/ingredients$/),
+      page.locator("header").first().getByRole("link", { name: "Ingredients", exact: true }).click(),
+    ]);
     await expect(page).toHaveURL(/\/ingredients$/);
 
-    await page.locator("header").first().getByRole("link", { name: "Journal", exact: true }).click();
+    await Promise.all([
+      page.waitForURL(/\/journal$/),
+      page.locator("header").first().getByRole("link", { name: "Journal", exact: true }).click(),
+    ]);
     await expect(page).toHaveURL(/\/journal$/);
   });
 
@@ -50,7 +59,10 @@ test.describe("storefront smoke coverage", () => {
     await page.goto("/");
 
     await page.getByText("Menu").click();
-    await page.getByRole("link", { name: "Cart (0)" }).click();
+    await Promise.all([
+      page.waitForURL(/\/cart$/),
+      page.getByRole("link", { name: "Cart (0)" }).click(),
+    ]);
 
     await expect(page).toHaveURL(/\/cart$/);
     await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
