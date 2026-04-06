@@ -43,9 +43,7 @@ export default async function ShopPage({
       sortBy: sort,
     }),
   ]);
-  const availableCategories = categories.filter((category) =>
-    filteredProducts.some((product) => productMatchesCategory(product, category)),
-  );
+  const availableCategories = categories;
   const matchedCategory = params.category
     ? availableCategories.find((category) => category.slug === params.category) ?? null
     : null;
@@ -199,6 +197,10 @@ export default async function ShopPage({
 
 function productMatchesCategory(
   product: {
+    name?: string | null;
+    slug?: string | null;
+    description?: string | null;
+    routine_step?: string | null;
     category_id: number | null;
     category_slug?: string | null;
     category_name?: string | null;
@@ -215,7 +217,53 @@ function productMatchesCategory(
   }
 
   const normalizedName = product.category_name?.trim().toLowerCase();
-  return normalizedName === category.name.toLowerCase();
+  if (normalizedName === category.name.toLowerCase()) {
+    return true;
+  }
+
+  const haystack = [
+    product.name ?? "",
+    product.slug ?? "",
+    product.description ?? "",
+    product.routine_step ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const categorySlug = category.slug.toLowerCase();
+  const categoryName = category.name.toLowerCase();
+
+  if (categorySlug.includes("serum") || categoryName.includes("serum")) {
+    return haystack.includes("serum") || haystack.includes("ampoule");
+  }
+
+  if (categorySlug.includes("cleanser") || categoryName.includes("cleanser")) {
+    return haystack.includes("cleanser");
+  }
+
+  if (categorySlug.includes("mask") || categoryName.includes("mask")) {
+    return haystack.includes("mask");
+  }
+
+  if (categorySlug.includes("moistur") || categoryName.includes("moistur")) {
+    return (
+      haystack.includes("moistur") ||
+      haystack.includes("cream") ||
+      haystack.includes("lotion") ||
+      haystack.includes("emulsion")
+    );
+  }
+
+  if (categorySlug.includes("protect") || categoryName.includes("protect")) {
+    return (
+      haystack.includes("spf") ||
+      haystack.includes("sunscreen") ||
+      haystack.includes("sun screen") ||
+      haystack.includes("protect")
+    );
+  }
+
+  return haystack.includes(categorySlug) || haystack.includes(categoryName);
 }
 
 function CategoryChip({
