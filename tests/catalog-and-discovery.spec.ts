@@ -36,6 +36,7 @@ test.describe("catalog and discovery flows", () => {
     await page.goto("/search");
 
     await page.getByLabel("Search query").fill(firstProduct.name);
+    await page.getByLabel("Search query").press("Enter");
     await expect
       .poll(() => new URL(page.url()).searchParams.get("q"))
       .toBe(firstProduct.name);
