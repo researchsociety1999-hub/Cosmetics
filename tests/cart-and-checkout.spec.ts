@@ -100,8 +100,10 @@ test.describe("cart and checkout flows", () => {
   test("protects order detail page for signed-out visitors", async ({ page }) => {
     await page.goto("/account/orders/test-order-id");
 
-    await expect(page).toHaveURL(/\/account\/login$/);
     await expect(page.getByRole("heading", { level: 1, name: "Sign in to Mystique" })).toBeVisible();
+    await expect
+      .poll(() => page.url())
+      .toMatch(/\/account\/login(?:\?|$)/);
   });
 
   test("shows cancelled checkout state", async ({ page }) => {
