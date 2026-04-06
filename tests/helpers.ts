@@ -23,13 +23,9 @@ export async function addFirstCatalogProductToCart(page: Page) {
   });
 
   await Promise.all([
-    page.waitForURL(/\/cart(?:\?|$)/, { timeout: 8_000 }).catch(() => null),
+    page.waitForURL(/\/cart(?:\?|$)/, { timeout: 15_000 }),
     productForm.getByRole("button", { name: "Add to cart" }).click(),
   ]);
-
-  if (!/\/cart(?:\?|$)/.test(page.url())) {
-    await page.goto("/cart");
-  }
 
   await expect(page.getByRole("heading", { level: 1, name: "Your ritual bag" })).toBeVisible();
 }

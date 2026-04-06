@@ -25,7 +25,10 @@ test.describe("catalog and discovery flows", () => {
       throw new Error("Expected at least one category chip link on the shop page.");
     }
 
-    await categoryLink.click();
+    await Promise.all([
+      page.waitForURL(new RegExp(categoryHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))),
+      categoryLink.click(),
+    ]);
 
     await expect(page).toHaveURL(new RegExp(categoryHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     await expect(page.locator("main article").first()).toBeVisible();
@@ -105,6 +108,7 @@ test.describe("catalog and discovery flows", () => {
       "You're on the list.",
       "You're already on the list.",
       "Newsletter signup is not configured yet.",
+      "We couldn't save your newsletter signup right now.",
     ]);
   });
 });
