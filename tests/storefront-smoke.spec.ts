@@ -95,3 +95,4 @@ test.describe("storefront smoke coverage", () => {
     await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
   });
 });
+
