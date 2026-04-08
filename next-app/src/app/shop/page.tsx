@@ -48,12 +48,17 @@ export default async function ShopPage({
   const matchedCategory = params.category
     ? availableCategories.find((category) => category.slug === params.category) ?? null
     : null;
-  const visibleProducts = matchedCategory
-    ? filteredProducts.filter((product) => productMatchesCategory(product, matchedCategory))
-    : filteredProducts;
+  const productAssignments = assignProductsToCategories({
+    categories: availableCategories,
+    products: filteredProducts,
+  });
   const productSections = buildProductSections({
     categories: matchedCategory ? [matchedCategory] : availableCategories,
-    products: visibleProducts,
+    assignments: matchedCategory
+      ? productAssignments.filter(
+          (assignment) => assignment.category?.slug === matchedCategory.slug,
+        )
+      : productAssignments,
   });
 
   return (
@@ -328,6 +333,62 @@ function productMatchesCategory(
   return haystack.includes(categorySlug) || haystack.includes(categoryName);
 }
 
+function getCategoryMatchScore(
+  product: {
+    name?: string | null;
+    slug?: string | null;
+    description?: string | null;
+    routine_step?: string | null;
+    category_id: number | null;
+    category_slug?: string | null;
+    category_name?: string | null;
+  },
+  category: { id: number; slug: string; name: string },
+) {
+  if (typeof product.category_id === "number" && product.category_id === category.id) {
+    return 100;
+  }
+
+  const normalizedSlug = product.category_slug?.trim().toLowerCase();
+  if (normalizedSlug && normalizedSlug === category.slug.toLowerCase()) {
+    return 95;
+  }
+
+  const normalizedName = product.category_name?.trim().toLowerCase();
+  if (normalizedName === category.name.toLowerCase()) {
+    return 90;
+  }
+
+  return productMatchesCategory(product, category) ? 10 : -1;
+}
+
+function assignProductsToCategories({
+  categories,
+  products,
+}: {
+  categories: { id: number; slug: string; name: string }[];
+  products: Product[];
+}) {
+  return products.map((product) => {
+    let bestCategory: { id: number; slug: string; name: string } | null = null;
+    let bestScore = -1;
+
+    for (const category of categories) {
+      const score = getCategoryMatchScore(product, category);
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestCategory = score >= 0 ? category : bestCategory;
+      }
+    }
+
+    return {
+      product,
+      category: bestScore >= 0 ? bestCategory : null,
+    };
+  });
+}
+
 function CategoryChip({
   href,
   active,
@@ -380,16 +441,19 @@ function buildShopHref({
 
 function buildProductSections({
   categories,
-  products,
+  assignments,
 }: {
   categories: { id: number; slug: string; name: string }[];
-  products: Product[];
+  assignments: Array<{
+    product: Product;
+    category: { id: number; slug: string; name: string } | null;
+  }>;
 }) {
   const sections = categories
     .map((category) => {
-      const categoryProducts = products.filter((product) =>
-        productMatchesCategory(product, category),
-      );
+      const categoryProducts = assignments
+        .filter((assignment) => assignment.category?.slug === category.slug)
+        .map((assignment) => assignment.product);
 
       return {
         key: category.slug,
@@ -400,9 +464,9 @@ function buildProductSections({
     })
     .filter((section) => section.productCount > 0);
 
-  const uncategorizedProducts = products.filter((product) => {
-    return !categories.some((category) => productMatchesCategory(product, category));
-  });
+  const uncategorizedProducts = assignments
+    .filter((assignment) => assignment.category === null)
+    .map((assignment) => assignment.product);
 
   if (uncategorizedProducts.length) {
     sections.push({

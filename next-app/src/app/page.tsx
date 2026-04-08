@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { BrandLogo } from "./components/BrandLogo";
 import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
@@ -45,11 +46,21 @@ export default async function HomePage() {
 function HeroSection() {
   return (
     <section className="relative overflow-hidden border-b border-[rgba(214,168,95,0.18)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(214,168,95,0.18),transparent_18%),radial-gradient(circle_at_86%_28%,rgba(240,209,154,0.08),transparent_24%),radial-gradient(circle_at_48%_74%,rgba(255,143,38,0.08),transparent_24%),linear-gradient(180deg,rgba(3,4,6,0.16),rgba(3,4,6,0.82))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_16%,rgba(214,168,95,0.2),transparent_18%),radial-gradient(circle_at_82%_24%,rgba(240,209,154,0.09),transparent_24%),radial-gradient(circle_at_62%_56%,rgba(255,143,38,0.07),transparent_22%),linear-gradient(180deg,rgba(3,4,6,0.1),rgba(3,4,6,0.84))]" />
       <div className="pointer-events-none absolute left-[42%] top-1/2 h-[92%] w-[96%] -translate-x-1/2 -translate-y-1/2 bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.09] mix-blend-screen blur-[1px]" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-[56%] bg-[radial-gradient(circle_at_50%_46%,rgba(255,168,59,0.16),transparent_17%),radial-gradient(circle_at_38%_58%,rgba(214,168,95,0.1),transparent_28%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-[56%] bg-[radial-gradient(circle_at_50%_42%,rgba(255,168,59,0.18),transparent_17%),radial-gradient(circle_at_36%_56%,rgba(214,168,95,0.1),transparent_28%)] blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_32%,rgba(3,4,6,0.18)_58%,rgba(3,4,6,0.46)_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(6,8,12,0),rgba(6,8,12,0.82))]" />
+      <div className="pointer-events-none absolute inset-0 hidden md:block">
+        <span className="mystic-particle mystic-particle-lg left-[10%] top-[12%]" />
+        <span className="mystic-particle mystic-particle-md left-[24%] top-[20%]" />
+        <span className="mystic-particle mystic-particle-sm left-[44%] top-[10%]" />
+        <span className="mystic-particle mystic-particle-md left-[55%] top-[24%]" />
+        <span className="mystic-particle mystic-particle-sm left-[70%] top-[16%]" />
+        <span className="mystic-particle mystic-particle-lg left-[82%] top-[28%]" />
+        <span className="mystic-particle mystic-particle-sm left-[68%] top-[54%]" />
+        <span className="mystic-particle mystic-particle-md left-[86%] top-[66%]" />
+      </div>
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] md:block">
         <HeroSilhouette />
       </div>
@@ -58,6 +69,9 @@ function HeroSection() {
           <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(214,168,95,0.18)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#d8c6aa] backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-[#d6a85f] shadow-[0_0_16px_rgba(214,168,95,0.9)]" />
             California luxury K-beauty
+          </div>
+          <div className="max-w-[340px] md:max-w-[430px]">
+            <BrandLogo compact={false} className="drop-shadow-[0_0_42px_rgba(255,170,70,0.12)]" />
           </div>
           <div className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[#b8ab95]">
@@ -116,9 +130,10 @@ function HeroSection() {
 function HeroSilhouette() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-y-[6%] right-[2%] w-[84%] rounded-[48%] bg-[radial-gradient(circle_at_38%_24%,rgba(255,170,70,0.18),transparent_16%),radial-gradient(circle_at_42%_38%,rgba(214,168,95,0.12),transparent_22%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.48))] blur-[2px]" />
-      <div className="absolute right-[20%] top-[16%] h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(255,171,65,0.18),transparent_72%)] blur-3xl" />
-      <div className="absolute right-[12%] top-[36%] h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.1),transparent_72%)] blur-3xl" />
+      <div className="absolute inset-y-[5%] right-[1%] w-[86%] rounded-[48%] bg-[radial-gradient(circle_at_34%_26%,rgba(255,170,70,0.2),transparent_15%),radial-gradient(circle_at_42%_38%,rgba(214,168,95,0.14),transparent_22%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.54))] blur-[2px]" />
+      <div className="absolute right-[24%] top-[10%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(255,171,65,0.22),transparent_72%)] blur-3xl" />
+      <div className="absolute right-[10%] top-[34%] h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.12),transparent_72%)] blur-3xl" />
+      <div className="absolute right-[18%] top-[18%] h-[58%] w-[44%] rounded-[50%] bg-[radial-gradient(circle_at_34%_20%,rgba(255,255,255,0.24),rgba(255,255,255,0.08)_26%,rgba(255,255,255,0)_66%)] opacity-80 blur-2xl" />
       <svg
         viewBox="0 0 420 720"
         className="absolute bottom-0 right-[4%] h-[96%] w-auto opacity-[0.82]"
@@ -131,8 +146,8 @@ function HeroSilhouette() {
             <stop offset="100%" stopColor="rgba(5,6,9,0.08)" />
           </linearGradient>
           <radialGradient id="womanGlow" cx="34%" cy="28%" r="62%">
-            <stop offset="0%" stopColor="rgba(255,170,70,0.26)" />
-            <stop offset="44%" stopColor="rgba(214,168,95,0.1)" />
+            <stop offset="0%" stopColor="rgba(255,170,70,0.28)" />
+            <stop offset="44%" stopColor="rgba(214,168,95,0.12)" />
             <stop offset="100%" stopColor="rgba(214,168,95,0)" />
           </radialGradient>
           <linearGradient id="profileEdge" x1="0%" x2="100%" y1="0%" y2="0%">
@@ -171,6 +186,10 @@ function HeroSilhouette() {
       <div className="absolute bottom-[18%] right-[14%] h-[46%] w-[46%] bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.14] mix-blend-screen blur-[1px]" />
       <div className="absolute bottom-[10%] right-[6%] h-[70%] w-[72%] bg-[radial-gradient(circle_at_40%_24%,rgba(255,168,59,0.16),transparent_10%),radial-gradient(circle_at_36%_52%,rgba(214,168,95,0.1),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.04),rgba(5,7,11,0.5))]" />
       <div className="absolute bottom-[22%] right-[17%] h-3 w-3 rounded-full bg-[#d6a85f] shadow-[0_0_18px_rgba(214,168,95,0.8)]" />
+      <span className="mystic-particle mystic-particle-md right-[28%] top-[18%]" />
+      <span className="mystic-particle mystic-particle-sm right-[24%] top-[26%]" />
+      <span className="mystic-particle mystic-particle-sm right-[36%] top-[48%]" />
+      <span className="mystic-particle mystic-particle-lg right-[18%] top-[62%]" />
     </div>
   );
 }
