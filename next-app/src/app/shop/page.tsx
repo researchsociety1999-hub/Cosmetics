@@ -233,6 +233,67 @@ function productMatchesCategory(
 
   const categorySlug = category.slug.toLowerCase();
   const categoryName = category.name.toLowerCase();
+  const categoryLabel = `${categorySlug} ${categoryName}`;
+
+  const matchesAnyKeyword = (keywords: string[]) =>
+    keywords.some((keyword) => haystack.includes(keyword));
+
+  if (categoryLabel.includes("body")) {
+    return matchesAnyKeyword([
+      "body",
+      "lotion",
+      "body lotion",
+      "body cream",
+      "body wash",
+      "body oil",
+      "scrub",
+      "butter",
+      "hand cream",
+    ]);
+  }
+
+  if (
+    categoryLabel.includes("skin care") ||
+    categoryLabel.includes("skincare") ||
+    categoryLabel.includes("face")
+  ) {
+    return matchesAnyKeyword([
+      "serum",
+      "cleanser",
+      "moistur",
+      "moisturizer",
+      "cream",
+      "face",
+      "spf",
+      "sunscreen",
+      "sun screen",
+      "toner",
+      "essence",
+      "ampoule",
+      "mask",
+      "peptide",
+      "hydrat",
+    ]);
+  }
+
+  if (
+    categoryLabel.includes("toner") ||
+    categoryLabel.includes("accessor") ||
+    categoryLabel.includes("tool")
+  ) {
+    return matchesAnyKeyword([
+      "toner",
+      "mist",
+      "pad",
+      "tool",
+      "accessory",
+      "roller",
+      "gua sha",
+      "brush",
+      "spatula",
+      "headband",
+    ]);
+  }
 
   if (categorySlug.includes("serum") || categoryName.includes("serum")) {
     return haystack.includes("serum") || haystack.includes("ampoule");
