@@ -126,65 +126,103 @@ function HeroSection() {
 function HeroSilhouette() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-y-[4%] right-[0%] w-[90%] rounded-[48%] bg-[radial-gradient(circle_at_30%_24%,rgba(255,170,70,0.12),transparent_13%),radial-gradient(circle_at_38%_42%,rgba(214,168,95,0.1),transparent_22%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.62))] blur-[2px]" />
-      <div className="absolute right-[18%] top-[10%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4),rgba(255,245,221,0.12)_30%,rgba(214,168,95,0.08)_46%,rgba(214,168,95,0)_72%)] blur-3xl" />
-      <div className="absolute right-[10%] top-[40%] h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.08),transparent_72%)] blur-3xl" />
+      <div className="absolute inset-y-[4%] right-[2%] w-[88%] rounded-[48%] bg-[radial-gradient(circle_at_38%_18%,rgba(255,255,255,0.08),transparent_14%),radial-gradient(circle_at_42%_32%,rgba(214,168,95,0.08),transparent_24%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.62))] blur-[2px]" />
+      <div className="absolute right-[18%] top-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.34),rgba(255,255,255,0.08)_26%,rgba(214,168,95,0.07)_46%,rgba(214,168,95,0)_74%)] blur-3xl" />
+      <div className="absolute right-[8%] top-[42%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.07),transparent_72%)] blur-3xl" />
       <svg
         viewBox="0 0 420 720"
         className="absolute bottom-0 right-[6%] h-[95%] w-auto opacity-[0.98]"
         aria-hidden="true"
       >
         <defs>
-          <radialGradient id="heroBacklight" cx="31%" cy="24%" r="56%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.64)" />
-            <stop offset="22%" stopColor="rgba(255,241,211,0.22)" />
-            <stop offset="42%" stopColor="rgba(214,168,95,0.12)" />
+          <radialGradient id="heroBacklight" cx="42%" cy="18%" r="62%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.58)" />
+            <stop offset="20%" stopColor="rgba(255,255,255,0.18)" />
+            <stop offset="42%" stopColor="rgba(214,168,95,0.08)" />
             <stop offset="100%" stopColor="rgba(214,168,95,0)" />
           </radialGradient>
-          <linearGradient id="heroShadowFill" x1="18%" x2="88%" y1="8%" y2="100%">
-            <stop offset="0%" stopColor="rgba(7,8,12,0.99)" />
-            <stop offset="50%" stopColor="rgba(3,4,7,0.99)" />
-            <stop offset="100%" stopColor="rgba(10,12,18,0.95)" />
+          <linearGradient id="heroShadowFill" x1="14%" x2="88%" y1="6%" y2="100%">
+            <stop offset="0%" stopColor="rgba(5,6,9,0.995)" />
+            <stop offset="52%" stopColor="rgba(2,3,5,0.995)" />
+            <stop offset="100%" stopColor="rgba(9,11,16,0.96)" />
           </linearGradient>
           <linearGradient id="heroRimLight" x1="0%" x2="100%" y1="0%" y2="0%">
-            <stop offset="0%" stopColor="rgba(255,184,92,0)" />
-            <stop offset="38%" stopColor="rgba(255,225,170,0.06)" />
-            <stop offset="58%" stopColor="rgba(255,228,177,0.28)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="36%" stopColor="rgba(255,255,255,0.04)" />
+            <stop offset="58%" stopColor="rgba(255,255,255,0.42)" />
+            <stop offset="88%" stopColor="rgba(255,214,145,0.14)" />
             <stop offset="100%" stopColor="rgba(255,184,92,0)" />
           </linearGradient>
           <radialGradient id="heroHairGlow" cx="58%" cy="40%" r="58%">
-            <stop offset="0%" stopColor="rgba(214,168,95,0.12)" />
-            <stop offset="56%" stopColor="rgba(214,168,95,0.03)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
+            <stop offset="46%" stopColor="rgba(214,168,95,0.04)" />
             <stop offset="100%" stopColor="rgba(214,168,95,0)" />
           </radialGradient>
+          <linearGradient id="heroLineLight" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
+            <stop offset="44%" stopColor="rgba(255,255,255,0.18)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
         </defs>
-        <ellipse cx="204" cy="190" rx="126" ry="128" fill="url(#heroBacklight)" />
-        <ellipse cx="250" cy="392" rx="124" ry="250" fill="url(#heroHairGlow)" />
+        <ellipse cx="228" cy="180" rx="138" ry="130" fill="url(#heroBacklight)" />
+        <ellipse cx="232" cy="392" rx="132" ry="254" fill="url(#heroHairGlow)" />
         <path
-          d="M223 91c32 0 65 12 89 34 24 22 39 53 40 84 0 28-10 51-28 72-10 12-24 23-41 34 19 19 34 41 47 70 18 40 27 89 27 137 0 54-11 118-39 166-12 22-31 42-55 51-29 11-61 4-87-18-33-27-54-68-66-111-14-50-16-106-7-156 8-45 24-86 48-120-18-12-32-26-42-42-13-21-18-47-16-74 3-31 17-60 40-82 24-28 55-42 90-45Z"
+          d="M205 92c31 0 61 11 84 31 23 19 38 46 43 75 4 24-1 46-15 67-11 16-27 30-48 44 19 18 37 41 53 70 20 37 30 81 33 126 3 55-5 118-31 170-11 22-29 44-53 57-25 14-56 14-82 2-31-14-55-44-71-82-19-45-27-99-24-147 3-38 11-76 27-110 11-24 26-45 46-63-20-12-35-28-45-48-13-25-15-55-8-82 8-32 31-63 58-82 20-14 43-23 63-28 4 0 8 0 11 0Z"
           fill="url(#heroShadowFill)"
         />
         <path
-          d="M211 108c-24 4-43 15-60 34-18 21-29 46-31 73-2 25 4 49 16 68 9 13 22 26 41 36-16 23-28 48-35 76-11 39-13 80-10 122 4 56 19 110 46 153"
+          d="M205 102c-25 4-46 15-62 33-18 20-29 45-32 70-4 27 1 52 14 73 10 15 25 28 45 39-18 18-31 42-39 68-12 36-16 76-13 117 4 55 18 108 44 154"
           fill="none"
           stroke="url(#heroRimLight)"
-          strokeWidth="2"
+          strokeWidth="2.2"
           strokeLinecap="round"
         />
         <path
-          d="M232 111c31 2 57 14 75 34 19 20 29 46 29 72 0 19-5 37-15 52-9 13-22 24-39 34 17 18 32 40 43 65 20 44 27 99 25 147-1 52-13 112-46 161 23-43 34-88 38-131 5-55-2-117-27-168-11-21-25-41-42-56 16-11 28-22 37-36 11-16 17-36 16-56-1-28-13-55-34-77-18-19-43-34-60-41Z"
+          d="M200 101c31 3 59 16 79 36 20 20 31 45 34 71 2 20-2 38-12 55-8 14-21 27-40 38 17 17 31 38 42 64 18 43 24 96 22 145-2 53-12 111-38 159 17-43 24-86 25-127 1-58-10-122-36-172-10-20-23-39-39-54 16-12 27-24 35-39 10-17 13-36 10-57-4-26-16-51-36-72-14-15-30-27-46-35Z"
           fill="rgba(255,255,255,0.04)"
         />
         <path
-          d="M225 132c-24 4-44 16-57 34-14 18-19 39-14 58 3 11 10 21 19 30-10 11-19 21-28 29-8 7-19 14-32 21 22-1 42-5 59-12-5 12-14 25-25 37 18-4 33-10 47-18-4 17-12 31-24 44 18-4 35-6 50-5-11-15-24-28-38-41-11-11-22-20-35-28 18-10 31-21 40-35 10-15 14-33 11-50-2-17-12-32-28-44-13-9-30-13-45-10Z"
+          d="M215 130c-22 2-40 11-53 26-14 16-21 36-20 55 1 14 7 26 18 38-9 12-18 24-27 33-8 7-17 14-28 21 23-3 42-8 56-15-4 13-12 26-23 40 17-4 32-12 45-21-3 15-10 30-22 44 17-5 33-8 48-8-10-14-22-28-35-41-12-11-25-22-40-31 18-10 31-21 40-33 11-14 16-31 16-47 0-18-7-34-22-46-14-11-32-16-53-15Z"
           fill="rgba(5,6,9,0.99)"
         />
         <path
-          d="M169 178c8-21 22-40 43-52-5 14-5 28-1 40 5 14 14 27 26 38-10 9-22 18-37 25-15 8-31 12-47 15 11-11 18-22 21-33 4-13 3-24-5-33Z"
+          d="M154 177c10-25 29-45 53-56-7 15-8 30-4 44 4 13 13 26 27 37-11 9-24 17-39 24-16 7-31 12-45 13 10-10 16-21 18-33 3-11 0-22-10-29Z"
           fill="rgba(3,4,7,0.98)"
         />
+        <path
+          d="M164 141c10-14 23-25 39-33 21-11 44-14 63-10-19 2-38 11-51 24-11 11-19 25-21 40-2 13 0 25 5 37-10-8-18-17-25-27-9-11-13-21-10-31Z"
+          fill="rgba(255,255,255,0.05)"
+        />
+        <path
+          d="M173 130c20 5 39 18 56 37 12 15 25 34 37 56-16-16-31-28-44-38-16-11-33-22-53-30l-16 23 20-31Z"
+          fill="none"
+          stroke="url(#heroLineLight)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path
+          d="M158 158c15 9 29 22 42 38 11 14 21 31 32 50-13-15-25-28-37-40-13-12-29-24-46-33"
+          fill="none"
+          stroke="url(#heroLineLight)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M146 204c12 12 24 27 34 46 8 15 16 34 24 55-10-18-20-34-30-49-9-14-20-28-34-41"
+          fill="none"
+          stroke="url(#heroLineLight)"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+        />
+        <path
+          d="M222 405c-13 42-23 92-27 149 4-32 10-64 19-95 10-38 22-74 41-110"
+          fill="none"
+          stroke="url(#heroRimLight)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
       </svg>
-      <div className="absolute bottom-[8%] right-[4%] h-[76%] w-[72%] bg-[radial-gradient(circle_at_34%_18%,rgba(255,255,255,0.12),transparent_10%),radial-gradient(circle_at_36%_24%,rgba(255,168,59,0.12),transparent_12%),radial-gradient(circle_at_34%_54%,rgba(214,168,95,0.06),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.02),rgba(5,7,11,0.56))]" />
+      <div className="absolute bottom-[8%] right-[4%] h-[76%] w-[72%] bg-[radial-gradient(circle_at_38%_18%,rgba(255,255,255,0.1),transparent_10%),radial-gradient(circle_at_40%_22%,rgba(255,168,59,0.08),transparent_12%),radial-gradient(circle_at_34%_54%,rgba(214,168,95,0.05),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.02),rgba(5,7,11,0.58))]" />
       <span className="mystic-particle mystic-particle-md right-[28%] top-[18%]" />
       <span className="mystic-particle mystic-particle-sm right-[24%] top-[26%]" />
       <span className="mystic-particle mystic-particle-sm right-[36%] top-[48%]" />
