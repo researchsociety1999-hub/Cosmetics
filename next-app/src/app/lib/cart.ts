@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import type { User } from "@supabase/supabase-js";
 import { createSupabaseServerClient, getAuthenticatedUser } from "./supabaseServer";
 import { getProductsByIds, getProductVariantsByIds } from "./queries";
 import type {
@@ -149,11 +150,11 @@ async function getDatabaseCartSummary(userId: string): Promise<CartSummary> {
   };
 }
 
-export async function getCartSummary(): Promise<CartSummary> {
-  const user = await getAuthenticatedUser();
+export async function getCartSummary(user?: User | null): Promise<CartSummary> {
+  const resolvedUser = user === undefined ? await getAuthenticatedUser() : user;
 
-  if (user) {
-    return getDatabaseCartSummary(user.id);
+  if (resolvedUser) {
+    return getDatabaseCartSummary(resolvedUser.id);
   }
 
   const items = await getCartItemsFromCookie();

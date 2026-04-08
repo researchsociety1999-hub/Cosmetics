@@ -23,7 +23,7 @@ export default async function CheckoutPage({
   searchParams: SearchParams;
 }) {
   const user = await getAuthenticatedUser();
-  const cart = await getCartSummary();
+  const cart = await getCartSummary(user);
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
   const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(

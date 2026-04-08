@@ -12,8 +12,8 @@ export async function SiteChrome({
   children: ReactNode;
   showFooter?: boolean;
 }) {
-  const cart = await getCartSummary();
   const user = await getAuthenticatedUser();
+  const cart = await getCartSummary(user);
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#06080c] text-[#f5eee3]">
