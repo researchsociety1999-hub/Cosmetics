@@ -10,7 +10,7 @@ import type {
 
 const now = new Date();
 const fallbackProductImage =
-  "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique";
+  "https://placehold.co/600x800/png?text=Mystique&bg=1a1a1a&text_color=c9a84c";
 
 export const mockCategories: Category[] = [
   { id: 1, name: "Serums", slug: "serums", image_url: null },
