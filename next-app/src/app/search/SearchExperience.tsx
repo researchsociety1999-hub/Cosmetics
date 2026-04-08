@@ -17,7 +17,7 @@ type SearchProduct = {
 };
 
 const FALLBACK_PRODUCT_IMAGE =
-  "https://placehold.co/600x800/1a1a1a/c9a84c?text=Mystique";
+  "https://placehold.co/600x800/png?text=Mystique&bg=1a1a1a&text_color=c9a84c";
 
 export function SearchExperience({
   initialQuery,
