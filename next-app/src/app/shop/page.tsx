@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCategories, getProducts, type ProductSort } from "../lib/queries";
+import type { Product } from "../lib/types";
 
 type SearchParams = Promise<{
   category?: string;
@@ -321,12 +322,7 @@ function buildProductSections({
   products,
 }: {
   categories: { id: number; slug: string; name: string }[];
-  products: {
-    id: number;
-    category_id: number | null;
-    category_slug?: string | null;
-    category_name?: string | null;
-  }[];
+  products: Product[];
 }) {
   const sections = categories
     .map((category) => {
