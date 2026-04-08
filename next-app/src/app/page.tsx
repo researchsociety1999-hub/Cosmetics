@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { BrandLogo } from "./components/BrandLogo";
 import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
@@ -70,9 +69,6 @@ function HeroSection() {
             <span className="h-2 w-2 rounded-full bg-[#d6a85f] shadow-[0_0_16px_rgba(214,168,95,0.9)]" />
             California luxury K-beauty
           </div>
-          <div className="max-w-[340px] md:max-w-[430px]">
-            <BrandLogo compact={false} className="drop-shadow-[0_0_42px_rgba(255,170,70,0.12)]" />
-          </div>
           <div className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[#b8ab95]">
               Rituals for radiant skin
@@ -130,62 +126,65 @@ function HeroSection() {
 function HeroSilhouette() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-y-[5%] right-[1%] w-[86%] rounded-[48%] bg-[radial-gradient(circle_at_34%_26%,rgba(255,170,70,0.2),transparent_15%),radial-gradient(circle_at_42%_38%,rgba(214,168,95,0.14),transparent_22%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.54))] blur-[2px]" />
-      <div className="absolute right-[24%] top-[10%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(255,171,65,0.22),transparent_72%)] blur-3xl" />
-      <div className="absolute right-[10%] top-[34%] h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.12),transparent_72%)] blur-3xl" />
-      <div className="absolute right-[18%] top-[18%] h-[58%] w-[44%] rounded-[50%] bg-[radial-gradient(circle_at_34%_20%,rgba(255,255,255,0.24),rgba(255,255,255,0.08)_26%,rgba(255,255,255,0)_66%)] opacity-80 blur-2xl" />
+      <div className="absolute inset-y-[4%] right-[0%] w-[90%] rounded-[48%] bg-[radial-gradient(circle_at_30%_24%,rgba(255,170,70,0.12),transparent_13%),radial-gradient(circle_at_38%_42%,rgba(214,168,95,0.1),transparent_22%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.62))] blur-[2px]" />
+      <div className="absolute right-[18%] top-[10%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4),rgba(255,245,221,0.12)_30%,rgba(214,168,95,0.08)_46%,rgba(214,168,95,0)_72%)] blur-3xl" />
+      <div className="absolute right-[10%] top-[40%] h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.08),transparent_72%)] blur-3xl" />
       <svg
         viewBox="0 0 420 720"
-        className="absolute bottom-0 right-[4%] h-[96%] w-auto opacity-[0.82]"
+        className="absolute bottom-0 right-[6%] h-[95%] w-auto opacity-[0.98]"
         aria-hidden="true"
       >
         <defs>
-          <linearGradient id="womanShadowFill" x1="10%" x2="90%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(116,79,30,0.22)" />
-            <stop offset="42%" stopColor="rgba(34,25,15,0.56)" />
-            <stop offset="100%" stopColor="rgba(5,6,9,0.08)" />
-          </linearGradient>
-          <radialGradient id="womanGlow" cx="34%" cy="28%" r="62%">
-            <stop offset="0%" stopColor="rgba(255,170,70,0.28)" />
-            <stop offset="44%" stopColor="rgba(214,168,95,0.12)" />
+          <radialGradient id="heroBacklight" cx="31%" cy="24%" r="56%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.64)" />
+            <stop offset="22%" stopColor="rgba(255,241,211,0.22)" />
+            <stop offset="42%" stopColor="rgba(214,168,95,0.12)" />
             <stop offset="100%" stopColor="rgba(214,168,95,0)" />
           </radialGradient>
-          <linearGradient id="profileEdge" x1="0%" x2="100%" y1="0%" y2="0%">
+          <linearGradient id="heroShadowFill" x1="18%" x2="88%" y1="8%" y2="100%">
+            <stop offset="0%" stopColor="rgba(7,8,12,0.99)" />
+            <stop offset="50%" stopColor="rgba(3,4,7,0.99)" />
+            <stop offset="100%" stopColor="rgba(10,12,18,0.95)" />
+          </linearGradient>
+          <linearGradient id="heroRimLight" x1="0%" x2="100%" y1="0%" y2="0%">
             <stop offset="0%" stopColor="rgba(255,184,92,0)" />
-            <stop offset="52%" stopColor="rgba(255,184,92,0.32)" />
+            <stop offset="38%" stopColor="rgba(255,225,170,0.06)" />
+            <stop offset="58%" stopColor="rgba(255,228,177,0.28)" />
             <stop offset="100%" stopColor="rgba(255,184,92,0)" />
           </linearGradient>
-          <radialGradient id="hairMist" cx="44%" cy="28%" r="58%">
-            <stop offset="0%" stopColor="rgba(255,154,52,0.2)" />
-            <stop offset="56%" stopColor="rgba(255,154,52,0.06)" />
-            <stop offset="100%" stopColor="rgba(255,154,52,0)" />
+          <radialGradient id="heroHairGlow" cx="58%" cy="40%" r="58%">
+            <stop offset="0%" stopColor="rgba(214,168,95,0.12)" />
+            <stop offset="56%" stopColor="rgba(214,168,95,0.03)" />
+            <stop offset="100%" stopColor="rgba(214,168,95,0)" />
           </radialGradient>
         </defs>
+        <ellipse cx="204" cy="190" rx="126" ry="128" fill="url(#heroBacklight)" />
+        <ellipse cx="250" cy="392" rx="124" ry="250" fill="url(#heroHairGlow)" />
         <path
-          d="M171 93c45-8 100 7 137 41 38 36 58 87 56 141-1 43-16 83-42 118-11 14-25 27-36 39 22 26 36 55 46 88 14 46 18 95 16 143-2 39-8 79-21 116-8 25-23 50-47 63-33 19-74 8-102-16-36-31-56-77-66-122-12-54-13-112-2-166 10-48 32-91 59-131-26-22-47-49-57-81-12-37-8-80 10-115 17-33 44-60 79-83 4-11 7-23 10-35Z"
-          fill="url(#womanShadowFill)"
+          d="M223 91c32 0 65 12 89 34 24 22 39 53 40 84 0 28-10 51-28 72-10 12-24 23-41 34 19 19 34 41 47 70 18 40 27 89 27 137 0 54-11 118-39 166-12 22-31 42-55 51-29 11-61 4-87-18-33-27-54-68-66-111-14-50-16-106-7-156 8-45 24-86 48-120-18-12-32-26-42-42-13-21-18-47-16-74 3-31 17-60 40-82 24-28 55-42 90-45Z"
+          fill="url(#heroShadowFill)"
         />
         <path
-          d="M230 138c28 2 58 16 79 39 22 24 34 56 34 88 0 18-4 36-12 52-7 14-18 24-31 35 15 9 27 23 36 38 18 30 27 67 31 102 5 44 4 91-8 135-9 33-25 70-56 88"
+          d="M211 108c-24 4-43 15-60 34-18 21-29 46-31 73-2 25 4 49 16 68 9 13 22 26 41 36-16 23-28 48-35 76-11 39-13 80-10 122 4 56 19 110 46 153"
           fill="none"
-          stroke="url(#profileEdge)"
-          strokeWidth="2.4"
+          stroke="url(#heroRimLight)"
+          strokeWidth="2"
           strokeLinecap="round"
         />
         <path
-          d="M142 151c13-36 39-68 73-88 42-25 98-30 143-8-18-26-49-47-84-56-40-11-85-7-121 11-43 21-79 58-95 103-14 38-10 86 10 121 7 13 17 26 29 36-1-14 1-29 5-43 11-36 23-54 40-76Z"
-          fill="url(#hairMist)"
+          d="M232 111c31 2 57 14 75 34 19 20 29 46 29 72 0 19-5 37-15 52-9 13-22 24-39 34 17 18 32 40 43 65 20 44 27 99 25 147-1 52-13 112-46 161 23-43 34-88 38-131 5-55-2-117-27-168-11-21-25-41-42-56 16-11 28-22 37-36 11-16 17-36 16-56-1-28-13-55-34-77-18-19-43-34-60-41Z"
+          fill="rgba(255,255,255,0.04)"
         />
         <path
-          d="M245 150c-18 4-31 18-39 34-7 14-11 30-19 43-6 11-16 21-30 30 25-3 45-8 61-15-2 12-9 24-18 36 18-4 31-8 42-15-1 18-8 34-18 48 20-6 36-11 53-8-9-18-27-33-46-47 17-13 29-27 37-43 11-24 8-47-23-63Z"
-          fill="rgba(6,8,12,0.34)"
+          d="M225 132c-24 4-44 16-57 34-14 18-19 39-14 58 3 11 10 21 19 30-10 11-19 21-28 29-8 7-19 14-32 21 22-1 42-5 59-12-5 12-14 25-25 37 18-4 33-10 47-18-4 17-12 31-24 44 18-4 35-6 50-5-11-15-24-28-38-41-11-11-22-20-35-28 18-10 31-21 40-35 10-15 14-33 11-50-2-17-12-32-28-44-13-9-30-13-45-10Z"
+          fill="rgba(5,6,9,0.99)"
         />
-        <ellipse cx="215" cy="336" rx="126" ry="214" fill="url(#womanGlow)" />
-        <ellipse cx="177" cy="186" rx="108" ry="98" fill="url(#womanGlow)" />
+        <path
+          d="M169 178c8-21 22-40 43-52-5 14-5 28-1 40 5 14 14 27 26 38-10 9-22 18-37 25-15 8-31 12-47 15 11-11 18-22 21-33 4-13 3-24-5-33Z"
+          fill="rgba(3,4,7,0.98)"
+        />
       </svg>
-      <div className="absolute bottom-[18%] right-[14%] h-[46%] w-[46%] bg-[url('/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png')] bg-contain bg-center bg-no-repeat opacity-[0.14] mix-blend-screen blur-[1px]" />
-      <div className="absolute bottom-[10%] right-[6%] h-[70%] w-[72%] bg-[radial-gradient(circle_at_40%_24%,rgba(255,168,59,0.16),transparent_10%),radial-gradient(circle_at_36%_52%,rgba(214,168,95,0.1),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.04),rgba(5,7,11,0.5))]" />
-      <div className="absolute bottom-[22%] right-[17%] h-3 w-3 rounded-full bg-[#d6a85f] shadow-[0_0_18px_rgba(214,168,95,0.8)]" />
+      <div className="absolute bottom-[8%] right-[4%] h-[76%] w-[72%] bg-[radial-gradient(circle_at_34%_18%,rgba(255,255,255,0.12),transparent_10%),radial-gradient(circle_at_36%_24%,rgba(255,168,59,0.12),transparent_12%),radial-gradient(circle_at_34%_54%,rgba(214,168,95,0.06),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.02),rgba(5,7,11,0.56))]" />
       <span className="mystic-particle mystic-particle-md right-[28%] top-[18%]" />
       <span className="mystic-particle mystic-particle-sm right-[24%] top-[26%]" />
       <span className="mystic-particle mystic-particle-sm right-[36%] top-[48%]" />
