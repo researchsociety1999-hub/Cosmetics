@@ -44,6 +44,7 @@ body {
     radial-gradient(circle at 18% 18%, rgba(255, 167, 58, 0.12), transparent 16%),
     radial-gradient(circle at 76% 22%, rgba(214, 168, 95, 0.08), transparent 18%),
     radial-gradient(circle at 50% 100%, rgba(255, 140, 40, 0.05), transparent 22%),
+    radial-gradient(circle at 50% 18%, rgba(255, 245, 221, 0.02), transparent 22%),
     linear-gradient(180deg, #030406 0%, #06080c 42%, #05070b 100%);
   color: var(--mystic-text);
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
@@ -212,6 +213,37 @@ summary:focus-visible {
   color: var(--mystic-text);
 }
 
+.mystic-particle {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle, rgba(255, 228, 177, 0.96) 0%, rgba(255, 202, 118, 0.82) 36%, rgba(214, 168, 95, 0.28) 66%, rgba(214, 168, 95, 0) 100%);
+  box-shadow:
+    0 0 10px rgba(255, 207, 127, 0.5),
+    0 0 28px rgba(214, 168, 95, 0.28);
+  opacity: 0.82;
+  animation: mystic-float 8.4s ease-in-out infinite;
+}
+
+.mystic-particle-sm {
+  height: 4px;
+  width: 4px;
+  animation-duration: 7.4s;
+}
+
+.mystic-particle-md {
+  height: 7px;
+  width: 7px;
+  animation-duration: 9.2s;
+}
+
+.mystic-particle-lg {
+  height: 10px;
+  width: 10px;
+  animation-duration: 10.8s;
+}
+
 @media (min-width: 768px) {
   .mystic-section {
     padding-top: 5.5rem;
@@ -244,5 +276,24 @@ summary:focus-visible {
   }
   100% {
     background-position: 120% 0;
+  }
+}
+
+@keyframes mystic-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.92);
+    opacity: 0.46;
+  }
+  30% {
+    transform: translate3d(-4px, -12px, 0) scale(1);
+    opacity: 0.88;
+  }
+  65% {
+    transform: translate3d(3px, -18px, 0) scale(1.08);
+    opacity: 0.74;
+  }
+  100% {
+    transform: translate3d(-2px, -28px, 0) scale(0.96);
+    opacity: 0.18;
   }
 }
