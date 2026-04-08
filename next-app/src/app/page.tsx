@@ -126,12 +126,27 @@ function HeroSection() {
 function HeroSilhouette() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-y-[4%] right-[2%] w-[88%] rounded-[48%] bg-[radial-gradient(circle_at_38%_18%,rgba(255,255,255,0.08),transparent_14%),radial-gradient(circle_at_42%_32%,rgba(214,168,95,0.08),transparent_24%),linear-gradient(180deg,rgba(4,5,8,0.02),rgba(4,5,8,0.62))] blur-[2px]" />
-      <div className="absolute right-[18%] top-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.34),rgba(255,255,255,0.08)_26%,rgba(214,168,95,0.07)_46%,rgba(214,168,95,0)_74%)] blur-3xl" />
-      <div className="absolute right-[8%] top-[42%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.07),transparent_72%)] blur-3xl" />
+      <div className="absolute right-[3%] top-[8%] h-[26%] w-[44%] rounded-[46%] border border-[rgba(214,168,95,0.08)] bg-[linear-gradient(180deg,rgba(18,15,12,0.22),rgba(7,8,11,0.06))] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.01),0_32px_80px_rgba(0,0,0,0.35)]" />
+      <div className="absolute right-[8%] top-[28%] h-[66%] w-[34%] rounded-[48%] border border-[rgba(214,168,95,0.07)] bg-[linear-gradient(180deg,rgba(18,15,12,0.18),rgba(7,8,11,0.05))] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.01),0_40px_110px_rgba(0,0,0,0.4)]" />
+      <div className="absolute right-[16%] top-[16%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.26),rgba(255,255,255,0.06)_30%,rgba(214,168,95,0.08)_48%,rgba(214,168,95,0)_72%)] blur-3xl" />
+      <div className="absolute right-[10%] top-[44%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.06),transparent_72%)] blur-3xl" />
+      <div className="pointer-events-none absolute bottom-[32%] right-[26%] text-[7rem] font-cormorant tracking-[0.08em] text-[rgba(214,168,95,0.08)] blur-[1px]">
+        Mystique...
+      </div>
+      <div className="pointer-events-none absolute bottom-[27%] right-[19%] text-[1.15rem] uppercase tracking-[0.34em] text-[rgba(214,168,95,0.08)]">
+        Where Beauty Transcends
+      </div>
+      <div className="absolute right-[8%] top-[10%] h-[24%] w-[38%] overflow-hidden rounded-[46%] opacity-[0.36] mix-blend-screen">
+        <HeroPortraitGraphic className="h-full w-full scale-[0.72] translate-x-[8%] translate-y-[-4%]" />
+      </div>
+      <div className="absolute right-[7%] top-[23%] h-[68%] w-[34%] overflow-hidden rounded-[48%] opacity-[0.94]">
+        <HeroPortraitGraphic className="h-full w-full scale-[1.04] translate-x-[2%] translate-y-[2%]" />
+      </div>
+      <div className="absolute right-[6%] top-[22%] h-[70%] w-[36%] rounded-[48%] bg-[linear-gradient(180deg,rgba(5,7,11,0.04),rgba(5,7,11,0.42))]" />
+      <div className="absolute right-[3%] top-[8%] h-[26%] w-[44%] bg-[radial-gradient(circle_at_26%_26%,rgba(255,255,255,0.08),transparent_16%),radial-gradient(circle_at_44%_42%,rgba(214,168,95,0.06),transparent_26%)] blur-[2px]" />
       <svg
         viewBox="0 0 420 720"
-        className="absolute bottom-0 right-[6%] h-[95%] w-auto opacity-[0.98]"
+        className="absolute bottom-0 right-[8%] h-[94%] w-auto opacity-[0.42]"
         aria-hidden="true"
       >
         <defs>
@@ -222,12 +237,97 @@ function HeroSilhouette() {
           strokeLinecap="round"
         />
       </svg>
-      <div className="absolute bottom-[8%] right-[4%] h-[76%] w-[72%] bg-[radial-gradient(circle_at_38%_18%,rgba(255,255,255,0.1),transparent_10%),radial-gradient(circle_at_40%_22%,rgba(255,168,59,0.08),transparent_12%),radial-gradient(circle_at_34%_54%,rgba(214,168,95,0.05),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.02),rgba(5,7,11,0.58))]" />
+      <div className="absolute bottom-[8%] right-[4%] h-[76%] w-[72%] bg-[radial-gradient(circle_at_38%_18%,rgba(255,255,255,0.08),transparent_10%),radial-gradient(circle_at_40%_22%,rgba(255,168,59,0.06),transparent_12%),radial-gradient(circle_at_34%_54%,rgba(214,168,95,0.04),transparent_18%),linear-gradient(90deg,rgba(5,7,11,0.02),rgba(5,7,11,0.58))]" />
       <span className="mystic-particle mystic-particle-md right-[28%] top-[18%]" />
       <span className="mystic-particle mystic-particle-sm right-[24%] top-[26%]" />
       <span className="mystic-particle mystic-particle-sm right-[36%] top-[48%]" />
       <span className="mystic-particle mystic-particle-lg right-[18%] top-[62%]" />
     </div>
+  );
+}
+
+function HeroPortraitGraphic({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 420 720"
+      className={className}
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <radialGradient id="portraitBacklight" cx="38%" cy="18%" r="60%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.56)" />
+          <stop offset="20%" stopColor="rgba(255,255,255,0.18)" />
+          <stop offset="44%" stopColor="rgba(214,168,95,0.08)" />
+          <stop offset="100%" stopColor="rgba(214,168,95,0)" />
+        </radialGradient>
+        <linearGradient id="portraitFill" x1="14%" x2="88%" y1="6%" y2="100%">
+          <stop offset="0%" stopColor="rgba(5,6,9,0.995)" />
+          <stop offset="52%" stopColor="rgba(2,3,5,0.995)" />
+          <stop offset="100%" stopColor="rgba(9,11,16,0.96)" />
+        </linearGradient>
+        <linearGradient id="portraitRim" x1="0%" x2="100%" y1="0%" y2="0%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+          <stop offset="36%" stopColor="rgba(255,255,255,0.04)" />
+          <stop offset="58%" stopColor="rgba(255,255,255,0.42)" />
+          <stop offset="88%" stopColor="rgba(255,214,145,0.14)" />
+          <stop offset="100%" stopColor="rgba(255,184,92,0)" />
+        </linearGradient>
+        <linearGradient id="portraitHairLine" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
+          <stop offset="44%" stopColor="rgba(255,255,255,0.18)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="228" cy="180" rx="138" ry="130" fill="url(#portraitBacklight)" />
+      <path
+        d="M205 92c31 0 61 11 84 31 23 19 38 46 43 75 4 24-1 46-15 67-11 16-27 30-48 44 19 18 37 41 53 70 20 37 30 81 33 126 3 55-5 118-31 170-11 22-29 44-53 57-25 14-56 14-82 2-31-14-55-44-71-82-19-45-27-99-24-147 3-38 11-76 27-110 11-24 26-45 46-63-20-12-35-28-45-48-13-25-15-55-8-82 8-32 31-63 58-82 20-14 43-23 63-28 4 0 8 0 11 0Z"
+        fill="url(#portraitFill)"
+      />
+      <path
+        d="M205 102c-25 4-46 15-62 33-18 20-29 45-32 70-4 27 1 52 14 73 10 15 25 28 45 39-18 18-31 42-39 68-12 36-16 76-13 117 4 55 18 108 44 154"
+        fill="none"
+        stroke="url(#portraitRim)"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M215 130c-22 2-40 11-53 26-14 16-21 36-20 55 1 14 7 26 18 38-9 12-18 24-27 33-8 7-17 14-28 21 23-3 42-8 56-15-4 13-12 26-23 40 17-4 32-12 45-21-3 15-10 30-22 44 17-5 33-8 48-8-10-14-22-28-35-41-12-11-25-22-40-31 18-10 31-21 40-33 11-14 16-31 16-47 0-18-7-34-22-46-14-11-32-16-53-15Z"
+        fill="rgba(5,6,9,0.99)"
+      />
+      <path
+        d="M154 177c10-25 29-45 53-56-7 15-8 30-4 44 4 13 13 26 27 37-11 9-24 17-39 24-16 7-31 12-45 13 10-10 16-21 18-33 3-11 0-22-10-29Z"
+        fill="rgba(3,4,7,0.98)"
+      />
+      <path
+        d="M173 130c20 5 39 18 56 37 12 15 25 34 37 56-16-16-31-28-44-38-16-11-33-22-53-30l-16 23 20-31Z"
+        fill="none"
+        stroke="url(#portraitHairLine)"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M158 158c15 9 29 22 42 38 11 14 21 31 32 50-13-15-25-28-37-40-13-12-29-24-46-33"
+        fill="none"
+        stroke="url(#portraitHairLine)"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M146 204c12 12 24 27 34 46 8 15 16 34 24 55-10-18-20-34-30-49-9-14-20-28-34-41"
+        fill="none"
+        stroke="url(#portraitHairLine)"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+      <path
+        d="M222 405c-13 42-23 92-27 149 4-32 10-64 19-95 10-38 22-74 41-110"
+        fill="none"
+        stroke="url(#portraitRim)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 
