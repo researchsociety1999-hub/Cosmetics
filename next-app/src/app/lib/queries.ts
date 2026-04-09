@@ -127,6 +127,25 @@ function getMockCategories(): Category[] {
   return mockCategories;
 }
 
+function filterMockProducts(
+  products: Product[],
+  options: GetProductsOptions = {},
+): Product[] {
+  const { categoryId, search } = options;
+
+  let filtered = [...products];
+
+  if (typeof categoryId === "number") {
+    filtered = filtered.filter((product) => product.category_id === categoryId);
+  }
+
+  if (search?.trim()) {
+    filtered = filterProductsBySearch(filtered, search.trim(), filtered.length || 24);
+  }
+
+  return filtered;
+}
+
 function paginateProducts(
   products: Product[],
   page = 1,
@@ -267,7 +286,12 @@ export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
   if (!hasSupabaseEnv || !supabase) {
-    return paginateProducts(sortProducts(getMockProducts(), options.sortBy), options.page, options.limit);
+    const filteredProducts = filterMockProducts(getMockProducts(), options);
+    return paginateProducts(
+      sortProducts(filteredProducts, options.sortBy),
+      options.page,
+      options.limit,
+    );
   }
 
   const { categoryId, search, sortBy = "newest", limit, page = 1 } = options;
@@ -316,8 +340,10 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
     return [];
   }
 
+  const requestedIds = new Set(ids);
+
   if (!hasSupabaseEnv || !supabase) {
-    return [];
+    return getMockProducts().filter((product) => requestedIds.has(product.id));
   }
 
   try {
@@ -328,12 +354,15 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
       .eq("is_published", true);
 
     if (error) {
-      return [];
+      return getMockProducts().filter((product) => requestedIds.has(product.id));
     }
 
-    return ((data ?? []) as Product[]).map(normalizeProduct);
+    const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
+    return normalizedProducts.length
+      ? normalizedProducts
+      : getMockProducts().filter((product) => requestedIds.has(product.id));
   } catch {
-    return [];
+    return getMockProducts().filter((product) => requestedIds.has(product.id));
   }
 }
 

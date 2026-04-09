@@ -10,9 +10,12 @@ test.describe("storefront smoke", () => {
     await gotoAndWait(page, "/");
 
     await expectHeading(page, "Where Beauty Transcends");
-    await expect(page.getByRole("link", { name: "Shop" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Ingredients" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Search" })).toBeVisible();
+    const siteHeader = page.getByRole("banner");
+    await expect(siteHeader.getByRole("link", { name: "Shop", exact: true })).toBeVisible();
+    await expect(
+      siteHeader.getByRole("link", { name: "Ingredients", exact: true }),
+    ).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Search", exact: true })).toBeVisible();
   });
 
   test("core shopper routes return working pages", async ({ page }) => {
