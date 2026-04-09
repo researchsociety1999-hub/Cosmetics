@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { addToCartAction } from "../../actions/cart";
 import { AddToCartForm } from "../../components/AddToCartForm";
 import ProductCard from "../../components/productcard";
 import { SiteChrome } from "../../components/SiteChrome";
+import { ThemedImageFrame } from "../../components/ThemedImageFrame";
 import { formatMoney, getDisplayPrice, getProductImages } from "../../lib/format";
 import {
   getProductBySlug,
@@ -102,30 +102,30 @@ export default async function ProductPage({
       <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
         <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-4">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-[rgba(214,168,95,0.18)] bg-[#0d1118]">
-              <Image
+            <ThemedImageFrame
                 src={galleryImages[0]}
                 alt={`${productName} hero image`}
                 fill
-                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                variant="product"
+                className="aspect-[4/5]"
+                frameClassName="rounded-[28px]"
+                imageClassName="object-cover"
               />
-            </div>
             {galleryImages.length > 1 ? (
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 {galleryImages.slice(1).map((image, index) => (
-                  <div
+                  <ThemedImageFrame
                     key={`${image}-${index}`}
-                    className="relative aspect-square overflow-hidden rounded-[18px] border border-[rgba(214,168,95,0.14)] bg-[#0d1118]"
-                  >
-                    <Image
-                      src={image}
-                      alt={`${productName} alternate image`}
-                      fill
-                      className="object-cover"
-                      sizes="25vw"
-                    />
-                  </div>
+                    src={image}
+                    alt={`${productName} alternate image`}
+                    fill
+                    sizes="25vw"
+                    variant="thumb"
+                    className="aspect-square"
+                    frameClassName="rounded-[18px]"
+                    imageClassName="object-cover"
+                  />
                 ))}
               </div>
             ) : null}

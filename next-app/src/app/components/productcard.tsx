@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { addToCartAction } from "../actions/cart";
 import { AddToCartForm } from "./AddToCartForm";
+import { ThemedImageFrame } from "./ThemedImageFrame";
 import { formatMoney, getDisplayPrice, isSafeImageSrc } from "../lib/format";
 import type { Product } from "../lib/types";
 
@@ -23,14 +23,17 @@ export default function ProductCard({ product }: ProductCardProps) {
     <article className="group relative mx-auto flex h-full w-full max-w-[280px] flex-col overflow-hidden rounded-[24px] border border-[rgba(214,168,95,0.18)] bg-[#0b0e14] shadow-[0_18px_45px_rgba(0,0,0,0.45)] transition duration-500 hover:-translate-y-1 hover:border-[rgba(214,168,95,0.45)]">
       <Link
         href={`/products/${product.slug}`}
-        className="relative mx-4 mt-4 block aspect-[4/4.8] overflow-hidden rounded-[20px] bg-[#11151d]"
+        className="relative mx-4 mt-4 block"
       >
-        <Image
+        <ThemedImageFrame
           src={imgSrc}
           alt={`${product.name} product shot`}
           fill
-          className="object-contain p-4 transition duration-500 group-hover:scale-[1.03] md:p-5"
+          variant="product"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          className="aspect-[4/4.8]"
+          frameClassName="rounded-[20px]"
+          imageClassName="object-contain p-4 transition duration-500 group-hover:scale-[1.03] md:p-5"
         />
         <div className="absolute left-3 top-3 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.82)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.22em] text-[#f0d19a]">
           {product.routine_step ?? "Ritual"}

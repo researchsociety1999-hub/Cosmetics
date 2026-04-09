@@ -189,7 +189,7 @@ export const mockIngredients: Ingredient[] = [
     id: "centella-asiatica",
     name: "Centella Asiatica",
     description:
-      "A calming botanical prized in K-beauty routines for comfort and post-stress softness.",
+      "A calming botanical prized in Mystique Beauty routines for comfort and post-stress softness.",
     benefits: "Soothing, redness support, recovery",
     source: "Leaf extract",
   },
@@ -223,7 +223,7 @@ export const mockPressMentions: PressMention[] = [
   },
   {
     id: "press-allure",
-    title: "A California-born K-beauty label with a dark-luxe point of view",
+    title: "A California-born Mystique Beauty label with a dark-luxe point of view",
     source: "Allure Roundup",
     quote:
       "Mystique leans into bloom skin, plush textures, and regenerative-science storytelling without losing elegance.",

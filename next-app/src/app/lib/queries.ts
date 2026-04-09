@@ -1,6 +1,7 @@
 import {
   mockIngredients,
   mockJournalEntries,
+  mockProducts,
   mockPressMentions,
   mockPromoCampaign,
   mockReviews,
@@ -128,6 +129,129 @@ function paginateProducts(
 
   const start = Math.max(page - 1, 0) * limit;
   return products.slice(start, start + limit);
+}
+
+function normalizeSearchText(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function expandSearchTerms(query: string): string[] {
+  const normalizedQuery = normalizeSearchText(query);
+  const terms = new Set(
+    normalizedQuery
+      .split(" ")
+      .map((term) => term.trim())
+      .filter(Boolean),
+  );
+
+  if (normalizedQuery.includes("bloom skin")) {
+    terms.add("glow");
+    terms.add("radiance");
+    terms.add("luminous");
+    terms.add("hydration");
+    terms.add("dewy");
+  }
+
+  if (terms.has("glow")) {
+    terms.add("radiance");
+    terms.add("luminous");
+    terms.add("bright");
+  }
+
+  if (terms.has("hydrate") || terms.has("hydration")) {
+    terms.add("plump");
+    terms.add("dewy");
+    terms.add("hyaluronic");
+  }
+
+  return [normalizedQuery, ...terms].filter(Boolean);
+}
+
+function getProductSearchText(product: Product): string {
+  return normalizeSearchText(
+    [
+      product.name,
+      product.slug,
+      product.description,
+      product.routine_step,
+      product.category_slug,
+      product.category_name,
+      ...(product.key_ingredients ?? []),
+      ...(product.benefits ?? []),
+      ...(product.skin_types ?? []),
+    ]
+      .filter((value): value is string => Boolean(value))
+      .join(" "),
+  );
+}
+
+function getProductSearchScore(product: Product, query: string): number {
+  const haystack = getProductSearchText(product);
+  const normalizedQuery = normalizeSearchText(query);
+
+  if (!normalizedQuery || !haystack) {
+    return -1;
+  }
+
+  let score = 0;
+  const searchTerms = expandSearchTerms(query);
+
+  if (haystack.includes(normalizedQuery)) {
+    score += 12;
+  }
+
+  if (normalizeSearchText(product.name).includes(normalizedQuery)) {
+    score += 18;
+  }
+
+  if (normalizeSearchText(product.slug).includes(normalizedQuery)) {
+    score += 14;
+  }
+
+  if (normalizeSearchText(product.description ?? "").includes(normalizedQuery)) {
+    score += 10;
+  }
+
+  for (const term of searchTerms) {
+    if (!term || term === normalizedQuery) {
+      continue;
+    }
+
+    if (haystack.includes(term)) {
+      score += 3;
+    }
+  }
+
+  return score > 0 ? score : -1;
+}
+
+function filterProductsBySearch(
+  products: Product[],
+  query: string,
+  limit = 24,
+): Product[] {
+  return products
+    .map((product) => ({
+      product,
+      score: getProductSearchScore(product, query),
+    }))
+    .filter((entry) => entry.score >= 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      return (
+        new Date(b.product.created_at).getTime() -
+        new Date(a.product.created_at).getTime()
+      );
+    })
+    .slice(0, limit)
+    .map((entry) => entry.product);
 }
 
 export async function getProducts(
@@ -400,7 +524,17 @@ export async function getIngredients(): Promise<Ingredient[]> {
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
-  return getProducts({ search: query, sortBy: "featured", limit: 24 });
+  const normalizedQuery = normalizeSearchText(query);
+
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  const sourceProducts = hasSupabaseEnv && supabase
+    ? await getProducts({ sortBy: "featured" })
+    : mockProducts.map(normalizeProduct);
+
+  return filterProductsBySearch(sourceProducts, normalizedQuery, 24);
 }
 
 export async function getJournalEntries(): Promise<JournalEntry[]> {
