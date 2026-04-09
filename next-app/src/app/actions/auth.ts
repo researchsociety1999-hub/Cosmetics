@@ -32,6 +32,14 @@ function formatAuthErrorMessage(message: string) {
     return "Cannot connect to Supabase. Check your internet connection, firewall, VPN, or Supabase URL and try again.";
   }
 
+  if (normalized.includes("error sending confirmation email")) {
+    return "Supabase could not send the magic link email. Configure a custom SMTP provider for production auth emails, or use a pre-authorized team address while the default Supabase mailer is still enabled.";
+  }
+
+  if (normalized.includes("email rate limit exceeded")) {
+    return "Too many magic-link emails have been requested recently. Wait a few minutes and try again.";
+  }
+
   return message;
 }
 
@@ -63,7 +71,7 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
     email,
     options: {
       emailRedirectTo: callbackUrl.toString(),
-      shouldCreateUser: true,
+      shouldCreateUser: mode === "signup",
     },
   });
 
