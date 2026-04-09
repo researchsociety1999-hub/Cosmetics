@@ -6,7 +6,9 @@
     "build": "npm --prefix next-app run build",
     "start": "npm --prefix next-app run start",
     "lint": "npm --prefix next-app run lint",
-    "install": "npm --prefix next-app install"
+    "install": "npm --prefix next-app install",
+    "test": "playwright test",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
