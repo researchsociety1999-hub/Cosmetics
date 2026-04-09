@@ -16,7 +16,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const email = params.email ? decodeURIComponent(params.email) : "";
-  const nextPath = params.next || "/account/orders";
+  const nextPath = params.next || "/account";
   const user = await getAuthenticatedUser();
 
   if (user) {

@@ -396,6 +396,7 @@ summary:focus-visible {
   border: none;
   background: transparent;
   box-shadow: none;
+  overflow: visible;
 }
 
 .mystique-image-frame--brand .mystique-image-frame__shade {
@@ -412,6 +413,10 @@ summary:focus-visible {
   opacity: 0.8;
   mix-blend-mode: screen;
   filter: brightness(0.78) contrast(0.88) saturate(0.72) blur(0.2px);
+  -webkit-mask-image:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0.94) 38%, rgba(0, 0, 0, 0.72) 56%, rgba(0, 0, 0, 0.34) 72%, transparent 90%);
+  mask-image:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0.94) 38%, rgba(0, 0, 0, 0.72) 56%, rgba(0, 0, 0, 0.34) 72%, transparent 90%);
 }
 
 .mystique-image-frame--brand .mystique-image-frame__particle {
