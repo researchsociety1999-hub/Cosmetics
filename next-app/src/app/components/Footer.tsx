@@ -16,10 +16,10 @@ export function Footer() {
                 <BrandLogo className="opacity-95" />
               </div>
               <p className="inline-flex rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.66rem] uppercase tracking-[0.28em] text-[#cdb58d]">
-                California luxury K-beauty
+                California luxury Mystique Beauty
               </p>
               <p className="max-w-sm text-sm leading-relaxed text-[#b8ab95]">
-                Mystique is luxury K-beauty for calm, luminous skin, shaped through
+                Mystique is luxury Mystique Beauty for calm, luminous skin, shaped through
                 plush textures, guided layering, and an after-dark editorial mood.
               </p>
             </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ThemedImageFrame } from "../components/ThemedImageFrame";
 import { formatMoney, isSafeImageSrc } from "../lib/format";
 
 type SearchProduct = {
@@ -119,14 +119,17 @@ export function SearchExperience({
               >
                 <Link
                   href={`/products/${product.slug}`}
-                  className="relative mx-4 mt-4 block aspect-[4/4.8] overflow-hidden rounded-[20px] bg-[#11151d]"
+                  className="relative mx-4 mt-4 block"
                 >
-                  <Image
+                  <ThemedImageFrame
                     src={imageSrc}
                     alt={`${product.name} product shot`}
                     fill
-                    className="object-contain p-4 transition duration-500 group-hover:scale-[1.03] md:p-5"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    variant="product"
+                    className="aspect-[4/4.8]"
+                    frameClassName="rounded-[20px]"
+                    imageClassName="object-contain p-4 transition duration-500 group-hover:scale-[1.03] md:p-5"
                   />
                   <div className="absolute left-3 top-3 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.82)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.22em] text-[#f0d19a]">
                     {product.routine_step ?? "Ritual"}

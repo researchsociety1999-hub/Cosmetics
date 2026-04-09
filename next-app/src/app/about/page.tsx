@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ThemedImageFrame } from "../components/ThemedImageFrame";
 import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export default function AboutPage() {
                 Luxury ritual, reimagined.
               </h1>
               <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-                Mystique blends California restraint with K-beauty ritual to create
+                Mystique blends California restraint with Mystique Beauty ritual to create
                 skincare that feels atmospheric, polished, and easy to live with.
               </p>
               <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
@@ -38,7 +38,7 @@ export default function AboutPage() {
                 </div>
                 <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
                   <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
-                    K-beauty ritual
+                    Mystique Beauty ritual
                   </p>
                   <p className="mt-2 text-sm">
                     Plush textures and layer-friendly routines shaped for daily use.
@@ -48,20 +48,18 @@ export default function AboutPage() {
             </header>
 
             <div className="relative mx-auto flex w-full max-w-[560px] justify-center">
-              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,170,70,0.22),rgba(255,170,70,0.08)_42%,transparent_74%)] blur-3xl" />
-              <div className="pointer-events-none absolute inset-x-[10%] top-[14%] h-[68%] rounded-[999px] border border-[rgba(255,184,92,0.1)]" />
-              <div className="relative overflow-hidden rounded-[32px] border border-[rgba(214,168,95,0.12)] bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 py-6 shadow-[0_30px_60px_rgba(0,0,0,0.48)]">
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(5,6,9,0.42),rgba(5,6,9,0.08)_16%,rgba(5,6,9,0.08)_84%,rgba(5,6,9,0.42))]" />
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_46%,rgba(5,6,9,0.18)_100%)]" />
-                <Image
+              <ThemedImageFrame
                   src="/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png"
                   alt="Mystique brand artwork"
                   width={560}
                   height={320}
                   priority
-                  className="relative h-auto w-full object-contain opacity-[0.92] mix-blend-screen brightness-[0.98] contrast-[0.95] saturate-[0.9] drop-shadow-[0_0_34px_rgba(255,170,70,0.16)]"
+                  sizes="(max-width: 768px) 100vw, 560px"
+                  variant="brand"
+                  className="w-full"
+                  frameClassName="rounded-[32px] px-4 py-6"
+                  imageClassName="h-auto w-full object-contain"
                 />
-              </div>
             </div>
           </div>
         </section>

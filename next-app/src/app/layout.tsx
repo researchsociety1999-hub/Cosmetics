@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     template: "%s | Mystique",
   },
   description:
-    "Luxury dermatological skincare with a mystical edge, rooted in California minimalism and K-beauty ritual.",
+    "Luxury dermatological skincare with a mystical edge, rooted in California minimalism and Mystique Beauty ritual.",
   applicationName: "Mystique",
   keywords: [
-    "K-beauty",
+    "Mystique Beauty",
     "luxury skincare",
     "bloom skin",
     "peptides",

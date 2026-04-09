@@ -23,7 +23,7 @@ export default async function IngredientsPage() {
             Ingredients with intention.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Thoughtful, comfort-first formulas meet the layering sensibility of K-beauty
+            Thoughtful, comfort-first formulas meet the layering sensibility of Mystique Beauty
             to support skin that looks calm, luminous, and refined.
           </p>
         </header>
