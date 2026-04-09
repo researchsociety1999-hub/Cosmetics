@@ -20,7 +20,7 @@ test.describe("cart and checkout", () => {
 
   test("guest checkout prompts sign in instead of starting payment", async ({ page }) => {
     await addProductToCart(page);
-    await gotoAndWait(page, "/checkout");
+    await page.goto("/checkout", { waitUntil: "domcontentloaded" });
 
     await expectHeading(page, "Checkout");
     await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();

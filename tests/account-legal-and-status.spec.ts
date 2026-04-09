@@ -24,6 +24,17 @@ test.describe("account, legal, and status routes", () => {
     await expect(page.getByRole("link", { name: "Create an account" })).toBeVisible();
   });
 
+  test("login page surfaces auth send failures clearly", async ({ page }) => {
+    await gotoAndWait(
+      page,
+      "/account/login?status=error&message=Supabase%20could%20not%20send%20the%20magic%20link%20email.",
+    );
+
+    await expectHeading(page, "Sign in to Mystique");
+    await expect(page.getByText(/couldn't send the magic link right now/i)).toBeVisible();
+    await expect(page.getByText(/Supabase could not send the magic link email/i)).toBeVisible();
+  });
+
   test("signup page renders account creation flow and status copy", async ({ page }) => {
     await gotoAndWait(page, "/account/signup?status=missing-email");
 
@@ -31,6 +42,17 @@ test.describe("account, legal, and status routes", () => {
     await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
     await expect(page.getByText(/Enter the email address you want to use/i)).toBeVisible();
     await expect(page.getByRole("link", { name: "Go to sign in" })).toBeVisible();
+  });
+
+  test("signup page surfaces auth send failures clearly", async ({ page }) => {
+    await gotoAndWait(
+      page,
+      "/account/signup?status=error&message=Supabase%20could%20not%20send%20the%20magic%20link%20email.",
+    );
+
+    await expectHeading(page, "Create your Mystique account");
+    await expect(page.getByText(/couldn't send the account link right now/i)).toBeVisible();
+    await expect(page.getByText(/Supabase could not send the magic link email/i)).toBeVisible();
   });
 
   test("account root redirects guests to login with next path", async ({ page }) => {
