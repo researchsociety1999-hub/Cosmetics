@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { signOutAction } from "../actions/auth";
 import { BrandLogo } from "./BrandLogo";
+import { NavbarMobileMenu } from "./NavbarMobileMenu";
 
 interface NavbarProps {
   cartCount?: number;
@@ -19,43 +20,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
             <BrandLogo compact className="mx-auto opacity-95" />
           </div>
 
-          <details className="relative">
-            <summary className="flex list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.4)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm">
-              Menu
-            </summary>
-            <div className="absolute right-0 top-[calc(100%+0.75rem)] w-[280px] overflow-hidden rounded-[22px] border border-[rgba(214,168,95,0.16)] bg-[linear-gradient(180deg,rgba(9,12,18,0.94),rgba(7,9,13,0.88))] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,170,70,0.1),transparent_26%)]" />
-              <nav className="relative flex flex-col gap-2">
-                <MobileNavLink href="/shop" label="Shop" />
-                <MobileNavLink href="/routines" label="Routines" />
-                <MobileNavLink href="/ingredients" label="Ingredients" />
-                <MobileNavLink href="/journal" label="Journal" />
-                <MobileNavLink href="/about" label="About" />
-                <MobileNavLink href="/faq" label="FAQ" />
-                <MobileNavLink href="/contact" label="Contact" />
-                {isAuthenticated ? (
-                  <>
-                    <MobileNavLink href="/account/orders" label="Account" />
-                    <form action={signOutAction}>
-                      <button
-                        type="submit"
-                        className="w-full rounded-full px-3 py-2 text-left text-xs uppercase tracking-[0.22em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
-                      >
-                        Sign out
-                      </button>
-                    </form>
-                  </>
-                ) : (
-                  <>
-                    <MobileNavLink href="/account/login" label="Sign in" />
-                    <MobileNavLink href="/account/signup" label="Sign up" />
-                  </>
-                )}
-                <MobileNavLink href="/search" label="Search" />
-                <MobileNavLink href="/cart" label={`Cart (${cartCount})`} />
-              </nav>
-            </div>
-          </details>
+          <NavbarMobileMenu isAuthenticated={isAuthenticated} cartCount={cartCount} />
         </div>
 
         <div className="relative hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 border-b border-[rgba(214,168,95,0.1)] pb-5 md:grid lg:gap-8">
@@ -123,17 +88,6 @@ function NavLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       className="relative whitespace-nowrap text-[0.66rem] uppercase tracking-[0.22em] text-[#c5b79f] transition hover:text-[#f0d19a] focus-visible:outline-none focus-visible:text-[#f0d19a] lg:text-[0.68rem] lg:tracking-[0.24em]"
-    >
-      {label}
-    </Link>
-  );
-}
-
-function MobileNavLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.22em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
     >
       {label}
     </Link>

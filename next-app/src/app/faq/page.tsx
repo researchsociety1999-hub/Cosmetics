@@ -44,8 +44,12 @@ export default function FaqPage() {
         </header>
         <div className="space-y-4">
           {mockFaqs.map((item) => (
-            <details key={item.question} className="mystic-card group p-5 md:p-6">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-cormorant text-[1.75rem] tracking-[0.06em] text-[#f5eee3]">
+            <details
+              key={item.question}
+              name="faq"
+              className="mystic-card group p-5 md:p-6"
+            >
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-cormorant text-[1.75rem] tracking-[0.06em] text-[#f5eee3] [&::-webkit-details-marker]:hidden [&::marker]:content-none">
                 <span>{faqCopy[item.question]?.question ?? item.question}</span>
                 <span className="mt-1 text-base text-[#d6a85f] transition group-open:rotate-45">+</span>
               </summary>
