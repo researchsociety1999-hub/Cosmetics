@@ -1,4 +1,5 @@
 import {
+  mockCategories,
   mockIngredients,
   mockJournalEntries,
   mockProducts,
@@ -116,6 +117,14 @@ function sortProducts(products: Product[], sortBy: ProductSort = "newest"): Prod
   }
 
   return sorted;
+}
+
+function getMockProducts(): Product[] {
+  return mockProducts.map(normalizeProduct);
+}
+
+function getMockCategories(): Category[] {
+  return mockCategories;
 }
 
 function paginateProducts(
@@ -258,7 +267,7 @@ export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
   if (!hasSupabaseEnv || !supabase) {
-    return [];
+    return paginateProducts(sortProducts(getMockProducts(), options.sortBy), options.page, options.limit);
   }
 
   const { categoryId, search, sortBy = "newest", limit, page = 1 } = options;
@@ -290,12 +299,15 @@ export async function getProducts(
 
     const { data, error } = await query;
     if (error) {
-      return [];
+      return paginateProducts(sortProducts(getMockProducts(), sortBy), page, limit);
     }
 
-    return paginateProducts(sortProducts(((data ?? []) as Product[]).map(normalizeProduct), sortBy), page, limit);
+    const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
+    const products = normalizedProducts.length ? normalizedProducts : getMockProducts();
+
+    return paginateProducts(sortProducts(products, sortBy), page, limit);
   } catch {
-    return [];
+    return paginateProducts(sortProducts(getMockProducts(), sortBy), page, limit);
   }
 }
 
@@ -327,7 +339,7 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!hasSupabaseEnv || !supabase) {
-    return null;
+    return getMockProducts().find((product) => product.slug === slug) ?? null;
   }
 
   try {
@@ -340,12 +352,14 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .maybeSingle();
 
     if (error) {
-      return null;
+      return getMockProducts().find((product) => product.slug === slug) ?? null;
     }
 
-    return data ? normalizeProduct(data as Product) : null;
+    return data
+      ? normalizeProduct(data as Product)
+      : getMockProducts().find((product) => product.slug === slug) ?? null;
   } catch {
-    return null;
+    return getMockProducts().find((product) => product.slug === slug) ?? null;
   }
 }
 
@@ -363,7 +377,7 @@ export async function getRelatedProducts(
 
 export async function getCategories(): Promise<Category[]> {
   if (!hasSupabaseEnv || !supabase) {
-    return [];
+    return getMockCategories();
   }
 
   try {
@@ -373,12 +387,12 @@ export async function getCategories(): Promise<Category[]> {
       .order("name", { ascending: true });
 
     if (error) {
-      return [];
+      return getMockCategories();
     }
 
-    return (data ?? []) as Category[];
+    return data?.length ? (data as Category[]) : getMockCategories();
   } catch {
-    return [];
+    return getMockCategories();
   }
 }
 

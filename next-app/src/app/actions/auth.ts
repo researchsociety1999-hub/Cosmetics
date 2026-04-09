@@ -18,7 +18,11 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
     return `${protocol}://${host}`;
   }
 
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.SITE_URL ??
+    "https://cosmetics-wjwz.vercel.app"
+  );
 }
 
 function formatAuthErrorMessage(message: string) {
@@ -33,7 +37,7 @@ function formatAuthErrorMessage(message: string) {
 
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
-  const nextPath = normalizeField(formData.get("next")) || "/account/login?status=confirmed";
+  const nextPath = normalizeField(formData.get("next")) || "/account";
   const mode = normalizeField(formData.get("mode")) === "signup" ? "signup" : "login";
   const statusPath = mode === "signup" ? "/account/signup" : "/account/login";
 

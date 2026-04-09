@@ -12,11 +12,11 @@ function getOtpType(type: string): EmailOtpType {
 
 function getSafeNextPath(next: string | null) {
   if (!next || !next.startsWith("/")) {
-    return "/account/orders";
+    return "/account";
   }
 
   if (next.startsWith("//")) {
-    return "/account/orders";
+    return "/account";
   }
 
   return next;
