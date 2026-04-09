@@ -16,3 +16,23 @@ export async function addFirstVisibleProductToCart(page: Page) {
   await expect(addToCartButton).toBeVisible();
   await addToCartButton.click();
 }
+
+export async function addProductToCart(
+  page: Page,
+  slug = "celestial-glow-serum",
+  quantity = 1,
+) {
+  await gotoAndWait(page, `/products/${slug}`);
+
+  if (quantity > 1) {
+    const quantityInput = page.locator('input[name="quantity"]');
+    await expect(quantityInput).toBeVisible();
+    await quantityInput.fill(String(quantity));
+  }
+
+  const addToCartForm = page
+    .locator("form")
+    .filter({ has: page.locator('input[name="redirectTo"][value="cart"]') });
+  await addToCartForm.getByRole("button", { name: "Add to cart" }).click();
+  await expect(page).toHaveURL(/\/cart$/);
+}
