@@ -2,6 +2,14 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandLogo } from "./BrandLogo";
 
+const SOCIAL_LINKS: Array<{ label: string; href: string }> = [
+  { label: "TikTok", href: "https://www.tiktok.com" },
+  { label: "Instagram", href: "https://www.instagram.com" },
+  { label: "X", href: "https://x.com" },
+  { label: "Facebook", href: "https://www.facebook.com" },
+  { label: "Snapchat", href: "https://www.snapchat.com" },
+];
+
 export function Footer() {
   return (
     <footer className="relative mt-24 overflow-hidden">
@@ -44,6 +52,27 @@ export function Footer() {
               <FooterLink href="/faq">Shipping & Returns</FooterLink>
               <FooterLink href="/cart">Cart</FooterLink>
             </FooterColumn>
+          </div>
+
+          <div className="relative mt-10 rounded-[22px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] px-5 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-sm md:px-6 md:py-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
+                Follow us
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                {SOCIAL_LINKS.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-[#f5eee3] transition hover:text-[#f0d19a]"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="relative mt-10 flex flex-col gap-4 border-t border-[rgba(148,163,184,0.14)] pt-6 text-xs text-[#8b8b99] md:flex-row md:items-center md:justify-between">

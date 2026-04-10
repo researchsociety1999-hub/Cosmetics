@@ -20,10 +20,12 @@ export function NavbarMobileMenu({
     if (!el) return;
 
     function handlePointerDown(event: PointerEvent) {
-      if (!el.open) return;
+      const current = detailsRef.current;
+      if (!current) return;
+      if (!current.open) return;
       const target = event.target as Node;
-      if (!el.contains(target)) {
-        el.open = false;
+      if (!current.contains(target)) {
+        current.open = false;
       }
     }
 
