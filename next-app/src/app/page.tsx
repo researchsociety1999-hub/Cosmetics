@@ -146,12 +146,6 @@ function HeroSilhouette() {
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute right-[16%] top-[16%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.26),rgba(255,255,255,0.06)_30%,rgba(214,168,95,0.08)_48%,rgba(214,168,95,0)_72%)] blur-3xl" />
       <div className="absolute right-[10%] top-[44%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.06),transparent_72%)] blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[32%] right-[26%] text-[7rem] font-cormorant tracking-[0.08em] text-[rgba(214,168,95,0.08)] blur-[1px]">
-        Mystique...
-      </div>
-      <div className="pointer-events-none absolute bottom-[27%] right-[19%] text-[1.15rem] uppercase tracking-[0.34em] text-[rgba(214,168,95,0.08)]">
-        Where Beauty Transcends
-      </div>
       <div className="absolute right-[3%] top-[8%] h-[26%] w-[44%] bg-[radial-gradient(circle_at_26%_26%,rgba(255,255,255,0.08),transparent_16%),radial-gradient(circle_at_44%_42%,rgba(214,168,95,0.06),transparent_26%)] blur-[2px]" />
       <svg
         viewBox="0 0 420 720"
