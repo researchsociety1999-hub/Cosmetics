@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCategories, getProducts, type ProductSort } from "../lib/queries";
+import { ShopFiltersBar } from "./ShopFiltersBar";
 import type { Product } from "../lib/types";
 
 type SearchParams = Promise<{
@@ -77,61 +78,16 @@ export default async function ShopPage({
           </p>
         </header>
 
-        <section className="mb-8 grid gap-4 border-b border-[rgba(214,168,95,0.1)] pb-6 md:grid-cols-[1fr_auto_auto]">
-          <form action="/shop">
-            <input type="hidden" name="category" value={matchedCategory?.slug ?? ""} />
-            <input type="hidden" name="sort" value={sort} />
-            <label className="sr-only" htmlFor="shop-search">
-              Search products
-            </label>
-            <input
-              id="shop-search"
-              name="search"
-              defaultValue={currentSearch}
-              placeholder="Search serums, bloom skin, peptides..."
-              className="mystic-input min-h-[54px] w-full bg-[rgba(255,255,255,0.03)] text-sm"
-            />
-          </form>
-          <form action="/shop">
-            <input type="hidden" name="search" value={currentSearch} />
-            <input type="hidden" name="sort" value={sort} />
-            <label className="sr-only" htmlFor="shop-category">
-              Category
-            </label>
-            <select
-              id="shop-category"
-              name="category"
-              defaultValue={matchedCategory?.slug ?? ""}
-              className="mystic-input min-h-[54px] min-w-[200px] bg-[rgba(255,255,255,0.03)] px-4 text-sm"
-            >
-              <option value="">All categories</option>
-              {availableCategories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </form>
-          <form action="/shop">
-            <input type="hidden" name="search" value={currentSearch} />
-            <input type="hidden" name="category" value={matchedCategory?.slug ?? ""} />
-            <label className="sr-only" htmlFor="shop-sort">
-              Sort
-            </label>
-            <select
-              id="shop-sort"
-              name="sort"
-              defaultValue={sort}
-              className="mystic-input min-h-[54px] min-w-[180px] bg-[rgba(255,255,255,0.03)] px-4 text-sm"
-            >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </form>
-        </section>
+        <ShopFiltersBar
+          currentSearch={currentSearch}
+          matchedCategorySlug={matchedCategory?.slug ?? ""}
+          sort={sort}
+          availableCategories={availableCategories.map((c) => ({
+            id: c.id,
+            slug: c.slug,
+            name: c.name,
+          }))}
+        />
 
         <section className="mb-4 flex flex-wrap gap-3">
           <CategoryChip
