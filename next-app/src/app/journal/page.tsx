@@ -24,7 +24,7 @@ export default async function JournalPage() {
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Journal
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Rituals, guides, and glow notes.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -43,7 +43,7 @@ export default async function JournalPage() {
                   {entry.category} | {entry.readTime}
                 </p>
               </div>
-              <h2 className="mt-3 font-cormorant text-3xl tracking-[0.08em]">
+              <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
                 {entry.title}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">

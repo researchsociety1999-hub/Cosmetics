@@ -44,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="space-y-2">
           <Link
             href={`/products/${product.slug}`}
-            className="font-cormorant text-[1.65rem] leading-tight tracking-[0.08em] text-[#f5eee3]"
+            className="font-literata text-[1.65rem] leading-tight tracking-[0.08em] text-[#f5eee3]"
           >
             {product.name}
           </Link>

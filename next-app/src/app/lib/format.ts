@@ -1,4 +1,4 @@
-import type { Product } from "./types";
+import type { Product, ProductVariant } from "./types";
 
 const ALLOWED_IMAGE_HOSTS = [
   "images.unsplash.com",
@@ -15,6 +15,17 @@ export function formatMoney(cents: number): string {
 
 export function getDisplayPrice(product: Product): number {
   return product.sale_price_cents ?? product.price_cents;
+}
+
+/** Variant-specific price when set; otherwise product sale/base price. */
+export function getUnitPriceCents(
+  product: Product,
+  variant: ProductVariant | null | undefined,
+): number {
+  if (variant && typeof variant.price_cents === "number") {
+    return variant.price_cents;
+  }
+  return getDisplayPrice(product);
 }
 
 export function getProductImages(product: Product): string[] {

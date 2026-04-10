@@ -18,7 +18,7 @@ export default async function AuthErrorPage({
         <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
           Auth error
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em]">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em]">
           We couldn&apos;t complete sign-in.
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">{message}</p>

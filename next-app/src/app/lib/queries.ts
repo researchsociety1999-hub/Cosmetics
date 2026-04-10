@@ -2,6 +2,7 @@ import {
   mockCategories,
   mockIngredients,
   mockJournalEntries,
+  mockProductVariants,
   mockProducts,
   mockPressMentions,
   mockPromoCampaign,
@@ -392,6 +393,8 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
 }
 
+const RITUAL_STEPS = ["Cleanse", "Treat", "Moisturize", "Protect"] as const;
+
 export async function getRelatedProducts(
   product: Product,
   limit = 4,
@@ -402,6 +405,80 @@ export async function getRelatedProducts(
   });
 
   return products.filter((item) => item.id !== product.id).slice(0, limit);
+}
+
+/**
+ * Suggested companions for "Complete the ritual" — other ritual steps first (same category when possible).
+ */
+export async function getRoutineCompanionProducts(
+  product: Product,
+  limit = 3,
+): Promise<Product[]> {
+  const catalog = await getProducts({ sortBy: "newest", limit: 48 });
+  const others = catalog.filter((p) => p.id !== product.id);
+  const sameCategory = (id: number | null) =>
+    typeof id === "number" && id === product.category_id;
+
+  const stepOrder = (step: string | null | undefined) => {
+    const idx = RITUAL_STEPS.indexOf(
+      (step ?? "") as (typeof RITUAL_STEPS)[number],
+    );
+    return idx >= 0 ? idx : 99;
+  };
+
+  const pickForStep = (
+    step: (typeof RITUAL_STEPS)[number],
+    pool: Product[],
+  ): Product | null => {
+    const matchCat = pool.find(
+      (p) => p.routine_step === step && sameCategory(p.category_id),
+    );
+    if (matchCat) {
+      return matchCat;
+    }
+    return pool.find((p) => p.routine_step === step) ?? null;
+  };
+
+  const picked: Product[] = [];
+  const used = new Set<number>([product.id]);
+
+  for (const step of RITUAL_STEPS) {
+    if (step === product.routine_step) {
+      continue;
+    }
+    if (picked.length >= limit) {
+      break;
+    }
+    const pool = others.filter((p) => !used.has(p.id));
+    const next = pickForStep(step, pool);
+    if (next) {
+      picked.push(next);
+      used.add(next.id);
+    }
+  }
+
+  if (picked.length < limit) {
+    const rest = others
+      .filter((p) => !used.has(p.id))
+      .sort(
+        (a, b) =>
+          sameCategory(a.category_id) === sameCategory(b.category_id)
+            ? stepOrder(a.routine_step) - stepOrder(b.routine_step)
+            : sameCategory(a.category_id)
+              ? -1
+              : sameCategory(b.category_id)
+                ? 1
+                : 0,
+      );
+    for (const p of rest) {
+      if (picked.length >= limit) {
+        break;
+      }
+      picked.push(p);
+    }
+  }
+
+  return picked.slice(0, limit);
 }
 
 export async function getCategories(): Promise<Category[]> {
@@ -434,7 +511,7 @@ export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
   if (!hasSupabaseEnv || !supabase) {
-    return [];
+    return mockProductVariants.filter((v) => v.product_id === productId);
   }
 
   try {

@@ -98,7 +98,7 @@ function FooterColumn({
 }) {
   return (
     <div className="border-t border-[rgba(214,168,95,0.1)] pt-5 md:border-none md:pt-0">
-      <h3 className="font-cormorant text-lg tracking-[0.16em] text-[#f5eee3]">
+      <h3 className="font-literata text-lg tracking-[0.16em] text-[#f5eee3]">
         {title}
       </h3>
       <div className="mt-4 flex flex-col gap-2">{children}</div>

@@ -23,7 +23,7 @@ export default async function CheckoutCancelPage({
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             Checkout cancelled
           </p>
-          <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Your cart is still waiting.
           </h1>
           <p className="mt-5 text-sm leading-relaxed text-[#b8ab95]">

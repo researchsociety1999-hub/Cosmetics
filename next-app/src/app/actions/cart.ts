@@ -140,6 +140,10 @@ export async function addToCartAction(formData: FormData): Promise<void> {
       redirect("/cart");
     }
 
+    if (redirectTarget === "checkout") {
+      redirect("/checkout");
+    }
+
     return;
   }
 
@@ -159,6 +163,10 @@ export async function addToCartAction(formData: FormData): Promise<void> {
 
   if (redirectTarget === "cart") {
     redirect("/cart");
+  }
+
+  if (redirectTarget === "checkout") {
+    redirect("/checkout");
   }
 }
 

@@ -19,7 +19,7 @@ export default async function PressPage() {
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Press
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Featured In
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -42,7 +42,7 @@ export default async function PressPage() {
                   Beauty editorial
                 </span>
               </div>
-              <h2 className="mt-3 max-w-xl font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+              <h2 className="mt-3 max-w-xl font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                 {mention.title}
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">

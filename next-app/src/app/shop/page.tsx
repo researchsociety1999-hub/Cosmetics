@@ -69,7 +69,7 @@ export default async function ShopPage({
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Shop Mystique
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Build your ritual by texture, need, and mood.
           </h1>
           <p className="max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -139,7 +139,7 @@ export default async function ShopPage({
                   <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
                     {section.productCount} product{section.productCount === 1 ? "" : "s"}
                   </p>
-                  <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+                  <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                     {section.title}
                   </h2>
                 </div>

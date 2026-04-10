@@ -30,7 +30,7 @@ export default async function SignupPage({
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Account
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3]">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
           Create your Mystique account
         </h1>
         <div className="mystic-card mt-8 space-y-5 p-6">

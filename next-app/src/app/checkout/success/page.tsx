@@ -73,7 +73,7 @@ export default async function CheckoutSuccessPage({
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             {isConfirmed ? "Payment complete" : "Payment confirmation"}
           </p>
-          <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] md:text-5xl">
             {isConfirmed ? "Your order is confirmed." : "We're confirming your payment."}
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
@@ -116,7 +116,7 @@ export default async function CheckoutSuccessPage({
 
           {order ? (
             <div className="mt-8 rounded-[18px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-5">
-              <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+              <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                 Order summary
               </h2>
               <div className="mt-5 space-y-3 text-sm text-[#b8ab95]">

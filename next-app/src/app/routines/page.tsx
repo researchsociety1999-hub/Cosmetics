@@ -15,7 +15,7 @@ export default function RoutinesPage() {
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Routines
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Not sure where to start?
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -74,7 +74,7 @@ function RoutineCard({
       <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
         Starter sequence
       </p>
-      <h2 className="mt-3 font-cormorant text-4xl tracking-[0.1em] text-[#f5eee3]">
+      <h2 className="mt-3 font-literata text-4xl tracking-[0.1em] text-[#f5eee3]">
         {title}
       </h2>
       <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">

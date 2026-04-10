@@ -24,6 +24,12 @@ function getSupabaseAnonKey() {
     );
   }
 
+  if (value.startsWith("sb_secret_")) {
+    throw new Error(
+      "Invalid key: sb_secret_* belongs in a server-only variable (e.g. SUPABASE_SERVICE_ROLE_KEY), not in NEXT_PUBLIC_*. Use the anon (public) key from Supabase → Settings → API.",
+    );
+  }
+
   return value;
 }
 

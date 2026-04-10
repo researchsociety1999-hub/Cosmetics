@@ -13,7 +13,7 @@ export default function GlobalError({
         <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Something slipped out of ritual
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em]">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em]">
           We could not load this page.
         </h1>
         <p className="mt-4 text-sm text-[#b8ab95]">

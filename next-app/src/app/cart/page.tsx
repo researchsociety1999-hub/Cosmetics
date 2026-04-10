@@ -41,7 +41,7 @@ export default async function CartPage({
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Cart
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Your ritual bag
           </h1>
         </header>
@@ -68,7 +68,7 @@ export default async function CartPage({
                 <article key={line.product.id} className="mystic-card p-5">
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+                      <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                         {line.product.name}
                       </h2>
                       <p className="mt-2 text-sm text-[#b8ab95]">
@@ -117,7 +117,7 @@ export default async function CartPage({
             </section>
 
             <aside className="mystic-card h-fit p-6">
-              <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+              <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
                 Summary
               </h2>
               <div className="mt-5 space-y-3 text-sm text-[#b8ab95]">

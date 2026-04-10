@@ -24,15 +24,13 @@
   --mystic-shadow-gold: 0 0 0 1px rgba(214, 168, 95, 0.3),
     0 18px 45px rgba(0, 0, 0, 0.7);
 
-  /* Fonts (wired from next/font variables) */
-  --font-cormorant: var(--font-cormorant);
-  --font-inter: var(--font-inter);
+  /* --font-literata, --font-geist-sans: set on <html> by next/font */
 }
 
 @theme inline {
   --color-background: var(--mystic-bg);
   --color-foreground: var(--mystic-text);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-geist-sans);
 }
 
 html {
@@ -49,12 +47,12 @@ body {
     radial-gradient(circle at 50% 18%, rgba(255, 245, 221, 0.02), transparent 22%),
     linear-gradient(180deg, #030406 0%, #06080c 42%, #05070b 100%);
   color: var(--mystic-text);
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
 }
 
-.font-cormorant {
-  font-family: var(--font-cormorant), "Cormorant Garamond", serif;
+.font-literata {
+  font-family: var(--font-literata), "Literata", Georgia, serif;
 }
 
 ::selection {
@@ -236,8 +234,8 @@ optgroup {
 }
 
 .mystic-section-title {
-  font-family: var(--font-cormorant), "Cormorant Garamond", serif;
-  letter-spacing: 0.12em;
+  font-family: var(--font-literata), "Literata", Georgia, serif;
+  letter-spacing: 0.08em;
   color: var(--mystic-text);
 }
 

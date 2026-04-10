@@ -39,7 +39,7 @@ export default async function CheckoutPage({
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Checkout
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">Checkout</h1>
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">Checkout</h1>
           <p className="max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
             Complete your shipping details and review your order before the next
             step.
@@ -93,7 +93,7 @@ export default async function CheckoutPage({
           </div>
 
           <aside className="mystic-card h-fit p-6">
-            <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+            <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
               Order summary
             </h2>
             <div className="mt-5 space-y-4">

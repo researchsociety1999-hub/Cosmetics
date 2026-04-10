@@ -7,7 +7,7 @@ export default function NotFound() {
         <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           404
         </p>
-        <h1 className="mt-4 font-cormorant text-5xl tracking-[0.12em]">
+        <h1 className="mt-4 font-literata text-5xl tracking-[0.12em]">
           This ritual does not exist.
         </h1>
         <p className="mt-4 text-sm text-[#b8ab95]">
