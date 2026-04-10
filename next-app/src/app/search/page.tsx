@@ -28,7 +28,7 @@ export default async function SearchPage({
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Search
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Find a ritual
           </h1>
         </header>

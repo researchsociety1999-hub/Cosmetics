@@ -34,7 +34,7 @@ export default function FaqPage() {
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             FAQ
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Questions, answered softly.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -49,7 +49,7 @@ export default function FaqPage() {
               name="faq"
               className="mystic-card group p-5 md:p-6"
             >
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-cormorant text-[1.75rem] tracking-[0.06em] text-[#f5eee3] [&::-webkit-details-marker]:hidden [&::marker]:content-none">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-literata text-[1.75rem] tracking-[0.06em] text-[#f5eee3] [&::-webkit-details-marker]:hidden [&::marker]:content-none">
                 <span>{faqCopy[item.question]?.question ?? item.question}</span>
                 <span className="mt-1 text-base text-[#d6a85f] transition group-open:rotate-45">+</span>
               </summary>

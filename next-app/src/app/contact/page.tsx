@@ -23,7 +23,7 @@ export default async function ContactPage({
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Contact
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Reach the Mystique team.
           </h1>
         </header>

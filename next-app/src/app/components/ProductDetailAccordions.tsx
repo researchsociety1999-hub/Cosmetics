@@ -1,0 +1,159 @@
+import Link from "next/link";
+
+type AccordionItem = {
+  id: string;
+  title: string;
+  content: React.ReactNode;
+};
+
+export function ProductDetailAccordions({
+  items,
+}: {
+  items: AccordionItem[];
+}) {
+  return (
+    <div className="divide-y divide-[rgba(214,168,95,0.12)] rounded-[22px] border border-[rgba(214,168,95,0.15)] bg-[rgba(8,10,14,0.65)]">
+      {items.map((item) => (
+        <details key={item.id} className="group p-0">
+          <summary className="cursor-pointer list-none px-5 py-4 font-literata text-lg tracking-[0.08em] text-[#f5eee3] marker:content-none [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center justify-between gap-3">
+              {item.title}
+              <span
+                className="text-[#d6a85f] transition group-open:rotate-45"
+                aria-hidden
+              >
+                +
+              </span>
+            </span>
+          </summary>
+          <div className="border-t border-[rgba(214,168,95,0.08)] px-5 pb-5 pt-3 text-sm leading-relaxed text-[#b8ab95]">
+            {item.content}
+          </div>
+        </details>
+      ))}
+    </div>
+  );
+}
+
+export function buildProductAccordionItems({
+  benefits,
+  keyIngredients,
+  skinTypes,
+  routineStep,
+}: {
+  benefits: string[];
+  keyIngredients: string[];
+  skinTypes: string[];
+  routineStep: string;
+}): AccordionItem[] {
+  return [
+    {
+      id: "details",
+      title: "Product details",
+      content: (
+        <div className="space-y-3">
+          <p>
+            Structured like a luxury PDP: what it is, who it&apos;s for, and how
+            it fits your ritual—without burying the facts in marketing fluff.
+          </p>
+          {benefits.length ? (
+            <ul className="list-inside list-disc space-y-1">
+              {benefits.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          ) : null}
+          <p className="text-[0.7rem] uppercase tracking-[0.16em] text-[#7a7265]">
+            Claims reflect brand positioning; adjust copy to match your
+            substantiation and market.
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: "ingredients",
+      title: "Key ingredients",
+      content: keyIngredients.length ? (
+        <ul className="space-y-2">
+          {keyIngredients.map((ing) => (
+            <li key={ing}>{ing}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Full INCI list ships on packaging and is available on request.</p>
+      ),
+    },
+    {
+      id: "howto",
+      title: "How to use",
+      content: (
+        <ol className="list-inside list-decimal space-y-2">
+          <li>Use during the {routineStep.toLowerCase()} step of your routine.</li>
+          <li>Layer from thinnest to richest texture.</li>
+          <li>Follow with SPF during the day when using actives or as directed.</li>
+        </ol>
+      ),
+    },
+    {
+      id: "skin",
+      title: "Skin types",
+      content:
+        skinTypes.length > 0 ? (
+          <p>{skinTypes.join(" · ")}</p>
+        ) : (
+          <p>Formulated for most skin types; patch test if you have sensitivities.</p>
+        ),
+    },
+    {
+      id: "shipping",
+      title: "Shipping & returns",
+      content: (
+        <div className="space-y-4">
+          <div>
+            <p className="mb-1 text-[0.7rem] uppercase tracking-[0.18em] text-[#d6a85f]">
+              United States
+            </p>
+            <p>
+              Standard and expedited options at checkout. Processing typically
+              1–2 business days; you&apos;ll receive tracking by email.
+            </p>
+          </div>
+          <div>
+            <p className="mb-1 text-[0.7rem] uppercase tracking-[0.18em] text-[#d6a85f]">
+              International
+            </p>
+            <p>
+              Where available, duties and import taxes may be charged at
+              delivery depending on destination—shown when you enter your
+              shipping country. Returns from outside the US may differ; see our{" "}
+              <Link
+                href="/terms"
+                className="text-[#d6a85f] underline-offset-4 hover:underline"
+              >
+                terms
+              </Link>
+              .
+            </p>
+          </div>
+          <p>
+            Questions?{" "}
+            <Link
+              href="/contact"
+              className="text-[#d6a85f] underline-offset-4 hover:underline"
+            >
+              Contact
+            </Link>{" "}
+            or visit{" "}
+            <Link
+              href="/faq"
+              className="text-[#d6a85f] underline-offset-4 hover:underline"
+            >
+              FAQ
+            </Link>
+            .
+          </p>
+        </div>
+      ),
+    },
+  ];
+}

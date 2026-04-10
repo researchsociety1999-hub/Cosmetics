@@ -50,7 +50,7 @@ export default async function OrderDetailPage({
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
               Order details
             </p>
-            <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
+            <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
               {orderWithItems.order_number}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
@@ -138,7 +138,7 @@ export default async function OrderDetailPage({
           </section>
 
           <aside className="mystic-card h-fit p-6">
-            <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+            <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
               Totals
             </h2>
             <div className="mt-5 space-y-3 text-sm text-[#b8ab95]">

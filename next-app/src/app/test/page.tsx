@@ -7,7 +7,7 @@ export default function TestPage() {
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Internal route
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em]">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em]">
           Mystic test page
         </h1>
         <p className="mt-4 text-sm text-[#b8ab95] md:text-base">

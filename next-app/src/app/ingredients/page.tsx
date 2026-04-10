@@ -19,7 +19,7 @@ export default async function IngredientsPage() {
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Ingredients
           </p>
-          <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-5xl">
+          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Ingredients with intention.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -32,7 +32,7 @@ export default async function IngredientsPage() {
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Ingredient philosophy
             </p>
-            <h2 className="font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+            <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
               Clean-feeling formulas, layered with care.
             </h2>
             <p className="text-sm leading-relaxed text-[#b8ab95]">
@@ -58,7 +58,7 @@ export default async function IngredientsPage() {
               <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
                 {ingredient.source ?? "Ingredient source"}
               </p>
-              <h2 className="mt-3 font-cormorant text-3xl tracking-[0.08em] text-[#f5eee3]">
+              <h2 className="mt-3 font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                 {ingredient.name}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">

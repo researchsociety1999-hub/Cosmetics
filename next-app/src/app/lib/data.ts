@@ -4,6 +4,7 @@ import type {
   JournalEntry,
   PressMention,
   Product,
+  ProductVariant,
   PromoCampaign,
   Review,
 } from "./types";
@@ -165,6 +166,55 @@ export const mockProducts: Product[] = [
     benefits: ["Night renewal", "Bounce", "Lush texture"],
     routine_step: "Treat",
     skin_types: ["Dry", "Mature", "Combination"],
+  },
+];
+
+/** Demo variants when Supabase is off — e.g. Bloom Screen SPF (id 5) shade-style options */
+export const mockProductVariants: ProductVariant[] = [
+  {
+    id: 501,
+    product_id: 5,
+    variant_name: "Universal sheer",
+    price_cents: null,
+    price: null,
+    stock: 22,
+    sku: "MYS-SPF-005-U",
+  },
+  {
+    id: 502,
+    product_id: 5,
+    variant_name: "Glow tint — light",
+    price_cents: null,
+    price: null,
+    stock: 14,
+    sku: "MYS-SPF-005-L",
+  },
+  {
+    id: 503,
+    product_id: 5,
+    variant_name: "Glow tint — medium",
+    price_cents: null,
+    price: null,
+    stock: 0,
+    sku: "MYS-SPF-005-M",
+  },
+  {
+    id: 601,
+    product_id: 6,
+    variant_name: "Standard",
+    price_cents: null,
+    price: null,
+    stock: 20,
+    sku: "MYS-AMP-006-STD",
+  },
+  {
+    id: 602,
+    product_id: 6,
+    variant_name: "Intensive",
+    price_cents: 9800,
+    price: null,
+    stock: 6,
+    sku: "MYS-AMP-006-INT",
   },
 ];
 

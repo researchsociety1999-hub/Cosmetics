@@ -1,20 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Literata } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import type { ReactNode } from "react";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
+const literata = Literata({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
+  variable: "--font-literata",
   display: "swap",
 });
 
@@ -64,9 +58,11 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${cormorant.variable} ${inter.variable} scroll-smooth`}
+      className={`${literata.variable} ${GeistSans.variable} scroll-smooth`}
     >
-      <body className="bg-[#06080c] text-[#f5eee3] antialiased">
+      <body
+        className={`${GeistSans.className} bg-[#06080c] text-[#f5eee3] antialiased`}
+      >
         {children}
       </body>
     </html>

@@ -22,7 +22,7 @@ export default async function OrdersPage() {
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Orders
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
           Your Mystique account
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -38,7 +38,7 @@ export default async function OrdersPage() {
                     <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
                       {order.order_number}
                     </p>
-                    <h2 className="mt-2 font-cormorant text-2xl tracking-[0.08em] text-[#f5eee3]">
+                    <h2 className="mt-2 font-literata text-2xl tracking-[0.08em] text-[#f5eee3]">
                       {order.status}
                     </h2>
                     <p className="mt-2 text-sm text-[#b8ab95]">
@@ -65,7 +65,7 @@ export default async function OrdersPage() {
             <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
               No orders yet
             </p>
-            <h2 className="mt-3 font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+            <h2 className="mt-3 font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
               Your ritual history will appear here.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">

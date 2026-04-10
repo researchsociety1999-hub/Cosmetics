@@ -9,7 +9,7 @@ export default function CareersPage() {
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Careers
         </p>
-        <h1 className="mt-4 font-cormorant text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
+        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
           Join the Mystic team
         </h1>
         <div className="mystic-card mt-8 p-6 text-sm text-[#b8ab95] md:text-base">

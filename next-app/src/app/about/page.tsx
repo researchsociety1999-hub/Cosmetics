@@ -20,7 +20,7 @@ export default function AboutPage() {
           <div className="relative grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
             <header className="max-w-3xl space-y-5">
               <p className="mystic-kicker">About</p>
-              <h1 className="font-cormorant text-4xl tracking-[0.12em] md:text-6xl">
+              <h1 className="font-literata text-4xl tracking-[0.12em] md:text-6xl">
                 Luxury ritual, reimagined.
               </h1>
               <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
@@ -69,7 +69,7 @@ export default function AboutPage() {
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Origin
             </p>
-            <h2 className="mt-3 font-cormorant text-3xl tracking-[0.08em]">
+            <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
               California-born
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
@@ -81,7 +81,7 @@ export default function AboutPage() {
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Philosophy
             </p>
-            <h2 className="mt-3 font-cormorant text-3xl tracking-[0.08em]">
+            <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
               Bloom skin first
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
@@ -93,7 +93,7 @@ export default function AboutPage() {
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Why Mystique
             </p>
-            <h2 className="mt-3 font-cormorant text-3xl tracking-[0.08em]">
+            <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
               Usable dark luxury
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
@@ -103,7 +103,7 @@ export default function AboutPage() {
           </article>
         </section>
         <section className="mt-12 text-center">
-          <h2 className="font-cormorant text-3xl tracking-[0.1em] text-[#f5eee3]">
+          <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
             Ready to start your ritual?
           </h2>
           <div className="mt-6">

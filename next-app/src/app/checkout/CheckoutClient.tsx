@@ -119,7 +119,7 @@ export function CheckoutClient({
 
   return (
     <form onSubmit={handleSubmit} className="mystic-card grid gap-5 p-6 md:grid-cols-2">
-      <h2 className="font-cormorant text-3xl tracking-[0.1em] md:col-span-2">
+      <h2 className="font-literata text-3xl tracking-[0.1em] md:col-span-2">
         Shipping address
       </h2>
       <Input
