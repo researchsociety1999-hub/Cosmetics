@@ -1,8 +1,66 @@
 {
-    "liveServer.settings.port": 5501,
-    "python.testing.pytestArgs": [
-        "next-app"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.openRepositoryInParentFolders": "always",
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+    "workbench.editor.empty.hint": "hidden",
+    "git.confirmSync": false,
+
+    "vscode-system-monitor.configuration.monitor.cpu.enabled": true,
+    "vscode-system-monitor.configuration.monitor.network.enabled": true,
+    "vscode-system-monitor.configuration.monitor.memory.enabled": true,
+
+    "workbench.colorCustomizations": {
+        "terminal.background": "#00000000"
+    },
+
+    "terminal.integrated.gpuAcceleration": "off",
+    "window.systemColorTheme": "dark",
+    "window.autoDetectColorScheme": false,
+    "window.controlsStyle": "custom",
+    "window.titleBarStyle": "custom",
+
+    "python.defaultInterpreterPath": "c:\\Users\\hrush\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+
+    "remoteHub.commitDirectlyWarning": "off",
+    "remoteHub.uncommittedChangesOnEntry": "none",
+
+    "json.schemaDownload.trustedDomains": {
+        "https://schemastore.azurewebsites.net/": true,
+        "https://raw.githubusercontent.com/": true,
+        "https://www.schemastore.org/": true,
+        "https://json.schemastore.org/": true,
+        "https://json-schema.org/": true,
+        "https://biomejs.dev": true
+    },
+
+    "playwright.updateSnapshots": "all",
+    "playwright.reuseBrowser": false,
+    "playwright.showTrace": false,
+
+    "redhat.telemetry.enabled": true,
+
+    // 🔥 IMPORTANT: Remove ALL forced schemas for Continue configs
+    "yaml.schemas": {},
+
+    // 🔥 Override: Disable schema validation for YAML files inside .continue/
+    "[yaml]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "keep",
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.defaultColorDecorators": "never",
+        "editor.quickSuggestions": {
+            "strings": true,
+            "other": true,
+            "comments": false
+        },
+        "yaml.validate": false
+    },
+
+    // 🔥 Override: Disable schema validation for ANY config.yaml
+    "files.associations": {
+        "**/.continue/config.yaml": "yaml"
+    }
 }
