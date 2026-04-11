@@ -25,7 +25,8 @@ const rawSupabasePublicKey =
 const hasSecretInPublicKeySlot = rawSupabasePublicKey?.startsWith("sb_secret_") ?? false;
 const supabaseAnonKey = hasSecretInPublicKeySlot ? null : rawSupabasePublicKey;
 const supabaseUrl = isValidHttpUrl(rawSupabaseUrl) ? rawSupabaseUrl : null;
-const supabaseKey = supabaseServiceKey ?? supabaseAnonKey;
+/** Prefer anon so catalog / health checks match real RLS; service only if anon unset. */
+const supabaseKey = supabaseAnonKey ?? supabaseServiceKey;
 
 export const hasSupabaseEnv = Boolean(supabaseUrl && supabaseKey);
 export const hasSupabaseServiceEnv = Boolean(supabaseUrl && supabaseServiceKey);

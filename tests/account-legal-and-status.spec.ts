@@ -69,7 +69,7 @@ test.describe("account, legal, and status routes", () => {
   test("orders route redirects guests to login", async ({ page }) => {
     await gotoAndWait(page, "/account/orders");
 
-    await expect(page).toHaveURL(/\/account\/login$/);
+    await expect(page).toHaveURL(/\/account\/login\?next=%2Faccount%2Forders$/);
     await expectHeading(page, "Sign in to Mystique");
   });
 
@@ -91,8 +91,8 @@ test.describe("account, legal, and status routes", () => {
 
   test("press and careers pages render live support content", async ({ page }) => {
     await gotoAndWait(page, "/press");
-    await expectHeading(page, "Featured In");
-    await expect(page.getByText(/Editorial notes/i)).toBeVisible();
+    await expectHeading(page, "Press & media");
+    await expect(page.getByText(/Coverage appears here only/i)).toBeVisible();
 
     await gotoAndWait(page, "/careers");
     await expectHeading(page, "Join the Mystic team");
@@ -115,12 +115,12 @@ test.describe("account, legal, and status routes", () => {
 
   test("contact and checkout status routes surface their state messages", async ({ page }) => {
     await gotoAndWait(page, "/contact?status=missing");
-    await expectHeading(page, "Reach the Mystique team.");
-    await expect(page.getByText(/Please complete all fields/i)).toBeVisible();
+    await expectHeading(page, "The studio is listening.");
+    await expect(page.getByText(/Please complete every field/i)).toBeVisible();
 
     await gotoAndWait(page, "/checkout/cancel?order_id=demo-123");
-    await expectHeading(page, "Your cart is still waiting.");
-    await expect(page.getByText(/Order reference: demo-123/i)).toBeVisible();
+    await expectHeading(page, "Your bag is still waiting.");
+    await expect(page.getByText(/Secure checkout closed/i)).toBeVisible();
 
     await gotoAndWait(page, "/checkout/success");
     await expectHeading(page, "We're confirming your payment.");
