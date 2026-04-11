@@ -83,11 +83,11 @@ export function NewsletterForm() {
           disabled={status === "loading"}
           className="mystic-button-primary min-h-[48px] w-full px-6 py-2 text-[0.7rem] uppercase tracking-[0.22em] md:w-auto"
         >
-          {status === "loading" ? "Joining..." : "Join the list"}
+          {status === "loading" ? "Sending..." : "Subscribe"}
         </button>
       </form>
       <p className="mt-3 text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
-        Early access to rituals and seasonal drops.
+        Restocks, launches, and studio notes—no daily noise.
       </p>
       <div className="mt-2 min-h-[1.5rem]" aria-live="polite">
         {status === "success" || status === "duplicate" ? (

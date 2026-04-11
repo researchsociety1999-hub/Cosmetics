@@ -270,13 +270,12 @@ export default async function ProductPage({
             The formula
           </p>
           <h2 className="mt-3 font-literata text-3xl tracking-[0.12em] text-[#f5eee3]">
-            Proof-led, not noise-led
+            Claims you can check
           </h2>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#b8ab95]">
-            Luxury here means clarity: what the product does, what skin it suits,
-            and how it fits your ritual—without stacking competing offers on
-            every scroll. Formulation choices are stress-tested with independent
-            skincare science advisors (not a substitute for personal medical advice).
+            Every product page spells out who it is for, what it does, and where it sits in
+            cleanse-to-SPF. Formulas are developed with input from independent skincare
+            science advisors—education only, not medical advice.
           </p>
           <div className="mt-8 max-w-3xl">
             <ProductDetailAccordions items={accordionItems} />
@@ -293,8 +292,8 @@ export default async function ProductPage({
                 Pair with these steps
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-                Build a regimen, not a single SKU—chosen to complement this
-                product&apos;s place in your routine.
+                Add the missing steps—each pick is chosen to complement this product&apos;s
+                place in your routine.
               </p>
             </header>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-4">
@@ -317,7 +316,7 @@ export default async function ProductPage({
                 Reviews
               </p>
               <h2 className="mt-3 font-literata text-3xl tracking-[0.12em]">
-                Worn-in feedback
+                Customer reviews
               </h2>
             </div>
             {reviews.length > 0 ? (
@@ -330,8 +329,8 @@ export default async function ProductPage({
             ) : null}
           </header>
           <p className="mb-6 max-w-2xl text-xs leading-relaxed text-[#7a7265]">
-            Notes from the routine—plain language, meant to read like quiet word-of-mouth
-            between friends who care about texture and finish.
+            Shoppers focus on texture, finish, and how formulas wear day to day—written in
+            plain language.
           </p>
           <div className="grid gap-5 md:grid-cols-2">
             {reviews.length ? (
@@ -358,11 +357,10 @@ export default async function ProductPage({
             ) : (
               <article className="mystic-card p-5 text-sm leading-relaxed text-[#b8ab95]">
                 <p className="font-literata text-lg tracking-[0.08em] text-[#f5eee3]">
-                  Reviews open with the first notes
+                  No reviews yet
                 </p>
                 <p className="mt-3 text-[#8f8576]">
-                  Published notes from shoppers who have purchased this ritual will appear
-                  here.
+                  When shoppers leave reviews, they will appear here.
                 </p>
               </article>
             )}
@@ -376,7 +374,7 @@ export default async function ProductPage({
                 You may also like
               </p>
               <h2 className="mt-3 font-literata text-3xl tracking-[0.12em]">
-                In the same spirit
+                Pairs well with
               </h2>
             </header>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-4">

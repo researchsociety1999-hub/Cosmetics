@@ -1,23 +1,51 @@
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { SiteChrome } from "../components/SiteChrome";
+
+export const metadata: Metadata = {
+  title: "Careers",
+  description:
+    "Careers at Mystique—open roles and studio inquiries. We hire slowly and reply with care.",
+  robots: { index: true, follow: true },
+};
 
 export default function CareersPage() {
   return (
-    <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
-      <Navbar />
-      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          Careers
-        </p>
-        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-          Join the Mystic team
-        </h1>
-        <div className="mystic-card mt-8 p-6 text-sm text-[#b8ab95] md:text-base">
-          Careers is now a valid route instead of a broken link. Add your live
-          openings here when you are ready.
+    <SiteChrome>
+      <main className="mystic-section-shell mystic-section">
+        <header className="mb-8 max-w-3xl space-y-4">
+          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+            Careers
+          </p>
+          <h1 className="font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
+            Join Mystique
+          </h1>
+          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
+            We are building a small, senior team around formulation, operations, and
+            storytelling. When a role opens, it will be listed here first.
+          </p>
+        </header>
+        <div className="mystic-card max-w-2xl space-y-4 p-6 text-sm leading-relaxed text-[#b8ab95] md:p-8 md:text-base">
+          <p>
+            There are no public openings at the moment. For press, wholesale, or general
+            studio inquiries, write us through Contact—we read every note.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Link
+              href="/contact"
+              className="mystic-button-primary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+            >
+              Contact the studio
+            </Link>
+            <Link
+              href="/shop"
+              className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+            >
+              Shop the line
+            </Link>
+          </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </SiteChrome>
   );
 }

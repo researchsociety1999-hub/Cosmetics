@@ -6,7 +6,7 @@ import { SiteChrome } from "../components/SiteChrome";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Discover Mystique—California-rooted ritual skincare where calm textures, disciplined layering, and bloom-skin radiance meet.",
+    "Discover Mystique—California-rooted skincare with calm textures, disciplined layering, and healthy-looking radiance.",
 };
 
 export default function AboutPage() {
@@ -25,8 +25,8 @@ export default function AboutPage() {
                 Luxury ritual, reimagined.
               </h1>
               <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-                Mystique blends California restraint with layered ritual skincare—textures
-                and finishes meant to be lived in, not only admired from afar.
+                Mystique pairs California restraint with a clear five-step routine—textures
+                and finishes designed for mornings and nights you actually repeat.
               </p>
               <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
                 <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
@@ -34,7 +34,8 @@ export default function AboutPage() {
                     California restraint
                   </p>
                   <p className="mt-2 text-sm">
-                    Quiet luxury, clean silhouettes, and a softened editorial mood.
+                    Quiet palettes, clean silhouettes, and packaging that stays refined on
+                    your shelf.
                   </p>
                 </div>
                 <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
@@ -83,11 +84,11 @@ export default function AboutPage() {
               Philosophy
             </p>
             <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
-              Bloom skin first
+              Skin comfort first
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
-              Every texture and finish is shaped around skin that looks hydrated,
-              refined, calm, and softly illuminated rather than overworked.
+              Textures and finishes are tuned for skin that looks hydrated, calm, and
+              softly lit—never stripped or overloaded.
             </p>
           </article>
           <article className="mystic-card p-6">
@@ -95,21 +96,21 @@ export default function AboutPage() {
               Why Mystique
             </p>
             <h2 className="mt-3 font-literata text-3xl tracking-[0.08em]">
-              Usable dark luxury
+              Luxury you will use
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
-              The world feels editorial and cinematic, but the routines stay practical,
-              layerable, and designed for everyday use.
+              The mood stays cinematic, but every step stays practical—layerable formulas
+              meant for real bathrooms and real schedules.
             </p>
           </article>
         </section>
         <section className="mt-12 text-center">
           <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
-            Begin where your skin feels most honest.
+            Start where you have the most questions.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[#b8ab95]">
-            Explore the catalog, read how we choose actives on the Ingredients page, or
-            send a note through Contact for studio and press inquiries.
+            Shop the line, read how we choose actives on Ingredients, or write Contact for
+            orders, press, and wholesale.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
@@ -122,7 +123,7 @@ export default function AboutPage() {
               href="/ingredients"
               className="mystic-button-secondary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
-              Ingredient philosophy
+              How we choose ingredients
             </Link>
           </div>
         </section>

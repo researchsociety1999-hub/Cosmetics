@@ -158,18 +158,18 @@ export function ProductPurchaseClient({
         {!purchasable ? (
           <div className="mystic-card space-y-4 border border-[rgba(214,168,95,0.15)] bg-[rgba(214,168,95,0.04)] p-5 text-sm leading-relaxed text-[#b8ab95]">
             <p className="font-literata text-base tracking-[0.06em] text-[#f5eee3]">
-              This finish is resting
+              Out of stock for now
             </p>
             <p>
-              Leave a short note for the studio—we&apos;ll reply when this ritual is
-              available again, or help you choose something similar.
+              Ask for a restock note or browse a similar formula—we reply when this option
+              is back, or help you pivot.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href={restockHref}
                 className="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-6 py-2.5 text-center text-[0.65rem] uppercase tracking-[0.2em]"
               >
-                Request a restock note
+                Email for restock
               </Link>
               <Link
                 href={browseSimilarHref}
@@ -224,13 +224,12 @@ export function ProductPurchaseClient({
               count={reviewSummary.count}
             />
             <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#d6a85f]">
-              Read notes
+              Read reviews
             </span>
           </a>
         ) : (
           <p className="text-[0.68rem] leading-relaxed text-[#7a7265]">
-            Stars and notes appear here as soon as the first published reviews arrive for
-            this ritual.
+            Published reviews appear here as soon as shoppers leave them for this product.
           </p>
         )}
 

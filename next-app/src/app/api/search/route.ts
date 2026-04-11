@@ -17,7 +17,10 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Search API error", error);
     return NextResponse.json(
-      { products: [], error: "Search failed." },
+      {
+        products: [],
+        error: "Search is temporarily unavailable. Please try again in a moment.",
+      },
       { status: 500 },
     );
   }

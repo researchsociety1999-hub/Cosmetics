@@ -11,11 +11,8 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const isDev = process.env.NODE_ENV === "development";
   const detail =
-    isDev && error.message?.trim()
-      ? error.message
-      : "Something went wrong. Please try again, or return to the site in a moment.";
+    "Something went wrong. Please try again in a moment, or return once your connection is steady.";
 
   return (
     <html lang="en">
@@ -47,14 +44,14 @@ export default function GlobalError({
             Mystique
           </p>
           <h1 style={{ marginTop: "1rem", fontSize: "1.75rem", fontWeight: 600 }}>
-            We could not load the application.
+            Mystique is temporarily unavailable
           </h1>
           <p style={{ marginTop: "1rem", fontSize: "0.9rem", lineHeight: 1.5, color: "#b8ab95" }}>
             {detail}
           </p>
           {error.digest ? (
             <p style={{ marginTop: "0.75rem", fontSize: "0.75rem", color: "#7a7265" }}>
-              Reference: {error.digest}
+              Reference for support: {error.digest}
             </p>
           ) : null}
           <button
