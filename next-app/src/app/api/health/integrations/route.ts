@@ -4,13 +4,17 @@ import {
   getMissingIntegrationEnv,
 } from "../../../lib/integrationEnv";
 import {
+  probeResendApi,
+  probeStripeApi,
+  probeSupabaseCatalog,
+} from "../../../lib/integrationProbes";
+import {
   hasInvalidSupabasePublicKey,
   hasInvalidSupabaseUrl,
   hasSupabaseEnv,
   hasSupabasePublicEnv,
   hasSupabaseServiceEnv,
   resolvedSupabaseUrl,
-  supabase,
 } from "../../../lib/supabaseClient";
 
 export const dynamic = "force-dynamic";
@@ -30,34 +34,18 @@ export async function GET() {
   const stripePublishable = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
   const resend = Boolean(process.env.RESEND_API_KEY);
 
-  let productsProbe: {
-    ok: boolean;
-    count: number | null;
-    error: string | null;
-  } = { ok: false, count: null, error: null };
-
-  if (hasSupabaseEnv && supabase) {
-    const { count, error } = await supabase
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .eq("is_published", true);
-
-    if (error) {
-      productsProbe = {
-        ok: false,
-        count: null,
-        error: `${error.message} (${error.code ?? "no code"})`,
-      };
-    } else {
-      productsProbe = { ok: true, count: count ?? 0, error: null };
-    }
-  } else {
-    productsProbe = {
-      ok: false,
-      count: null,
-      error: "Supabase client not configured (check URL + anon or service key).",
-    };
-  }
+  const [productsProbe, stripeProbe, resendProbe] = await Promise.all([
+    hasSupabasePublicEnv || hasSupabaseServiceEnv
+      ? probeSupabaseCatalog()
+      : Promise.resolve({
+          ok: false,
+          count: null,
+          error:
+            "Supabase anon/publishable not configured (need URL + anon key for catalog probe).",
+        }),
+    stripeSecret ? probeStripeApi() : Promise.resolve(null),
+    resend ? probeResendApi() : Promise.resolve(null),
+  ]);
 
   const missingEnv = getMissingIntegrationEnv();
   const readiness = getIntegrationReadiness();
@@ -75,9 +63,17 @@ export async function GET() {
     stripe: {
       secretConfigured: stripeSecret,
       publishableConfigured: stripePublishable,
+      apiProbe: stripeProbe ?? { skipped: true as const },
     },
     resend: {
       apiKeyConfigured: resend,
+      apiProbe: resendProbe ?? { skipped: true as const },
+    },
+    /** Live checks (Stripe balance, Resend domains, Supabase anon count). */
+    probes: {
+      supabaseCatalog: productsProbe,
+      stripe: stripeProbe ?? { skipped: true as const },
+      resend: resendProbe ?? { skipped: true as const },
     },
     readiness,
     missingEnv,
@@ -88,6 +84,7 @@ export async function GET() {
       "If productsProbe shows an error, check RLS: anon needs SELECT on `products` (see repository root SUPABASE_SETUP.md).",
       "Magic links and cart sessions require `supabase.publicKeyConfigured` (anon/publishable). Service role alone is not enough for auth.",
       "missingEnv lists variable *names* still unset — no secrets in this response.",
+      "probes.stripe uses a read-only Balance API call; probes.resend lists domains (no email sent).",
     ],
   });
 }

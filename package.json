@@ -8,15 +8,18 @@
     "lint": "npm --prefix next-app run lint",
     "install": "npm --prefix next-app install",
     "test": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:integrations": "npm --prefix next-app run test:integrations"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.5.0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.103.0",
     "@tailwindcss/postcss": "^4.2.2",
     "next": "^16.2.0",
-    "resend": "^6.9.4"
+    "resend": "^6.9.4",
+    "stripe": "22.0.1"
   }
 }
