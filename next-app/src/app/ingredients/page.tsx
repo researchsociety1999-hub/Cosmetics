@@ -41,6 +41,11 @@ export default async function IngredientsPage() {
               Mystique focuses on thoughtful formulations, sensorial textures, and
               ritual-friendly layering rather than aggressive claims or overcomplication.
             </p>
+            <p className="text-xs leading-relaxed text-[#7a7265]">
+              Category labels like &ldquo;PDRN-inspired&rdquo; describe how we group
+              storytelling and texture—not a guarantee that every SKU contains a
+              specific INCI. Each product page lists what that formula actually includes.
+            </p>
           </div>
           <div className="grid gap-4 text-sm text-[#cdbca1] sm:grid-cols-3">
             <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">

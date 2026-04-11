@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCategories, getProducts, type ProductSort } from "../lib/queries";
+import { hasSupabaseEnv } from "../lib/supabaseClient";
 import { ShopFiltersBar } from "./ShopFiltersBar";
 import type { Product } from "../lib/types";
 
@@ -125,10 +126,10 @@ export default async function ShopPage({
         </section>
 
         {productSections.length === 0 ? (
-          <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No products match that search or category yet. Try different filters or
-            explore another category.
-          </div>
+          <ShopWideEmptyState
+            hasSupabase={hasSupabaseEnv}
+            hasActiveFilters={Boolean(currentSearch || matchedCategory)}
+          />
         ) : (
           <div className="space-y-12">
             {productSections.map((section) => (
@@ -170,6 +171,64 @@ export default async function ShopPage({
         )}
       </main>
     </SiteChrome>
+  );
+}
+
+function ShopWideEmptyState({
+  hasSupabase,
+  hasActiveFilters,
+}: {
+  hasSupabase: boolean;
+  hasActiveFilters: boolean;
+}) {
+  if (!hasSupabase) {
+    return (
+      <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b8ab95]">
+        <p className="font-literata text-xl tracking-[0.08em] text-[#f5eee3]">
+          Catalog connection is not configured.
+        </p>
+        <p>
+          This environment needs Supabase URL and keys before published products can
+          load. See the project <code className="text-[#d6a85f]">.env.example</code> and
+          deployment checklist.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b8ab95]">
+      <p className="font-literata text-xl tracking-[0.08em] text-[#f5eee3]">
+        {hasActiveFilters
+          ? "No products match those filters yet."
+          : "New arrivals are on the way."}
+      </p>
+      <p>
+        {hasActiveFilters
+          ? "Try clearing search, choosing All, or another category—formulas appear here as soon as they are published."
+          : "Published rows with is_published=true will fill the grid automatically. Until then, follow the ritual guide or write the studio for wholesale timelines."}
+      </p>
+      <div className="flex flex-wrap gap-3 pt-2">
+        <Link
+          href="/shop"
+          className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+        >
+          View all
+        </Link>
+        <Link
+          href="/routines"
+          className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+        >
+          Routines
+        </Link>
+        <Link
+          href="/journal"
+          className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+        >
+          Journal
+        </Link>
+      </div>
+    </div>
   );
 }
 
