@@ -79,6 +79,8 @@ export default defineConfig({
       PORT: "3001",
       // E2E expects demo slugs when no Supabase DB is configured.
       ALLOW_MOCK_CATALOG: process.env.ALLOW_MOCK_CATALOG ?? "1",
+      // `next start` runs as production; allow integration health checks in tests.
+      ENABLE_INTEGRATION_HEALTH: process.env.ENABLE_INTEGRATION_HEALTH ?? "1",
     },
   },
 });
