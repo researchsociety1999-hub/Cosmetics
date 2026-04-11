@@ -8,17 +8,21 @@ interface PromoBannerProps {
 }
 
 export function PromoBanner({ promo }: PromoBannerProps) {
-  const [now, setNow] = useState<Date>(() => new Date());
+  /** `null` until mount so server and first client paint match (avoids hydration drift). */
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setNow(new Date());
-    }, 1000 * 60);
-    return () => window.clearInterval(id);
+    const tick = () => setNow(new Date());
+    const first = window.setTimeout(tick, 0);
+    const id = window.setInterval(tick, 1000 * 60);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(id);
+    };
   }, []);
 
   const remaining = useMemo(() => {
-    if (!promo.end_date) return null;
+    if (!promo.end_date || !now) return null;
     const end = new Date(promo.end_date);
     const diffMs = end.getTime() - now.getTime();
     if (diffMs <= 0) return null;

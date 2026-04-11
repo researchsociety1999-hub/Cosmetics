@@ -409,10 +409,10 @@ optgroup {
   pointer-events: none;
 }
 
-/* Image treatment: subtle blend, contrast, and saturation tuning to harmonize imported artwork with the site. */
+/* Image treatment: photo sits above scrims (shade/vignette) so it stays legible. */
 .mystique-image-frame__image {
   position: relative;
-  z-index: 1;
+  z-index: 4;
   opacity: 0.94;
   mix-blend-mode: screen;
   filter: brightness(0.98) contrast(0.96) saturate(0.88);
@@ -422,11 +422,27 @@ optgroup {
     filter 0.5s ease;
 }
 
+/* Catalog / PDP / search: natural blend so product photography reads true (not a dark blob). */
+.mystique-image-frame--product .mystique-image-frame__image,
+.mystique-image-frame--thumb .mystique-image-frame__image {
+  mix-blend-mode: normal;
+  opacity: 1;
+  filter: brightness(1.02) contrast(1.03) saturate(0.98);
+}
+
 .group:hover .mystique-image-frame__image,
 .mystique-image-frame:hover .mystique-image-frame__image {
   transform: scale(1.02);
   opacity: 0.98;
   filter: brightness(1.01) contrast(1) saturate(0.92);
+}
+
+.group:hover .mystique-image-frame--product .mystique-image-frame__image,
+.mystique-image-frame--product:hover .mystique-image-frame__image,
+.group:hover .mystique-image-frame--thumb .mystique-image-frame__image,
+.mystique-image-frame--thumb:hover .mystique-image-frame__image {
+  opacity: 1;
+  filter: brightness(1.04) contrast(1.05) saturate(1.02);
 }
 
 /* Particle embers: sparse gold sparks to match the logo mood without making the UI busy. */
@@ -507,6 +523,7 @@ optgroup {
 }
 
 .mystique-image-frame--brand .mystique-image-frame__image {
+  z-index: 4;
   opacity: 0.8;
   mix-blend-mode: screen;
   filter: brightness(0.78) contrast(0.88) saturate(0.72) blur(0.2px);

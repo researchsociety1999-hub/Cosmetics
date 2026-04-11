@@ -1,12 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
-import { Footer } from "../../components/Footer";
-import { Navbar } from "../../components/Navbar";
+import { MagicLinkSubmitButton } from "../../components/MagicLinkSubmitButton";
+import { SiteChrome } from "../../components/SiteChrome";
+import { getSafeNextPath } from "../../lib/authRedirect";
 import { sanitizeClientAuthMessage } from "../../lib/authMessages";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  description:
+    "Sign in to your Mystique account with a secure magic link and return to checkout or saved orders.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +25,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const email = params.email ? decodeURIComponent(params.email) : "";
-  const nextPath = params.next || "/account";
+  const nextPath = getSafeNextPath(params.next, "/account");
   const user = await getAuthenticatedUser();
 
   if (user) {
@@ -25,8 +33,7 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
-      <Navbar />
+    <SiteChrome>
       <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <div className="mx-auto max-w-xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -57,12 +64,10 @@ export default async function LoginPage({
                 placeholder="you@example.com"
               />
             </label>
-            <button
-              type="submit"
-              className="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
-            >
-              Send magic link
-            </button>
+            <MagicLinkSubmitButton
+              idleLabel="Send magic link"
+              pendingLabel="Sending…"
+            />
           </form>
           <p className="text-sm leading-relaxed text-[#b8ab95]">
             New here? Use the same email flow to create your account in one step.
@@ -83,8 +88,7 @@ export default async function LoginPage({
         </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </SiteChrome>
   );
 }
 
@@ -126,6 +130,24 @@ function StatusMessage({
     return (
       <p className="text-sm text-[#d6a85f]">
         We couldn&apos;t verify that sign-in link. Request a fresh magic link and try again.
+      </p>
+    );
+  }
+
+  if (status === "link-invalid") {
+    return (
+      <p className="text-sm text-[#d6a85f]">
+        That email link is expired or was already used. Request a new magic link below—we
+        will send you a fresh one.
+      </p>
+    );
+  }
+
+  if (status === "session-expired") {
+    return (
+      <p className="text-sm text-[#d6a85f]">
+        For your security, your session ended. Sign in again to continue where you left
+        off.
       </p>
     );
   }

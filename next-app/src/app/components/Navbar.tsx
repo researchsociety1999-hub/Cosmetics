@@ -72,7 +72,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
               </>
             )}
 
-            <IconLink href="/cart" label="Cart" badge={cartCount}>
+            <IconLink href="/cart" label="Bag" badge={cartCount}>
               <CartIcon />
             </IconLink>
           </div>

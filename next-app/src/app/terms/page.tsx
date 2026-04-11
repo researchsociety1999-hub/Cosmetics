@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import { LegalPage } from "../components/LegalPage";
+import { getPublicStudioEmail } from "../lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "The terms that govern use of the Mystique website and storefront.",
+  description:
+    "Terms governing use of the Mystique website, accounts, orders, intellectual property, and limitations of liability.",
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const studioEmail = getPublicStudioEmail();
+  const termsContactLine = studioEmail
+    ? `Questions about these terms can be sent to ${studioEmail} or through the Contact form for review by the Mystique team.`
+    : "Questions about these terms can be sent through the Contact form for review by the Mystique team.";
+
   return (
     <LegalPage
       title="Terms of Service"
       eyebrow="Terms"
-      intro="These terms govern the use of the Mystique website, including browsing the storefront, viewing editorial content, placing orders, and interacting with site communications."
+      intro="These Terms of Service (“Terms”) govern access to and use of the Mystique website and related services, including browsing, account registration, purchases, and communications. If you do not agree, please discontinue use of the site."
       sections={[
         {
           heading: "Use of the site",
@@ -38,7 +45,7 @@ export default function TermsPage() {
           heading: "Liability and contact",
           paragraphs: [
             "To the fullest extent permitted by law, Mystique is not liable for indirect, incidental, special, or consequential damages arising from use of the site, inability to use the site, or reliance on site content.",
-            "Questions about these terms can be sent to hello@mystique.com for review by the Mystique team.",
+            termsContactLine,
           ],
         },
       ]}
