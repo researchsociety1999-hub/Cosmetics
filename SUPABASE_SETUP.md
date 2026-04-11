@@ -13,6 +13,8 @@ Copy **`next-app/.env.example`** → **`next-app/.env.local`** (the latter is gi
 
 \* Do **not** put the **service role** or `sb_secret_*` keys in `NEXT_PUBLIC_*` variables.
 
+**Auth + service role together:** keep the **anon (or publishable) key** set for `NEXT_PUBLIC_*` even when you add `SUPABASE_SERVICE_ROLE_KEY`. The SSR client (`@supabase/ssr`) used for magic links and sessions **does not** use the service key; omitting the anon key breaks sign-in while the catalog might still work from server-side queries.
+
 ## Product catalog not showing?
 
 1. **Published flag** — The app loads only rows where `is_published` is **true**. Draft or `NULL` rows are hidden.

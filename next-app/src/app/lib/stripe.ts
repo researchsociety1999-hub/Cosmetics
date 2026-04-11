@@ -66,7 +66,9 @@ export async function createStripeCheckoutSession({
 }) {
   const stripe = getStripeServerClient();
   const baseUrl = (origin ?? getConfiguredSiteUrl()).replace(/\/$/, "");
-  const shippingAmountCents = order.shipping_cents ?? getShippingAmountCents(cart.subtotalCents);
+  const netSubtotal = Math.max(0, cart.subtotalCents - (order.discount_cents ?? 0));
+  const shippingAmountCents =
+    order.shipping_cents ?? getShippingAmountCents(netSubtotal);
   const discounts =
     appliedPromo && order.discount_cents > 0
       ? [

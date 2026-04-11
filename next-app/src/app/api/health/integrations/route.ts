@@ -86,6 +86,7 @@ export async function GET() {
       "Storefront reads `products` with `is_published = true` only.",
       "If count is 0, publish rows in Supabase or set `is_published` to true.",
       "If productsProbe shows an error, check RLS: anon needs SELECT on `products` (see repository root SUPABASE_SETUP.md).",
+      "Magic links and cart sessions require `supabase.publicKeyConfigured` (anon/publishable). Service role alone is not enough for auth.",
       "missingEnv lists variable *names* still unset — no secrets in this response.",
     ],
   });

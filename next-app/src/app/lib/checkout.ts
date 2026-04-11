@@ -2,7 +2,8 @@ import type { CartSummary, OrderTotals, ShippingDetails } from "./types";
 
 export const CHECKOUT_CURRENCY = "usd";
 export const FLAT_SHIPPING_CENTS = 599;
-export const FREE_SHIPPING_THRESHOLD_CENTS = 5000;
+/** Must stay aligned with cart/checkout UI and `PurchaseTrustFootnote` ($75+ after promotions). */
+export const FREE_SHIPPING_THRESHOLD_CENTS = 7500;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,7 +31,8 @@ export function getOrderTotals(
 ): OrderTotals {
   const subtotalAmount = cart.subtotalCents;
   const discountAmount = Math.min(Math.max(discountCents, 0), subtotalAmount);
-  const shippingAmount = getShippingAmountCents(subtotalAmount);
+  const netSubtotalAfterPromo = Math.max(0, subtotalAmount - discountAmount);
+  const shippingAmount = getShippingAmountCents(netSubtotalAfterPromo);
   const taxAmount = 0;
 
   return {
