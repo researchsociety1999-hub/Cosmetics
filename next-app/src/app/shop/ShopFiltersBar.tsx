@@ -42,7 +42,7 @@ export function ShopFiltersBar({
           name="search"
           defaultValue={currentSearch}
           placeholder="Search serums, bloom skin, peptides..."
-          className="mystic-input mystic-input--text min-h-[54px] w-full bg-[rgba(255,255,255,0.03)] text-sm"
+          className="mystic-input mystic-input--text min-h-[54px] w-full border-[rgba(214,168,95,0.22)] bg-[rgba(6,8,12,0.85)] text-sm text-[#f0e8dc] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] placeholder:text-[#7d7365]"
         />
       </form>
       <form action="/shop" method="get">
@@ -56,7 +56,7 @@ export function ShopFiltersBar({
           name="category"
           defaultValue={matchedCategorySlug}
           onChange={submitParentForm}
-          className="mystic-input mystic-select min-h-[54px] min-w-[200px] bg-[rgba(255,255,255,0.03)] px-4 pr-10 text-sm"
+          className="mystic-input mystic-select min-h-[54px] min-w-[200px] px-4 pr-10 text-[0.8rem]"
         >
           <option value="">All categories</option>
           {availableCategories.map((category) => (
@@ -77,7 +77,7 @@ export function ShopFiltersBar({
           name="sort"
           defaultValue={sort}
           onChange={submitParentForm}
-          className="mystic-input mystic-select min-h-[54px] min-w-[180px] bg-[rgba(255,255,255,0.03)] px-4 pr-10 text-sm"
+          className="mystic-input mystic-select min-h-[54px] min-w-[180px] px-4 pr-10 text-[0.8rem]"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

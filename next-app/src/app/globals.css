@@ -240,14 +240,40 @@ summary:focus-visible {
   box-shadow: 0 0 0 1px rgba(214, 168, 95, 0.6);
 }
 
-/* Native <select>: closed state matches Mystique inputs; list UI follows color-scheme where supported. */
+/* Native <select>: dark luxury chrome; open list follows color-scheme where the browser allows. */
 select.mystic-select {
   appearance: none;
   cursor: pointer;
+  color-scheme: dark;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #f0e8dc;
+  background-color: rgba(6, 8, 12, 0.94);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23d6a85f'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.85rem center;
   background-size: 1rem 1rem;
+  border: 1px solid rgba(214, 168, 95, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 28px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+select.mystic-select:hover {
+  border-color: rgba(214, 168, 95, 0.45);
+  background-color: rgba(10, 12, 18, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(214, 168, 95, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+select.mystic-select:focus-visible {
+  border-color: rgba(240, 209, 154, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(214, 168, 95, 0.45),
+    0 14px 36px rgba(0, 0, 0, 0.45);
 }
 
 select.mystic-select:disabled {
@@ -257,8 +283,8 @@ select.mystic-select:disabled {
 
 option,
 optgroup {
-  background-color: var(--mystic-bg-alt);
-  color: var(--mystic-text);
+  background-color: #0a0d12;
+  color: #f5eee3;
 }
 
 /* Text inputs: keep single chevron rule from applying */
