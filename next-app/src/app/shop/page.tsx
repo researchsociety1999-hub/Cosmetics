@@ -64,7 +64,7 @@ export default async function ShopPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <header className="mb-10 space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Shop Mystique
@@ -120,13 +120,14 @@ export default async function ShopPage({
           <p className="mt-2 text-sm text-[#8f8576]">
             {matchedCategory
               ? `Showing products from the ${matchedCategory.name} section.`
-              : "Showing published Supabase products grouped by category."}
+              : "Browse rituals by category."}
           </p>
         </section>
 
         {productSections.length === 0 ? (
           <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-            No published Supabase products were found for that search or category.
+            No products match that search or category yet. Try different filters or
+            explore another category.
           </div>
         ) : (
           <div className="space-y-12">
@@ -143,7 +144,7 @@ export default async function ShopPage({
                     {section.title}
                   </h2>
                 </div>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4 2xl:gap-5">
                   {section.products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -357,10 +358,10 @@ function CategoryChip({
   return (
     <Link
       href={href}
-      className={`inline-flex rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] ${
+      className={`inline-flex rounded-full border px-3.5 py-1.5 text-[0.65rem] uppercase tracking-[0.2em] backdrop-blur-sm transition md:px-4 md:py-2 md:text-xs ${
         active
-          ? "border-[#d6a85f] bg-[rgba(214,168,95,0.12)] text-[#f5eee3]"
-          : "border-[rgba(214,168,95,0.18)] text-[#b8ab95] hover:text-[#f5eee3]"
+          ? "border-[#d6a85f] bg-[rgba(214,168,95,0.18)] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+          : "border-white/12 bg-white/[0.04] text-[#b8ab95] hover:border-[rgba(214,168,95,0.28)] hover:text-[#f5eee3]"
       }`}
     >
       {children}

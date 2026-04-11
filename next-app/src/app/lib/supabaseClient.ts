@@ -17,9 +17,11 @@ const rawSupabaseUrl =
   process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey =
   process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+/** Anon key: public (browser) or server-only alias for SSR / scripts without NEXT_PUBLIC_. */
 const rawSupabasePublicKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  process.env.SUPABASE_ANON_KEY;
 const hasSecretInPublicKeySlot = rawSupabasePublicKey?.startsWith("sb_secret_") ?? false;
 const supabaseAnonKey = hasSecretInPublicKeySlot ? null : rawSupabasePublicKey;
 const supabaseUrl = isValidHttpUrl(rawSupabaseUrl) ? rawSupabaseUrl : null;

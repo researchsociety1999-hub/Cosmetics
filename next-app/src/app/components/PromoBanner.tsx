@@ -30,8 +30,8 @@ export function PromoBanner({ promo }: PromoBannerProps) {
   }, [promo.end_date, now]);
 
   return (
-    <div className="border-b border-[rgba(214,168,95,0.35)] bg-gradient-to-r from-[#0b0b10] via-[#1f2933] to-[#0b0b10] py-2 text-xs text-[#f5eee3]">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-1 px-4 sm:flex-row sm:gap-3 md:px-6">
+    <div className="border-b border-white/10 bg-gradient-to-r from-[rgba(8,10,14,0.85)] via-[rgba(18,22,30,0.9)] to-[rgba(8,10,14,0.85)] py-2 text-xs text-[#f5eee3] backdrop-blur-md">
+      <div className="flex w-full flex-col items-center justify-between gap-1 px-4 sm:flex-row sm:gap-3 md:px-6 lg:px-10 xl:px-14">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-6 items-center rounded-full bg-[rgba(214,168,95,0.12)] px-3 text-[0.65rem] uppercase tracking-[0.24em] text-[#d6a85f]">
             {promo.name || "Limited Offer"}

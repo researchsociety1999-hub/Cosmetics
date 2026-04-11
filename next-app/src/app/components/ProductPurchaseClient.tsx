@@ -16,19 +16,26 @@ export function ProductPurchaseClient({
   variants,
 }: ProductPurchaseClientProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
-  const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
+  const [userPickedVariantId, setUserPickedVariantId] = useState<number | null>(null);
   const [sticky, setSticky] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  useEffect(() => {
-    if (!variants.length) {
-      setSelectedVariantId(null);
-      return;
-    }
+  const defaultVariantId = useMemo(() => {
+    if (!variants.length) return null;
     const firstAvailable =
       variants.find((v) => (v.stock ?? 0) > 0) ?? variants[0];
-    setSelectedVariantId(firstAvailable?.id ?? null);
+    return firstAvailable?.id ?? null;
   }, [variants]);
+
+  const selectedVariantId = useMemo(() => {
+    if (
+      userPickedVariantId != null &&
+      variants.some((v) => v.id === userPickedVariantId)
+    ) {
+      return userPickedVariantId;
+    }
+    return defaultVariantId;
+  }, [userPickedVariantId, defaultVariantId, variants]);
 
   useEffect(() => {
     const node = anchorRef.current;
@@ -146,7 +153,7 @@ export function ProductPurchaseClient({
                     key={v.id}
                     type="button"
                     disabled={oos}
-                    onClick={() => setSelectedVariantId(v.id)}
+                    onClick={() => setUserPickedVariantId(v.id)}
                     className={`rounded-full border px-4 py-2 text-left text-[0.72rem] uppercase tracking-[0.14em] transition ${
                       active
                         ? "border-[rgba(214,168,95,0.65)] bg-[rgba(214,168,95,0.12)] text-[#f5eee3]"
@@ -189,7 +196,7 @@ export function ProductPurchaseClient({
               action={addToCartAction}
               productId={product.id}
               variantId={variantIdForCart}
-              redirectTo=""
+              redirectTo="cart"
               buttonLabel="Add to bag"
               showQuantity={false}
               controlledQuantity={quantity}

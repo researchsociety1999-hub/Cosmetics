@@ -5,12 +5,13 @@
   color-scheme: dark;
 
   /* Colors */
-  --mystic-bg: #06080c;
+  --mystic-bg: #030406;
   --mystic-bg-alt: #0a0d12;
   --mystic-card-bg: rgba(255, 255, 255, 0.03);
   --mystic-card-border: rgba(214, 168, 95, 0.2);
-  --mystic-gold: #d6a85f;
-  --mystic-gold-hover: #f0d19a;
+  /* Warm bronze-gold — aligned with official Mystique logo metal */
+  --mystic-gold: #d4af5c;
+  --mystic-gold-hover: #f2d18a;
   --mystic-text: #f5eee3;
   --mystic-text-muted: #b8ab95;
 
@@ -35,17 +36,27 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  /* Stable rem basis + no mobile “auto zoom” of typography */
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background:
     radial-gradient(circle at 18% 18%, rgba(255, 167, 58, 0.12), transparent 16%),
     radial-gradient(circle at 76% 22%, rgba(214, 168, 95, 0.08), transparent 18%),
     radial-gradient(circle at 50% 100%, rgba(255, 140, 40, 0.05), transparent 22%),
     radial-gradient(circle at 50% 18%, rgba(255, 245, 221, 0.02), transparent 22%),
-    linear-gradient(180deg, #030406 0%, #06080c 42%, #05070b 100%);
+    linear-gradient(180deg, #020305 0%, #030406 42%, #05070b 100%);
   color: var(--mystic-text);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
@@ -117,6 +128,32 @@ summary:focus-visible {
   box-shadow: var(--mystic-shadow-soft);
 }
 
+/* Frosted glass — nav, chips, dense catalog cards */
+.mystic-glass {
+  border-radius: var(--mystic-radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 45%,
+    rgba(8, 10, 16, 0.35) 100%
+  );
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mystic-glass--subtle {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 8, 12, 0.45);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
 .mystic-section {
   padding-top: 4.5rem;
   padding-bottom: 4.5rem;
@@ -124,8 +161,9 @@ summary:focus-visible {
 
 .mystic-section-shell {
   margin-inline: auto;
-  max-width: 80rem;
-  padding-inline: 1rem;
+  width: 100%;
+  max-width: none;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
 }
 
 .mystic-kicker {
@@ -250,6 +288,13 @@ optgroup {
     0 0 28px rgba(214, 168, 95, 0.28);
   opacity: 0.82;
   animation: mystic-float 8.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystic-particle {
+    animation: none;
+    opacity: 0.55;
+  }
 }
 
 .mystic-particle-sm {
@@ -473,7 +518,7 @@ optgroup {
   }
 
   .mystic-section-shell {
-    padding-inline: 1.5rem;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
   }
 }
 

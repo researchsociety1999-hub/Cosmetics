@@ -6,7 +6,7 @@ import {
 } from "./checkout";
 import { sendOrderPaidEmails } from "./orderNotifications";
 import { clearStoredPromoCode } from "./promo";
-import { supabase } from "./supabaseClient";
+import { supabase, supabaseAdmin } from "./supabaseClient";
 import type {
   AppliedPromo,
   Address,
@@ -17,12 +17,19 @@ import type {
   ShippingDetails,
 } from "./types";
 
-function requireAdminClient() {
-  if (!supabase) {
-    throw new Error("Supabase admin client is not configured.");
+/** Prefer service role for order writes; fall back to shared server client. */
+function clientForCheckoutWrites() {
+  if (supabaseAdmin) {
+    return supabaseAdmin;
   }
 
-  return supabase;
+  if (supabase) {
+    return supabase;
+  }
+
+  throw new Error(
+    "Supabase is not configured. Set project URL and keys (SUPABASE_SERVICE_ROLE_KEY recommended for checkout).",
+  );
 }
 
 function getVariantPriceCents(line: CartSummary["lines"][number]) {
@@ -38,7 +45,7 @@ async function upsertDefaultAddress({
   type: string;
   details: ShippingDetails;
 }): Promise<Address> {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
   const { data: existing } = await client
     .from("addresses")
     .select("*")
@@ -100,7 +107,7 @@ export async function createPendingOrderFromCart({
   cart: CartSummary;
   appliedPromo?: AppliedPromo | null;
 }): Promise<{ order: Order; items: OrderItem[] }> {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
 
   if (!cart.lines.length) {
     throw new Error("Cart is empty.");
@@ -177,7 +184,7 @@ export async function attachStripeCheckoutSessionToOrder(
   orderId: string,
   sessionId: string,
 ): Promise<void> {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
   const { error } = await client
     .from("orders")
     .update({
@@ -192,7 +199,7 @@ export async function attachStripeCheckoutSessionToOrder(
 }
 
 export async function markOrderFailedForCheckout(orderId: string): Promise<void> {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
   const { error } = await client
     .from("orders")
     .update({
@@ -210,7 +217,7 @@ export async function getOrderWithItemsByStripeSessionId(sessionId: string): Pro
   order: Order;
   items: OrderItem[];
 } | null> {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
   const { data: order } = await client
     .from("orders")
     .select("*")
@@ -244,7 +251,7 @@ async function insertPaymentRecord({
   amountCents: number;
   paymentMethod: string | null;
 }) {
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
 
   if (stripePaymentId) {
     const { data: existing } = await client
@@ -301,7 +308,7 @@ export async function finalizePaidOrderFromStripe({
     return orderWithItems.order;
   }
 
-  const client = requireAdminClient();
+  const client = clientForCheckoutWrites();
   const { data: order, error } = await client
     .from("orders")
     .update({

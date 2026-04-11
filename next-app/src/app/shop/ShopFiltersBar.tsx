@@ -29,7 +29,8 @@ export function ShopFiltersBar({
   }
 
   return (
-    <section className="mb-8 grid gap-4 border-b border-[rgba(214,168,95,0.1)] pb-6 md:grid-cols-[1fr_auto_auto]">
+    <section className="mb-8">
+      <div className="mystic-glass grid gap-4 p-4 md:grid-cols-[1fr_auto_auto] md:gap-4 md:p-5">
       <form action="/shop" method="get">
         <input type="hidden" name="category" value={matchedCategorySlug} />
         <input type="hidden" name="sort" value={sort} />
@@ -85,6 +86,7 @@ export function ShopFiltersBar({
           ))}
         </select>
       </form>
+      </div>
     </section>
   );
 }

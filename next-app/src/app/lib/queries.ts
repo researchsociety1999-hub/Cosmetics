@@ -35,6 +35,17 @@ import type {
 
 export type ProductSort = "price_asc" | "price_desc" | "newest" | "featured";
 
+/**
+ * Default: catalog comes **only from Supabase** (empty if env missing).
+ * Set `ALLOW_MOCK_CATALOG=1` for local Playwright E2E without a database.
+ */
+function allowMockCatalog(): boolean {
+  return (
+    process.env.ALLOW_MOCK_CATALOG === "1" ||
+    process.env.ALLOW_MOCK_PRODUCTS === "1"
+  );
+}
+
 interface GetProductsOptions {
   categoryId?: number;
   search?: string;
@@ -287,6 +298,9 @@ export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
   if (!hasSupabaseEnv || !supabase) {
+    if (!allowMockCatalog()) {
+      return [];
+    }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
     return paginateProducts(
       sortProducts(filteredProducts, options.sortBy),
@@ -324,15 +338,15 @@ export async function getProducts(
 
     const { data, error } = await query;
     if (error) {
-      return paginateProducts(sortProducts(getMockProducts(), sortBy), page, limit);
+      console.error("[Supabase] getProducts failed:", error.message, error);
+      return paginateProducts(sortProducts([], sortBy), page, limit);
     }
 
     const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
-    const products = normalizedProducts.length ? normalizedProducts : getMockProducts();
-
-    return paginateProducts(sortProducts(products, sortBy), page, limit);
-  } catch {
-    return paginateProducts(sortProducts(getMockProducts(), sortBy), page, limit);
+    return paginateProducts(sortProducts(normalizedProducts, sortBy), page, limit);
+  } catch (e) {
+    console.error("[Supabase] getProducts exception:", e);
+    return paginateProducts(sortProducts([], sortBy), page, limit);
   }
 }
 
@@ -344,6 +358,9 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
   const requestedIds = new Set(ids);
 
   if (!hasSupabaseEnv || !supabase) {
+    if (!allowMockCatalog()) {
+      return [];
+    }
     return getMockProducts().filter((product) => requestedIds.has(product.id));
   }
 
@@ -355,20 +372,23 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
       .eq("is_published", true);
 
     if (error) {
-      return getMockProducts().filter((product) => requestedIds.has(product.id));
+      console.error("[Supabase] getProductsByIds failed:", error.message, error);
+      return [];
     }
 
     const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
-    return normalizedProducts.length
-      ? normalizedProducts
-      : getMockProducts().filter((product) => requestedIds.has(product.id));
-  } catch {
-    return getMockProducts().filter((product) => requestedIds.has(product.id));
+    return normalizedProducts.filter((product) => requestedIds.has(product.id));
+  } catch (e) {
+    console.error("[Supabase] getProductsByIds exception:", e);
+    return [];
   }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!hasSupabaseEnv || !supabase) {
+    if (!allowMockCatalog()) {
+      return null;
+    }
     return getMockProducts().find((product) => product.slug === slug) ?? null;
   }
 
@@ -382,14 +402,14 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .maybeSingle();
 
     if (error) {
-      return getMockProducts().find((product) => product.slug === slug) ?? null;
+      console.error("[Supabase] getProductBySlug failed:", error.message, error);
+      return null;
     }
 
-    return data
-      ? normalizeProduct(data as Product)
-      : getMockProducts().find((product) => product.slug === slug) ?? null;
-  } catch {
-    return getMockProducts().find((product) => product.slug === slug) ?? null;
+    return data ? normalizeProduct(data as Product) : null;
+  } catch (e) {
+    console.error("[Supabase] getProductBySlug exception:", e);
+    return null;
   }
 }
 
@@ -483,6 +503,9 @@ export async function getRoutineCompanionProducts(
 
 export async function getCategories(): Promise<Category[]> {
   if (!hasSupabaseEnv || !supabase) {
+    if (!allowMockCatalog()) {
+      return [];
+    }
     return getMockCategories();
   }
 
@@ -493,12 +516,14 @@ export async function getCategories(): Promise<Category[]> {
       .order("name", { ascending: true });
 
     if (error) {
-      return getMockCategories();
+      console.error("[Supabase] getCategories failed:", error.message, error);
+      return [];
     }
 
-    return data?.length ? (data as Category[]) : getMockCategories();
-  } catch {
-    return getMockCategories();
+    return (data ?? []) as Category[];
+  } catch (e) {
+    console.error("[Supabase] getCategories exception:", e);
+    return [];
   }
 }
 
@@ -511,6 +536,9 @@ export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
   if (!hasSupabaseEnv || !supabase) {
+    if (!allowMockCatalog()) {
+      return [];
+    }
     return mockProductVariants.filter((v) => v.product_id === productId);
   }
 
@@ -650,9 +678,12 @@ export async function searchProducts(query: string): Promise<Product[]> {
     return [];
   }
 
-  const sourceProducts = hasSupabaseEnv && supabase
-    ? await getProducts({ sortBy: "featured" })
-    : mockProducts.map(normalizeProduct);
+  const sourceProducts =
+    hasSupabaseEnv && supabase
+      ? await getProducts({ sortBy: "featured" })
+      : allowMockCatalog()
+        ? mockProducts.map(normalizeProduct)
+        : [];
 
   return filterProductsBySearch(sourceProducts, normalizedQuery, 24);
 }

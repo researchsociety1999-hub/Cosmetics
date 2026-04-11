@@ -32,14 +32,14 @@ function getFromEmail(): string {
   return resendFromEmail;
 }
 
+/** Inbound contact form “to” address — same fallbacks as order admin mail when unset. */
 export function getContactNotificationEmail(): string {
-  const email = process.env.CONTACT_NOTIFICATION_EMAIL;
-
-  if (!email) {
-    throw new Error("Missing CONTACT_NOTIFICATION_EMAIL");
-  }
-
-  return email;
+  return (
+    process.env.CONTACT_NOTIFICATION_EMAIL ??
+    process.env.ORDERS_ADMIN_EMAIL ??
+    process.env.ORDER_NOTIFICATION_EMAIL ??
+    getFromEmail()
+  );
 }
 
 export function getOrderNotificationEmail(): string {

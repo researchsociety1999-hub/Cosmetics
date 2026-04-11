@@ -67,7 +67,7 @@ async function persistGuestCart(items: CartCookieItem[]) {
     }));
 
   cookieStore.set(CART_COOKIE_NAME, JSON.stringify(normalized), {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",

@@ -18,7 +18,8 @@ export default async function CheckoutCancelPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-3xl px-4 py-20 text-center md:px-6">
+      <main className="w-full px-4 py-20 text-center md:px-6 lg:px-10 xl:px-14">
+        <div className="mx-auto max-w-3xl">
         <div className="mystic-card p-8 md:p-10">
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             Checkout cancelled
@@ -49,6 +50,7 @@ export default async function CheckoutCancelPage({
               Review cart
             </Link>
           </div>
+        </div>
         </div>
       </main>
     </SiteChrome>
