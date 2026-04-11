@@ -137,18 +137,33 @@ export default async function ShopPage({
                 className="space-y-5 border-t border-[rgba(214,168,95,0.1)] pt-8 first:border-t-0 first:pt-0"
               >
                 <div className="space-y-2">
-                  <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
-                    {section.productCount} product{section.productCount === 1 ? "" : "s"}
+                  <p className="text-[0.72rem] text-[#b8ab95]">
+                    {section.productCount > 0 ? (
+                      <>
+                        <span className="tabular-nums text-[#d6c4a8]">
+                          {section.productCount}
+                        </span>{" "}
+                        <span className="uppercase tracking-[0.24em]">
+                          {section.productCount === 1 ? "product" : "products"}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="uppercase tracking-[0.24em]">Coming soon</span>
+                    )}
                   </p>
                   <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
                     {section.title}
                   </h2>
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4 2xl:gap-5">
-                  {section.products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                {section.products.length === 0 ? (
+                  <CategoryEmptyState title={section.title} isHair={section.isHair} />
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4 2xl:gap-5">
+                    {section.products.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                )}
               </section>
             ))}
           </div>
@@ -369,6 +384,33 @@ function CategoryChip({
   );
 }
 
+function CategoryEmptyState({ title, isHair }: { title: string; isHair: boolean }) {
+  if (isHair) {
+    return (
+      <div className="mystic-card relative overflow-hidden border-[rgba(214,168,95,0.2)] bg-[linear-gradient(135deg,rgba(255,255,255,0.035)_0%,rgba(214,168,95,0.07)_42%,rgba(6,8,12,0.65)_100%)] px-6 py-10 md:px-10 md:py-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-8 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full border border-[rgba(214,168,95,0.12)] opacity-50"
+        />
+        <p className="relative font-literata text-2xl font-medium leading-snug tracking-[0.04em] text-[#faf6ef] md:text-[1.75rem]">
+          Your next hair obsession is brewing.
+        </p>
+        <p className="relative mt-4 max-w-lg text-sm leading-relaxed text-[#b8ab95]">
+          Our hair ritual line is still in formulation—check back soon, or explore skin and body care
+          while you wait.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mystic-card px-6 py-8 text-sm text-[#b8ab95]">
+      No products in <span className="text-[#e8dfd2]">{title}</span> yet. Try another category or
+      clear your filters.
+    </div>
+  );
+}
+
 function buildShopHref({
   category,
   search,
@@ -396,6 +438,11 @@ function buildShopHref({
   return query ? `/shop?${query}` : "/shop";
 }
 
+function isHairCategory(category: { slug: string; name: string }) {
+  const s = `${category.slug} ${category.name}`.toLowerCase();
+  return s.includes("hair");
+}
+
 function buildProductSections({
   categories,
   assignments,
@@ -417,9 +464,13 @@ function buildProductSections({
         title: category.name,
         productCount: categoryProducts.length,
         products: categoryProducts,
+        isHair: isHairCategory(category),
       };
     })
-    .filter((section) => section.productCount > 0);
+    .filter(
+      (section) =>
+        section.productCount > 0 || section.isHair,
+    );
 
   const uncategorizedProducts = assignments
     .filter((assignment) => assignment.category === null)
@@ -431,6 +482,7 @@ function buildProductSections({
       title: "Uncategorized",
       productCount: uncategorizedProducts.length,
       products: uncategorizedProducts,
+      isHair: false,
     });
   }
 
