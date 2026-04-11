@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CheckoutClient } from "./CheckoutClient";
+import { PurchaseTrustFootnote } from "../components/PurchaseTrustFootnote";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
@@ -55,13 +57,19 @@ export default async function CheckoutPage({
             />
             {!isAuthenticated ? (
               <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#d6a85f]">
-                Sign in first so we can load your saved bag for checkout.
+                <p>Sign in first so we can load your saved bag for checkout.</p>
+                <Link
+                  href="/account/login?next=%2Fcheckout"
+                  className="mt-3 inline-flex text-xs uppercase tracking-[0.2em] text-[#f0d19a] underline-offset-4 hover:underline"
+                >
+                  Continue to sign in
+                </Link>
               </div>
             ) : null}
             {params.status === "cancelled" ? (
               <p className="text-sm text-[#d6a85f]">
-                Stripe checkout was cancelled. Your cart is still here, and you
-                can try again whenever you are ready.
+                Secure checkout was cancelled. Your bag is still here, and you can
+                try again whenever you are ready.
               </p>
             ) : null}
             {params.status === "validation" ? (
@@ -71,7 +79,7 @@ export default async function CheckoutPage({
             ) : null}
             {params.status === "empty" ? (
               <p className="text-sm text-[#d6a85f]">
-                Your cart is empty. Add products before placing an order.
+                Your bag is empty. Add products before placing an order.
               </p>
             ) : null}
             {params.status === "order-error" ? (
@@ -129,6 +137,9 @@ export default async function CheckoutPage({
                 <span>Total</span>
                 <span>{formatMoney(totals.totalAmount)}</span>
               </div>
+            </div>
+            <div className="mt-6">
+              <PurchaseTrustFootnote dense />
             </div>
           </aside>
         </div>

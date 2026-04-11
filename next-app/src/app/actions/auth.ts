@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getSafeNextPath } from "../lib/authRedirect";
 import { getConfiguredSiteUrl } from "../lib/siteUrl";
 import { createSupabaseServerClient } from "../lib/supabaseServer";
 
@@ -42,7 +43,10 @@ function formatAuthErrorMessage(message: string) {
 
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
-  const nextPath = normalizeField(formData.get("next")) || "/account";
+  const nextPath = getSafeNextPath(
+    normalizeField(formData.get("next")) || undefined,
+    "/account",
+  );
   const mode = normalizeField(formData.get("mode")) === "signup" ? "signup" : "login";
   const statusPath = mode === "signup" ? "/account/signup" : "/account/login";
 

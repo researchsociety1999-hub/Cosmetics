@@ -18,11 +18,13 @@ export default async function OrderDetailPage({
 }) {
   const user = await getAuthenticatedUser();
 
-  if (!user) {
-    redirect("/account/login");
-  }
-
   const { orderId } = await params;
+
+  if (!user) {
+    redirect(
+      `/account/login?next=${encodeURIComponent(`/account/orders/${orderId}`)}`,
+    );
+  }
   const orderWithItems = await getOrderWithItemsForUser({
     userId: user.id,
     orderId,

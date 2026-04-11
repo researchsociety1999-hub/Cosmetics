@@ -216,7 +216,7 @@ export async function getAppliedPromoFromStoredCode(
     return {
       storedCode,
       appliedPromo: null,
-      invalidMessage: "Your cart is empty, so that promo code is no longer applied.",
+      invalidMessage: "Your bag is empty, so that promo code is no longer applied.",
     };
   }
 

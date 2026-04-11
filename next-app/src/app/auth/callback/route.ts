@@ -1,34 +1,36 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { getSafeNextPath } from "../../lib/authRedirect";
 import { mergeGuestCartIntoUserCart } from "../../lib/cart";
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
+
+function loginWithStatus(origin: string, status: string, next: string) {
+  const url = new URL("/account/login", origin);
+  url.searchParams.set("status", status);
+  url.searchParams.set("next", next);
+  return NextResponse.redirect(url);
+}
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") || "/account";
+  const next = getSafeNextPath(requestUrl.searchParams.get("next"), "/account");
   const redirectUrl = new URL(next, requestUrl.origin);
 
   if (!code) {
-    redirectUrl.pathname = "/account/login";
-    redirectUrl.search = "?status=auth-error";
-    return NextResponse.redirect(redirectUrl);
+    return loginWithStatus(requestUrl.origin, "auth-error", next);
   }
 
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    redirectUrl.pathname = "/account/login";
-    redirectUrl.search = "?status=not-configured";
-    return NextResponse.redirect(redirectUrl);
+    return loginWithStatus(requestUrl.origin, "not-configured", next);
   }
 
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    redirectUrl.pathname = "/account/login";
-    redirectUrl.search = "?status=auth-error";
-    return NextResponse.redirect(redirectUrl);
+    return loginWithStatus(requestUrl.origin, "auth-error", next);
   }
 
   const {

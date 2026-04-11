@@ -5,7 +5,8 @@ import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "The California-born Mystique brand story: ritual, bloom skin, and clean science storytelling.",
+  description:
+    "Discover Mystique—California-rooted ritual skincare where calm textures, disciplined layering, and bloom-skin radiance meet.",
 };
 
 export default function AboutPage() {
@@ -24,8 +25,8 @@ export default function AboutPage() {
                 Luxury ritual, reimagined.
               </h1>
               <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-                Mystique blends California restraint with Mystique Beauty ritual to create
-                skincare that feels atmospheric, polished, and easy to live with.
+                Mystique blends California restraint with layered ritual skincare—textures
+                and finishes meant to be lived in, not only admired from afar.
               </p>
               <div className="grid gap-4 border-t border-[rgba(214,168,95,0.12)] pt-6 text-[#d8c6aa] sm:grid-cols-2">
                 <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
@@ -38,7 +39,7 @@ export default function AboutPage() {
                 </div>
                 <div className="rounded-[22px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
                   <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#9f927f]">
-                    Mystique Beauty ritual
+                    Layered ritual
                   </p>
                   <p className="mt-2 text-sm">
                     Plush textures and layer-friendly routines shaped for daily use.
@@ -49,8 +50,8 @@ export default function AboutPage() {
 
             <div className="relative mx-auto flex w-full max-w-[560px] justify-center">
               <ThemedImageFrame
-                  src="/Photo%20Mar%2019%202026,%204%2022%2015%20PM.png"
-                  alt="Mystique brand artwork"
+                  src="/hero-portrait-silhouette.png"
+                  alt="Mystique mood study — monochrome silhouette"
                   width={560}
                   height={320}
                   priority
@@ -73,8 +74,8 @@ export default function AboutPage() {
               California-born
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
-              Mystique began as a vision for skincare that brings West Coast restraint
-              into conversation with the layering logic of Korean beauty.
+              Mystique began as a vision for skincare that pairs West Coast restraint
+              with the quiet discipline of layered routines—each step earning the next.
             </p>
           </article>
           <article className="mystic-card p-6">
@@ -104,14 +105,24 @@ export default function AboutPage() {
         </section>
         <section className="mt-12 text-center">
           <h2 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
-            Ready to start your ritual?
+            Begin where your skin feels most honest.
           </h2>
-          <div className="mt-6">
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[#b8ab95]">
+            Explore the catalog, read how we choose actives on the Ingredients page, or
+            send a note through Contact for studio and press inquiries.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/shop"
               className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
               Shop the collection
+            </Link>
+            <Link
+              href="/ingredients"
+              className="mystic-button-secondary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+            >
+              Ingredient philosophy
             </Link>
           </div>
         </section>

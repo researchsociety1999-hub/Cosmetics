@@ -20,6 +20,8 @@ export interface Product {
   skin_types?: string[] | null;
   category_slug?: string | null;
   category_name?: string | null;
+  /** Optional merchandising line from DB, e.g. `30 ml · glass dropper`. */
+  volume_size_label?: string | null;
 }
 
 export interface ProductVariant {

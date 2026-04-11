@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
   finalizePaidOrderFromStripe,
+  getOrderWithItemsByStripeSessionId,
   markOrderFailedForCheckout,
 } from "../../../lib/checkoutOrders";
-import { getOrderWithItemsByStripeSessionId } from "../../../lib/checkoutOrders";
 import {
   getStripeServerClient,
   getStripeWebhookSecret,
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   if (!isStripeWebhookConfigured()) {
     return NextResponse.json(
       { success: false, error: "Stripe webhook is not configured." },
-      { status: 500 },
+      { status: 503 },
     );
   }
 

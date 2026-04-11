@@ -4,7 +4,6 @@ import {
   mockJournalEntries,
   mockProductVariants,
   mockProducts,
-  mockPressMentions,
   mockPromoCampaign,
   mockReviews,
 } from "./data";
@@ -413,18 +412,64 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
 }
 
-const RITUAL_STEPS = ["Cleanse", "Treat", "Moisturize", "Protect"] as const;
+const RITUAL_STEPS = ["Cleanse", "Tone", "Treat", "Moisturize", "Protect"] as const;
 
 export async function getRelatedProducts(
   product: Product,
-  limit = 4,
+  limit = 6,
 ): Promise<Product[]> {
-  const products = await getProducts({
-    categoryId: product.category_id ?? undefined,
-    sortBy: "featured",
-  });
+  const pool = await getProducts({ sortBy: "newest", limit: 64 });
+  const others = pool.filter((item) => item.id !== product.id);
+  if (!others.length) {
+    return [];
+  }
 
-  return products.filter((item) => item.id !== product.id).slice(0, limit);
+  const stepIdx = RITUAL_STEPS.indexOf(
+    (product.routine_step ?? "") as (typeof RITUAL_STEPS)[number],
+  );
+
+  const sameCat = (p: Product) =>
+    typeof p.category_id === "number" &&
+    typeof product.category_id === "number" &&
+    p.category_id === product.category_id;
+
+  const stepIndex = (p: Product) =>
+    RITUAL_STEPS.indexOf((p.routine_step ?? "") as (typeof RITUAL_STEPS)[number]);
+
+  const score = (p: Product) => {
+    let s = 0;
+    if (sameCat(p)) {
+      s += 6;
+    }
+    if (p.routine_step && p.routine_step === product.routine_step) {
+      s += 4;
+    }
+    const pi = stepIndex(p);
+    if (stepIdx >= 0 && pi >= 0) {
+      const dist = Math.abs(pi - stepIdx);
+      if (dist === 1) {
+        s += 3;
+      } else if (dist === 2) {
+        s += 1;
+      }
+    }
+    if (p.sale_price_cents != null) {
+      s += 0.5;
+    }
+    return s;
+  };
+
+  return [...others]
+    .sort((a, b) => {
+      const ds = score(b) - score(a);
+      if (ds !== 0) {
+        return ds;
+      }
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    })
+    .slice(0, limit);
 }
 
 /**
@@ -582,8 +627,13 @@ export async function getProductVariantsByIds(
 }
 
 export async function getProductReviews(productId: number): Promise<Review[]> {
+  const mockForProduct = () =>
+    allowMockCatalog()
+      ? mockReviews.filter((review) => review.product_id === productId)
+      : [];
+
   if (!hasSupabaseEnv || !supabase) {
-    return mockReviews.filter((review) => review.product_id === productId);
+    return mockForProduct();
   }
 
   try {
@@ -593,13 +643,15 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
       .eq("product_id", productId)
       .order("created_at", { ascending: false });
 
-    if (error || !data?.length) {
-      return mockReviews.filter((review) => review.product_id === productId);
+    if (error) {
+      console.error("[Supabase] getProductReviews failed:", error.message, error);
+      return [];
     }
 
-    return data as Review[];
-  } catch {
-    return mockReviews.filter((review) => review.product_id === productId);
+    return (data ?? []) as Review[];
+  } catch (e) {
+    console.error("[Supabase] getProductReviews exception:", e);
+    return [];
   }
 }
 
@@ -631,7 +683,7 @@ export async function getActivePromo(): Promise<PromoCampaign | null> {
 
 export async function getPressMentions(): Promise<PressMention[]> {
   if (!hasSupabaseEnv || !supabase) {
-    return mockPressMentions;
+    return [];
   }
 
   try {
@@ -641,12 +693,12 @@ export async function getPressMentions(): Promise<PressMention[]> {
       .order("published_at", { ascending: false });
 
     if (error || !data?.length) {
-      return mockPressMentions;
+      return [];
     }
 
     return data as PressMention[];
   } catch {
-    return mockPressMentions;
+    return [];
   }
 }
 

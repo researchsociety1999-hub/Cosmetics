@@ -1,18 +1,33 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("path");
 
+function extraImageRemotePatterns() {
+  const raw = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS || "";
+  return raw
+    .split(",")
+    .map((h) => h.trim())
+    .filter(Boolean)
+    .map((hostname) => ({ protocol: "https", hostname }));
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
-    // EMAIL INTEGRATION / DEV SERVER FIX:
-    // `next/image` requires remote hosts to be explicitly allowed. The storefront
-    // currently uses a `placehold.co` fallback image and may also load Supabase
-    // asset URLs, so we allow only those known hosts here.
+    // `next/image` requires remote hosts to be explicitly allowed (must stay in sync with
+    // `isSafeImageSrc` in `src/app/lib/format.ts`). Add more via `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS`.
     remotePatterns: [
       {
         protocol: "https",
         hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
       },
       {
         protocol: "https",
@@ -22,6 +37,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.supabase.in",
       },
+      ...extraImageRemotePatterns(),
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none';",

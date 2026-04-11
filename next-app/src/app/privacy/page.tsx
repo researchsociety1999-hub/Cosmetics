@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import { LegalPage } from "../components/LegalPage";
+import { getPublicStudioEmail } from "../lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Mystique collects, uses, and protects customer information.",
+  description:
+    "How Mystique collects, uses, stores, and shares personal information when you use our website and storefront.",
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const studioEmail = getPublicStudioEmail();
+  const privacyContactLine = studioEmail
+    ? `For privacy questions or requests, write the Mystique team at ${studioEmail} or use the Contact form on this site.`
+    : "For privacy questions or requests, use the Contact form on this site.";
+
   return (
     <LegalPage
       title="Privacy Policy"
       eyebrow="Privacy"
-      intro="This policy explains how Mystique collects, uses, shares, and protects personal information when you browse the site, contact the team, search products, or begin shopping with us."
+      intro="This policy describes how Mystique (“we,” “us,” or “our”) collects, uses, discloses, and protects personal information when you visit our website, use the storefront, create or access an account, subscribe to updates, or contact our team. By using the site, you acknowledge this policy."
       sections={[
         {
           heading: "Information we collect",
@@ -38,7 +45,7 @@ export default function PrivacyPage() {
           heading: "Your choices",
           paragraphs: [
             "You may request access to, correction of, or deletion of personal information we hold about you, subject to legal and operational limitations. Marketing emails also include an unsubscribe option.",
-            "For privacy questions or requests, contact the Mystique team at hello@mystique.com.",
+            privacyContactLine,
           ],
         },
       ]}
