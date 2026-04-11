@@ -40,9 +40,9 @@ export function getMissingIntegrationEnv(): {
     );
   }
 
-  if (!hasSupabaseEnv) {
+  if (!hasSupabasePublicEnv) {
     auth.push(
-      "Same Supabase URL + anon (or service) as above — required for sign-in and cart_items",
+      "NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY (or PUBLISHABLE_KEY / SUPABASE_ANON_KEY) — required for magic-link sign-in, session cookies, and cart_items",
     );
   }
 

@@ -29,11 +29,11 @@ export function getSupabaseBrowserClient() {
     return browserClient;
   }
 
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   if (!supabaseUrl) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_URL.");
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL. (Server-only SUPABASE_URL is not available in the browser bundle.)",
+    );
   }
 
   browserClient = createBrowserClient(supabaseUrl, getPublicSupabaseKey());

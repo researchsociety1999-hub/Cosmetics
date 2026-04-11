@@ -56,7 +56,7 @@ test.describe("cart and checkout", () => {
     await page.getByRole("button", { name: "Remove" }).first().click();
 
     await expectHeading(page, "Your ritual bag");
-    await expect(page.getByText(/Your cart is empty/i)).toBeVisible();
+    await expect(page.getByText(/Your bag is empty/i)).toBeVisible();
     await expect(page.getByRole("link", { name: "Continue shopping" })).toBeVisible();
   });
 });

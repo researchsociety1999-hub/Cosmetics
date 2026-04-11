@@ -10,7 +10,7 @@ import {
 import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 import { getConfiguredSiteUrl } from "../../lib/siteUrl";
-import { hasSupabaseEnv } from "../../lib/supabaseClient";
+import { hasSupabasePublicEnv } from "../../lib/supabaseClient";
 import { createStripeCheckoutSession, isStripeConfigured } from "../../lib/stripe";
 import type { ShippingDetails } from "../../lib/types";
 
@@ -35,7 +35,7 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
 
 export async function POST(request: Request) {
   try {
-    if (!hasSupabaseEnv) {
+    if (!hasSupabasePublicEnv) {
       return NextResponse.json(
         {
           error:

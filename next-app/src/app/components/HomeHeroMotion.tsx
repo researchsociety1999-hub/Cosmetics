@@ -59,7 +59,7 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[min(85vh,800px)] overflow-hidden border-b border-[rgba(214,168,95,0.14)]"
+      className="relative min-h-[min(85vh,800px)] overflow-hidden"
     >
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
@@ -162,7 +162,7 @@ export function HomeHeroMotion() {
             </div>
           </div>
           <div
-            className={`flex flex-wrap gap-2.5 border-t border-[rgba(214,168,95,0.1)] pt-7 ${
+            className={`flex flex-wrap gap-2.5 pt-10 ${
               reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--badges"
             }`}
           >
