@@ -1,4 +1,6 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { mergeGuestCartIntoUserCart } from "../../lib/cart";
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
 
 export async function GET(request: Request) {
@@ -27,6 +29,21 @@ export async function GET(request: Request) {
     redirectUrl.pathname = "/account/login";
     redirectUrl.search = "?status=auth-error";
     return NextResponse.redirect(redirectUrl);
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    try {
+      await mergeGuestCartIntoUserCart(supabase, user.id);
+      revalidatePath("/cart");
+      revalidatePath("/checkout");
+      revalidatePath("/shop");
+    } catch (mergeError) {
+      console.error("[auth/callback] Guest cart merge failed:", mergeError);
+    }
   }
 
   return NextResponse.redirect(redirectUrl);

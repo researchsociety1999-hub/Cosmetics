@@ -27,12 +27,14 @@ test.describe("account, legal, and status routes", () => {
   test("login page surfaces auth send failures clearly", async ({ page }) => {
     await gotoAndWait(
       page,
-      "/account/login?status=error&message=Supabase%20could%20not%20send%20the%20magic%20link%20email.",
+      "/account/login?status=error&message=Too%20many%20requests%20from%20this%20browser.",
     );
 
     await expectHeading(page, "Sign in to Mystique");
     await expect(page.getByText(/couldn't send the magic link right now/i)).toBeVisible();
-    await expect(page.getByText(/Supabase could not send the magic link email/i)).toBeVisible();
+    await expect(
+      page.getByText(/Too many requests from this browser/i),
+    ).toBeVisible();
   });
 
   test("signup page renders account creation flow and status copy", async ({ page }) => {
@@ -47,12 +49,14 @@ test.describe("account, legal, and status routes", () => {
   test("signup page surfaces auth send failures clearly", async ({ page }) => {
     await gotoAndWait(
       page,
-      "/account/signup?status=error&message=Supabase%20could%20not%20send%20the%20magic%20link%20email.",
+      "/account/signup?status=error&message=Too%20many%20requests%20from%20this%20browser.",
     );
 
     await expectHeading(page, "Create your Mystique account");
     await expect(page.getByText(/couldn't send the account link right now/i)).toBeVisible();
-    await expect(page.getByText(/Supabase could not send the magic link email/i)).toBeVisible();
+    await expect(
+      page.getByText(/Too many requests from this browser/i),
+    ).toBeVisible();
   });
 
   test("account root redirects guests to login with next path", async ({ page }) => {

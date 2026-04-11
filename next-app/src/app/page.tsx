@@ -48,11 +48,11 @@ export default async function HomePage() {
 
 function HeroSection() {
   return (
-    <section className="relative min-h-[min(92vh,920px)] overflow-hidden border-b border-[rgba(214,168,95,0.14)]">
+    <section className="relative min-h-[min(85vh,800px)] overflow-hidden border-b border-[rgba(214,168,95,0.14)]">
       {/* Base */}
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
-      {/* Portrait: anchored right so the deep black on the left stays clear for copy */}
+      {/* Portrait — calmer so the hero reads as one focal column */}
       <div className="pointer-events-none absolute inset-0">
         <Image
           src={HERO_PORTRAIT_SRC}
@@ -60,77 +60,55 @@ function HeroSection() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[72%_30%] opacity-[0.48] sm:object-[76%_28%] md:object-[88%_22%] md:opacity-[0.52]"
+          className="object-cover object-[72%_30%] opacity-[0.4] sm:object-[76%_28%] md:object-[88%_22%] md:opacity-[0.44]"
           aria-hidden
         />
       </div>
 
-      {/* Readability: veil left column + gentle gold atmosphere */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(1,2,4,0.97)_0%,rgba(1,2,4,0.82)_min(52%,28rem),rgba(1,2,4,0.35)_58%,rgba(1,2,4,0.12)_72%,rgba(3,4,7,0.5)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_78%_36%,rgba(214,168,95,0.09),transparent_55%),radial-gradient(circle_at_12%_25%,rgba(214,168,95,0.05),transparent_38%),radial-gradient(circle_at_90%_85%,rgba(255,120,40,0.04),transparent_40%)]" />
+      {/* Strong left column for copy; softer gold wash (no extra ring — less visual noise) */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#000000_0%,rgba(0,0,0,0.92)_min(42%,22rem),rgba(0,0,0,0.55)_50%,rgba(3,4,6,0.2)_68%,rgba(5,6,9,0.45)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_65%_50%_at_78%_38%,rgba(214,168,95,0.07),transparent_58%),radial-gradient(circle_at_88%_88%,rgba(255,120,60,0.04),transparent_45%)]" />
 
-      {/* Celestial arc (ties to logo crescent) */}
-      <div
-        className="pointer-events-none absolute -right-[18%] top-[-12%] h-[min(95vmin,880px)] w-[min(95vmin,880px)] rounded-full border border-[rgba(214,168,95,0.14)] opacity-60 shadow-[0_0_80px_rgba(214,168,95,0.12)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-[14%] top-[-8%] h-[min(88vmin,820px)] w-[min(88vmin,820px)] rounded-full bg-[radial-gradient(circle_at_28%_28%,rgba(214,168,95,0.14),transparent_52%)] opacity-90 blur-[1px]"
-        aria-hidden
-      />
-
-      {/* Large wordmark — quiet luxury, stays behind copy */}
-      <p
-        className="pointer-events-none absolute left-1/2 top-[46%] z-[1] w-[120%] max-w-none -translate-x-1/2 -translate-y-1/2 select-none text-center font-literata text-[clamp(3.5rem,14vw,11rem)] font-medium leading-none tracking-[0.14em] text-[#f5eee3] opacity-[0.06]"
-        aria-hidden
-      >
-        MYSTIQUE…
-      </p>
-
-      {/* Bokeh sparks */}
+      {/* Fewer sparkles — keeps first impression calmer */}
       <div className="pointer-events-none absolute inset-0">
-        <span className="mystic-particle mystic-particle-lg left-[8%] top-[14%]" />
-        <span className="mystic-particle mystic-particle-md left-[22%] top-[22%]" />
-        <span className="mystic-particle mystic-particle-sm left-[42%] top-[12%]" />
-        <span className="mystic-particle mystic-particle-md left-[54%] top-[26%]" />
-        <span className="mystic-particle mystic-particle-sm left-[68%] top-[18%]" />
-        <span className="mystic-particle mystic-particle-lg left-[80%] top-[30%]" />
-        <span className="mystic-particle mystic-particle-sm left-[66%] top-[56%]" />
-        <span className="mystic-particle mystic-particle-md left-[84%] top-[68%]" />
+        <span className="mystic-particle mystic-particle-md left-[12%] top-[20%]" />
+        <span className="mystic-particle mystic-particle-sm left-[78%] top-[24%]" />
+        <span className="mystic-particle mystic-particle-lg left-[88%] top-[58%]" />
+        <span className="mystic-particle mystic-particle-sm left-[48%] top-[72%]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-[4.5rem] pt-16 md:px-6 md:pb-[6rem] md:pt-24">
-        <div className="max-w-2xl space-y-8">
+      <div className="relative z-10 w-full px-4 pb-[4.5rem] pt-16 md:px-6 md:pb-[6rem] md:pt-24 lg:px-10 xl:px-14">
+        <div className="max-w-xl space-y-8">
           <div className="space-y-5">
-            <h1 className="font-literata text-[clamp(2.25rem,6vw,4.25rem)] font-medium leading-[1.05] tracking-[0.04em] text-[#f5eee3]">
+            <h1 className="font-literata text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.06] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)]">
               Where Beauty Transcends
             </h1>
-            <p className="max-w-md text-sm font-normal leading-relaxed text-[#b8ab95] md:text-base">
+            <p className="max-w-md text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem]">
               Ritual-led skincare, refined for a calm, luminous finish.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/shop"
-              className="mystic-button-primary inline-flex min-h-[50px] min-w-[11rem] items-center justify-center rounded-full px-8 py-3 text-[0.68rem] uppercase tracking-[0.24em]"
+              className="mystic-button-primary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] md:min-h-[46px] md:px-7"
             >
               Shop rituals
             </Link>
             <Link
               href="/ingredients"
-              className="mystic-button-secondary inline-flex min-h-[50px] min-w-[11rem] items-center justify-center rounded-full px-8 py-3 text-[0.68rem] uppercase tracking-[0.24em]"
+              className="mystic-button-secondary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] md:min-h-[46px] md:px-7"
             >
               Ingredients
             </Link>
           </div>
           <div className="flex flex-wrap gap-2.5 border-t border-[rgba(214,168,95,0.1)] pt-7">
-            <span className="rounded-full border border-[rgba(120,110,95,0.35)] bg-[rgba(255,255,255,0.02)] px-3.5 py-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#9a8f7e]">
+            <span className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem]">
               Dermatologist-informed
             </span>
-            <span className="rounded-full border border-[rgba(120,110,95,0.35)] bg-[rgba(255,255,255,0.02)] px-3.5 py-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#9a8f7e]">
+            <span className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem]">
               5-step ritual
             </span>
-            <span className="rounded-full border border-[rgba(120,110,95,0.35)] bg-[rgba(255,255,255,0.02)] px-3.5 py-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#9a8f7e]">
+            <span className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem]">
               Free U.S. shipping $75+
             </span>
           </div>
@@ -153,7 +131,7 @@ async function FeaturedProductsSection() {
           ctaHref="/shop"
           ctaLabel="View all"
         />
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-5">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -412,7 +390,7 @@ function getStepLinkLabel(step: string): string {
 function SectionLoading({ title }: { title: string }) {
   return (
     <section className="border-b border-[rgba(17,24,39,0.9)] py-16">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+      <div className="w-full px-4 md:px-6 lg:px-10 xl:px-14">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           {title}
         </p>

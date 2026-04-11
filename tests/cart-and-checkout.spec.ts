@@ -26,7 +26,7 @@ test.describe("cart and checkout", () => {
     await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Create account" })).toBeVisible();
     await expect(
-      page.getByText("Sign in first so checkout can load your authenticated Supabase cart."),
+      page.getByText("Sign in first so we can load your saved bag for checkout."),
     ).toBeVisible();
   });
 

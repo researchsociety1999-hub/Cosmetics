@@ -9,6 +9,7 @@ import {
 } from "../../lib/checkoutOrders";
 import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
+import { getConfiguredSiteUrl } from "../../lib/siteUrl";
 import { createStripeCheckoutSession, isStripeConfigured } from "../../lib/stripe";
 import type { ShippingDetails } from "../../lib/types";
 
@@ -28,7 +29,7 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
     return `${protocol}://${host}`;
   }
 
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  return getConfiguredSiteUrl();
 }
 
 export async function POST(request: Request) {

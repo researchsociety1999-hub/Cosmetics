@@ -190,7 +190,7 @@ function bindEvents() {
     }
 
     if (wishlistBtn) {
-      alert("Wishlist feature placeholder added. You can connect this to Supabase later.");
+      alert("Wishlist is coming soon — thanks for your interest.");
     }
   });
 

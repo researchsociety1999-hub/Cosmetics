@@ -30,7 +30,8 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: "http://localhost:3000",
+    /* Dedicated port so E2E does not reuse a manually started dev server without ALLOW_MOCK_CATALOG. */
+    baseURL: "http://localhost:3001",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -67,10 +68,17 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
+  /* `next dev` holds a project lock — a second dev instance fails. Build + start avoids clashing with a normal dev server on :3000. */
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    command: "npm run build && npm run start",
+    url: "http://localhost:3001",
+    reuseExistingServer: false,
+    timeout: 300_000,
+    env: {
+      ...process.env,
+      PORT: "3001",
+      // E2E expects demo slugs when no Supabase DB is configured.
+      ALLOW_MOCK_CATALOG: process.env.ALLOW_MOCK_CATALOG ?? "1",
+    },
   },
 });

@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getConfiguredSiteUrl } from "../lib/siteUrl";
 import { createSupabaseServerClient } from "../lib/supabaseServer";
 
 function normalizeField(value: FormDataEntryValue | null): string {
@@ -18,22 +19,18 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
     return `${protocol}://${host}`;
   }
 
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.SITE_URL ??
-    "https://cosmetics-wjwz.vercel.app"
-  );
+  return getConfiguredSiteUrl();
 }
 
 function formatAuthErrorMessage(message: string) {
   const normalized = message.trim().toLowerCase();
 
   if (normalized === "fetch failed") {
-    return "Cannot connect to Supabase. Check your internet connection, firewall, VPN, or Supabase URL and try again.";
+    return "We can't reach the sign-in service right now. Check your connection and try again.";
   }
 
   if (normalized.includes("error sending confirmation email")) {
-    return "Supabase could not send the magic link email. Configure a custom SMTP provider for production auth emails, or use a pre-authorized team address while the default Supabase mailer is still enabled.";
+    return "We couldn't send the sign-in email. Try again in a few minutes, or contact support if it keeps happening.";
   }
 
   if (normalized.includes("email rate limit exceeded")) {
