@@ -13,7 +13,7 @@ const flatShipUsd = (FLAT_SHIPPING_CENTS / 100).toFixed(2);
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Shipping cadence, returns, ritual layering, and sensitive-skin guidance—answers in plain language for Mystique customers.",
+    "Shipping cadence, returns, ritual layering, and sensitive-skin guidance—plain answers in a calm tone for Mystique customers.",
 };
 
 export default function FaqPage() {
@@ -52,7 +52,7 @@ export default function FaqPage() {
             FAQ
           </p>
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Straight answers, calm tone.
+            Questions, answered softly.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
             Shipping, returns, layering, and sensitive-skin tips—plain language, no

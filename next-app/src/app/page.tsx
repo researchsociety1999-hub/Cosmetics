@@ -109,11 +109,35 @@ async function FeaturedProductsSection() {
           ctaHref="/shop?sort=featured"
           ctaLabel="Browse featured"
         />
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-5">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <div className="mystic-card max-w-2xl p-8 text-sm leading-relaxed text-[#b8ab95]">
+            <p>
+              The ritual shelves are being stocked—published products will appear here
+              automatically once your catalog is live in the studio database.
+            </p>
+            <p className="mt-4 text-[#8f8576]">
+              Until then, explore{" "}
+              <Link href="/routines" className="text-[#d6a85f] underline-offset-4 hover:underline">
+                routines
+              </Link>
+              ,{" "}
+              <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
+                journal
+              </Link>
+              , or{" "}
+              <Link href="/contact" className="text-[#d6a85f] underline-offset-4 hover:underline">
+                write the studio
+              </Link>{" "}
+              for wholesale or press.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-5">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
         <div className="mt-10 max-w-3xl">
           <PurchaseTrustFootnote />
         </div>
@@ -233,6 +257,10 @@ async function RitualStripSection() {
 
 async function IngredientSpotlightSection() {
   const categories = await getCategories();
+  const ingredientIntroBody =
+    categories.length > 0
+      ? `A short list of ingredients you will see across our ${categories.length} ${categories.length === 1 ? "collection" : "collections"}—tap through to shop products that feature them.`
+      : "A short list of actives we build around—tap through to shop once your catalog publishes, or read the full ingredient guide for how we think about texture and barrier care.";
   const ingredients = [
     {
       id: "hyaluronic-acid",
@@ -263,7 +291,7 @@ async function IngredientSpotlightSection() {
         <SectionIntro
           eyebrow="Ingredients"
           title="Actives we lean on."
-          body={`A short list of ingredients you will see across our ${categories.length} collections—tap through to shop products that feature them.`}
+          body={ingredientIntroBody}
           ctaHref="/ingredients"
           ctaLabel="Full ingredient guide"
         />

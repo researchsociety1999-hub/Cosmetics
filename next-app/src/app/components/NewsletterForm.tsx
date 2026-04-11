@@ -69,13 +69,16 @@ export function NewsletterForm() {
         </label>
         <input
           id="newsletter-email"
+          name="email"
           type="email"
+          inputMode="email"
           required
           placeholder="Enter your email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           className="mystic-input w-full text-sm"
           autoComplete="email"
+          spellCheck={false}
           aria-busy={status === "loading"}
         />
         <button
