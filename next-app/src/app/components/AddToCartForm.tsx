@@ -21,7 +21,7 @@ export function AddToCartForm({
   productId,
   variantId,
   redirectTo = "cart",
-  buttonLabel = "Add to cart",
+  buttonLabel = "Add to bag",
   buttonClassName = "mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]",
   formClassName = "mystic-card space-y-5 p-6",
   showQuantity = true,

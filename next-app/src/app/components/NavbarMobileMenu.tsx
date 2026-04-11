@@ -42,7 +42,10 @@ export function NavbarMobileMenu({
 
   return (
     <details ref={detailsRef} className="group relative">
-      <summary className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.4)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm [&::-webkit-details-marker]:hidden">
+      <summary
+        aria-label="Open navigation menu"
+        className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.4)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm [&::-webkit-details-marker]:hidden"
+      >
         <span>Menu</span>
         <span className="text-[#d6a85f] transition-transform duration-200 group-open:rotate-180">
           <ChevronIcon />
@@ -77,7 +80,7 @@ export function NavbarMobileMenu({
             </>
           )}
           <MobileNavLink href="/search" label="Search" onNavigate={closeMenu} />
-          <MobileNavLink href="/cart" label={`Cart (${cartCount})`} onNavigate={closeMenu} />
+          <MobileNavLink href="/cart" label={`Bag (${cartCount})`} onNavigate={closeMenu} />
         </nav>
       </div>
     </details>

@@ -21,6 +21,28 @@ Copy **`next-app/.env.example`** → **`next-app/.env.local`** (the latter is gi
    - `GET /api/health/integrations`  
    Inspect `productsPublishedCount`: `ok`, `count`, and `error` (e.g. RLS violation).
 
+## Optional merchandising (`products.volume_size_label`)
+
+For faster scanning on cards and the PDP, you can add a nullable text column used only for display (no migration is required for checkout or cart):
+
+- **`volume_size_label`** — short shopper-facing line, e.g. `30 ml · glass dropper` or `150 ml · pump`. If omitted, the UI may still infer a size from **`product_variants.variant_name`** when it looks like a volume (contains `ml`, `g`, etc.).
+
+## Product images (`products.image_url`, `extra_images`)
+
+1. **Store full HTTPS URLs** in `image_url` (and optional `extra_images` array). Typical Supabase Storage public URL shape:
+   - `https://<project-ref>.supabase.co/storage/v1/object/public/<bucket>/<path-to-file>`
+2. **Bucket must be public** (or use signed URLs and extend allowlists — see below). In the Storage UI, set the bucket to public or generate long-lived signed URLs if you keep the bucket private.
+3. **Next.js `next/image`** only optimizes remotes listed in `next-app/next.config.js` (`**.supabase.co`, Unsplash, `placehold.co`, etc.). For a **custom CDN hostname**, set:
+   - `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS=cdn.example.com,images.example.com`  
+   (comma-separated, no `https://`). The same list is honored at runtime by `isSafeImageSrc` in `next-app/src/app/lib/format.ts` — keep the two in sync when you change `next.config.js`.
+4. **Site-local files** — URLs starting with `/` (e.g. `/catalog/serum-hero.jpg`) must live under `next-app/public/`.
+5. If `image_url` is empty or blocked, the storefront shows an **in-app branded placeholder** (no broken icon).
+
+## Product reviews (`reviews`)
+
+- The PDP shows **stars and counts only from rows** returned by Supabase (`reviews` filtered by `product_id`). If the table is empty or the query errors, the UI explains that **no reviews are shown** (mock quotes are **not** substituted in production).
+- With **`ALLOW_MOCK_CATALOG=1`** only, bundled mock reviews may appear for local demos.
+
 ## Row Level Security (RLS)
 
 If RLS is enabled on `products`, the **anon** role must be allowed to `SELECT` published rows, for example:
@@ -35,6 +57,10 @@ using (coalesce(is_published, false) = true);
 ```
 
 Adjust schema/name to match your project. If RLS is **off** for `products`, ensure the table is readable by the API key you use.
+
+## Press (`press_mentions`)
+
+The Press page reads **only** from `press_mentions` when Supabase is configured. There is **no** bundled fallback of fake articles or `example.com` links—an empty table simply shows the honest empty state. Add rows with real `title`, `source`, optional `quote`, optional `published_at`, and a **`link` that resolves to the actual piece** (https) when you want an outbound button.
 
 ## Categories
 

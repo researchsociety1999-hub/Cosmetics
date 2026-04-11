@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ThemedImageFrame } from "../components/ThemedImageFrame";
-import { formatMoney, isSafeImageSrc } from "../lib/format";
+import { formatMoney, getProductPrimaryImageUrl } from "../lib/format";
 
 type SearchProduct = {
   id: number;
@@ -16,9 +16,6 @@ type SearchProduct = {
   routine_step?: string | null;
 };
 
-const FALLBACK_PRODUCT_IMAGE =
-  "https://placehold.co/600x800/png?text=Mystique&bg=1a1a1a&text_color=c9a84c";
-
 export function SearchExperience({
   initialQuery,
   initialProducts,
@@ -29,6 +26,7 @@ export function SearchExperience({
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<SearchProduct[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const firstRenderRef = useRef(true);
 
   const trimmedQuery = useMemo(() => query.trim(), [query]);
@@ -36,6 +34,7 @@ export function SearchExperience({
   useEffect(() => {
     setQuery(initialQuery);
     setProducts(initialProducts);
+    setLoadError(null);
   }, [initialProducts, initialQuery]);
 
   useEffect(() => {
@@ -57,16 +56,34 @@ export function SearchExperience({
     window.history.replaceState({}, "", url);
 
     setIsLoading(true);
+    setLoadError(null);
     const timeoutId = window.setTimeout(async () => {
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
           cache: "no-store",
         });
-        const data = (await response.json()) as { products: SearchProduct[] };
+        let data: { products?: SearchProduct[]; error?: string } = {};
+        try {
+          data = (await response.json()) as { products?: SearchProduct[]; error?: string };
+        } catch {
+          data = {};
+        }
+
+        if (!response.ok) {
+          setProducts([]);
+          setLoadError(
+            typeof data.error === "string" && data.error.trim()
+              ? data.error.trim()
+              : "Search is temporarily unavailable. Please try again in a moment.",
+          );
+          return;
+        }
+
         setProducts(Array.isArray(data.products) ? data.products : []);
       } catch (error) {
         console.error("Search request failed", error);
         setProducts([]);
+        setLoadError("We could not reach the search service. Check your connection and try again.");
       } finally {
         setIsLoading(false);
       }
@@ -80,7 +97,7 @@ export function SearchExperience({
   return (
     <section className="space-y-6">
       <div className="mystic-card flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
-        <label className="w-full md:max-w-xl">
+        <label className="w-full md:max-w-xl" htmlFor="search-query">
           <span className="sr-only">Search</span>
           <input
             id="search-query"
@@ -103,6 +120,10 @@ export function SearchExperience({
         <div className="mystic-card p-8 text-sm text-[#b8ab95]">
           Search the catalog by name, texture, ingredient, or ritual step.
         </div>
+      ) : loadError ? (
+        <div className="mystic-card p-8 text-sm text-[#d6a85f]" role="alert">
+          {loadError}
+        </div>
       ) : products.length === 0 ? (
         <div className="mystic-card p-8 text-sm text-[#b8ab95]">
           No results for &quot;{trimmedQuery}&quot;. Try a broader search.
@@ -110,20 +131,21 @@ export function SearchExperience({
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">
           {products.map((product) => {
-            const imageSrc = isSafeImageSrc(product.image_url)
-              ? (product.image_url as string)
-              : FALLBACK_PRODUCT_IMAGE;
+            const imageSrc = getProductPrimaryImageUrl(product);
             const displayPrice = formatMoney(product.sale_price_cents ?? product.price_cents);
+            const slug = product.slug?.trim();
+            const productHref = slug ? `/products/${slug}` : "/shop";
 
             return (
               <Link
                 key={product.id}
-                href={`/products/${product.slug}`}
+                href={productHref}
                 className="group mystic-card overflow-hidden p-0 transition hover:border-[rgba(214,168,95,0.32)]"
               >
                 <ThemedImageFrame
                   src={imageSrc}
-                  alt={product.name}
+                  displayTitle={product.name}
+                  alt={`${product.name} — Mystique`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 25vw"
                   variant="product"

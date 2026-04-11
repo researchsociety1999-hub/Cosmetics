@@ -10,6 +10,7 @@ import {
 import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 import { getConfiguredSiteUrl } from "../../lib/siteUrl";
+import { hasSupabaseEnv } from "../../lib/supabaseClient";
 import { createStripeCheckoutSession, isStripeConfigured } from "../../lib/stripe";
 import type { ShippingDetails } from "../../lib/types";
 
@@ -34,10 +35,25 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
 
 export async function POST(request: Request) {
   try {
+    if (!hasSupabaseEnv) {
+      return NextResponse.json(
+        {
+          error:
+            "Checkout is temporarily unavailable. Please try again in a few minutes.",
+          code: "store_unavailable",
+        },
+        { status: 503 },
+      );
+    }
+
     if (!isStripeConfigured()) {
       return NextResponse.json(
-        { error: "Stripe is not configured." },
-        { status: 500 },
+        {
+          error:
+            "Secure payment is not enabled on this storefront yet. Please try again later.",
+          code: "stripe_unavailable",
+        },
+        { status: 503 },
       );
     }
 
@@ -75,7 +91,7 @@ export async function POST(request: Request) {
 
     if (cart.userId !== user.id || cart.source !== "database" || !cart.lines.length) {
       return NextResponse.json(
-        { error: "Your cart is empty or not linked to your account." },
+        { error: "Your bag is empty or not linked to your account." },
         { status: 400 },
       );
     }
@@ -90,12 +106,26 @@ export async function POST(request: Request) {
       );
     }
 
-    const { order } = await createPendingOrderFromCart({
-      userId: user.id,
-      shippingDetails,
-      cart,
-      appliedPromo,
-    });
+    let order;
+    try {
+      const created = await createPendingOrderFromCart({
+        userId: user.id,
+        shippingDetails,
+        cart,
+        appliedPromo,
+      });
+      order = created.order;
+    } catch (orderError) {
+      console.error("create-checkout-session: order create failed", orderError);
+      return NextResponse.json(
+        {
+          error:
+            "We couldn't prepare your order for payment. Please refresh and try again.",
+          code: "order_create_failed",
+        },
+        { status: 500 },
+      );
+    }
 
     try {
       const headerStore = await headers();
@@ -119,12 +149,24 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       await markOrderFailedForCheckout(order.id);
-      throw error;
+      console.error("create-checkout-session: Stripe session failed", error);
+      return NextResponse.json(
+        {
+          error:
+            "We couldn't open the secure payment window. Your bag is unchanged—please try again shortly.",
+          code: "stripe_session_failed",
+        },
+        { status: 500 },
+      );
     }
   } catch (error) {
     console.error("create-checkout-session error", error);
     return NextResponse.json(
-      { error: "We could not start secure checkout right now." },
+      {
+        error:
+          "Something interrupted checkout. Please try again in a moment, or contact Mystique if it continues.",
+        code: "checkout_unexpected",
+      },
       { status: 500 },
     );
   }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteChrome } from "../../components/SiteChrome";
+import { getOrderNumberByIdForDisplay } from "../../lib/checkoutOrders";
 
 export const metadata: Metadata = {
   title: "Checkout cancelled",
@@ -15,6 +16,9 @@ export default async function CheckoutCancelPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const orderNumber = params.order_id
+    ? await getOrderNumberByIdForDisplay(params.order_id)
+    : null;
 
   return (
     <SiteChrome>
@@ -25,15 +29,15 @@ export default async function CheckoutCancelPage({
             Checkout cancelled
           </p>
           <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Your cart is still waiting.
+            Your bag is still waiting.
           </h1>
           <p className="mt-5 text-sm leading-relaxed text-[#b8ab95]">
-            Stripe checkout was cancelled before payment completed. You can return
-            to checkout any time and try again.
+            Secure checkout closed before payment completed. Your ritual bag is
+            unchanged—you can return whenever you are ready.
           </p>
-          {params.order_id ? (
+          {orderNumber ? (
             <p className="mt-6 text-sm uppercase tracking-[0.18em] text-[#f5eee3]">
-              Order reference: {params.order_id}
+              Order reference: {orderNumber}
             </p>
           ) : null}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">

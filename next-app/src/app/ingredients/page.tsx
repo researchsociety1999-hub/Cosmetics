@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteChrome } from "../components/SiteChrome";
 import { getIngredients } from "../lib/queries";
 
 export const metadata: Metadata = {
   title: "Ingredients",
-  description: "Explore the ingredient library behind Mystique: peptides, centella, niacinamide, hyaluronic acid, and more.",
+  description:
+    "How Mystique chooses actives and textures—hydration-first, barrier-minded, and always written in language you can trust.",
 };
 
 export const revalidate = 300;
@@ -23,8 +25,8 @@ export default async function IngredientsPage() {
             Ingredients with intention.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Thoughtful, comfort-first formulas meet the layering sensibility of Mystique Beauty
-            to support skin that looks calm, luminous, and refined.
+            Thoughtful, comfort-first formulas meet a layering sensibility inspired by
+            modern ritual skincare—supporting skin that looks calm, luminous, and refined.
           </p>
         </header>
         <section className="mystic-panel mt-10 grid gap-6 p-6 md:grid-cols-[0.85fr_1.15fr] md:p-8">
@@ -45,7 +47,7 @@ export default async function IngredientsPage() {
               Hydration-first textures
             </div>
             <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
-              Regenerative-inspired storytelling
+              Actives chosen for how they behave on skin
             </div>
             <div className="rounded-[20px] border border-[rgba(214,168,95,0.1)] bg-[rgba(255,255,255,0.02)] p-4">
               Layering that stays elegant on skin
@@ -55,10 +57,16 @@ export default async function IngredientsPage() {
         <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {ingredients.map((ingredient) => (
             <article key={ingredient.id} className="mystic-card p-6">
-              <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                {ingredient.source ?? "Ingredient source"}
-              </p>
-              <h2 className="mt-3 font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
+              {ingredient.source ? (
+                <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                  {ingredient.source}
+                </p>
+              ) : null}
+              <h2
+                className={`font-literata text-3xl tracking-[0.08em] text-[#f5eee3] ${
+                  ingredient.source ? "mt-3" : ""
+                }`}
+              >
                 {ingredient.name}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
@@ -69,6 +77,24 @@ export default async function IngredientsPage() {
               </p>
             </article>
           ))}
+        </section>
+
+        <section className="mt-14 flex flex-col items-start gap-4 border-t border-[rgba(214,168,95,0.12)] pt-10 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-xl">
+            <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+              Next step
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-[#b8ab95]">
+              Pair what you have learned here with the textures that fit your ritual—each
+              product page lists how we use these notes in practice.
+            </p>
+          </div>
+          <Link
+            href="/shop"
+            className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+          >
+            Shop formulas
+          </Link>
         </section>
       </main>
     </SiteChrome>

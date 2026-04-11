@@ -5,10 +5,12 @@ import {
   ProductDetailAccordions,
   buildProductAccordionItems,
 } from "../../components/ProductDetailAccordions";
+import { ProductMerchQuickFacts } from "../../components/ProductMerchQuickFacts";
 import { ProductPurchaseClient } from "../../components/ProductPurchaseClient";
+import { RatingSummaryText, StarRow } from "../../components/StarRating";
 import { SiteChrome } from "../../components/SiteChrome";
 import { ThemedImageFrame } from "../../components/ThemedImageFrame";
-import { getProductImages } from "../../lib/format";
+import { getProductImages, truncateMetaDescription } from "../../lib/format";
 import {
   getProductBySlug,
   getProductReviews,
@@ -19,9 +21,6 @@ import {
 
 export const revalidate = 300;
 
-const FALLBACK_PRODUCT_IMAGE =
-  "https://placehold.co/600x800/png?text=Mystique&bg=1a1a1a&text_color=c9a84c";
-
 export async function generateMetadata({
   params,
 }: {
@@ -31,25 +30,51 @@ export async function generateMetadata({
   const product = await getProductBySlug(slug);
 
   if (!product) {
-    return { title: "Product not found" };
+    return {
+      title: "Unavailable",
+      description:
+        "That Mystique piece is not in the current collection. Explore the shop for rituals in stock.",
+      robots: { index: false, follow: true },
+    };
   }
 
-  return {
-    title: product.name,
-    description:
-      product.description ??
-      "A Mystique ritual skincare product designed for bloom-skin radiance.",
-  };
-}
+  const productName = product.name ?? "Mystique";
+  const fallbackDescription =
+    "A Mystique ritual skincare formula—layered textures, calm radiance, California-born restraint.";
+  const description =
+    truncateMetaDescription(product.description) ?? fallbackDescription;
+  const images = getProductImages(product);
+  const ogImage = images[0];
+  const canonicalPath = `/products/${product.slug?.trim() ?? slug}`;
 
-function StarRow({ rating }: { rating: number }) {
-  const full = Math.round(rating);
-  return (
-    <span className="text-[#d6a85f]" aria-hidden>
-      {"★".repeat(full)}
-      <span className="text-[#4a4035]">{"★".repeat(Math.max(0, 5 - full))}</span>
-    </span>
-  );
+  return {
+    title: productName,
+    description,
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      title: productName,
+      description,
+      url: canonicalPath,
+      siteName: "Mystique",
+      type: "website",
+      ...(ogImage
+        ? {
+            images: [
+              {
+                url: ogImage,
+                alt: `${productName} — Mystique`,
+              },
+            ],
+          }
+        : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: productName,
+      description,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+  };
 }
 
 export default async function ProductPage({
@@ -66,14 +91,14 @@ export default async function ProductPage({
         <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
           <section className="mystic-card p-8 text-center">
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-              Product not found
+              Unavailable
             </p>
             <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
               We couldn&apos;t find that ritual.
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
-              The product for slug &quot;{slug}&quot; is not available right now.
-              Browse the full collection to keep exploring Mystique.
+              This ritual is not available right now. Return to the collection to
+              continue exploring Mystique.
             </p>
             <div className="mt-8">
               <Link
@@ -91,7 +116,7 @@ export default async function ProductPage({
 
   const [relatedProductsResult, reviewsResult, variants, routineProducts] =
     await Promise.all([
-      getRelatedProducts(product, 4),
+      getRelatedProducts(product, 6),
       getProductReviews(product.id),
       getProductVariants(product.id),
       getRoutineCompanionProducts(product, 3),
@@ -102,7 +127,8 @@ export default async function ProductPage({
     : [];
   const reviews = Array.isArray(reviewsResult) ? reviewsResult : [];
   const images = getProductImages(product);
-  const galleryImages = images.length ? images : [FALLBACK_PRODUCT_IMAGE];
+  const heroSrc = images[0] ?? null;
+  const galleryThumbs = images.slice(1);
   const benefits = getProductBenefits(product);
   const keyIngredients = getProductIngredients(product);
   const skinTypes = Array.isArray(product.skin_types) ? product.skin_types : [];
@@ -158,7 +184,8 @@ export default async function ProductPage({
         <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-4">
             <ThemedImageFrame
-              src={galleryImages[0]}
+              src={heroSrc}
+              displayTitle={productName}
               alt={`${productName} hero image`}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -167,13 +194,14 @@ export default async function ProductPage({
               frameClassName="rounded-[28px]"
               imageClassName="object-cover"
             />
-            {galleryImages.length > 1 ? (
+            {galleryThumbs.length > 0 ? (
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {galleryImages.slice(1).map((image, index) => (
+                {galleryThumbs.map((image, index) => (
                   <ThemedImageFrame
                     key={`${image}-${index}`}
                     src={image}
-                    alt={`${productName} alternate image`}
+                    displayTitle={productName}
+                    alt={`${productName} alternate image ${index + 2}`}
                     fill
                     sizes="25vw"
                     variant="thumb"
@@ -201,16 +229,14 @@ export default async function ProductPage({
               <h1 className="mt-3 font-literata text-4xl tracking-[0.1em] text-[#f5eee3] md:text-5xl">
                 {productName}
               </h1>
+              <ProductMerchQuickFacts product={product} variants={variants} />
               {reviews.length > 0 ? (
                 <a
                   href="#reviews"
                   className="mt-4 inline-flex items-center gap-2 text-sm text-[#b8ab95] transition hover:text-[#d6a85f]"
                 >
                   <StarRow rating={avgRating} />
-                  <span>
-                    {avgRating.toFixed(1)} · {reviews.length} review
-                    {reviews.length === 1 ? "" : "s"}
-                  </span>
+                  <RatingSummaryText average={avgRating} count={reviews.length} />
                 </a>
               ) : null}
               {benefits.length > 0 ? (
@@ -227,7 +253,15 @@ export default async function ProductPage({
               ) : null}
             </div>
 
-            <ProductPurchaseClient product={product} variants={variants} />
+            <ProductPurchaseClient
+              product={product}
+              variants={variants}
+              reviewSummary={
+                reviews.length > 0
+                  ? { count: reviews.length, average: avgRating }
+                  : null
+              }
+            />
           </div>
         </section>
 
@@ -241,7 +275,8 @@ export default async function ProductPage({
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#b8ab95]">
             Luxury here means clarity: what the product does, what skin it suits,
             and how it fits your ritual—without stacking competing offers on
-            every scroll.
+            every scroll. Formulation choices are stress-tested with independent
+            skincare science advisors (not a substitute for personal medical advice).
           </p>
           <div className="mt-8 max-w-3xl">
             <ProductDetailAccordions items={accordionItems} />
@@ -289,15 +324,14 @@ export default async function ProductPage({
               <p className="text-sm text-[#b8ab95]">
                 <StarRow rating={avgRating} />{" "}
                 <span className="ml-1">
-                  {avgRating.toFixed(1)} average · {reviews.length} review
-                  {reviews.length === 1 ? "" : "s"}
+                  <RatingSummaryText average={avgRating} count={reviews.length} />
                 </span>
               </p>
             ) : null}
           </header>
           <p className="mb-6 max-w-2xl text-xs leading-relaxed text-[#7a7265]">
-            Verified purchase badges and richer filters can grow with your catalog;
-            for now we keep notes readable and authentic.
+            Notes from the routine—plain language, meant to read like quiet word-of-mouth
+            between friends who care about texture and finish.
           </p>
           <div className="grid gap-5 md:grid-cols-2">
             {reviews.length ? (
@@ -322,9 +356,14 @@ export default async function ProductPage({
                 </article>
               ))
             ) : (
-              <article className="mystic-card p-5 text-sm text-[#b8ab95]">
-                No reviews yet—be the first to share how this ritual wears on
-                your skin.
+              <article className="mystic-card p-5 text-sm leading-relaxed text-[#b8ab95]">
+                <p className="font-literata text-lg tracking-[0.08em] text-[#f5eee3]">
+                  Reviews open with the first notes
+                </p>
+                <p className="mt-3 text-[#8f8576]">
+                  Published notes from shoppers who have purchased this ritual will appear
+                  here.
+                </p>
               </article>
             )}
           </div>
@@ -366,6 +405,14 @@ function getProductBenefits(product: {
       "Removes buildup gently",
       "Supports a soft, comfortable finish",
       "Preps skin for the rest of the ritual",
+    ];
+  }
+
+  if (product.routine_step === "Tone") {
+    return [
+      "Rebalances after cleansing",
+      "Primes skin for serums and creams",
+      "Keeps the canvas soft and receptive",
     ];
   }
 
@@ -431,6 +478,14 @@ function getProductIngredients(product: {
       "Calming botanical extracts",
       "Barrier-supporting hydrators",
       "Gentle cleansing agents",
+    ];
+  }
+
+  if (product.routine_step === "Tone") {
+    return [
+      "Humectant support",
+      "Comfort-first botanicals",
+      "Lightweight conditioning agents",
     ];
   }
 

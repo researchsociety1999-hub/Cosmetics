@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
+import { getSafeNextPath } from "../../lib/authRedirect";
 import { mergeGuestCartIntoUserCart } from "../../lib/cart";
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
 
@@ -12,18 +13,6 @@ function getOtpType(type: string): EmailOtpType {
   return "magiclink";
 }
 
-function getSafeNextPath(next: string | null) {
-  if (!next || !next.startsWith("/")) {
-    return "/account";
-  }
-
-  if (next.startsWith("//")) {
-    return "/account";
-  }
-
-  return next;
-}
-
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;
@@ -33,17 +22,19 @@ export async function GET(request: Request) {
   const next = getSafeNextPath(searchParams.get("next"));
 
   if (!code && (!tokenHash || !type)) {
-    return NextResponse.redirect(
-      new URL("/account/login?status=auth-error", requestUrl),
-    );
+    const url = new URL("/account/login", requestUrl.origin);
+    url.searchParams.set("status", "auth-error");
+    url.searchParams.set("next", next);
+    return NextResponse.redirect(url);
   }
 
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    return NextResponse.redirect(
-      new URL("/account/login?status=not-configured", requestUrl),
-    );
+    const url = new URL("/account/login", requestUrl.origin);
+    url.searchParams.set("status", "not-configured");
+    url.searchParams.set("next", next);
+    return NextResponse.redirect(url);
   }
 
   const { error } = code
@@ -54,12 +45,10 @@ export async function GET(request: Request) {
       });
 
   if (error) {
-    return NextResponse.redirect(
-      new URL(
-        `/auth/error?message=${encodeURIComponent(error.message)}`,
-        requestUrl,
-      ),
-    );
+    const loginUrl = new URL("/account/login", requestUrl.origin);
+    loginUrl.searchParams.set("status", "link-invalid");
+    loginUrl.searchParams.set("next", next);
+    return NextResponse.redirect(loginUrl);
   }
 
   const {
