@@ -590,3 +590,97 @@ optgroup {
     opacity: 0.18;
   }
 }
+
+/* Merged shop dropdown: list opens as continuation of trigger */
+@keyframes mystic-merged-select-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mystic-merged-select-list {
+  animation: mystic-merged-select-reveal 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Home hero: ambient gold wash */
+@keyframes mystic-hero-ambient-pulse {
+  0%,
+  100% {
+    opacity: 0.78;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.mystic-hero-ambient {
+  animation: mystic-hero-ambient-pulse 10s ease-in-out infinite;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-fade-soft {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mystic-hero-reveal--title {
+  animation: hero-fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mystic-hero-reveal--sub {
+  animation: hero-fade-soft 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.mystic-hero-reveal--cta {
+  animation: hero-fade-soft 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.mystic-hero-reveal--badges {
+  animation: hero-fade-soft 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.mystic-hero-reveal-pill {
+  animation: hero-fade-soft 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystic-merged-select-list {
+    animation: none;
+  }
+
+  .mystic-hero-ambient {
+    animation: none;
+    opacity: 0.85;
+  }
+
+  .mystic-hero-reveal--title,
+  .mystic-hero-reveal--sub,
+  .mystic-hero-reveal--cta,
+  .mystic-hero-reveal--badges,
+  .mystic-hero-reveal-pill {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
