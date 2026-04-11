@@ -12,12 +12,12 @@ interface NavbarProps {
 export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
     <header className="relative z-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(3,4,6,0.92),rgba(3,4,6,0.42),transparent)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(3,4,6,0.72),rgba(3,4,6,0.28),transparent)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.26),transparent)]" />
       <div className="mx-auto max-w-7xl px-4 pt-5 md:px-6 md:pt-6">
         <div className="relative flex items-center justify-between gap-3 border-b border-[rgba(214,168,95,0.1)] px-1 pb-4 md:hidden">
           <div className="relative max-w-[220px] flex-1">
-            <BrandLogo compact className="mx-auto opacity-95" />
+            <BrandLogo compact priority className="mx-auto" />
           </div>
 
           <NavbarMobileMenu isAuthenticated={isAuthenticated} cartCount={cartCount} />
@@ -37,7 +37,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
           </div>
 
           <div className="relative flex justify-center">
-            <BrandLogo compact className="mx-auto max-w-[240px] opacity-95 lg:max-w-[270px]" />
+            <BrandLogo compact priority className="mx-auto max-w-[220px] lg:max-w-[248px]" />
           </div>
 
           <div className="flex min-w-0 items-center justify-end gap-3 lg:gap-5">
