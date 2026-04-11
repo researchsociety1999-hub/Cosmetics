@@ -44,7 +44,7 @@ export default async function OrderDetailPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-5xl px-4 py-14 md:px-6">
+      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">

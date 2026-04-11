@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function RoutinesPage() {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section max-w-6xl">
+      <main className="mystic-section-shell mystic-section">
         <header className="max-w-3xl space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Routines

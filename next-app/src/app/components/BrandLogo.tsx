@@ -1,8 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 
 /**
- * Vector-style wordmark + crescent — reads as a designed lockup, not a photo pasted in the header.
+ * Official Mystique lockup — `/public/mystique-logo.png`
+ * Raster-friendly: sits on a small glass cradle so it reads as part of the UI,
+ * not a pasted rectangle (works even when the file has a dark matte).
  */
+const LOGO_SRC = "/mystique-logo.png";
+
 export function BrandLogo({
   href = "/",
   compact = false,
@@ -12,42 +17,36 @@ export function BrandLogo({
   compact?: boolean;
   className?: string;
 }) {
-  const arcClass = compact
-    ? "mb-0.5 h-[1.15rem] w-[4.5rem] md:h-[1.35rem] md:w-[5.25rem]"
-    : "mb-1 h-[1.35rem] w-[5.5rem] md:h-[1.55rem] md:w-[6.25rem]";
-  const textClass = compact
-    ? "text-[0.78rem] md:text-[0.86rem] tracking-[0.4em]"
-    : "text-[0.88rem] md:text-[0.98rem] tracking-[0.36em]";
-
   return (
     <Link
       href={href}
       aria-label="Mystique home"
-      className={`group relative inline-flex flex-col items-center outline-none transition duration-500 hover:opacity-100 focus-visible:opacity-100 ${className}`}
+      className={`group relative inline-flex items-center justify-center outline-none transition duration-300 hover:opacity-[0.96] focus-visible:opacity-100 ${className}`}
     >
-      <span className="relative flex flex-col items-center">
-        {/* Crescent — gold stroke only, no raster frame */}
-        <svg
-          viewBox="0 0 140 40"
-          className={`pointer-events-none text-[#d6a85f] transition duration-500 group-hover:text-[#f0d19a] ${arcClass}`}
-          aria-hidden
-        >
-          <path
-            d="M6 32c18-26 52-34 88-22 14 5 22 14 18 20-22-12-52-10-78 6-12 8-24 6-28-4z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.15"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity={0.88}
-            className="drop-shadow-[0_0_12px_rgba(214,168,95,0.35)]"
-          />
-        </svg>
-        <span
-          className={`font-literata font-medium leading-none text-[#f2ebe3] antialiased ${textClass}`}
-        >
-          MYSTIQUE
-        </span>
+      <span
+        className={`mystic-glass--subtle inline-flex items-center justify-center ${
+          compact
+            ? "rounded-2xl px-2 py-1 md:rounded-[1.1rem] md:px-2.5 md:py-1.5"
+            : "rounded-2xl px-2.5 py-1.5"
+        }`}
+      >
+        <Image
+          src={LOGO_SRC}
+          alt="Mystique — Where beauty transcends"
+          width={640}
+          height={200}
+          priority={compact}
+          sizes={
+            compact
+              ? "(max-width: 768px) 180px, 240px"
+              : "(max-width: 768px) 220px, 300px"
+          }
+          className={
+            compact
+              ? "h-8 w-auto max-h-8 object-contain object-center [filter:drop-shadow(0_0_20px_rgba(212,175,92,0.22))_contrast(1.04)_brightness(1.03)] md:h-10 md:max-h-10"
+              : "h-9 w-auto max-h-9 object-contain object-center [filter:drop-shadow(0_0_22px_rgba(212,175,92,0.2))_contrast(1.04)_brightness(1.03)] md:h-[2.85rem] md:max-h-[2.85rem]"
+          }
+        />
       </span>
     </Link>
   );

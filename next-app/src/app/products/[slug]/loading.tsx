@@ -1,6 +1,6 @@
 export default function ProductLoading() {
   return (
-    <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+    <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="mystic-card h-[520px] animate-pulse" />
         <div className="space-y-5">

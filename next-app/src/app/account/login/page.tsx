@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
 import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
+import { sanitizeClientAuthMessage } from "../../lib/authMessages";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
@@ -26,7 +27,8 @@ export default async function LoginPage({
   return (
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
       <Navbar />
-      <main className="mx-auto max-w-xl px-4 py-14 md:px-6">
+      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+        <div className="mx-auto max-w-xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Account
         </p>
@@ -79,6 +81,7 @@ export default async function LoginPage({
             Return home
           </Link>
         </div>
+        </div>
       </main>
       <Footer />
     </div>
@@ -130,16 +133,20 @@ function StatusMessage({
   if (status === "not-configured") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        Supabase public auth keys are missing. Add them to `.env.local` before signing in.
+        Sign-in isn&apos;t available on this site yet. Please check back later or contact
+        support.
       </p>
     );
   }
 
   if (status === "error") {
+    const detail = sanitizeClientAuthMessage(message);
     return (
       <p className="text-sm text-[#d6a85f]">
         We couldn&apos;t send the magic link right now.
-        {message ? ` ${message}` : " Check your Supabase auth settings and try again."}
+        {detail
+          ? ` ${detail}`
+          : " Please try again in a moment, or contact support if this continues."}
       </p>
     );
   }

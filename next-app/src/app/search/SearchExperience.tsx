@@ -83,6 +83,7 @@ export function SearchExperience({
         <label className="w-full md:max-w-xl">
           <span className="sr-only">Search</span>
           <input
+            id="search-query"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search serums, bloom skin, peptides..."
@@ -107,7 +108,7 @@ export function SearchExperience({
           No results for &quot;{trimmedQuery}&quot;. Try a broader search.
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">
           {products.map((product) => {
             const imageSrc = isSafeImageSrc(product.image_url)
               ? (product.image_url as string)
