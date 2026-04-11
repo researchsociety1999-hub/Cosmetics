@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Literata } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import type { ReactNode } from "react";
+import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
 
 const literata = Literata({
@@ -13,7 +14,7 @@ const literata = Literata({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mystique.example.com"),
+  metadataBase: new URL(getConfiguredSiteUrl()),
   title: {
     default: "Mystique | Where Beauty Transcends",
     template: "%s | Mystique",

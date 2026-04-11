@@ -5,12 +5,14 @@ import { removeFromCartAction, updateCartQuantityAction } from "../actions/cart"
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
-import { formatMoney } from "../lib/format";
+import { PurchaseTrustFootnote } from "../components/PurchaseTrustFootnote";
+import { ThemedImageFrame } from "../components/ThemedImageFrame";
+import { formatMoney, getProductPrimaryImageUrl } from "../lib/format";
 import { getAppliedPromoFromStoredCode } from "../lib/promo";
 
 export const metadata: Metadata = {
-  title: "Cart",
-  description: "Review your Mystique ritual cart and proceed to checkout.",
+  title: "Bag",
+  description: "Review your Mystique ritual bag and proceed to checkout.",
 };
 
 export const dynamic = "force-dynamic";
@@ -39,7 +41,7 @@ export default async function CartPage({
       <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <header className="mb-10 space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Cart
+            Bag
           </p>
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Your ritual bag
@@ -49,7 +51,7 @@ export default async function CartPage({
         {cart.lines.length === 0 ? (
           <div className="mystic-card p-8">
             <p className="text-sm text-[#b8ab95]">
-              Your cart is empty. Begin with the newest Mystique rituals.
+              Your bag is empty. Begin with the newest Mystique rituals.
             </p>
             {promoMessage ? (
               <p className="mt-4 text-sm text-[#d6a85f]">{promoMessage}</p>
@@ -67,13 +69,36 @@ export default async function CartPage({
               {cart.lines.map((line) => (
                 <article key={line.product.id} className="mystic-card p-5">
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
-                        {line.product.name}
-                      </h2>
-                      <p className="mt-2 text-sm text-[#b8ab95]">
-                        {line.product.routine_step ?? "Ritual"} • {formatMoney(line.unitPriceCents)} each
-                      </p>
+                    <div className="flex min-w-0 flex-1 gap-4">
+                      <Link
+                        href={
+                          line.product.slug?.trim()
+                            ? `/products/${line.product.slug.trim()}`
+                            : "/shop"
+                        }
+                        className="relative h-28 w-[5.5rem] shrink-0 overflow-hidden rounded-[16px] border border-[rgba(214,168,95,0.12)]"
+                        aria-label={`View ${line.product.name}`}
+                      >
+                        <ThemedImageFrame
+                          src={getProductPrimaryImageUrl(line.product)}
+                          displayTitle={line.product.name}
+                          alt={`${line.product.name} — Mystique`}
+                          fill
+                          sizes="112px"
+                          variant="thumb"
+                          className="h-full w-full"
+                          frameClassName="rounded-[16px]"
+                          imageClassName="object-cover"
+                        />
+                      </Link>
+                      <div className="min-w-0">
+                        <h2 className="font-literata text-2xl tracking-[0.08em] text-[#f5eee3] md:text-3xl">
+                          {line.product.name}
+                        </h2>
+                        <p className="mt-2 text-sm text-[#b8ab95]">
+                          {line.product.routine_step ?? "Ritual"} • {formatMoney(line.unitPriceCents)} each
+                        </p>
+                      </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                       <form action={updateCartQuantityAction} className="flex items-center gap-2">
@@ -176,6 +201,9 @@ export default async function CartPage({
               {promoMessage ? (
                 <p className="mt-3 text-sm text-[#d6a85f]">{promoMessage}</p>
               ) : null}
+              <div className="mt-6">
+                <PurchaseTrustFootnote dense />
+              </div>
               <Link
                 href="/checkout"
                 className="mystic-button-primary mt-6 inline-flex w-full items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
@@ -200,11 +228,11 @@ function getPromoStatusMessage({
   invalidMessage: string | null;
 }) {
   if (status === "applied" && code) {
-    return `${code} has been applied to your cart.`;
+    return `${code} has been applied to your bag.`;
   }
 
   if (status === "removed") {
-    return "Promo code removed from your cart.";
+    return "Promo code removed from your bag.";
   }
 
   if (status === "missing") {
@@ -236,7 +264,7 @@ function getPromoStatusMessage({
   }
 
   if (status === "minimum-subtotal") {
-    return "That promo code needs a higher cart subtotal before it can be applied.";
+    return "That promo code needs a higher bag subtotal before it can be applied.";
   }
 
   if (status === "unavailable") {

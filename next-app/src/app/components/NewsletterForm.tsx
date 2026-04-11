@@ -23,16 +23,25 @@ export function NewsletterForm() {
           source: "homepage",
         }),
       });
-      const data = (await response.json()) as {
+
+      let data: {
         success?: boolean;
         duplicate?: boolean;
         message?: string;
         error?: string;
-      };
+      } = {};
+
+      try {
+        data = (await response.json()) as typeof data;
+      } catch {
+        data = {};
+      }
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.error ?? "We couldn't save your signup right now. Please try again in a moment.",
+          typeof data.error === "string" && data.error.trim()
+            ? data.error
+            : "We couldn't save your signup right now. Please try again in a moment.",
         );
       }
 
@@ -66,6 +75,8 @@ export function NewsletterForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           className="mystic-input w-full text-sm"
+          autoComplete="email"
+          aria-busy={status === "loading"}
         />
         <button
           type="submit"
@@ -78,16 +89,16 @@ export function NewsletterForm() {
       <p className="mt-3 text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
         Early access to rituals and seasonal drops.
       </p>
-      {status === "success" || status === "duplicate" ? (
-        <p className="mt-2 text-sm text-[#d6a85f]">
-          {message}
-        </p>
-      ) : null}
-      {status === "error" ? (
-        <p className="mt-2 text-sm text-[#d6a85f]">
-          {message}
-        </p>
-      ) : null}
+      <div className="mt-2 min-h-[1.5rem]" aria-live="polite">
+        {status === "success" || status === "duplicate" ? (
+          <p className="text-sm text-[#d6a85f]">{message}</p>
+        ) : null}
+        {status === "error" ? (
+          <p className="text-sm text-[#d6a85f]" role="alert">
+            {message}
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

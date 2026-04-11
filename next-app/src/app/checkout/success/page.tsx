@@ -105,11 +105,11 @@ export default async function CheckoutSuccessPage({
               }
             />
             <InfoCard
-              title="Cart"
+              title="Bag"
               body={
                 isConfirmed
-                  ? "Your authenticated cart has been cleared."
-                  : "Your cart stays in place until payment is confirmed."
+                  ? "Your signed-in bag has been cleared."
+                  : "Your bag stays as you left it until payment is confirmed."
               }
             />
           </div>
@@ -123,7 +123,8 @@ export default async function CheckoutSuccessPage({
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between gap-4">
                     <span>
-                      {productsById.get(item.product_id)?.name ?? `Product #${item.product_id}`} x {item.quantity}
+                      {productsById.get(item.product_id)?.name ?? "Mystique ritual item"} x{" "}
+                      {item.quantity}
                     </span>
                     <span>{formatMoney(item.price_cents_at_time * item.quantity)}</span>
                   </div>

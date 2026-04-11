@@ -10,9 +10,12 @@ import type {
 } from "./types";
 
 const now = new Date();
-const fallbackProductImage =
-  "https://placehold.co/600x800/png?text=Mystique&bg=1a1a1a&text_color=c9a84c";
 
+/**
+ * Demo catalog when `ALLOW_MOCK_CATALOG=1`. Product imagery is intentionally unset so the UI
+ * exercises the branded in-app placeholder. In production, set `products.image_url` to a full
+ * HTTPS URL (e.g. Supabase Storage public object URL) or a site-relative path under `public/`.
+ */
 export const mockCategories: Category[] = [
   { id: 1, name: "Serums", slug: "serums", image_url: null },
   { id: 2, name: "Cleansers", slug: "cleansers", image_url: null },
@@ -29,11 +32,8 @@ export const mockProducts: Product[] = [
       "A luminous treatment serum that layers niacinamide, PDRN-inspired regeneration messaging, and hydration for bloom-skin radiance.",
     price_cents: 6800,
     sale_price_cents: 5800,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "celestial-glow-serum",
     category_id: 1,
     sku: "MYS-SER-001",
@@ -46,6 +46,7 @@ export const mockProducts: Product[] = [
     benefits: ["Glow support", "Barrier comfort", "Plump finish"],
     routine_step: "Treat",
     skin_types: ["Dry", "Combination", "Dull"],
+    volume_size_label: "30 ml · glass dropper",
   },
   {
     id: 2,
@@ -54,10 +55,8 @@ export const mockProducts: Product[] = [
       "A cloud-soft gel cleanser designed for the first ritual step, removing makeup and SPF while leaving skin cushioned.",
     price_cents: 4200,
     sale_price_cents: null,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "moon-veil-cleanser",
     category_id: 2,
     sku: "MYS-CLN-002",
@@ -70,6 +69,7 @@ export const mockProducts: Product[] = [
     benefits: ["Comfort cleanse", "Makeup removal", "Soft finish"],
     routine_step: "Cleanse",
     skin_types: ["Sensitive", "Dry", "Combination"],
+    volume_size_label: "150 ml · pump",
   },
   {
     id: 3,
@@ -78,10 +78,8 @@ export const mockProducts: Product[] = [
       "A reset mask with enzymes and mineral clays for texture refinement, brightness, and a polished post-facial feel.",
     price_cents: 5400,
     sale_price_cents: null,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "golden-eclipse-mask",
     category_id: 3,
     sku: "MYS-MSK-003",
@@ -94,6 +92,7 @@ export const mockProducts: Product[] = [
     benefits: ["Texture refinement", "Glow reset", "Soft-focus finish"],
     routine_step: "Treat",
     skin_types: ["Combination", "Oily", "Dull"],
+    volume_size_label: "75 ml · jar",
   },
   {
     id: 4,
@@ -102,10 +101,8 @@ export const mockProducts: Product[] = [
       "A featherlight moisturizer with peptides and ceramides that leaves skin cocooned, smooth, and softly reflective.",
     price_cents: 5800,
     sale_price_cents: null,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "noir-velvet-emulsion",
     category_id: 4,
     sku: "MYS-MOI-004",
@@ -118,6 +115,7 @@ export const mockProducts: Product[] = [
     benefits: ["Moisture seal", "Bounce", "Silky finish"],
     routine_step: "Moisturize",
     skin_types: ["Dry", "Combination", "Normal"],
+    volume_size_label: "50 ml · airless pump",
   },
   {
     id: 5,
@@ -126,10 +124,8 @@ export const mockProducts: Product[] = [
       "A dewy final-step protector with niacinamide and hyaluronic support, designed for luminous daily wear.",
     price_cents: 7200,
     sale_price_cents: 6400,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "bloom-screen-essence-spf",
     category_id: 5,
     sku: "MYS-SPF-005",
@@ -150,10 +146,8 @@ export const mockProducts: Product[] = [
       "A concentrated evening ampoule inspired by regenerative aesthetics, built around peptides and exosome-inspired storytelling.",
     price_cents: 9200,
     sale_price_cents: 8400,
-    image_url: fallbackProductImage,
-    extra_images: [
-      fallbackProductImage,
-    ],
+    image_url: null,
+    extra_images: [],
     slug: "midnight-recovery-ampoule",
     category_id: 1,
     sku: "MYS-AMP-006",
@@ -166,6 +160,7 @@ export const mockProducts: Product[] = [
     benefits: ["Night renewal", "Bounce", "Lush texture"],
     routine_step: "Treat",
     skin_types: ["Dry", "Mature", "Combination"],
+    volume_size_label: "7 × 2 ml vials",
   },
 ];
 
@@ -261,26 +256,11 @@ export const mockIngredients: Ingredient[] = [
   },
 ];
 
-export const mockPressMentions: PressMention[] = [
-  {
-    id: "press-vogue",
-    title: "Mystique turns the evening routine into cinematic ritual",
-    source: "Vogue Beauty Edit",
-    quote:
-      "The line feels luxurious, modern, and unusually coherent in both product story and visual language.",
-    link: "https://example.com/press/vogue-beauty-edit",
-    published_at: "2026-02-12T00:00:00.000Z",
-  },
-  {
-    id: "press-allure",
-    title: "A California-born Mystique Beauty label with a dark-luxe point of view",
-    source: "Allure Roundup",
-    quote:
-      "Mystique leans into bloom skin, plush textures, and regenerative-science storytelling without losing elegance.",
-    link: "https://example.com/press/allure-roundup",
-    published_at: "2026-01-28T00:00:00.000Z",
-  },
-];
+/**
+ * Reserved for fixtures; the live Press page loads only from Supabase `press_mentions`.
+ * Do not add fictional outlets or example.com URLs here—empty is better than false proof.
+ */
+export const mockPressMentions: PressMention[] = [];
 
 export const mockPromoCampaign: PromoCampaign = {
   id: "spring-glow",
@@ -291,6 +271,7 @@ export const mockPromoCampaign: PromoCampaign = {
   discount_percentage: 15,
 };
 
+/** Not used on the homepage (intentionally—avoid fabricated social proof). */
 export const mockTestimonials = [
   {
     name: "Ava K.",

@@ -57,7 +57,7 @@ export function getMissingIntegrationEnv(): {
   const supabaseServiceRole: string[] = [];
   if (!hasSupabaseServiceEnv) {
     supabaseServiceRole.push(
-      "SUPABASE_SERVICE_ROLE_KEY — promo codes, newsletter inserts, and recommended for checkout/order writes (see SUPABASE_SETUP.md)",
+      "SUPABASE_SERVICE_ROLE_KEY — promo codes, newsletter inserts, and recommended for checkout/order writes (see repository root SUPABASE_SETUP.md)",
     );
   }
 

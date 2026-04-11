@@ -110,7 +110,7 @@ export async function createPendingOrderFromCart({
   const client = clientForCheckoutWrites();
 
   if (!cart.lines.length) {
-    throw new Error("Cart is empty.");
+    throw new Error("Bag is empty.");
   }
 
   const [shippingAddress, billingAddress] = await Promise.all([
@@ -211,6 +211,33 @@ export async function markOrderFailedForCheckout(orderId: string): Promise<void>
   if (error) {
     throw new Error(error.message);
   }
+}
+
+/** Read-only: resolve a human order reference for cancel/success UI (no PII). */
+export async function getOrderNumberByIdForDisplay(
+  orderId: string,
+): Promise<string | null> {
+  const trimmed = orderId?.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const client = supabaseAdmin ?? supabase;
+  if (!client) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from("orders")
+    .select("order_number")
+    .eq("id", trimmed)
+    .maybeSingle();
+
+  if (error || !data?.order_number) {
+    return null;
+  }
+
+  return data.order_number as string;
 }
 
 export async function getOrderWithItemsByStripeSessionId(sessionId: string): Promise<{

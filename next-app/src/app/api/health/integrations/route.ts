@@ -85,7 +85,7 @@ export async function GET() {
     hints: [
       "Storefront reads `products` with `is_published = true` only.",
       "If count is 0, publish rows in Supabase or set `is_published` to true.",
-      "If productsProbe shows an error, check RLS: anon needs SELECT on `products` (see SUPABASE_SETUP.md).",
+      "If productsProbe shows an error, check RLS: anon needs SELECT on `products` (see repository root SUPABASE_SETUP.md).",
       "missingEnv lists variable *names* still unset — no secrets in this response.",
     ],
   });

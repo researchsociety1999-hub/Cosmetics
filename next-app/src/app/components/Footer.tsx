@@ -1,16 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { getConfiguredSocialLinks } from "../lib/siteConfig";
 import { BrandLogo } from "./BrandLogo";
 
-const SOCIAL_LINKS: Array<{ label: string; href: string }> = [
-  { label: "TikTok", href: "https://www.tiktok.com" },
-  { label: "Instagram", href: "https://www.instagram.com" },
-  { label: "X", href: "https://x.com" },
-  { label: "Facebook", href: "https://www.facebook.com" },
-  { label: "Snapchat", href: "https://www.snapchat.com" },
-];
-
 export function Footer() {
+  const socialLinks = getConfiguredSocialLinks();
+
   return (
     <footer className="relative mt-24 overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(5,6,10,0),rgba(5,6,10,0.78))]" />
@@ -24,11 +19,12 @@ export function Footer() {
                 <BrandLogo />
               </div>
               <p className="inline-flex rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.66rem] uppercase tracking-[0.28em] text-[#cdb58d]">
-                California luxury Mystique Beauty
+                California · luxury skincare
               </p>
               <p className="max-w-sm text-sm leading-relaxed text-[#b8ab95]">
-                Mystique is luxury Mystique Beauty for calm, luminous skin, shaped through
-                plush textures, guided layering, and an after-dark editorial mood.
+                Mystique is a California-rooted house of ritual skincare—formulas built for
+                calm, luminous skin, layered textures, and evenings that feel quietly
+                elevated.
               </p>
             </div>
 
@@ -50,7 +46,7 @@ export function Footer() {
               <FooterLink href="/faq">FAQ</FooterLink>
               <FooterLink href="/contact">Contact</FooterLink>
               <FooterLink href="/faq">Shipping & Returns</FooterLink>
-              <FooterLink href="/cart">Cart</FooterLink>
+              <FooterLink href="/cart">Bag</FooterLink>
             </FooterColumn>
           </div>
 
@@ -59,19 +55,34 @@ export function Footer() {
               <p className="text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
                 Follow us
               </p>
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
-                {SOCIAL_LINKS.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-[#f5eee3] transition hover:text-[#f0d19a]"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
+              {socialLinks.length ? (
+                <div className="flex flex-wrap gap-x-6 gap-y-2">
+                  {socialLinks.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[#f5eee3] transition hover:text-[#f0d19a]"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p className="max-w-md text-sm leading-relaxed text-[#8f8576]">
+                  Follow along via{" "}
+                  <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
+                    Journal
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/press" className="text-[#d6a85f] underline-offset-4 hover:underline">
+                    Press
+                  </Link>
+                  . Social icons appear here once verified profile URLs are configured—no
+                  placeholder handles.
+                </p>
+              )}
             </div>
           </div>
 
