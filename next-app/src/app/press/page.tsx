@@ -26,8 +26,8 @@ export default async function PressPage() {
             Press &amp; media
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Coverage appears here only when we can point to the published piece. For
-            assets, fact checks, or wholesale, reach the studio through{" "}
+            Each listing links to the live article. For hi-res assets, fact checks, or
+            wholesale, use{" "}
             <Link href="/contact" className="text-[#f0d19a] underline-offset-4 hover:underline">
               Contact
             </Link>

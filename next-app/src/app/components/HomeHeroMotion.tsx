@@ -133,7 +133,8 @@ export function HomeHeroMotion() {
                 reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
               }`}
             >
-              Ritual-led skincare, refined for a calm, luminous finish.
+              Cleanse-to-SPF routines with layer-friendly textures—comfort first, then
+              glow.
             </p>
           </div>
           <div
@@ -146,7 +147,7 @@ export function HomeHeroMotion() {
                 href="/shop"
                 className="mystic-button-primary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] transition-shadow duration-300 hover:shadow-[0_0_28px_rgba(214,168,95,0.35)] md:min-h-[46px] md:px-7"
               >
-                Shop rituals
+                Shop skincare
               </Link>
             </div>
             <div className="transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
@@ -154,7 +155,7 @@ export function HomeHeroMotion() {
                 href="/ingredients"
                 className="mystic-button-secondary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] transition-[box-shadow,transform] duration-300 hover:border-[rgba(214,168,95,0.45)] hover:shadow-[0_0_20px_rgba(214,168,95,0.12)] md:min-h-[46px] md:px-7"
               >
-                Ingredients
+                Ingredient guide
               </Link>
             </div>
           </div>
@@ -164,18 +165,29 @@ export function HomeHeroMotion() {
             }`}
           >
             {[
-              "Dermatologist-informed",
-              "5-step ritual",
-              "Free U.S. shipping $75+",
-            ].map((label, i) => (
+              {
+                label: "Expert-informed formulas",
+                title:
+                  "Developed with input from independent skincare science advisors; not medical advice.",
+              },
+              {
+                label: "Five-step routine",
+                title: "Cleanse, tone, treat, moisturize, protect.",
+              },
+              {
+                label: "Free U.S. shipping $75+",
+                title: "Contiguous United States; threshold before tax.",
+              },
+            ].map((item, i) => (
               <span
-                key={label}
+                key={item.label}
+                title={item.title}
                 className={`rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem] ${
                   reduce ? "" : "mystic-hero-reveal-pill"
                 }`}
                 style={reduce ? undefined : { animationDelay: `${0.35 + i * 0.08}s` }}
               >
-                {label}
+                {item.label}
               </span>
             ))}
           </div>

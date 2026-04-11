@@ -10,7 +10,7 @@ type SearchParams = Promise<{ status?: string; topic?: string; ref?: string }>;
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Write the Mystique studio—orders, press, wholesale questions, and ritual guidance. We reply within one to two business days.",
+    "Contact Mystique for orders, press, wholesale, and product questions. Replies in one to two business days.",
 };
 
 export default async function ContactPage({
@@ -30,11 +30,11 @@ export default async function ContactPage({
             Contact
           </p>
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            The studio is listening.
+            Write the studio.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Orders, press, collaborations, or a question about how a texture should
-            feel—we read every message and answer with care.
+            Orders, press, wholesale, or help choosing a texture—we read every note and
+            reply within one to two business days, Pacific time.
           </p>
         </header>
         <div className="grid gap-8 md:grid-cols-[1fr_320px]">
@@ -51,7 +51,7 @@ export default async function ContactPage({
                 rows={6}
                 required
                 className="mystic-input w-full text-sm"
-                placeholder="Share context—order number if you have one, or how we can help."
+                placeholder="Include your order number if you have one, plus the question you want solved."
                 autoComplete="off"
                 defaultValue={prefilledMessage}
               />
@@ -76,8 +76,7 @@ export default async function ContactPage({
               ) : null}
               {params.status === "email-error" ? (
                 <p className="text-sm text-[#d6a85f]" role="alert">
-                  We could not deliver your message from this environment. Please try again
-                  shortly
+                  We could not send your message just now. Please try again shortly
                   {studioEmail ? (
                     <>
                       , or write directly to{" "}

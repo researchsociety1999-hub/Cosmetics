@@ -148,7 +148,7 @@ export default async function ShopPage({
                         </span>
                       </>
                     ) : (
-                      <span className="uppercase tracking-[0.24em]">Coming soon</span>
+                      <span className="uppercase tracking-[0.24em]">New arrivals soon</span>
                     )}
                   </p>
                   <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
@@ -393,20 +393,37 @@ function CategoryEmptyState({ title, isHair }: { title: string; isHair: boolean 
           className="pointer-events-none absolute -right-8 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full border border-[rgba(214,168,95,0.12)] opacity-50"
         />
         <p className="relative font-literata text-2xl font-medium leading-snug tracking-[0.04em] text-[#faf6ef] md:text-[1.75rem]">
-          Your next hair obsession is brewing.
+          Hair care is on the way.
         </p>
         <p className="relative mt-4 max-w-lg text-sm leading-relaxed text-[#b8ab95]">
-          Our hair ritual line is still in formulation—check back soon, or explore skin and body care
-          while you wait.
+          This category is not stocked yet. Explore skin and body care now, or check back
+          as we expand the line.
         </p>
+        <Link
+          href="/shop"
+          className="relative mystic-button-secondary mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+        >
+          View all skincare
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="mystic-card px-6 py-8 text-sm text-[#b8ab95]">
-      No products in <span className="text-[#e8dfd2]">{title}</span> yet. Try another category or
-      clear your filters.
+    <div className="mystic-card px-6 py-10 text-center text-sm leading-relaxed text-[#b8ab95] md:px-10">
+      <p className="font-literata text-xl tracking-[0.08em] text-[#f5eee3] md:text-2xl">
+        Nothing listed in {title} yet
+      </p>
+      <p className="mx-auto mt-4 max-w-md">
+        Try another category or clear your search—new drops land here as soon as they are
+        live in the studio.
+      </p>
+      <Link
+        href="/shop"
+        className="mystic-button-secondary mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+      >
+        View all skincare
+      </Link>
     </div>
   );
 }

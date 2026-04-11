@@ -41,11 +41,11 @@ export default function FaqPage() {
             FAQ
           </p>
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Questions, answered softly.
+            Straight answers, calm tone.
           </h1>
           <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Practical answers for shopping Mystique—written in the same calm tone as
-            our formulas. For anything personal to your order, reach us through Contact.
+            Shipping, returns, layering, and sensitive-skin tips—plain language, no
+            filler. For order-specific help, use Contact so we can look up your details.
           </p>
         </header>
         <div className="space-y-4">
@@ -78,7 +78,7 @@ export default function FaqPage() {
             href="/contact"
             className="mystic-button-secondary mt-6 inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
           >
-            Contact Mystique
+            Contact us
           </Link>
         </section>
       </main>

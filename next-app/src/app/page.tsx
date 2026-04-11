@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     absolute: "Mystique | Where Beauty Transcends",
   },
   description:
-    "Ritual-led, California-rooted skincare—texture-first formulas, calm radiance, and a restrained editorial lens.",
+    "California-rooted skincare—five-step routines, layer-friendly textures, and calm, healthy-looking radiance.",
 };
 
 export const revalidate = 300;
@@ -48,7 +48,7 @@ const FIRST_VISIT_GOALS: { label: string; href: string; hint: string }[] = [
   { label: "Glow & even tone", href: "/shop?search=glow", hint: "Dullness, uneven texture" },
   { label: "Deep hydration", href: "/shop?search=hydrat", hint: "Dry or depleted skin" },
   { label: "Weightless SPF", href: "/shop?search=spf", hint: "Daily protection" },
-  { label: "Full five-step arc", href: "/routines", hint: "Learn the sequence first" },
+  { label: "Five-step order", href: "/routines", hint: "How cleanse → SPF works" },
 ];
 
 function FirstVisitGuidanceStrip() {
@@ -66,11 +66,11 @@ function FirstVisitGuidanceStrip() {
             First visit
           </p>
           <p className="font-literata text-2xl tracking-[0.12em] text-[#f5eee3] md:text-3xl">
-            Choose a lane—then let texture lead.
+            Start with what your skin needs most.
           </p>
           <p className="max-w-2xl text-sm leading-relaxed text-[#8f8576]">
-            Practical entry points into the catalog. Each opens filtered shop results or the
-            ritual walkthrough—nothing loud, nothing stacked.
+            Each chip opens filtered shop results or the five-step routine guide—quick
+            paths, no clutter.
           </p>
         </div>
         <ul className="mt-6 flex flex-wrap gap-2.5 md:gap-3">
@@ -105,9 +105,9 @@ async function FeaturedProductsSection() {
         <SectionIntro
           eyebrow="Editor's picks"
           title="Where to begin."
-          body="High-touch textures and steady favorites—curated so you are not choosing from the entire house at once."
+          body="Staff favorites and easy entry points—textures that layer cleanly and earn a place in daily routines."
           ctaHref="/shop?sort=featured"
-          ctaLabel="Shop picks"
+          ctaLabel="Browse featured"
         />
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-5">
           {products.map((product) => (
@@ -141,19 +141,19 @@ const RITUAL_STEP_EDITORIAL: Record<
   },
   Tone: {
     title: "Quiet balance",
-    body: "Rehydrate and refine the canvas so every layer that follows absorbs with intention.",
+    body: "Hydrate after cleansing so serums and creams spread evenly and absorb without pilling.",
   },
   Treat: {
     title: "Targeted luminosity",
-    body: "Serums and concentrates meet tone, texture, and overnight renewal where your ritual needs it most.",
+    body: "Serums and concentrates for tone, texture, and overnight renewal—use where your skin needs focus.",
   },
   Moisturize: {
     title: "Seal the veil",
-    body: "Lock in water and comfort with finishes that read polished in candlelight and confident by day.",
+    body: "Lock in water and comfort with creams that feel plush, not heavy, morning or night.",
   },
   Protect: {
     title: "Daylight finish",
-    body: "Close with protection that feels weightless—daily armor for bloom-skin radiance.",
+    body: "Finish with SPF that stays comfortable under makeup and real life—protection you will actually wear.",
   },
 };
 
@@ -169,10 +169,10 @@ async function RitualStripSection() {
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ritual sequence"
-          title="Five gestures, one arc."
-          body="From cleanse to protect, each step earns the next. When a piece is in stock, you can jump straight to it—otherwise browse the step on the shop."
+          title="Five steps, one routine."
+          body="From cleanse to SPF, each step supports the next. In stock? Open the product. Still deciding? Shop that step with the link on each card."
           ctaHref="/shop"
-          ctaLabel="Shop all steps"
+          ctaLabel="Browse all steps"
         />
         <div className="flex gap-4 overflow-x-auto pb-2">
           {ritualSteps.map(({ step, product }, index) => {
@@ -202,7 +202,7 @@ async function RitualStripSection() {
                   <p className="text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
                     {product
                       ? `From ${formatMoney(product.sale_price_cents ?? product.price_cents)}`
-                      : "Build this step on the shop"}
+                      : "Pricing on the shop"}
                   </p>
                   <Link
                     href={
@@ -212,7 +212,7 @@ async function RitualStripSection() {
                     }
                     className="inline-flex text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f] underline-offset-4 hover:underline"
                   >
-                    {product?.slug?.trim() ? "View this ritual piece" : getStepLinkLabel(step)}
+                    {product?.slug?.trim() ? "View product" : getStepLinkLabel(step)}
                   </Link>
                 </div>
               </article>
@@ -220,9 +220,9 @@ async function RitualStripSection() {
           })}
         </div>
         <p className="mt-8 max-w-2xl text-sm leading-relaxed text-[#8f8576]">
-          Prefer to browse by step instead? Use the links above, or open the{" "}
+          Want the full catalog? Use the links above or open the{" "}
           <Link href="/shop" className="text-[#d6a85f] underline-offset-4 hover:underline">
-            full shop
+            shop
           </Link>{" "}
           and filter by category.
         </p>
@@ -262,13 +262,13 @@ async function IngredientSpotlightSection() {
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ingredients"
-          title="A calm, polished finish."
-          body={`Comfort-first formulas across ${categories.length} collections—then carry what you learn into the shop.`}
+          title="Actives we lean on."
+          body={`A short list of ingredients you will see across our ${categories.length} collections—tap through to shop products that feature them.`}
           ctaHref="/ingredients"
-          ctaLabel="See all"
+          ctaLabel="Full ingredient guide"
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {/* Curated highlights; swap for a filtered query when ingredient categories ship in the API. */}
+          {/* Highlights; replace with API-driven rows when ingredient categories ship. */}
           {ingredients.map((ingredient) => (
             <article key={ingredient.id} className="mystic-card p-6">
               <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
@@ -282,7 +282,7 @@ async function IngredientSpotlightSection() {
                 href={`/shop?search=${encodeURIComponent(ingredient.name)}`}
                 className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
               >
-                Shop formulas with {ingredient.name}
+                Shop products with {ingredient.name}
               </Link>
             </article>
           ))}
@@ -301,11 +301,11 @@ function BrandStandardsSection() {
             Trust
           </p>
           <h2 className="font-literata text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
-            What we omit on purpose
+            How we keep proof honest
           </h2>
           <p className="text-sm leading-relaxed text-[#b8ab95]">
-            No scripted homepage quotes or logo walls. Product pages carry purchase-backed
-            reviews when shoppers publish them. Press entries require a real outbound link.
+            No scripted homepage quotes or logo walls. Product pages show purchase-backed
+            reviews when shoppers publish them. Press listings link only to real articles.
           </p>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
@@ -314,8 +314,8 @@ function BrandStandardsSection() {
               Press &amp; media
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-              Coverage is listed only alongside a working article link. For kits, pulls, or
-              wholesale, the studio routes requests through one thread.
+              Coverage appears with a working article link. Press kits, fact checks, and
+              wholesale all go through the same studio inbox.
             </p>
             <Link
               href="/press"
@@ -329,8 +329,8 @@ function BrandStandardsSection() {
               Care &amp; answers
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-              Texture questions, order help, or a note for the right person on the team—use
-              the form so nothing is lost in transit.
+              Order issues, texture questions, or routing to the right teammate—use the
+              form and include your best contact email.
             </p>
             <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
               <Link
@@ -363,11 +363,11 @@ function NewsletterSection() {
               Newsletter
             </p>
             <h2 className="mt-3 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-              Early access, quietly.
+              Notes worth opening.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
-              Launch notes, restocks, and ritual drops—one letter when there is something
-              worth your attention.
+              Restocks, launches, and studio edits—only when there is something useful to
+              share.
             </p>
           </div>
           <div>
