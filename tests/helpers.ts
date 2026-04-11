@@ -12,7 +12,7 @@ export async function addFirstVisibleProductToCart(page: Page) {
   await gotoAndWait(page, "/shop");
   await expectHeading(page, "Build your ritual by texture, need, and mood.");
 
-  const addToCartButton = page.getByRole("button", { name: "Add to cart" }).first();
+  const addToCartButton = page.getByRole("button", { name: /add to (cart|bag)/i }).first();
   await expect(addToCartButton).toBeVisible();
   await addToCartButton.click();
 }
@@ -33,6 +33,8 @@ export async function addProductToCart(
   const addToCartForm = page
     .locator("form")
     .filter({ has: page.locator('input[name="redirectTo"][value="cart"]') });
-  await addToCartForm.getByRole("button", { name: "Add to cart" }).click();
+  await addToCartForm
+    .getByRole("button", { name: /add to (cart|bag)/i })
+    .click();
   await expect(page).toHaveURL(/\/cart$/);
 }

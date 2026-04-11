@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
 import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
+import { sanitizeClientAuthMessage } from "../../lib/authMessages";
 import { getAuthenticatedUser } from "../../lib/supabaseServer";
 
 type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
@@ -26,7 +27,8 @@ export default async function SignupPage({
   return (
     <div className="min-h-screen bg-[#06080c] text-[#f5eee3]">
       <Navbar />
-      <main className="mx-auto max-w-xl px-4 py-14 md:px-6">
+      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+        <div className="mx-auto max-w-xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Account
         </p>
@@ -36,7 +38,7 @@ export default async function SignupPage({
         <div className="mystic-card mt-8 space-y-5 p-6">
           <p className="text-sm leading-relaxed text-[#b8ab95]">
             Enter your email and we&apos;ll send you a secure magic link. If this is your
-            first time, Supabase will create your Mystique account automatically.
+            first time, we&apos;ll create your Mystique account when you use the link.
           </p>
           <form action={requestMagicLinkAction} className="space-y-4">
             <input type="hidden" name="next" value={nextPath} />
@@ -76,6 +78,7 @@ export default async function SignupPage({
             Go to sign in
           </Link>
         </div>
+        </div>
       </main>
       <Footer />
     </div>
@@ -111,16 +114,20 @@ function SignupStatusMessage({
   if (status === "not-configured") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        Supabase public auth keys are missing. Add them to `.env.local` before creating an account.
+        Account sign-up isn&apos;t available on this site yet. Please check back later or
+        contact support.
       </p>
     );
   }
 
   if (status === "error") {
+    const detail = sanitizeClientAuthMessage(message);
     return (
       <p className="text-sm text-[#d6a85f]">
         We couldn&apos;t send the account link right now.
-        {message ? ` ${message}` : " Check your Supabase auth settings and try again."}
+        {detail
+          ? ` ${detail}`
+          : " Please try again in a moment, or contact support if this continues."}
       </p>
     );
   }

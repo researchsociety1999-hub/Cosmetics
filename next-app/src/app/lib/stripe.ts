@@ -1,20 +1,13 @@
 import Stripe from "stripe";
 import { CHECKOUT_CURRENCY, getShippingAmountCents } from "./checkout";
+import { getConfiguredSiteUrl } from "./siteUrl";
 import type { AppliedPromo, CartSummary, Order } from "./types";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.SITE_URL ??
-  "http://localhost:3000";
 
 let stripeClient: Stripe | null = null;
-
-function getSiteUrl() {
-  return siteUrl.replace(/\/$/, "");
-}
 
 function getStripeSecretKey(): string {
   if (!stripeSecretKey) {
@@ -72,7 +65,7 @@ export async function createStripeCheckoutSession({
   appliedPromo?: AppliedPromo | null;
 }) {
   const stripe = getStripeServerClient();
-  const baseUrl = (origin ?? getSiteUrl()).replace(/\/$/, "");
+  const baseUrl = (origin ?? getConfiguredSiteUrl()).replace(/\/$/, "");
   const shippingAmountCents = order.shipping_cents ?? getShippingAmountCents(cart.subtotalCents);
   const discounts =
     appliedPromo && order.discount_cents > 0

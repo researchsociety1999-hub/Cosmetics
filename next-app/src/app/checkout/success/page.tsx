@@ -68,7 +68,7 @@ export default async function CheckoutSuccessPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-4xl px-4 py-20 md:px-6">
+      <main className="w-full px-4 py-20 md:px-6 lg:px-10 xl:px-14">
         <div className="mystic-card p-8 md:p-10">
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             {isConfirmed ? "Payment complete" : "Payment confirmation"}
@@ -79,7 +79,7 @@ export default async function CheckoutSuccessPage({
           <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
             {isConfirmed
               ? "Your payment has been verified and the Mystique team has everything needed to begin preparing your order."
-              : "Stripe redirected you back successfully. If the webhook is still catching up, this page will update once payment is confirmed."}
+              : "You returned from secure checkout. If confirmation is still pending, refresh this page in a moment or check your email once the order is marked complete."}
           </p>
           {order?.order_number ? (
             <p className="mt-6 text-sm uppercase tracking-[0.18em] text-[#f5eee3]">
@@ -93,7 +93,7 @@ export default async function CheckoutSuccessPage({
               body={
                 isConfirmed
                   ? "Payment confirmed. Your order is now processing."
-                  : "Waiting for payment confirmation from Stripe."
+                  : "Waiting for payment confirmation."
               }
             />
             <InfoCard

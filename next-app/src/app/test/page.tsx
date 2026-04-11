@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function TestPage() {
   return (
-    <main className="min-h-screen bg-[#06080c] px-4 py-16 text-[#f5eee3]">
+    <main className="min-h-screen w-full bg-[#06080c] px-4 py-16 text-[#f5eee3] md:px-6 lg:px-10 xl:px-14">
       <div className="mx-auto max-w-3xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Internal route

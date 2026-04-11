@@ -19,7 +19,7 @@ export default async function JournalPage() {
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section max-w-6xl">
+      <main className="mystic-section-shell mystic-section">
         <header className="mb-10 max-w-3xl space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Journal

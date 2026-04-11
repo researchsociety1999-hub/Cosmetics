@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         error:
           error instanceof Error &&
           error.message === "Supabase service role is not configured."
-            ? "Newsletter signup is not configured yet. Add the Supabase service role key to enable it."
+            ? "Newsletter signup isn't available right now. Please try again later."
             : "We couldn't save your newsletter signup right now. Please try again in a moment.",
       },
       { status: 500 },

@@ -40,10 +40,12 @@ export async function sendOrderPaidEmails({
   items: OrderItem[];
 }): Promise<void> {
   if (!isEmailConfigured()) {
-    throw new Error("Order email skipped because Resend is not configured.");
+    console.warn("[order email] Resend not configured; skipping order confirmation emails.");
+    return;
   }
 
-  const lineItems = await buildLineItems(items);
+  try {
+    const lineItems = await buildLineItems(items);
   const lineItemsHtml = lineItems
     .map(
       (item) =>
@@ -123,4 +125,7 @@ export async function sendOrderPaidEmails({
       ].join("\n"),
     }),
   ]);
+  } catch (error) {
+    console.error("[order email] Failed to send order confirmation emails:", error);
+  }
 }

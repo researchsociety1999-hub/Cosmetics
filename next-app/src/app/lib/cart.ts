@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import type { User } from "@supabase/supabase-js";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { createSupabaseServerClient, getAuthenticatedUser } from "./supabaseServer";
 import { getProductsByIds, getProductVariantsByIds } from "./queries";
 import type {
@@ -74,6 +74,62 @@ export async function clearCartItemsCookie(): Promise<void> {
     path: "/",
     maxAge: 0,
   });
+}
+
+/**
+ * After magic-link or OAuth sign-in, copy guest cookie lines into `cart_items`
+ * so checkout (which requires a database cart) sees the same bag.
+ */
+export async function mergeGuestCartIntoUserCart(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<void> {
+  const guestItems = await getCartItemsFromCookie();
+  if (!guestItems.length) {
+    return;
+  }
+
+  for (const { productId, quantity, variantId } of guestItems) {
+    const q = supabase
+      .from("cart_items")
+      .select("id, quantity")
+      .eq("user_id", userId)
+      .eq("product_id", productId);
+    const scoped =
+      variantId == null ? q.is("variant_id", null) : q.eq("variant_id", variantId);
+    const { data: existing, error } = await scoped.limit(1).maybeSingle();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (existing) {
+      const { error: updateError } = await supabase
+        .from("cart_items")
+        .update({
+          quantity: existing.quantity + quantity,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existing.id);
+
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+    } else {
+      const { error: insertError } = await supabase.from("cart_items").insert({
+        user_id: userId,
+        product_id: productId,
+        variant_id: variantId,
+        quantity,
+      });
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+    }
+  }
+
+  await clearCartItemsCookie();
 }
 
 async function getDatabaseCartSummary(userId: string): Promise<CartSummary> {
@@ -159,26 +215,40 @@ export async function getCartSummary(user?: User | null): Promise<CartSummary> {
 
   const items = await getCartItemsFromCookie();
   const products = await getProductsByIds(items.map((item) => item.productId));
+  const variants = await getProductVariantsByIds(
+    items
+      .map((item) => item.variantId)
+      .filter((id): id is number => typeof id === "number"),
+  );
   const productsById = new Map(products.map((product) => [product.id, product]));
+  const variantsById = new Map(variants.map((variant) => [variant.id, variant]));
 
-  const lines: CartLine[] = items
-    .map((item) => {
-      const product = productsById.get(item.productId);
-      if (!product) {
-        return null;
-      }
+  const lines: CartLine[] = items.flatMap((item) => {
+    const product = productsById.get(item.productId);
+    if (!product) {
+      return [];
+    }
 
-      const unitPriceCents = product.sale_price_cents ?? product.price_cents;
+    const variant =
+      typeof item.variantId === "number"
+        ? variantsById.get(item.variantId) ?? null
+        : null;
+    const unitPriceCents =
+      (variant ? getVariantUnitPriceCents(variant) : null) ??
+      product.sale_price_cents ??
+      product.price_cents;
 
-      return {
+    return [
+      {
         product,
+        variant,
         quantity: item.quantity,
         variantId: item.variantId ?? null,
         unitPriceCents,
         lineTotalCents: unitPriceCents * item.quantity,
-      };
-    })
-    .filter((line): line is CartLine => Boolean(line));
+      },
+    ];
+  });
 
   return {
     items,

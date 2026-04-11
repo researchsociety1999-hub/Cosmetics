@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section max-w-6xl">
+      <main className="mystic-section-shell mystic-section">
         <section className="relative overflow-hidden rounded-[34px] border border-[rgba(214,168,95,0.14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] px-6 py-8 shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:px-10 md:py-12">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,rgba(255,171,65,0.14),transparent_18%),radial-gradient(circle_at_82%_26%,rgba(214,168,95,0.08),transparent_24%),linear-gradient(135deg,rgba(5,6,9,0.08),rgba(5,6,9,0.42))]" />
           <div className="pointer-events-none absolute inset-y-[12%] right-[-8%] hidden w-[46%] rounded-full bg-[radial-gradient(circle,rgba(255,167,58,0.16),transparent_62%)] blur-3xl md:block" />

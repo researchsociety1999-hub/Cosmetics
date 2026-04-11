@@ -63,7 +63,7 @@ export default async function ProductPage({
   if (!product) {
     return (
       <SiteChrome>
-        <main className="mx-auto max-w-4xl px-4 py-14 md:px-6">
+        <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
           <section className="mystic-card p-8 text-center">
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
               Product not found
@@ -131,7 +131,7 @@ export default async function ProductPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-7xl px-4 pb-28 pt-10 md:px-6 lg:pb-14 lg:pt-14">
+      <main className="w-full px-4 pb-28 pt-10 md:px-6 lg:px-10 lg:pb-14 lg:pt-14 xl:px-14">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"
@@ -262,7 +262,7 @@ export default async function ProductPage({
                 product&apos;s place in your routine.
               </p>
             </header>
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-4">
               {routineProducts.map((item, index) => (
                 <div key={item.id} className="relative">
                   <span className="absolute left-3 top-3 z-10 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.85)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#f0d19a]">
@@ -296,9 +296,8 @@ export default async function ProductPage({
             ) : null}
           </header>
           <p className="mb-6 max-w-2xl text-xs leading-relaxed text-[#7a7265]">
-            Verified purchase badges and richer filters can connect to your
-            Supabase reviews table as you scale; today we prioritize readable,
-            authentic notes.
+            Verified purchase badges and richer filters can grow with your catalog;
+            for now we keep notes readable and authentic.
           </p>
           <div className="grid gap-5 md:grid-cols-2">
             {reviews.length ? (
@@ -341,7 +340,7 @@ export default async function ProductPage({
                 In the same spirit
               </h2>
             </header>
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-4">
               {relatedFiltered.map((item) => (
                 <ProductCard key={item.id} product={item} />
               ))}

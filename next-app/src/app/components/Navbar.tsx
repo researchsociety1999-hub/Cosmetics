@@ -11,19 +11,18 @@ interface NavbarProps {
 
 export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
-    <header className="relative z-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(3,4,6,0.72),rgba(3,4,6,0.28),transparent)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.26),transparent)]" />
-      <div className="mx-auto max-w-7xl px-4 pt-5 md:px-6 md:pt-6">
-        <div className="relative flex items-center justify-between gap-3 border-b border-[rgba(214,168,95,0.1)] px-1 pb-4 md:hidden">
-          <div className="relative max-w-[220px] flex-1">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(2,3,5,0.55)] shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-[rgba(2,3,5,0.42)]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.25),transparent)]" />
+      <div className="w-full px-4 pt-5 md:px-6 md:pt-6 lg:px-10 xl:px-14">
+        <div className="relative flex items-center justify-between gap-3 px-1 pb-4 md:hidden">
+          <div className="relative max-w-[min(260px,72vw)] flex-1">
             <BrandLogo compact priority className="mx-auto" />
           </div>
 
           <NavbarMobileMenu isAuthenticated={isAuthenticated} cartCount={cartCount} />
         </div>
 
-        <div className="relative hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 border-b border-[rgba(214,168,95,0.1)] pb-5 md:grid lg:gap-8">
+        <div className="relative hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 pb-5 md:grid lg:gap-8">
           <div className="flex min-w-0 items-center justify-start gap-4 lg:gap-6">
             <IconLink href="/search" label="Search">
               <SearchIcon />
@@ -36,7 +35,7 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
             </nav>
           </div>
 
-          <div className="relative flex justify-center">
+          <div className="relative flex justify-center px-2">
             <BrandLogo compact priority className="mx-auto max-w-[220px] lg:max-w-[248px]" />
           </div>
 
@@ -111,7 +110,7 @@ function IconLink({
     <Link
       href={href}
       aria-label={label}
-      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(10,12,16,0.46)] text-[#f5eee3] transition hover:border-[rgba(214,168,95,0.36)] hover:bg-[rgba(214,168,95,0.06)] hover:text-[#f0d19a]"
+      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:border-[rgba(214,168,95,0.4)] hover:bg-[rgba(214,168,95,0.08)] hover:text-[#f0d19a]"
     >
       {children}
       {showBadge ? (

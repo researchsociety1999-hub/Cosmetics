@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-/** Official lockup (1024×682); black in the file aligns with `bg-black` so edges stay invisible. */
-const BRAND_LOGO_SRC = "/mystique-brand-logo.png";
+const LOGO_SRC = "/mystique-logo.png";
 
 /**
- * Raster wordmark + crescent + mist — kept intentionally flat: no frame, no shadow, pure #000
- * behind the asset so it reads as continuous with the header instead of a sticker.
+ * Official Mystique lockup (`/public/mystique-logo.png`).
+ * Subtle glass cradle so the mark reads as part of the chrome, not a raw rectangle.
  */
 export function BrandLogo({
   href = "/",
@@ -17,32 +16,40 @@ export function BrandLogo({
   href?: string;
   compact?: boolean;
   className?: string;
-  /** Set true in the navbar so LCP stays sharp. */
+  /** Navbar: pass true for faster LCP on the wordmark. */
   priority?: boolean;
 }) {
-  const sizeClass = compact
-    ? "h-8 w-auto max-w-[min(72vw,200px)] sm:h-9 sm:max-w-[220px] md:h-10 md:max-w-[248px]"
-    : "h-[3.35rem] w-auto max-w-[min(92vw,300px)] md:h-[3.85rem] md:max-w-[340px]";
-
   return (
     <Link
       href={href}
       aria-label="Mystique home"
-      className={`inline-block bg-black outline-none transition-opacity duration-500 ease-out opacity-[0.92] hover:opacity-100 focus-visible:opacity-100 ${className}`}
+      className={`group relative inline-flex items-center justify-center outline-none transition duration-300 hover:opacity-[0.96] focus-visible:opacity-100 ${className}`}
     >
-      <Image
-        src={BRAND_LOGO_SRC}
-        alt="Mystique — Where Beauty Transcends"
-        width={1024}
-        height={682}
-        priority={priority}
-        sizes={
+      <span
+        className={`mystic-glass--subtle inline-flex items-center justify-center ${
           compact
-            ? "(max-width: 640px) 72vw, (max-width: 768px) 220px, 248px"
-            : "(max-width: 768px) 92vw, 340px"
-        }
-        className={`block object-contain object-center ${sizeClass}`}
-      />
+            ? "rounded-2xl px-2 py-1 md:rounded-[1.1rem] md:px-2.5 md:py-1.5"
+            : "rounded-2xl px-2.5 py-1.5"
+        }`}
+      >
+        <Image
+          src={LOGO_SRC}
+          alt="Mystique — Where beauty transcends"
+          width={640}
+          height={200}
+          priority={priority}
+          sizes={
+            compact
+              ? "(max-width: 768px) 180px, 240px"
+              : "(max-width: 768px) 220px, 300px"
+          }
+          className={
+            compact
+              ? "h-8 w-auto max-h-8 object-contain object-center [filter:drop-shadow(0_0_20px_rgba(212,175,92,0.22))_contrast(1.04)_brightness(1.03)] md:h-10 md:max-h-10"
+              : "h-9 w-auto max-h-9 object-contain object-center [filter:drop-shadow(0_0_22px_rgba(212,175,92,0.2))_contrast(1.04)_brightness(1.03)] md:h-[2.85rem] md:max-h-[2.85rem]"
+          }
+        />
+      </span>
     </Link>
   );
 }

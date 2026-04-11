@@ -1,5 +1,7 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
+import { mergeGuestCartIntoUserCart } from "../../lib/cart";
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
 
 function getOtpType(type: string): EmailOtpType {
@@ -58,6 +60,21 @@ export async function GET(request: Request) {
         requestUrl,
       ),
     );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    try {
+      await mergeGuestCartIntoUserCart(supabase, user.id);
+      revalidatePath("/cart");
+      revalidatePath("/checkout");
+      revalidatePath("/shop");
+    } catch (mergeError) {
+      console.error("[auth/confirm] Guest cart merge failed:", mergeError);
+    }
   }
 
   return NextResponse.redirect(new URL(next, requestUrl));

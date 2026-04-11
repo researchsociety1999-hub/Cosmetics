@@ -34,7 +34,7 @@ export default async function CheckoutPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <header className="mb-10 space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Checkout
@@ -55,7 +55,7 @@ export default async function CheckoutPage({
             />
             {!isAuthenticated ? (
               <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#d6a85f]">
-                Sign in first so checkout can load your authenticated Supabase cart.
+                Sign in first so we can load your saved bag for checkout.
               </div>
             ) : null}
             {params.status === "cancelled" ? (
