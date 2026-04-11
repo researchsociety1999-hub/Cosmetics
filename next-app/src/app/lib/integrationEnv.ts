@@ -36,7 +36,7 @@ export function getMissingIntegrationEnv(): {
     );
   } else if (!hasSupabasePublicEnv && !hasSupabaseServiceEnv) {
     catalog.push(
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_ANON_KEY (or SUPABASE_SERVICE_ROLE_KEY for server-only catalog client)",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, or SUPABASE_ANON_KEY (or SUPABASE_SERVICE_ROLE_KEY for server-only client)",
     );
   }
 

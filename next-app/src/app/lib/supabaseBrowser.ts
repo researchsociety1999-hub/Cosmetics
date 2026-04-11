@@ -17,7 +17,7 @@ function getPublicSupabaseKey() {
 
   if (value.startsWith("sb_secret_")) {
     throw new Error(
-      "Do not put the Supabase secret key in NEXT_PUBLIC_* variables. Use the anon (public) key from Supabase → Settings → API → Project API keys.",
+      "Do not put sb_secret_* in NEXT_PUBLIC_* variables. Use the publishable or anon public key from Supabase → Settings → API.",
     );
   }
 
