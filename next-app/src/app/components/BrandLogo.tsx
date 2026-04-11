@@ -5,7 +5,7 @@ const LOGO_SRC = "/mystique-logo.png";
 
 /**
  * Official Mystique lockup (`/public/mystique-logo.png`).
- * Subtle glass cradle so the mark reads as part of the chrome, not a raw rectangle.
+ * Nav uses a larger, un-frosted treatment so the fine type and embers stay legible.
  */
 export function BrandLogo({
   href = "/",
@@ -23,13 +23,13 @@ export function BrandLogo({
     <Link
       href={href}
       aria-label="Mystique home"
-      className={`group relative inline-flex items-center justify-center outline-none transition duration-300 hover:opacity-[0.96] focus-visible:opacity-100 ${className}`}
+      className={`group relative inline-flex items-center justify-center outline-none transition duration-200 hover:opacity-[0.98] focus-visible:opacity-100 ${className}`}
     >
       <span
-        className={`mystic-glass--subtle inline-flex items-center justify-center ${
+        className={`inline-flex items-center justify-center ${
           compact
-            ? "rounded-2xl px-2 py-1 md:rounded-[1.1rem] md:px-2.5 md:py-1.5"
-            : "rounded-2xl px-2.5 py-1.5"
+            ? "px-0 py-0"
+            : "rounded-2xl border border-[rgba(214,168,95,0.14)] bg-[rgba(2,3,6,0.55)] px-3 py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
         }`}
       >
         <Image
@@ -40,13 +40,13 @@ export function BrandLogo({
           priority={priority}
           sizes={
             compact
-              ? "(max-width: 768px) 180px, 240px"
-              : "(max-width: 768px) 220px, 300px"
+              ? "(max-width: 640px) 300px, (max-width: 1024px) 340px, 400px"
+              : "(max-width: 768px) 320px, 440px"
           }
           className={
             compact
-              ? "h-8 w-auto max-h-8 object-contain object-center [filter:drop-shadow(0_0_20px_rgba(212,175,92,0.22))_contrast(1.04)_brightness(1.03)] md:h-10 md:max-h-10"
-              : "h-9 w-auto max-h-9 object-contain object-center [filter:drop-shadow(0_0_22px_rgba(212,175,92,0.2))_contrast(1.04)_brightness(1.03)] md:h-[2.85rem] md:max-h-[2.85rem]"
+              ? "h-11 w-auto max-h-11 object-contain object-center sm:h-12 sm:max-h-12 md:h-[3.35rem] md:max-h-[3.35rem] lg:h-[3.65rem] lg:max-h-[3.65rem] [filter:drop-shadow(0_2px_14px_rgba(0,0,0,0.92))_drop-shadow(0_0_32px_rgba(212,175,55,0.42))_drop-shadow(0_0_60px_rgba(255,154,80,0.12))_brightness(1.08)_contrast(1.08)_saturate(1.06)]"
+              : "h-12 w-auto max-h-12 object-contain object-center sm:h-14 sm:max-h-14 md:h-16 md:max-h-16 lg:h-[4.5rem] lg:max-h-[4.5rem] [filter:drop-shadow(0_2px_16px_rgba(0,0,0,0.88))_drop-shadow(0_0_36px_rgba(212,175,55,0.36))_drop-shadow(0_0_72px_rgba(255,154,80,0.1))_brightness(1.06)_contrast(1.06)_saturate(1.05)]"
           }
         />
       </span>

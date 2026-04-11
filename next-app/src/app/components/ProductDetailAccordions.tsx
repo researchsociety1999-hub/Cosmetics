@@ -12,21 +12,21 @@ export function ProductDetailAccordions({
   items: AccordionItem[];
 }) {
   return (
-    <div className="divide-y divide-[rgba(214,168,95,0.12)] rounded-[22px] border border-[rgba(214,168,95,0.15)] bg-[rgba(8,10,14,0.65)]">
+    <div className="divide-y divide-[rgba(212,175,55,0.14)] rounded-[22px] border border-[rgba(212,175,55,0.2)] bg-[rgba(0,0,0,0.55)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_0_0_1px_rgba(212,175,55,0.05)]">
       {items.map((item) => (
         <details key={item.id} className="group p-0">
-          <summary className="cursor-pointer list-none px-5 py-4 font-literata text-lg tracking-[0.08em] text-[#f5eee3] marker:content-none [&::-webkit-details-marker]:hidden">
+          <summary className="cursor-pointer list-none px-5 py-4 font-literata text-lg tracking-[0.08em] text-[#f6f0e6] transition-colors hover:bg-[rgba(212,175,55,0.04)] marker:content-none [&::-webkit-details-marker]:hidden">
             <span className="flex items-center justify-between gap-3">
               {item.title}
               <span
-                className="text-[#d6a85f] transition group-open:rotate-45"
+                className="text-[#e8c56e] transition group-open:rotate-45"
                 aria-hidden
               >
                 +
               </span>
             </span>
           </summary>
-          <div className="border-t border-[rgba(214,168,95,0.08)] px-5 pb-5 pt-3 text-sm leading-relaxed text-[#b8ab95]">
+          <div className="border-t border-[rgba(212,175,55,0.12)] px-5 pb-5 pt-3 text-sm leading-relaxed text-[#b9aa8f]">
             {item.content}
           </div>
         </details>

@@ -66,19 +66,19 @@ export default function FaqPage() {
               name="faq"
               className="mystic-card group p-5 md:p-6"
             >
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-literata text-[1.75rem] tracking-[0.06em] text-[#f5eee3] [&::-webkit-details-marker]:hidden [&::marker]:content-none">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-literata text-[1.75rem] tracking-[0.06em] text-[#f6f0e6] transition-colors hover:text-[#faf6ef] [&::-webkit-details-marker]:hidden [&::marker]:content-none">
                 <span>{faqCopy[item.question]?.question ?? item.question}</span>
-                <span className="mt-1 text-base text-[#d6a85f] transition group-open:rotate-45">+</span>
+                <span className="mt-1 text-base text-[#e8c56e] transition group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-4 border-t border-[rgba(214,168,95,0.12)] pt-4 text-sm leading-relaxed text-[#b8ab95]">
+              <p className="mt-4 border-t border-[rgba(212,175,55,0.14)] pt-4 text-sm leading-relaxed text-[#b9aa8f]">
                 {faqCopy[item.question]?.answer ?? item.answer}
               </p>
             </details>
           ))}
         </div>
 
-        <section className="mt-14 border-t border-[rgba(214,168,95,0.12)] pt-10">
-          <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+        <section className="mt-14 border-t border-[rgba(212,175,55,0.14)] pt-10">
+          <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d4af37]">
             Still unsure?
           </p>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">

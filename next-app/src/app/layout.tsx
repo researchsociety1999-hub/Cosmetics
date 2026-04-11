@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#030406",
+  themeColor: "#000000",
   colorScheme: "dark",
 };
 
@@ -64,7 +64,7 @@ export default function RootLayout({
       className={`${literata.variable} ${GeistSans.variable} scroll-smooth`}
     >
       <body
-        className={`${GeistSans.className} min-w-0 w-full bg-[#030406] text-[#f5eee3] antialiased`}
+        className={`${GeistSans.className} min-w-0 w-full bg-black text-[#f6f0e6] antialiased`}
       >
         {children}
       </body>

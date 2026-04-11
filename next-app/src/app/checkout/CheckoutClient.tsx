@@ -222,7 +222,7 @@ export function CheckoutClient({
           ? "Sign in with your Mystique account to load your saved cart and continue to secure payment."
           : stripeReady
             ? "When you continue, you will leave Mystique for a moment to complete payment on Stripe’s secure checkout."
-            : "Secure payment is not configured yet. Add Stripe keys to enable checkout in this environment."}
+            : "Secure checkout is not available at the moment. Please try again later or contact us if you need help completing an order."}
       </div>
       {isAuthenticated ? (
         <button
