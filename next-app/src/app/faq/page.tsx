@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteChrome } from "../components/SiteChrome";
+import {
+  FLAT_SHIPPING_CENTS,
+  FREE_SHIPPING_THRESHOLD_CENTS,
+} from "../lib/checkout";
 import { mockFaqs } from "../lib/data";
+
+const freeShipMinUsd = FREE_SHIPPING_THRESHOLD_CENTS / 100;
+const flatShipUsd = (FLAT_SHIPPING_CENTS / 100).toFixed(2);
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -11,6 +18,10 @@ export const metadata: Metadata = {
 
 export default function FaqPage() {
   const faqCopy: Record<string, { question: string; answer: string }> = {
+    "What does U.S. shipping cost?": {
+      question: "What does U.S. shipping cost?",
+      answer: `Standard U.S. delivery is $${flatShipUsd} when your order total after promotions is under $${freeShipMinUsd}. Complimentary standard shipping applies on orders of $${freeShipMinUsd} or more after promotions (before tax).`,
+    },
     "How long does shipping take?": {
       question: "How quickly will my order arrive?",
       answer:

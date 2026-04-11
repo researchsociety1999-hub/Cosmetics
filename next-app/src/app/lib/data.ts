@@ -301,6 +301,11 @@ export const mockTestimonials = [
 
 export const mockFaqs = [
   {
+    question: "What does U.S. shipping cost?",
+    answer:
+      "Shipping rates follow the same rules shown at checkout: standard U.S. delivery is complimentary on qualifying orders, with a flat rate below that threshold.",
+  },
+  {
     question: "How long does shipping take?",
     answer: "Most U.S. orders arrive within 3 to 5 business days with tracking sent as soon as your order ships.",
   },

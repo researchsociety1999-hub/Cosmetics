@@ -46,6 +46,12 @@ export function getMissingIntegrationEnv(): {
     );
   }
 
+  if (hasSupabaseServiceEnv && !hasSupabasePublicEnv) {
+    auth.push(
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY — required for magic-link sessions and SSR cookies; service role alone cannot authenticate shoppers",
+    );
+  }
+
   const checkout: string[] = [];
   if (!process.env.STRIPE_SECRET_KEY?.trim()) {
     checkout.push("STRIPE_SECRET_KEY");
