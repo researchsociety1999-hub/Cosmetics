@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export type MysticMergedOption = { value: string; label: string };
@@ -96,45 +95,38 @@ export function MysticMergedSelect({
           <Chevron open={open} />
         </button>
 
-        <AnimatePresence initial={false}>
-          {open ? (
-            <motion.ul
-              key="listbox"
-              id={listboxId}
-              role="listbox"
-              aria-labelledby={id}
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="max-h-56 overflow-y-auto border-t border-[rgba(214,168,95,0.18)] py-1"
-            >
-              {options.map((opt) => {
-                const isActive = value === opt.value;
-                return (
-                  <li key={opt.value || "__empty__"} role="presentation">
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={isActive}
-                      className={`flex w-full px-4 py-2.5 text-left text-[0.78rem] tracking-[0.03em] outline-none transition-colors focus-visible:bg-[rgba(214,168,95,0.12)] ${
-                        isActive
-                          ? "bg-[rgba(214,168,95,0.14)] text-[#f0d19a]"
-                          : "text-[#e4d9cc] hover:bg-[rgba(214,168,95,0.08)] hover:text-[#faf6ef]"
-                      }`}
-                      onClick={() => {
-                        setOpen(false);
-                        onChange(opt.value);
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  </li>
-                );
-              })}
-            </motion.ul>
-          ) : null}
-        </AnimatePresence>
+        {open ? (
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={id}
+            className="mystic-merged-select-list max-h-56 overflow-y-auto border-t border-[rgba(214,168,95,0.18)] py-1"
+          >
+            {options.map((opt) => {
+              const isActive = value === opt.value;
+              return (
+                <li key={opt.value || "__empty__"} role="presentation">
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    className={`flex w-full px-4 py-2.5 text-left text-[0.78rem] tracking-[0.03em] outline-none transition-colors focus-visible:bg-[rgba(214,168,95,0.12)] ${
+                      isActive
+                        ? "bg-[rgba(214,168,95,0.14)] text-[#f0d19a]"
+                        : "text-[#e4d9cc] hover:bg-[rgba(214,168,95,0.08)] hover:text-[#faf6ef]"
+                    }`}
+                    onClick={() => {
+                      setOpen(false);
+                      onChange(opt.value);
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
       </div>
     </div>
   );
