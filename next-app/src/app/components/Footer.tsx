@@ -21,7 +21,7 @@ export function Footer() {
           <div className="relative grid gap-10 md:grid-cols-[1.3fr_0.8fr_0.8fr_0.8fr] md:gap-8">
             <div className="space-y-5 md:pr-8">
               <div className="max-w-[300px]">
-                <BrandLogo className="opacity-95" />
+                <BrandLogo />
               </div>
               <p className="inline-flex rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.66rem] uppercase tracking-[0.28em] text-[#cdb58d]">
                 California luxury Mystique Beauty

@@ -1,54 +1,48 @@
+import Image from "next/image";
 import Link from "next/link";
 
+/** Official lockup (1024×682); black in the file aligns with `bg-black` so edges stay invisible. */
+const BRAND_LOGO_SRC = "/mystique-brand-logo.png";
+
 /**
- * Vector-style wordmark + crescent — reads as a designed lockup, not a photo pasted in the header.
+ * Raster wordmark + crescent + mist — kept intentionally flat: no frame, no shadow, pure #000
+ * behind the asset so it reads as continuous with the header instead of a sticker.
  */
 export function BrandLogo({
   href = "/",
   compact = false,
   className = "",
+  priority = false,
 }: {
   href?: string;
   compact?: boolean;
   className?: string;
+  /** Set true in the navbar so LCP stays sharp. */
+  priority?: boolean;
 }) {
-  const arcClass = compact
-    ? "mb-0.5 h-[1.15rem] w-[4.5rem] md:h-[1.35rem] md:w-[5.25rem]"
-    : "mb-1 h-[1.35rem] w-[5.5rem] md:h-[1.55rem] md:w-[6.25rem]";
-  const textClass = compact
-    ? "text-[0.78rem] md:text-[0.86rem] tracking-[0.4em]"
-    : "text-[0.88rem] md:text-[0.98rem] tracking-[0.36em]";
+  const sizeClass = compact
+    ? "h-8 w-auto max-w-[min(72vw,200px)] sm:h-9 sm:max-w-[220px] md:h-10 md:max-w-[248px]"
+    : "h-[3.35rem] w-auto max-w-[min(92vw,300px)] md:h-[3.85rem] md:max-w-[340px]";
 
   return (
     <Link
       href={href}
       aria-label="Mystique home"
-      className={`group relative inline-flex flex-col items-center outline-none transition duration-500 hover:opacity-100 focus-visible:opacity-100 ${className}`}
+      className={`inline-block bg-black outline-none transition-opacity duration-500 ease-out opacity-[0.92] hover:opacity-100 focus-visible:opacity-100 ${className}`}
     >
-      <span className="relative flex flex-col items-center">
-        {/* Crescent — gold stroke only, no raster frame */}
-        <svg
-          viewBox="0 0 140 40"
-          className={`pointer-events-none text-[#d6a85f] transition duration-500 group-hover:text-[#f0d19a] ${arcClass}`}
-          aria-hidden
-        >
-          <path
-            d="M6 32c18-26 52-34 88-22 14 5 22 14 18 20-22-12-52-10-78 6-12 8-24 6-28-4z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.15"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity={0.88}
-            className="drop-shadow-[0_0_12px_rgba(214,168,95,0.35)]"
-          />
-        </svg>
-        <span
-          className={`font-literata font-medium leading-none text-[#f2ebe3] antialiased ${textClass}`}
-        >
-          MYSTIQUE
-        </span>
-      </span>
+      <Image
+        src={BRAND_LOGO_SRC}
+        alt="Mystique — Where Beauty Transcends"
+        width={1024}
+        height={682}
+        priority={priority}
+        sizes={
+          compact
+            ? "(max-width: 640px) 72vw, (max-width: 768px) 220px, 248px"
+            : "(max-width: 768px) 92vw, 340px"
+        }
+        className={`block object-contain object-center ${sizeClass}`}
+      />
     </Link>
   );
 }
