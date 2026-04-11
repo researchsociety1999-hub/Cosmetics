@@ -11,12 +11,12 @@ interface NavbarProps {
 
 export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(2,3,5,0.55)] shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-[rgba(2,3,5,0.42)]">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.25),transparent)]" />
+    <header className="sticky top-0 z-40 border-b border-[rgba(212,175,55,0.14)] bg-[rgba(0,0,0,0.72)] shadow-[0_12px_40px_rgba(0,0,0,0.55),0_0_48px_rgba(212,175,55,0.04)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-[rgba(0,0,0,0.58)]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.35),rgba(255,200,140,0.12),transparent)]" />
       <div className="w-full px-4 pt-5 md:px-6 md:pt-6 lg:px-10 xl:px-14">
         <div className="relative flex items-center justify-between gap-3 px-1 pb-4 md:hidden">
-          <div className="relative max-w-[min(260px,72vw)] flex-1">
-            <BrandLogo compact priority className="mx-auto" />
+          <div className="relative flex min-w-0 flex-1 justify-center px-1">
+            <BrandLogo compact priority className="mx-auto max-w-[min(360px,88vw)]" />
           </div>
 
           <NavbarMobileMenu isAuthenticated={isAuthenticated} cartCount={cartCount} />
@@ -35,8 +35,12 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
             </nav>
           </div>
 
-          <div className="relative flex justify-center px-2">
-            <BrandLogo compact priority className="mx-auto max-w-[220px] lg:max-w-[248px]" />
+          <div className="relative flex min-w-0 justify-center px-2">
+            <BrandLogo
+              compact
+              priority
+              className="mx-auto max-w-[min(400px,34vw)] lg:max-w-[min(440px,32vw)]"
+            />
           </div>
 
           <div className="flex min-w-0 items-center justify-end gap-3 lg:gap-5">
@@ -114,7 +118,7 @@ function IconLink({
     >
       {children}
       {showBadge ? (
-        <span className="absolute -right-1 -top-1 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-[#d6a85f] px-1 text-[0.62rem] font-semibold text-black">
+        <span className="absolute -right-1 -top-1 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-[#d4af37] px-1 text-[0.62rem] font-semibold text-black">
           {badge}
         </span>
       ) : null}

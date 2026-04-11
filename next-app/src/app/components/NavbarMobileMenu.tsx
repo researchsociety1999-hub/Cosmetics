@@ -44,15 +44,15 @@ export function NavbarMobileMenu({
     <details ref={detailsRef} className="group relative">
       <summary
         aria-label="Open navigation menu"
-        className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[rgba(214,168,95,0.16)] bg-[rgba(8,10,14,0.4)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f5eee3] backdrop-blur-sm [&::-webkit-details-marker]:hidden"
+        className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[rgba(212,175,55,0.22)] bg-[rgba(0,0,0,0.55)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.24em] text-[#f6f0e6] shadow-[0_0_24px_rgba(212,175,55,0.06)] backdrop-blur-md [&::-webkit-details-marker]:hidden"
       >
         <span>Menu</span>
-        <span className="text-[#d6a85f] transition-transform duration-200 group-open:rotate-180">
+        <span className="text-[#e8c56e] transition-transform duration-200 group-open:rotate-180">
           <ChevronIcon />
         </span>
       </summary>
-      <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[280px] overflow-hidden rounded-[22px] border border-[rgba(214,168,95,0.16)] bg-[linear-gradient(180deg,rgba(9,12,18,0.96),rgba(7,9,13,0.92))] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,170,70,0.1),transparent_26%)]" />
+      <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[280px] overflow-hidden rounded-[22px] border border-[rgba(212,175,55,0.22)] bg-[linear-gradient(180deg,rgba(0,0,0,0.96),rgba(4,3,6,0.94))] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.08),0_28px_64px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(255,154,80,0.12),transparent_38%),radial-gradient(circle_at_100%_100%,rgba(212,175,55,0.08),transparent_42%)]" />
         <nav className="relative flex flex-col gap-2">
           <MobileNavLink href="/shop" label="Shop" onNavigate={closeMenu} />
           <MobileNavLink href="/routines" label="Routines" onNavigate={closeMenu} />
@@ -67,7 +67,7 @@ export function NavbarMobileMenu({
               <form action={signOutAction}>
                 <button
                   type="submit"
-                  className="w-full rounded-full px-3 py-2 text-left text-xs uppercase tracking-[0.22em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
+                  className="w-full rounded-full px-3 py-2 text-left text-xs uppercase tracking-[0.22em] text-[#f6f0e6] transition hover:bg-[rgba(212,175,55,0.12)]"
                 >
                   Sign out
                 </button>
@@ -100,7 +100,7 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onNavigate}
-      className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.22em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
+      className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.22em] text-[#f6f0e6] transition hover:bg-[rgba(212,175,55,0.12)] hover:text-[#f5e0a8]"
     >
       {label}
     </Link>

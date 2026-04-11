@@ -16,10 +16,10 @@ export async function SiteChrome({
   const cart = await getCartSummary(user);
 
   return (
-    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-[#030406] text-[#f5eee3]">
+    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-black text-[#f6f0e6]">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(255,160,72,0.07),transparent_20%),radial-gradient(circle_at_82%_12%,rgba(214,168,95,0.07),transparent_22%),radial-gradient(circle_at_50%_48%,rgba(255,255,255,0.02),transparent_26%),linear-gradient(180deg,rgba(0,0,0,0.35),rgba(4,5,8,0.15)_35%,rgba(4,5,8,0.45)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_0%,rgba(255,154,80,0.11),transparent_48%),radial-gradient(circle_at_86%_10%,rgba(212,175,55,0.08),transparent_24%),radial-gradient(circle_at_50%_88%,rgba(255,120,48,0.05),transparent_32%),radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.018),transparent_40%),linear-gradient(180deg,rgba(0,0,0,0.5),rgba(0,0,0,0.12)_40%,rgba(0,0,0,0.55)_100%)]"
       />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px]">
         <span className="mystic-particle mystic-particle-sm left-[10%] top-[14%] opacity-80" />

@@ -183,14 +183,17 @@ function ShopWideEmptyState({
 }) {
   if (!hasSupabase) {
     return (
-      <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b8ab95]">
-        <p className="font-literata text-xl tracking-[0.08em] text-[#f5eee3]">
-          Catalog connection is not configured.
+      <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b9aa8f]">
+        <p className="font-literata text-xl tracking-[0.08em] text-[#f6f0e6]">
+          The shop is temporarily unavailable.
         </p>
         <p>
-          This environment needs Supabase URL and keys before published products can
-          load. See the project <code className="text-[#d6a85f]">.env.example</code> and
-          deployment checklist.
+          We can&apos;t show the catalog right now. Please try again in a little while,
+          or visit another section of the site. If this keeps happening, use{" "}
+          <Link href="/contact" className="text-[#e8c56e] underline-offset-4 hover:underline">
+            Contact
+          </Link>{" "}
+          and we&apos;ll help from our side.
         </p>
       </div>
     );
@@ -206,7 +209,7 @@ function ShopWideEmptyState({
       <p>
         {hasActiveFilters
           ? "Try clearing search, choosing All, or another category—formulas appear here as soon as they are published."
-          : "Published rows with is_published=true will fill the grid automatically. Until then, follow the ritual guide or write the studio for wholesale timelines."}
+          : "New formulas will appear here as soon as they are ready. Until then, explore routines and ingredients, or write the studio for wholesale timelines."}
       </p>
       <div className="flex flex-wrap gap-3 pt-2">
         <Link

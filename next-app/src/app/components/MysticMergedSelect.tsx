@@ -18,7 +18,7 @@ function Chevron({ open }: { open: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`h-4 w-4 shrink-0 text-[#d6a85f] transition-transform duration-200 ${
+      className={`h-4 w-4 shrink-0 text-[#e8c56e] transition-transform duration-200 ${
         open ? "rotate-180" : ""
       }`}
       fill="none"
@@ -75,10 +75,10 @@ export function MysticMergedSelect({
         {ariaLabel}
       </span>
       <div
-        className={`overflow-hidden rounded-[14px] border border-[rgba(214,168,95,0.32)] bg-[rgba(6,8,12,0.96)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_10px_28px_rgba(0,0,0,0.38)] transition-[border-color,box-shadow] duration-200 ${
+        className={`overflow-hidden rounded-[14px] border border-[rgba(212,175,55,0.34)] bg-[rgba(0,0,0,0.94)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_0_0_1px_rgba(212,175,55,0.06),0_12px_32px_rgba(0,0,0,0.55)] transition-[border-color,box-shadow] duration-200 ${
           open
-            ? "border-[rgba(214,168,95,0.5)] shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_0_0_1px_rgba(214,168,95,0.14),0_18px_44px_rgba(0,0,0,0.48)]"
-            : "hover:border-[rgba(214,168,95,0.42)]"
+            ? "border-[rgba(232,197,110,0.55)] shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_0_0_1px_rgba(212,175,55,0.2),0_0_36px_rgba(255,154,80,0.1),0_20px_48px_rgba(0,0,0,0.6)]"
+            : "hover:border-[rgba(232,197,110,0.42)]"
         }`}
       >
         <button
@@ -89,7 +89,7 @@ export function MysticMergedSelect({
           aria-haspopup="listbox"
           aria-controls={listboxId}
           onClick={() => setOpen((o) => !o)}
-          className="flex min-h-[54px] w-full items-center justify-between gap-3 px-4 py-3 text-left text-[0.8rem] font-medium leading-snug tracking-[0.04em] text-[#f0e8dc] outline-none transition-colors hover:bg-[rgba(214,168,95,0.05)] focus-visible:bg-[rgba(214,168,95,0.08)]"
+          className="flex min-h-[54px] w-full items-center justify-between gap-3 px-4 py-3 text-left text-[0.8rem] font-medium leading-snug tracking-[0.04em] text-[#f6f0e6] outline-none transition-colors hover:bg-[rgba(212,175,55,0.07)] focus-visible:bg-[rgba(212,175,55,0.11)]"
         >
           <span className="min-w-0 truncate">{displayLabel}</span>
           <Chevron open={open} />
@@ -100,7 +100,7 @@ export function MysticMergedSelect({
             id={listboxId}
             role="listbox"
             aria-labelledby={id}
-            className="mystic-merged-select-list max-h-56 overflow-y-auto border-t border-[rgba(214,168,95,0.18)] py-1"
+            className="mystic-merged-select-list max-h-56 overflow-y-auto border-t border-[rgba(212,175,55,0.22)] bg-[rgba(0,0,0,0.35)] py-1"
           >
             {options.map((opt) => {
               const isActive = value === opt.value;
@@ -110,10 +110,10 @@ export function MysticMergedSelect({
                     type="button"
                     role="option"
                     aria-selected={isActive}
-                    className={`flex w-full px-4 py-2.5 text-left text-[0.78rem] tracking-[0.03em] outline-none transition-colors focus-visible:bg-[rgba(214,168,95,0.12)] ${
+                    className={`flex w-full px-4 py-2.5 text-left text-[0.78rem] tracking-[0.03em] outline-none transition-colors focus-visible:bg-[rgba(212,175,55,0.14)] ${
                       isActive
-                        ? "bg-[rgba(214,168,95,0.14)] text-[#f0d19a]"
-                        : "text-[#e4d9cc] hover:bg-[rgba(214,168,95,0.08)] hover:text-[#faf6ef]"
+                        ? "bg-[rgba(212,175,55,0.16)] text-[#f5e0a8]"
+                        : "text-[#d8cbb0] hover:bg-[rgba(212,175,55,0.09)] hover:text-[#faf6ef]"
                     }`}
                     onClick={() => {
                       setOpen(false);

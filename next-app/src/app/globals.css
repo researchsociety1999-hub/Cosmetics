@@ -1,19 +1,22 @@
 @import "tailwindcss";
 
-/* Design tokens */
+/* Design tokens — Mystique lockup: true black, molten gold, ember sparks */
 :root {
   color-scheme: dark;
 
   /* Colors */
-  --mystic-bg: #030406;
-  --mystic-bg-alt: #0a0d12;
-  --mystic-card-bg: rgba(255, 255, 255, 0.03);
-  --mystic-card-border: rgba(214, 168, 95, 0.2);
-  /* Warm bronze-gold — aligned with official Mystique logo metal */
-  --mystic-gold: #d4af5c;
-  --mystic-gold-hover: #f2d18a;
-  --mystic-text: #f5eee3;
-  --mystic-text-muted: #b8ab95;
+  --mystic-bg: #000000;
+  --mystic-bg-alt: #060508;
+  --mystic-card-bg: rgba(255, 255, 255, 0.028);
+  --mystic-card-border: rgba(212, 175, 55, 0.22);
+  /* Metallic gold + champagne highlight (logo lettering) */
+  --mystic-gold: #d4af37;
+  --mystic-gold-bright: #e8c56e;
+  --mystic-gold-hover: #f5e0a8;
+  --mystic-ember: #ff9a3c;
+  --mystic-ember-soft: rgba(255, 154, 60, 0.14);
+  --mystic-text: #f6f0e6;
+  --mystic-text-muted: #b9aa8f;
 
   /* Radii */
   --mystic-radius-card: 22px;
@@ -21,9 +24,9 @@
   --mystic-radius-input: 14px;
 
   /* Shadows */
-  --mystic-shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
-  --mystic-shadow-gold: 0 0 0 1px rgba(214, 168, 95, 0.3),
-    0 18px 45px rgba(0, 0, 0, 0.7);
+  --mystic-shadow-soft: 0 22px 56px rgba(0, 0, 0, 0.72);
+  --mystic-shadow-gold: 0 0 0 1px rgba(212, 175, 55, 0.28),
+    0 0 42px rgba(212, 175, 55, 0.08), 0 22px 56px rgba(0, 0, 0, 0.75);
 
   /* --font-literata, --font-geist-sans: set on <html> by next/font */
 }
@@ -51,12 +54,14 @@ body {
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  /* Crescent-side warmth + drifting gold bokeh + deep smoke falloff */
   background:
-    radial-gradient(circle at 18% 18%, rgba(255, 167, 58, 0.12), transparent 16%),
-    radial-gradient(circle at 76% 22%, rgba(214, 168, 95, 0.08), transparent 18%),
-    radial-gradient(circle at 50% 100%, rgba(255, 140, 40, 0.05), transparent 22%),
-    radial-gradient(circle at 50% 18%, rgba(255, 245, 221, 0.02), transparent 22%),
-    linear-gradient(180deg, #020305 0%, #030406 42%, #05070b 100%);
+    radial-gradient(ellipse 120% 90% at 0% 0%, rgba(255, 154, 70, 0.16), transparent 46%),
+    radial-gradient(circle at 14% 42%, rgba(212, 175, 55, 0.09), transparent 28%),
+    radial-gradient(circle at 88% 18%, rgba(232, 197, 110, 0.07), transparent 22%),
+    radial-gradient(circle at 72% 78%, rgba(255, 120, 48, 0.05), transparent 26%),
+    radial-gradient(circle at 50% 108%, rgba(40, 28, 14, 0.55), transparent 42%),
+    linear-gradient(180deg, #000000 0%, #030204 38%, #000000 100%);
   color: var(--mystic-text);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
@@ -67,7 +72,7 @@ body {
 }
 
 ::selection {
-  background: rgba(214, 168, 95, 0.25);
+  background: rgba(212, 175, 55, 0.32);
   color: var(--mystic-text);
 }
 
@@ -86,7 +91,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid rgba(214, 168, 95, 0.7);
+  outline: 2px solid rgba(212, 175, 55, 0.7);
   outline-offset: 2px;
 }
 
@@ -123,35 +128,38 @@ summary:focus-visible {
   border-radius: var(--mystic-radius-card);
   background:
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
-    radial-gradient(circle at top left, rgba(214,168,95,0.08), transparent 36%);
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 36%);
   border: 1px solid var(--mystic-card-border);
   box-shadow: var(--mystic-shadow-soft);
 }
 
-/* Frosted glass — nav, chips, dense catalog cards */
+/* Frosted glass — shop filters, chips (black glass + gold rim, matches dropdowns) */
 .mystic-glass {
   border-radius: var(--mystic-radius-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.18);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.02) 45%,
-    rgba(8, 10, 16, 0.35) 100%
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(0, 0, 0, 0.72) 100%
   );
   backdrop-filter: blur(18px) saturate(1.35);
   -webkit-backdrop-filter: blur(18px) saturate(1.35);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 12px 40px rgba(0, 0, 0, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(212, 175, 55, 0.05),
+    0 16px 48px rgba(0, 0, 0, 0.55);
 }
 
 .mystic-glass--subtle {
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(6, 8, 12, 0.45);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(212, 175, 55, 0.04);
 }
 
 .mystic-section {
@@ -179,10 +187,10 @@ summary:focus-visible {
 
 .mystic-panel {
   border-radius: 28px;
-  border: 1px solid rgba(214, 168, 95, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.12);
   background:
     linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)),
-    radial-gradient(circle at top left, rgba(214,168,95,0.08), transparent 38%);
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 38%);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.34);
 }
 
@@ -191,7 +199,7 @@ summary:focus-visible {
   align-items: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  border: 1px solid rgba(214, 168, 95, 0.18);
+  border: 1px solid rgba(212, 175, 55, 0.18);
   background: rgba(255, 255, 255, 0.03);
   padding: 0.55rem 0.9rem;
   color: #d8c6aa;
@@ -201,7 +209,7 @@ summary:focus-visible {
 }
 
 .mystic-hairline {
-  border-top: 1px solid rgba(214, 168, 95, 0.12);
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .mystic-button-primary {
@@ -212,7 +220,7 @@ summary:focus-visible {
 }
 
 .mystic-button-primary:hover {
-  background: var(--mystic-gold-hover);
+  background: var(--mystic-gold-bright);
 }
 
 .mystic-button-secondary {
@@ -229,7 +237,7 @@ summary:focus-visible {
 .mystic-input {
   border-radius: var(--mystic-radius-input);
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(214, 168, 95, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   color: var(--mystic-text);
   padding: 0.75rem 1rem;
 }
@@ -237,43 +245,46 @@ summary:focus-visible {
 .mystic-input:focus-visible {
   outline: none;
   border-color: var(--mystic-gold);
-  box-shadow: 0 0 0 1px rgba(214, 168, 95, 0.6);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.6);
 }
 
-/* Native <select>: dark luxury chrome; open list follows color-scheme where the browser allows. */
+/* Native <select>: logo-aligned black glass + molten gold frame (OS list picks up color-scheme). */
 select.mystic-select {
   appearance: none;
   cursor: pointer;
   color-scheme: dark;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   letter-spacing: 0.04em;
-  color: #f0e8dc;
-  background-color: rgba(6, 8, 12, 0.94);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23d6a85f'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  color: var(--mystic-text);
+  background-color: rgba(0, 0, 0, 0.92);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23e8c56e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.85rem center;
   background-size: 1rem 1rem;
-  border: 1px solid rgba(214, 168, 95, 0.28);
+  border: 1px solid rgba(212, 175, 55, 0.32);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 10px 28px rgba(0, 0, 0, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 0 0 1px rgba(212, 175, 55, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.55);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 select.mystic-select:hover {
-  border-color: rgba(214, 168, 95, 0.45);
-  background-color: rgba(10, 12, 18, 0.96);
+  border-color: rgba(232, 197, 110, 0.48);
+  background-color: rgba(6, 5, 8, 0.96);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 0 1px rgba(214, 168, 95, 0.12),
-    0 12px 32px rgba(0, 0, 0, 0.4);
+    0 0 0 1px rgba(212, 175, 55, 0.16),
+    0 0 28px rgba(212, 175, 55, 0.08),
+    0 14px 36px rgba(0, 0, 0, 0.5);
 }
 
 select.mystic-select:focus-visible {
-  border-color: rgba(240, 209, 154, 0.55);
+  border-color: rgba(232, 197, 110, 0.62);
   box-shadow:
-    0 0 0 1px rgba(214, 168, 95, 0.45),
-    0 14px 36px rgba(0, 0, 0, 0.45);
+    0 0 0 1px rgba(212, 175, 55, 0.38),
+    0 0 36px rgba(255, 154, 80, 0.1),
+    0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
 select.mystic-select:disabled {
@@ -283,8 +294,8 @@ select.mystic-select:disabled {
 
 option,
 optgroup {
-  background-color: #0a0d12;
-  color: #f5eee3;
+  background-color: #000000;
+  color: var(--mystic-text);
 }
 
 /* Text inputs: keep single chevron rule from applying */
@@ -308,11 +319,11 @@ optgroup {
   display: block;
   border-radius: 9999px;
   background:
-    radial-gradient(circle, rgba(255, 228, 177, 0.96) 0%, rgba(255, 202, 118, 0.82) 36%, rgba(214, 168, 95, 0.28) 66%, rgba(214, 168, 95, 0) 100%);
+    radial-gradient(circle, rgba(255, 236, 200, 0.98) 0%, rgba(255, 186, 96, 0.85) 32%, rgba(212, 175, 55, 0.35) 62%, rgba(212, 175, 55, 0) 100%);
   box-shadow:
-    0 0 10px rgba(255, 207, 127, 0.5),
-    0 0 28px rgba(214, 168, 95, 0.28);
-  opacity: 0.82;
+    0 0 12px rgba(255, 200, 120, 0.55),
+    0 0 36px rgba(212, 175, 55, 0.22);
+  opacity: 0.88;
   animation: mystic-float 8.4s ease-in-out infinite;
 }
 
@@ -354,7 +365,7 @@ optgroup {
   border-radius: 28px;
   background:
     radial-gradient(circle at 30% 26%, rgba(255, 176, 79, 0.14), transparent 26%),
-    radial-gradient(circle at 72% 68%, rgba(214, 168, 95, 0.1), transparent 30%),
+    radial-gradient(circle at 72% 68%, rgba(212, 175, 55, 0.1), transparent 30%),
     radial-gradient(circle at 50% 50%, rgba(8, 9, 11, 0.92), rgba(8, 9, 11, 0.18) 66%, rgba(8, 9, 11, 0) 100%);
   filter: blur(18px);
   opacity: 0.95;
@@ -379,7 +390,7 @@ optgroup {
   position: relative;
   display: block;
   overflow: hidden;
-  border: 1px solid rgba(214, 168, 95, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.14);
   background:
     linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
     radial-gradient(circle at 50% 50%, rgba(15, 17, 23, 0.88), rgba(8, 10, 14, 0.98));
@@ -449,8 +460,8 @@ optgroup {
 .mystique-image-frame__particle {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(255, 231, 185, 0.96) 0%, rgba(255, 192, 106, 0.78) 42%, rgba(214, 168, 95, 0) 100%);
-  box-shadow: 0 0 12px rgba(214, 168, 95, 0.2);
+  background: radial-gradient(circle, rgba(255, 231, 185, 0.96) 0%, rgba(255, 192, 106, 0.78) 42%, rgba(212, 175, 55, 0) 100%);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
   filter: blur(1px);
   z-index: 0;
   pointer-events: none;
@@ -493,7 +504,7 @@ optgroup {
   border-radius: 36px;
   background:
     radial-gradient(circle at 30% 38%, rgba(255, 176, 79, 0.14), transparent 18%),
-    radial-gradient(circle at 72% 58%, rgba(214, 168, 95, 0.08), transparent 22%),
+    radial-gradient(circle at 72% 58%, rgba(212, 175, 55, 0.08), transparent 22%),
     radial-gradient(circle at 50% 50%, rgba(8, 9, 11, 0.92), rgba(8, 9, 11, 0.38) 46%, rgba(8, 9, 11, 0.08) 70%, rgba(8, 9, 11, 0) 100%);
   filter: blur(34px);
 }
@@ -573,7 +584,7 @@ optgroup {
   background: linear-gradient(
     90deg,
     rgba(148, 163, 184, 0.08) 0%,
-    rgba(214, 168, 95, 0.18) 50%,
+    rgba(212, 175, 55, 0.18) 50%,
     rgba(148, 163, 184, 0.08) 100%
   );
   background-size: 200% 100%;
@@ -622,6 +633,22 @@ optgroup {
 
 .mystic-merged-select-list {
   animation: mystic-merged-select-reveal 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.55) rgba(0, 0, 0, 0.45);
+}
+
+.mystic-merged-select-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mystic-merged-select-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 9999px;
+}
+
+.mystic-merged-select-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(232, 197, 110, 0.85), rgba(212, 175, 55, 0.55));
+  border-radius: 9999px;
 }
 
 /* Home hero: ambient gold wash */

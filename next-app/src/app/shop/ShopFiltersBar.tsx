@@ -80,7 +80,7 @@ export function ShopFiltersBar({
             name="search"
             defaultValue={currentSearch}
             placeholder="Search by concern, texture, or ritual step..."
-            className="mystic-input mystic-input--text min-h-[54px] w-full rounded-[14px] border-[rgba(214,168,95,0.28)] bg-[rgba(6,8,12,0.92)] text-sm text-[#f0e8dc] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] placeholder:text-[#7d7365] focus-visible:border-[rgba(240,209,154,0.45)]"
+            className="mystic-input mystic-input--text min-h-[54px] w-full rounded-[14px] border-[rgba(212,175,55,0.3)] bg-[rgba(0,0,0,0.88)] text-sm text-[#f6f0e6] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_0_0_1px_rgba(212,175,55,0.05)] placeholder:text-[#7d7365] focus-visible:border-[rgba(232,197,110,0.5)]"
           />
         </form>
 
