@@ -44,11 +44,11 @@ export default async function HomePage() {
   );
 }
 
-const FIRST_VISIT_GOALS: { label: string; href: string; hint: string }[] = [
-  { label: "Glow & even tone", href: "/shop?search=glow", hint: "Dullness, uneven texture" },
-  { label: "Deep hydration", href: "/shop?search=hydrat", hint: "Dry or depleted skin" },
-  { label: "Weightless SPF", href: "/shop?search=spf", hint: "Daily protection" },
-  { label: "Five-step order", href: "/routines", hint: "How cleanse → SPF works" },
+const FIRST_VISIT_CONCERNS: { label: string; href: string }[] = [
+  { label: "Dryness", href: "/shop?search=dryness" },
+  { label: "Dullness", href: "/shop?search=dullness" },
+  { label: "Sensitivity", href: "/shop?search=sensitivity" },
+  { label: "Glow & Even tone", href: "/shop?search=glow-even-tone" },
 ];
 
 function FirstVisitGuidanceStrip() {
@@ -68,24 +68,16 @@ function FirstVisitGuidanceStrip() {
           <p className="font-literata text-2xl tracking-[0.12em] text-[#f5eee3] md:text-3xl">
             Start with what your skin needs most.
           </p>
-          <p className="max-w-2xl text-sm leading-relaxed text-[#8f8576]">
-            Each chip opens filtered shop results or the five-step routine guide—quick
-            paths, no clutter.
-          </p>
         </div>
         <ul className="mt-6 flex flex-wrap gap-2.5 md:gap-3">
-          {FIRST_VISIT_GOALS.map((goal) => (
-            <li key={goal.label}>
+          {FIRST_VISIT_CONCERNS.map((item) => (
+            <li key={item.label}>
               <Link
-                href={goal.href}
-                title={goal.hint}
-                className="group inline-flex flex-col rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.03)] px-4 py-2.5 transition hover:border-[rgba(214,168,95,0.45)] hover:bg-[rgba(214,168,95,0.08)] md:px-5 md:py-3"
+                href={item.href}
+                className="group inline-flex items-center justify-center rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.03)] px-5 py-2.5 transition hover:border-[rgba(214,168,95,0.45)] hover:bg-[rgba(214,168,95,0.08)] md:px-6 md:py-3"
               >
                 <span className="text-[0.62rem] uppercase tracking-[0.22em] text-[#f5eee3]">
-                  {goal.label}
-                </span>
-                <span className="mt-0.5 text-[0.58rem] uppercase tracking-[0.16em] text-[#7a7265] transition group-hover:text-[#9a8f7e]">
-                  {goal.hint}
+                  {item.label}
                 </span>
               </Link>
             </li>
