@@ -1,14 +1,10 @@
 import Link from "next/link";
-import { getAuthenticatedUser } from "../lib/supabaseServer";
-import { NavbarAccountMenu } from "./NavbarAccountMenu";
 
 /**
  * Floats over content: soft vertical fade into the hero, centered gold hairline
  * (not edge-to-edge), gentle fade-in on load.
  */
-export async function Navbar() {
-  const user = await getAuthenticatedUser();
-
+export function Navbar() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
       {/* Veil: readable under links, dissolves downward into hero — no corner-to-corner bar */}
@@ -32,11 +28,7 @@ export async function Navbar() {
           <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-x-4 gap-y-2 pl-4 sm:gap-x-6 sm:pl-6 md:gap-x-8 md:pl-8 lg:gap-x-10 lg:pl-10">
             <NavLink href="/ingredients" label="Ingredients" />
             <NavLink href="/about" label="About" />
-            <NavbarAccountMenu
-              isSignedIn={Boolean(user)}
-              email={user?.email ?? null}
-              className="inline-flex shrink-0 items-center"
-            />
+            <AccountIconLink />
           </div>
         </nav>
 
@@ -57,6 +49,42 @@ function NavLink({ href, label }: { href: string; label: string }) {
       className="whitespace-nowrap text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
       {label}
+    </Link>
+  );
+}
+
+function AccountIconLink() {
+  return (
+    <Link
+      href="/account"
+      aria-label="Account"
+      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+    >
+      <span className="sr-only">Account</span>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden
+      >
+        <circle
+          cx="12"
+          cy="9"
+          r="3.25"
+          stroke="currentColor"
+          strokeWidth="1.35"
+          strokeOpacity="0.9"
+        />
+        <path
+          d="M6.5 19.25c0-3.1 2.35-5 5.5-5s5.5 1.9 5.5 5"
+          stroke="currentColor"
+          strokeWidth="1.35"
+          strokeLinecap="round"
+          strokeOpacity="0.9"
+        />
+      </svg>
     </Link>
   );
 }

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
+import { signOutAction } from "../actions/auth";
 import { formatMoney } from "../lib/format";
 import type { CartSummary, Order } from "../lib/types";
+import { AccountPageFooterStrip } from "./AccountPageFooterStrip";
 
 export function AccountDashboard({
   user,
@@ -75,6 +77,14 @@ export function AccountDashboard({
                 </dd>
               </div>
             </dl>
+            <form action={signOutAction} className="mt-8 border-t border-[rgba(214,168,95,0.1)] pt-6">
+              <button
+                type="submit"
+                className="mystic-button-secondary inline-flex min-h-[44px] items-center justify-center px-6 py-2.5 text-[0.62rem] uppercase tracking-[0.2em]"
+              >
+                Sign out
+              </button>
+            </form>
           </section>
 
           <section
@@ -205,6 +215,10 @@ export function AccountDashboard({
             {cart.lines.length ? "View full bag" : "Browse shop"}
           </Link>
         </aside>
+      </div>
+
+      <div className="px-4 md:px-6 lg:px-10 xl:px-14">
+        <AccountPageFooterStrip />
       </div>
     </main>
   );
