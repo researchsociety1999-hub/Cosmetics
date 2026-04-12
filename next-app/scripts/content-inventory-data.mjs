@@ -27,7 +27,7 @@ export const INVENTORY_ROWS = [
   r(
     "(global)",
     "Navigation — fixed overlay bar",
-    "Shop, Routines (left); Ingredients, About (right)—uppercase, transparent bar over hero; no logo, search, account, or cart in header",
+    "Shop, Routines (left, toward center); Home (center); Ingredients, About (right, toward center)—uppercase, transparent bar over hero; no logo, search, account, or cart in header",
     "next-app/src/app/components/Navbar.tsx",
     "Footer and in-page links reach Journal, FAQ, Contact, cart, account.",
   ),
@@ -69,23 +69,23 @@ export const INVENTORY_ROWS = [
   r(
     "/",
     "Home — Featured products",
-    "Eyebrow Featured collections; title Rituals for radiant skin.; body; View all",
+    "Eyebrow Ritual signatures; title Textures worth the ritual.; body; Shop ritual staples CTA → /shop?sort=featured",
     "next-app/src/app/page.tsx",
     "Product names/prices from DB or next-app/src/app/lib/data.ts (mock).",
   ),
   r(
     "/",
-    "Home — Ritual sequence strip",
-    "Ritual sequence; Build your ritual with ease.; steps Cleanse/Tone/Treat/Moisturize/Protect + guidance strings; Step N; prices or Explore selection; View cleansers / serums / creams / SPF / rituals links",
+    "Home — Rituals strip",
+    "Rituals; Morning, night, and weekly.; three rhythm cards (Morning / Night / Weekly) linking to /routines# anchors; View routines CTA",
     "next-app/src/app/page.tsx",
-    "Helpers getStepGuidance, getStepHref, getStepLinkLabel in same file.",
+    "Deep links: /routines#morning-ritual, #night-ritual, #weekly-ritual (see routines/page.tsx).",
   ),
   r(
     "/",
     "Home — Ingredient spotlight",
-    "Ingredient spotlight; Ingredients with intention.; body with category count; See ingredient library; Hyaluronic Acid / Centella / Niacinamide cards (hardcoded in page)",
+    "Ingredient spotlight; Actives we lean on.; five cards from MYSTIQUE_CANONICAL_INGREDIENTS (lib/data.ts), same list as /ingredients",
     "next-app/src/app/page.tsx",
-    "Also cross-check next-app/src/app/lib/data.ts mockIngredients for site-wide consistency.",
+    "Cards link to /shop?ingredient=<canonical id> (strict key_ingredients filter in getProducts).",
   ),
   r(
     "/",
@@ -103,17 +103,10 @@ export const INVENTORY_ROWS = [
   ),
   r(
     "/shop",
-    "Shop header & filters",
-    "Shop Mystique; H1 Build your ritual…; intro; search placeholder Search serums, bloom skin, peptides…; category All categories + dynamic names; sort Newest / Price low to high / Price high to low / Featured; chips All + categories; empty-state message",
+    "Shop — category chips & catalog",
+    "Chips All + categories (URLs preserve ?search= & ?sort= when set); section labels Shop by category / per-category; empty-state message; product grids",
     "next-app/src/app/shop/page.tsx",
-    "Category names from DB or mockCategories in data.ts.",
-  ),
-  r(
-    "/shop",
-    "Shop — filter bar behavior labels",
-    "Same as above for sr-only labels Search products, Category, Sort",
-    "next-app/src/app/shop/ShopFiltersBar.tsx",
-    "",
+    "No top search/sort UI—query params still supported for deep links.",
   ),
   r(
     "/products/[slug]",
@@ -216,9 +209,9 @@ export const INVENTORY_ROWS = [
   r(
     "/ingredients",
     "Ingredients library",
-    "Ingredients; Ingredients with intention.; philosophy panel; Hydration-first / Regenerative-inspired / Layering pills; each ingredient name, description, benefits (from getIngredients)",
+    "Ingredients; Ingredients with intention.; philosophy panel; three texture pillars; five canonical actives (same as home) from getIngredients → MYSTIQUE_CANONICAL_INGREDIENTS merged with Supabase rows by id",
     "next-app/src/app/ingredients/page.tsx",
-    "Fallback/mock: next-app/src/app/lib/data.ts → mockIngredients; Supabase table when configured.",
+    "Canonical list + merge: next-app/src/app/lib/data.ts (MYSTIQUE_CANONICAL_INGREDIENTS, mergeMystiqueCanonicalIngredients); queries getIngredients.",
   ),
   r(
     "/journal",
@@ -337,7 +330,7 @@ export const INVENTORY_ROWS = [
     "Type labels & query strings only",
     "ProductSort and filter behavior (not visible copy)",
     "next-app/src/app/lib/queries.ts",
-    "Shop sort values wired in ShopFiltersBar.",
+    "ProductSort used by shop URL params and getProducts.",
   ),
   r(
     "index.html (static)",

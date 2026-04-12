@@ -35,10 +35,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     scanParts.length > 0 ? scanParts.slice(0, 3).join(" · ") : null;
 
   return (
-    <article className="group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[20px] border border-white/10 bg-[rgba(8,10,14,0.5)] shadow-[0_14px_36px_rgba(0,0,0,0.4)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-[rgba(214,168,95,0.35)] hover:shadow-[0_20px_48px_rgba(0,0,0,0.5)]">
+    <article className="group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(16,18,26,0.52)] via-[rgba(8,10,14,0.2)] to-[rgba(4,5,9,0.06)] shadow-[0_10px_36px_rgba(0,0,0,0.28)] ring-1 ring-inset ring-white/[0.05] backdrop-blur-md transition duration-500 ease-out hover:-translate-y-1 hover:from-[rgba(20,22,32,0.58)] hover:via-[rgba(10,12,18,0.32)] hover:to-[rgba(6,7,11,0.12)] hover:shadow-[0_18px_52px_rgba(0,0,0,0.38)] hover:ring-[rgba(214,168,95,0.12)]">
       <Link
         href={productHref}
-        className="relative mx-2.5 mt-2.5 block md:mx-3 md:mt-3"
+        className="relative mx-3 mt-3 block md:mx-3.5 md:mt-3.5"
       >
         <ThemedImageFrame
           src={imgSrc}
@@ -48,15 +48,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           variant="product"
           sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, (max-width: 1536px) 25vw, 20vw"
           className="aspect-[4/5]"
-          frameClassName="rounded-[16px] bg-[rgba(0,0,0,0.2)]"
-          imageClassName="object-cover transition duration-500 group-hover:scale-[1.02]"
+          frameClassName="rounded-[17px] bg-[rgba(0,0,0,0.18)] ring-1 ring-inset ring-white/[0.04]"
+          imageClassName="object-cover transition duration-700 ease-out group-hover:scale-[1.015]"
         />
-        <div className="absolute left-2 top-2 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.72)] px-2.5 py-0.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#f0d19a] backdrop-blur-sm">
+        <div className="absolute left-2.5 top-2.5 rounded-full bg-[rgba(6,8,12,0.55)] px-2.5 py-0.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#e8d4b0] shadow-[0_0_20px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-[rgba(214,168,95,0.18)] backdrop-blur-sm">
           {product.routine_step ?? "Ritual"}
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-3 md:gap-2.5 md:p-3.5">
+      <div className="flex flex-1 flex-col gap-2.5 p-3.5 md:gap-3 md:p-4">
         <div className="min-w-0 space-y-1">
           <Link
             href={productHref}
@@ -75,7 +75,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : null}
         </div>
 
-        <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-2.5">
+        <div className="mt-auto space-y-3 pt-1">
+          <div
+            aria-hidden
+            className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+          />
+          <div className="flex items-end justify-between gap-3">
           <div>
             {hasSale ? (
               <div className="flex flex-col">
@@ -116,6 +121,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </Link>
             </div>
           )}
+          </div>
         </div>
       </div>
     </article>
