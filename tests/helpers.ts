@@ -4,13 +4,22 @@ export async function gotoAndWait(page: Page, path: string) {
   await page.goto(path, { waitUntil: "networkidle" });
 }
 
-export async function expectHeading(page: Page, name: string) {
-  await expect(page.getByRole("heading", { name })).toBeVisible();
+export async function expectHeading(
+  page: Page,
+  name: string,
+  options?: { level?: 1 | 2 | 3 | 4 | 5 | 6 },
+) {
+  await expect(
+    page.getByRole("heading", {
+      name,
+      ...(options?.level != null ? { level: options.level } : {}),
+    }),
+  ).toBeVisible();
 }
 
 export async function addFirstVisibleProductToCart(page: Page) {
   await gotoAndWait(page, "/shop");
-  await expectHeading(page, "Build your ritual by texture, need, and mood.");
+  await expectHeading(page, "Shop", { level: 1 });
 
   const addToCartButton = page.getByRole("button", { name: /add to (cart|bag)/i }).first();
   await expect(addToCartButton).toBeVisible();

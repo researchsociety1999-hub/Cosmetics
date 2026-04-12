@@ -60,10 +60,10 @@ export default async function OrderDetailPage({
             </p>
           </div>
           <Link
-            href="/account/orders"
+            href="/account#order-history"
             className="mystic-button-secondary inline-flex min-h-[48px] items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.22em]"
           >
-            Back to orders
+            Back to account
           </Link>
         </div>
 

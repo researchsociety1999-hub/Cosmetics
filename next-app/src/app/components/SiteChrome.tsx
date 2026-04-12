@@ -3,7 +3,7 @@ import { BackToTopButton } from "./BackToTopButton";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 
-export async function SiteChrome({
+export function SiteChrome({
   children,
   showFooter = true,
 }: {
@@ -22,7 +22,7 @@ export async function SiteChrome({
         <span className="mystic-particle mystic-particle-sm left-[88%] top-[36%] opacity-80" />
       </div>
       <Navbar />
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 pt-[4.25rem] md:pt-[4.75rem]">{children}</div>
       <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>

@@ -10,8 +10,9 @@ test.describe("account, legal, and status routes", () => {
     await gotoAndWait(page, "/routines");
 
     await expectHeading(page, "Not sure where to start?");
-    await expect(page.getByRole("heading", { name: "Morning routine" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Evening routine" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Morning ritual" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Night ritual" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Weekly ritual" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Shop the collection" })).toBeVisible();
   });
 
@@ -59,11 +60,19 @@ test.describe("account, legal, and status routes", () => {
     ).toBeVisible();
   });
 
-  test("account root redirects guests to login with next path", async ({ page }) => {
+  test("account root shows guest hub with sign-in and signup entry points", async ({ page }) => {
     await gotoAndWait(page, "/account");
 
-    await expect(page).toHaveURL(/\/account\/login\?next=\/account$/);
-    await expectHeading(page, "Sign in to Mystique");
+    await expect(page).toHaveURL(/\/account$/);
+    await expectHeading(page, "Sign in to your Mystique account");
+    await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      /\/account\/login\?next=%2Faccount/,
+    );
+    await expect(page.getByRole("link", { name: "Create account" })).toHaveAttribute(
+      "href",
+      /\/account\/signup\?next=%2Faccount/,
+    );
   });
 
   test("orders route redirects guests to login", async ({ page }) => {
@@ -92,11 +101,15 @@ test.describe("account, legal, and status routes", () => {
   test("press and careers pages render live support content", async ({ page }) => {
     await gotoAndWait(page, "/press");
     await expectHeading(page, "Press & media");
-    await expect(page.getByText(/Coverage appears here only/i)).toBeVisible();
+    await expect(
+      page.getByText(/Each listing links to the live article/i),
+    ).toBeVisible();
 
     await gotoAndWait(page, "/careers");
-    await expectHeading(page, "Join the Mystic team");
-    await expect(page.getByText(/valid route instead of a broken link/i)).toBeVisible();
+    await expectHeading(page, "Join Mystique");
+    await expect(
+      page.getByText(/There are no public openings at the moment/i),
+    ).toBeVisible();
   });
 
   test("legal routes render privacy, terms, and cookies content", async ({ page }) => {
@@ -115,7 +128,7 @@ test.describe("account, legal, and status routes", () => {
 
   test("contact and checkout status routes surface their state messages", async ({ page }) => {
     await gotoAndWait(page, "/contact?status=missing");
-    await expectHeading(page, "The studio is listening.");
+    await expectHeading(page, "Write the studio.");
     await expect(page.getByText(/Please complete every field/i)).toBeVisible();
 
     await gotoAndWait(page, "/checkout/cancel?order_id=demo-123");

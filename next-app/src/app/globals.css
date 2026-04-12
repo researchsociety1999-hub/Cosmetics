@@ -39,6 +39,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -708,6 +709,21 @@ optgroup {
   animation: hero-fade-soft 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@keyframes mystic-navbar-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mystic-nav-fade {
+  animation: mystic-navbar-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mystic-merged-select-list {
     animation: none;
@@ -722,7 +738,8 @@ optgroup {
   .mystic-hero-reveal--sub,
   .mystic-hero-reveal--cta,
   .mystic-hero-reveal--badges,
-  .mystic-hero-reveal-pill {
+  .mystic-hero-reveal-pill,
+  .mystic-nav-fade {
     animation: none !important;
     opacity: 1;
     transform: none;

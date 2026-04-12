@@ -5,12 +5,13 @@ import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCategories, getProducts, type ProductSort } from "../lib/queries";
 import { hasSupabaseEnv } from "../lib/supabaseClient";
-import { ShopFiltersBar } from "./ShopFiltersBar";
 import type { Product } from "../lib/types";
 
 type SearchParams = Promise<{
   category?: string;
   search?: string;
+  /** Canonical spotlight id — see MYSTIQUE_CANONICAL_INGREDIENTS / getProducts `ingredientId`. */
+  ingredient?: string;
   sort?: ProductSort;
   page?: string;
 }>;
@@ -22,9 +23,16 @@ const SORT_OPTIONS: { label: string; value: ProductSort }[] = [
   { label: "Featured", value: "featured" },
 ];
 
+function firstQueryString(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    return String(value[0] ?? "").trim();
+  }
+  return String(value ?? "").trim();
+}
+
 export const metadata: Metadata = {
   title: "Shop",
-  description: "Shop the Mystique ritual collection by category, search, and sort.",
+  description: "Shop the Mystique ritual collection by category.",
 };
 
 export const revalidate = 300;
@@ -38,11 +46,13 @@ export default async function ShopPage({
   const sort = SORT_OPTIONS.some((option) => option.value === params.sort)
     ? (params.sort as ProductSort)
     : "newest";
-  const currentSearch = params.search?.trim() ?? "";
+  const currentSearch = firstQueryString(params.search);
+  const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
   const [categories, filteredProducts] = await Promise.all([
     getCategories(),
     getProducts({
-      search: currentSearch,
+      search: currentIngredient ? "" : currentSearch,
+      ingredientId: currentIngredient || undefined,
       sortBy: sort,
     }),
   ]);
@@ -66,33 +76,14 @@ export default async function ShopPage({
   return (
     <SiteChrome>
       <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
-        <header className="mb-10 space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Shop Mystique
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Build your ritual by texture, need, and mood.
-          </h1>
-          <p className="max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Explore the full Mystique catalog. Filter by category, discover your
-            ritual step, or search by texture and concern.
-          </p>
-        </header>
-
-        <ShopFiltersBar
-          currentSearch={currentSearch}
-          matchedCategorySlug={matchedCategory?.slug ?? ""}
-          sort={sort}
-          availableCategories={availableCategories.map((c) => ({
-            id: c.id,
-            slug: c.slug,
-            name: c.name,
-          }))}
-        />
-
-        <section className="mb-4 flex flex-wrap gap-3">
+        <h1 className="sr-only">Shop</h1>
+        <section className="mb-8 flex flex-wrap gap-3">
           <CategoryChip
-            href={buildShopHref({ search: currentSearch, sort })}
+            href={buildShopHref({
+              search: currentSearch,
+              ingredient: currentIngredient,
+              sort,
+            })}
             active={!matchedCategory}
           >
             All
@@ -103,6 +94,7 @@ export default async function ShopPage({
               href={buildShopHref({
                 category: category.slug,
                 search: currentSearch,
+                ingredient: currentIngredient,
                 sort,
               })}
               active={matchedCategory?.slug === category.slug}
@@ -128,14 +120,16 @@ export default async function ShopPage({
         {productSections.length === 0 ? (
           <ShopWideEmptyState
             hasSupabase={hasSupabaseEnv}
-            hasActiveFilters={Boolean(currentSearch || matchedCategory)}
+            hasActiveFilters={Boolean(
+              currentSearch || currentIngredient || matchedCategory,
+            )}
           />
         ) : (
-          <div className="space-y-12">
+          <div className="space-y-16 md:space-y-20">
             {productSections.map((section) => (
               <section
                 key={section.key}
-                className="space-y-5 border-t border-[rgba(214,168,95,0.1)] pt-8 first:border-t-0 first:pt-0"
+                className="space-y-6 border-t border-white/[0.04] pt-12 first:border-t-0 first:pt-0 md:space-y-7 md:pt-14 md:first:pt-0"
               >
                 <div className="space-y-2">
                   <p className="text-[0.72rem] text-[#b8ab95]">
@@ -159,7 +153,7 @@ export default async function ShopPage({
                 {section.products.length === 0 ? (
                   <CategoryEmptyState title={section.title} isHair={section.isHair} />
                 ) : (
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4 2xl:gap-5">
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
                     {section.products.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
@@ -493,10 +487,12 @@ function CategoryEmptyState({ title, isHair }: { title: string; isHair: boolean 
 function buildShopHref({
   category,
   search,
+  ingredient,
   sort,
 }: {
   category?: string;
   search?: string;
+  ingredient?: string;
   sort?: ProductSort;
 }) {
   const params = new URLSearchParams();
@@ -507,6 +503,10 @@ function buildShopHref({
 
   if (search) {
     params.set("search", search);
+  }
+
+  if (ingredient) {
+    params.set("ingredient", ingredient);
   }
 
   if (sort && sort !== "newest") {
