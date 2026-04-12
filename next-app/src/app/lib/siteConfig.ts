@@ -20,6 +20,39 @@ function pickUrl(...keys: string[]): string | undefined {
   return undefined;
 }
 
+/**
+ * Official social profile URLs for the footer “Follow us” row.
+ * Leave a value as `""` until the profile is live; the footer still shows the
+ * network name and icon, but the row is non-clickable for that slot.
+ *
+ * Example:
+ * `https://www.tiktok.com/@yourhandle`
+ * `https://www.instagram.com/yourhandle`
+ * `https://www.facebook.com/yourpage`
+ */
+export const FOOTER_SOCIAL_PROFILE_URLS: Record<
+  "tiktok" | "instagram" | "facebook",
+  string
+> = {
+  tiktok: "",
+  instagram: "",
+  facebook: "",
+};
+
+export type FooterSocialProfile = {
+  id: keyof typeof FOOTER_SOCIAL_PROFILE_URLS;
+  label: string;
+  href: string;
+};
+
+export function getFooterSocialProfiles(): FooterSocialProfile[] {
+  return [
+    { id: "tiktok", label: "TikTok", href: FOOTER_SOCIAL_PROFILE_URLS.tiktok.trim() },
+    { id: "instagram", label: "Instagram", href: FOOTER_SOCIAL_PROFILE_URLS.instagram.trim() },
+    { id: "facebook", label: "Facebook", href: FOOTER_SOCIAL_PROFILE_URLS.facebook.trim() },
+  ];
+}
+
 /** Returns only links with real URLs (https recommended). */
 export function getConfiguredSocialLinks(): SocialLink[] {
   const entries: Array<[label: string, url: string | undefined]> = [

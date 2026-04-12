@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getConfiguredSocialLinks } from "../lib/siteConfig";
+import { getFooterSocialProfiles } from "../lib/siteConfig";
 import { BrandLogo } from "./BrandLogo";
+import { socialIconForId } from "./FooterSocialIcons";
 
 export function Footer() {
-  const socialLinks = getConfiguredSocialLinks();
+  const footerSocialProfiles = getFooterSocialProfiles();
 
   return (
     <footer className="relative mt-24 overflow-hidden">
@@ -51,26 +52,12 @@ export function Footer() {
           </div>
 
           <div className="relative mt-10 rounded-[22px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] px-5 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-sm md:px-6 md:py-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
+            <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between md:gap-8">
+              <p className="shrink-0 text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
                 Follow us
               </p>
-              {socialLinks.length ? (
-                <div className="flex flex-wrap gap-x-6 gap-y-2">
-                  {socialLinks.map((item) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[#f5eee3] transition hover:text-[#f0d19a]"
-                    >
-                      {item.label}
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <p className="max-w-md text-sm leading-relaxed text-[#8f8576]">
+              <div className="flex min-w-0 flex-1 flex-col gap-4 md:max-w-2xl md:items-end">
+                <p className="text-sm leading-relaxed text-[#8f8576] md:text-right">
                   Follow along via{" "}
                   <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
                     Journal
@@ -79,10 +66,43 @@ export function Footer() {
                   <Link href="/press" className="text-[#d6a85f] underline-offset-4 hover:underline">
                     Press
                   </Link>
-                  . Social icons appear here once verified profile URLs are configured—no
-                  placeholder handles.
+                  . TikTok, Instagram, and Facebook below become active links once their
+                  profile URLs are set in the codebase.
                 </p>
-              )}
+                <ul className="flex flex-wrap gap-x-5 gap-y-3 md:justify-end">
+                  {footerSocialProfiles.map((profile) => {
+                    const rowClass =
+                      "inline-flex items-center gap-2 text-sm text-[#f5eee3] transition hover:text-[#f0d19a]";
+                    const iconClass = "shrink-0 text-[#d6a85f]";
+                    if (profile.href) {
+                      return (
+                        <li key={profile.id}>
+                          <a
+                            href={profile.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={rowClass}
+                          >
+                            <span className={iconClass}>{socialIconForId(profile.id)}</span>
+                            {profile.label}
+                          </a>
+                        </li>
+                      );
+                    }
+                    return (
+                      <li key={profile.id}>
+                        <span
+                          className={`${rowClass} cursor-default opacity-60 hover:text-[#f5eee3]`}
+                          title="Profile URL not set yet — add it in siteConfig.ts"
+                        >
+                          <span className={iconClass}>{socialIconForId(profile.id)}</span>
+                          {profile.label}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </div>
 
