@@ -28,17 +28,21 @@ export function BrandLogo({
         aria-hidden
         className={`relative h-full w-full ${className}`}
       >
-        {/* Dissolve edges + low contrast so the lockup reads as atmosphere, not a sticker */}
-        <div className="absolute inset-[-8%] [mask-image:radial-gradient(ellipse_58%_52%_at_50%_50%,#000_0%,#000_42%,transparent_78%)] [-webkit-mask-image:radial-gradient(ellipse_58%_52%_at_50%_50%,#000_0%,#000_42%,transparent_78%)]">
+        {/* Soft oval mask + gentle bottom falloff so the mark dissolves into the page */}
+        <div className="absolute inset-[-10%] [mask-image:radial-gradient(ellipse_84%_68%_at_50%_50%,#000_0%,#000_16%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.45)_50%,rgba(0,0,0,0.18)_66%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_84%_68%_at_50%_50%,#000_0%,#000_16%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.45)_50%,rgba(0,0,0,0.18)_66%,transparent_82%)]">
           <Image
             src={LOGO_SRC}
             alt=""
             fill
             priority={priority}
-            sizes="(max-width: 640px) 96vw, (max-width: 1024px) 92vw, 1180px"
-            className="object-contain object-center opacity-[0.15] saturate-[0.85] contrast-[1.04] [filter:drop-shadow(0_0_100px_rgba(212,175,55,0.12))_drop-shadow(0_0_200px_rgba(0,0,0,0.32))]"
+            sizes="100vw"
+            className="object-contain object-center opacity-[0.14] saturate-[0.88] contrast-[1.03] [filter:drop-shadow(0_0_120px_rgba(212,175,55,0.1))_drop-shadow(0_0_220px_rgba(0,0,0,0.28))]"
           />
         </div>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-[42%] via-[rgba(5,6,10,0.12)] to-[rgb(5,6,10)]"
+        />
       </div>
     );
   }
