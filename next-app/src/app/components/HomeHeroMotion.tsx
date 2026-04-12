@@ -87,7 +87,7 @@ export function HomeHeroMotion() {
 
       <div
         ref={copyRef}
-        className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-[4.5rem] pt-12 text-center md:px-6 md:pb-[5.5rem] md:pt-16 lg:px-10 xl:px-14"
+        className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-[4.5rem] pt-8 text-center md:px-6 md:pb-[5.5rem] md:pt-10 lg:px-10 xl:px-14"
         style={{ opacity: 1 }}
       >
         <div
