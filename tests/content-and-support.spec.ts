@@ -26,7 +26,7 @@ test.describe("content and support routes", () => {
     await gotoAndWait(page, "/faq");
 
     await expectHeading(page, "Questions, answered softly.");
-    await page.getByText("How quickly will my order arrive?", { exact: true }).click();
+    await page.getByText("How long does shipping take?", { exact: true }).click();
     await expect(page.getByText(/three to five business days/i)).toBeVisible();
   });
 

@@ -59,11 +59,19 @@ test.describe("account, legal, and status routes", () => {
     ).toBeVisible();
   });
 
-  test("account root redirects guests to login with next path", async ({ page }) => {
+  test("account root shows guest hub with sign-in and signup entry points", async ({ page }) => {
     await gotoAndWait(page, "/account");
 
-    await expect(page).toHaveURL(/\/account\/login\?next=\/account$/);
-    await expectHeading(page, "Sign in to Mystique");
+    await expect(page).toHaveURL(/\/account$/);
+    await expectHeading(page, "Sign in to your Mystique account");
+    await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      /\/account\/login\?next=%2Faccount/,
+    );
+    await expect(page.getByRole("link", { name: "Create account" })).toHaveAttribute(
+      "href",
+      /\/account\/signup\?next=%2Faccount/,
+    );
   });
 
   test("orders route redirects guests to login", async ({ page }) => {

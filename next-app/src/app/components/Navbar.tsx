@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { getAuthenticatedUser } from "../lib/supabaseServer";
+import { NavbarAccountMenu } from "./NavbarAccountMenu";
 
 /**
  * Floats over content: soft vertical fade into the hero, centered gold hairline
  * (not edge-to-edge), gentle fade-in on load.
  */
-export function Navbar() {
+export async function Navbar() {
+  const user = await getAuthenticatedUser();
+
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
       {/* Veil: readable under links, dissolves downward into hero — no corner-to-corner bar */}
@@ -25,9 +29,14 @@ export function Navbar() {
           <div className="flex shrink-0 items-center justify-center px-2 sm:px-3">
             <NavLink href="/" label="Home" />
           </div>
-          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-x-5 gap-y-2 pl-4 sm:gap-x-7 sm:pl-6 md:gap-x-9 md:pl-8 lg:gap-x-11 lg:pl-10">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-x-4 gap-y-2 pl-4 sm:gap-x-6 sm:pl-6 md:gap-x-8 md:pl-8 lg:gap-x-10 lg:pl-10">
             <NavLink href="/ingredients" label="Ingredients" />
             <NavLink href="/about" label="About" />
+            <NavbarAccountMenu
+              isSignedIn={Boolean(user)}
+              email={user?.email ?? null}
+              className="inline-flex shrink-0 items-center"
+            />
           </div>
         </nav>
 
