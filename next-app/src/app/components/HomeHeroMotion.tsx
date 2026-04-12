@@ -102,12 +102,13 @@ export function HomeHeroMotion() {
           className="mystic-particle mystic-particle-lg left-[88%] top-[58%]"
           style={{ animationDelay: "-0.6s" }}
         />
+        {/* Keep lower sparkles off small screens so they do not read as stray marks near trust badges */}
         <span
-          className="mystic-particle mystic-particle-sm left-[48%] top-[72%]"
+          className="mystic-particle mystic-particle-sm left-[48%] top-[72%] hidden md:block"
           style={{ animationDelay: "-5.1s" }}
         />
         <span
-          className="mystic-particle mystic-particle-sm left-[24%] top-[56%] opacity-70"
+          className="mystic-particle mystic-particle-sm left-[24%] top-[56%] hidden sm:block opacity-70"
           style={{ animationDelay: "-2.8s" }}
         />
         <span
@@ -124,14 +125,14 @@ export function HomeHeroMotion() {
         <div className="max-w-xl space-y-8">
           <div className="space-y-5">
             <h1
-              className={`font-literata text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.06] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)] ${
+              className={`text-balance font-literata text-[clamp(1.75rem,5vw+0.5rem,3.35rem)] font-medium leading-[1.08] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)] ${
                 reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
               }`}
             >
               Where Beauty Transcends
             </h1>
             <p
-              className={`max-w-md text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem] ${
+              className={`max-w-md text-pretty text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem] ${
                 reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
               }`}
             >
@@ -184,7 +185,7 @@ export function HomeHeroMotion() {
               <span
                 key={item.label}
                 title={item.title}
-                className={`rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem] ${
+                className={`max-w-[100%] text-balance rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-left text-[0.56rem] uppercase tracking-[0.16em] text-[#9a8f7e] backdrop-blur-md sm:px-3.5 sm:py-2 sm:text-[0.58rem] sm:tracking-[0.2em] md:text-[0.62rem] ${
                   reduce ? "" : "mystic-hero-reveal-pill"
                 }`}
                 style={reduce ? undefined : { animationDelay: `${0.35 + i * 0.08}s` }}
