@@ -40,12 +40,12 @@ export function BrandLogo({
           priority={priority}
           sizes={
             compact
-              ? "(max-width: 640px) 300px, (max-width: 1024px) 340px, 400px"
+              ? "(max-width: 1279px) 280px, (max-width: 1536px) 340px, 400px"
               : "(max-width: 768px) 320px, 440px"
           }
           className={
             compact
-              ? "h-11 w-auto max-h-11 object-contain object-center sm:h-12 sm:max-h-12 md:h-[3.35rem] md:max-h-[3.35rem] lg:h-[3.65rem] lg:max-h-[3.65rem] [filter:drop-shadow(0_2px_14px_rgba(0,0,0,0.92))_drop-shadow(0_0_32px_rgba(212,175,55,0.42))_drop-shadow(0_0_60px_rgba(255,154,80,0.12))_brightness(1.08)_contrast(1.08)_saturate(1.06)]"
+              ? "h-10 w-auto max-h-10 object-contain object-center sm:h-11 sm:max-h-11 md:h-12 md:max-h-12 xl:h-[3.35rem] xl:max-h-[3.35rem] 2xl:h-[3.65rem] 2xl:max-h-[3.65rem] [filter:drop-shadow(0_2px_14px_rgba(0,0,0,0.92))_drop-shadow(0_0_32px_rgba(212,175,55,0.42))_drop-shadow(0_0_60px_rgba(255,154,80,0.12))_brightness(1.08)_contrast(1.08)_saturate(1.06)]"
               : "h-12 w-auto max-h-12 object-contain object-center sm:h-14 sm:max-h-14 md:h-16 md:max-h-16 lg:h-[4.5rem] lg:max-h-[4.5rem] [filter:drop-shadow(0_2px_16px_rgba(0,0,0,0.88))_drop-shadow(0_0_36px_rgba(212,175,55,0.36))_drop-shadow(0_0_72px_rgba(255,154,80,0.1))_brightness(1.06)_contrast(1.06)_saturate(1.05)]"
           }
         />

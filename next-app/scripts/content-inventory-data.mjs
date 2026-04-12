@@ -26,17 +26,10 @@ export const INVENTORY_ROWS = [
   ),
   r(
     "(global)",
-    "Navigation — desktop links",
-    "Shop, Routines, Ingredients, Journal, About, FAQ, Contact, Search (icon), Sign in / Sign up or Account + Sign out, Cart (count)",
-    "next-app/src/app/components/Navbar.tsx",
-    "Link labels and structure.",
-  ),
-  r(
-    "(global)",
-    "Navigation — mobile Menu button & drawer",
-    "Menu, chevron; same links as desktop + Search + Cart (n); Sign out button label when authed",
-    "next-app/src/app/components/NavbarMobileMenu.tsx",
-    "Closes on link tap / outside click.",
+    "Navigation — header",
+    "Center only: Shop, Routines, Ingredients, About. No logo, icons, or hamburger in header.",
+    "next-app/src/app/components/Navbar.tsx; next-app/src/app/components/NavbarCenterNav.tsx",
+    "Primary link list is in NavbarCenterNav (client, active state).",
   ),
   r(
     "(global)",
