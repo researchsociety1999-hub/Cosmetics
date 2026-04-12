@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-cosmetics--wjwz.vercel.app-pink?style=for-the-badge&logo=vercel)](https://cosmetics-wjwz.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/dashboard/projects)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.x-38BDF8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Tested%20with-Playwright-2EAD33?style=for-the-badge&logo=playwright)](https://playwright.dev/)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
@@ -82,7 +82,7 @@ Cosmetics/
 
 - Node.js `v18+`
 - npm `v9+`
-- A [Supabase](https://supabase.com) project
+- A [Supabase](https://supabase.com/dashboard/projects) project
 - A [Resend](https://resend.com) account for emails
 
 ### 1️⃣ Clone the Repository
@@ -133,6 +133,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
 | `npm run start` | Start the production server |
 | `npm run lint` | Run ESLint across the project |
 | `npm run install` | Install all workspace dependencies |
+| `npm test` | Run Playwright end-to-end tests (`tests/`) |
 
 ---
 
@@ -141,8 +142,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
 This project uses [Playwright](https://playwright.dev/) for end-to-end testing.
 
 ```bash
-# Run all tests
+# Run all tests (from repo root; builds next-app and serves on :3001)
+npm test
+
+# Same as above
 npx playwright test
+
+# Run one file
+npx playwright test tests/account-page.spec.ts
 
 # Run tests with UI mode
 npx playwright test --ui

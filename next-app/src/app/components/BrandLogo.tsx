@@ -12,13 +12,43 @@ export function BrandLogo({
   compact = false,
   className = "",
   priority = false,
+  watermark = false,
 }: {
   href?: string;
   compact?: boolean;
   className?: string;
   /** Navbar: pass true for faster LCP on the wordmark. */
   priority?: boolean;
+  /** Large decorative mark behind hero copy (no link, hidden from assistive tech). */
+  watermark?: boolean;
 }) {
+  if (watermark) {
+    return (
+      <div aria-hidden className={`relative h-full w-full ${className}`}>
+        {/* Large-field mask: keeps edges soft so the mark merges with Mystique ink + gold ambience */}
+        <div className="absolute inset-[-6%] [mask-image:radial-gradient(ellipse_88%_72%_at_50%_50%,#000_0%,#000_10%,rgba(0,0,0,0.78)_26%,rgba(0,0,0,0.42)_46%,rgba(0,0,0,0.16)_64%,transparent_80%)] [-webkit-mask-image:radial-gradient(ellipse_88%_72%_at_50%_50%,#000_0%,#000_10%,rgba(0,0,0,0.78)_26%,rgba(0,0,0,0.42)_46%,rgba(0,0,0,0.16)_64%,transparent_80%)]">
+          <Image
+            src={LOGO_SRC}
+            alt=""
+            fill
+            priority={priority}
+            sizes="100vw"
+            className="object-contain object-center mix-blend-soft-light opacity-[0.22] [filter:brightness(1.08)_contrast(1.06)_saturate(0.94)_drop-shadow(0_0_72px_rgba(214,168,95,0.3))_drop-shadow(0_0_160px_rgba(212,175,55,0.16))_drop-shadow(0_0_260px_rgba(0,0,0,0.26))]"
+          />
+        </div>
+        {/* Pull gold from the mark into surrounding UI chrome */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_82%_58%_at_50%_46%,rgba(214,168,95,0.14),transparent_58%)] opacity-95 mix-blend-soft-light"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(1,2,3,0.16)] from-[0%] via-transparent via-[35%] to-[rgb(5,6,10)] to-[100%]"
+        />
+      </div>
+    );
+  }
+
   return (
     <Link
       href={href}

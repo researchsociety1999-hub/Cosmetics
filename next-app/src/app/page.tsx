@@ -4,13 +4,9 @@ import { Suspense } from "react";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
-import { PurchaseTrustFootnote } from "./components/PurchaseTrustFootnote";
 import { SiteChrome } from "./components/SiteChrome";
-import { formatMoney } from "./lib/format";
-import {
-  getCategories,
-  getProducts,
-} from "./lib/queries";
+import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
+import { getProducts } from "./lib/queries";
 
 export const metadata: Metadata = {
   title: {
@@ -28,27 +24,22 @@ export default async function HomePage() {
       <main>
         <HomeHeroMotion />
         <FirstVisitGuidanceStrip />
-        <Suspense fallback={<SectionLoading title="Editor's picks" />}>
+        <Suspense fallback={<SectionLoading title="Ritual signatures" />}>
           <FeaturedProductsSection />
         </Suspense>
-        <Suspense fallback={<SectionLoading title="Ritual sequence" />}>
-          <RitualStripSection />
-        </Suspense>
-        <Suspense fallback={<SectionLoading title="Ingredient spotlight" />}>
-          <IngredientSpotlightSection />
-        </Suspense>
-        <BrandStandardsSection />
+        <RitualStripSection />
+        <IngredientSpotlightSection />
         <NewsletterSection />
       </main>
     </SiteChrome>
   );
 }
 
-const FIRST_VISIT_GOALS: { label: string; href: string; hint: string }[] = [
-  { label: "Glow & even tone", href: "/shop?search=glow", hint: "Dullness, uneven texture" },
-  { label: "Deep hydration", href: "/shop?search=hydrat", hint: "Dry or depleted skin" },
-  { label: "Weightless SPF", href: "/shop?search=spf", hint: "Daily protection" },
-  { label: "Five-step order", href: "/routines", hint: "How cleanse → SPF works" },
+const FIRST_VISIT_CONCERNS: { label: string; href: string }[] = [
+  { label: "Dryness", href: "/shop?search=dryness" },
+  { label: "Dullness", href: "/shop?search=dullness" },
+  { label: "Sensitivity", href: "/shop?search=sensitivity" },
+  { label: "Glow & Even tone", href: "/shop?search=glow-even-tone" },
 ];
 
 function FirstVisitGuidanceStrip() {
@@ -68,24 +59,16 @@ function FirstVisitGuidanceStrip() {
           <p className="font-literata text-2xl tracking-[0.12em] text-[#f5eee3] md:text-3xl">
             Start with what your skin needs most.
           </p>
-          <p className="max-w-2xl text-sm leading-relaxed text-[#8f8576]">
-            Each chip opens filtered shop results or the five-step routine guide—quick
-            paths, no clutter.
-          </p>
         </div>
         <ul className="mt-6 flex flex-wrap gap-2.5 md:gap-3">
-          {FIRST_VISIT_GOALS.map((goal) => (
-            <li key={goal.label}>
+          {FIRST_VISIT_CONCERNS.map((item) => (
+            <li key={item.label}>
               <Link
-                href={goal.href}
-                title={goal.hint}
-                className="group inline-flex flex-col rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.03)] px-4 py-2.5 transition hover:border-[rgba(214,168,95,0.45)] hover:bg-[rgba(214,168,95,0.08)] md:px-5 md:py-3"
+                href={item.href}
+                className="group inline-flex items-center justify-center rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.03)] px-5 py-2.5 transition hover:border-[rgba(214,168,95,0.45)] hover:bg-[rgba(214,168,95,0.08)] md:px-6 md:py-3"
               >
                 <span className="text-[0.62rem] uppercase tracking-[0.22em] text-[#f5eee3]">
-                  {goal.label}
-                </span>
-                <span className="mt-0.5 text-[0.58rem] uppercase tracking-[0.16em] text-[#7a7265] transition group-hover:text-[#9a8f7e]">
-                  {goal.hint}
+                  {item.label}
                 </span>
               </Link>
             </li>
@@ -103,11 +86,11 @@ async function FeaturedProductsSection() {
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80">
       <div className="mystic-section-shell">
         <SectionIntro
-          eyebrow="Editor's picks"
-          title="Where to begin."
-          body="Staff favorites and easy entry points—textures that layer cleanly and earn a place in daily routines."
+          eyebrow="Ritual signatures"
+          title="Textures worth the ritual."
+          body="A short list of formulas we reach for first—layer-clean, barrier-kind, and built for morning, night, and the weekly reset."
           ctaHref="/shop?sort=featured"
-          ctaLabel="Browse featured"
+          ctaLabel="Shop ritual staples"
         />
         {products.length === 0 ? (
           <div className="mystic-card max-w-2xl p-8 text-sm leading-relaxed text-[#b8ab95]">
@@ -138,152 +121,84 @@ async function FeaturedProductsSection() {
             ))}
           </div>
         )}
-        <div className="mt-10 max-w-3xl">
-          <PurchaseTrustFootnote />
-        </div>
       </div>
     </section>
   );
 }
 
-const RITUAL_STEP_ORDER = [
-  "Cleanse",
-  "Tone",
-  "Treat",
-  "Moisturize",
-  "Protect",
-] as const;
+const HOME_RITUAL_RHYTHMS: {
+  label: string;
+  title: string;
+  body: string;
+  href: string;
+  linkLabel: string;
+}[] = [
+  {
+    label: "Morning",
+    title: "Daylight ritual",
+    body: "Light layers, clarity, and SPF-forward finish—built to move under makeup and real schedules.",
+    href: "/routines#morning-ritual",
+    linkLabel: "Morning routine",
+  },
+  {
+    label: "Night",
+    title: "Recovery ritual",
+    body: "Double cleanse, treatment, and seal—richer textures while skin resets overnight.",
+    href: "/routines#night-ritual",
+    linkLabel: "Night routine",
+  },
+  {
+    label: "Weekly",
+    title: "Reset ritual",
+    body: "Exfoliation, masks, and focused care—one or two nights a week to refine tone and texture.",
+    href: "/routines#weekly-ritual",
+    linkLabel: "Weekly routine",
+  },
+];
 
-/** When no catalog match for a step, cards still read editorial and complete. */
-const RITUAL_STEP_EDITORIAL: Record<
-  (typeof RITUAL_STEP_ORDER)[number],
-  { title: string; body: string }
-> = {
-  Cleanse: {
-    title: "First light",
-    body: "Lift SPF, makeup, and the day with textures that leave skin cushioned—never stripped.",
-  },
-  Tone: {
-    title: "Quiet balance",
-    body: "Hydrate after cleansing so serums and creams spread evenly and absorb without pilling.",
-  },
-  Treat: {
-    title: "Targeted luminosity",
-    body: "Serums and concentrates for tone, texture, and overnight renewal—use where your skin needs focus.",
-  },
-  Moisturize: {
-    title: "Seal the veil",
-    body: "Lock in water and comfort with creams that feel plush, not heavy, morning or night.",
-  },
-  Protect: {
-    title: "Daylight finish",
-    body: "Finish with SPF that stays comfortable under makeup and real life—protection you will actually wear.",
-  },
-};
-
-async function RitualStripSection() {
-  const products = await getProducts({ sortBy: "featured" });
-  const ritualSteps = RITUAL_STEP_ORDER.map((step) => ({
-    step,
-    product: products.find((product) => product.routine_step === step) ?? null,
-  }));
-
+function RitualStripSection() {
   return (
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a]">
       <div className="mystic-section-shell">
         <SectionIntro
-          eyebrow="Ritual sequence"
-          title="Five steps, one routine."
-          body="From cleanse to SPF, each step supports the next. In stock? Open the product. Still deciding? Shop that step with the link on each card."
-          ctaHref="/shop"
-          ctaLabel="Browse all steps"
+          eyebrow="Rituals"
+          title="Morning, night, and weekly."
+          ctaHref="/routines"
+          ctaLabel="View routines"
         />
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {ritualSteps.map(({ step, product }, index) => {
-            const editorial = RITUAL_STEP_EDITORIAL[step];
-            const headline = product?.name ?? editorial.title;
-            const supporting =
-              product?.description?.trim() || editorial.body;
-
-            return (
-              <article
-                key={step}
-                className="mystic-card min-w-[240px] flex-1 p-5"
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {HOME_RITUAL_RHYTHMS.map((ritual) => (
+            <article key={ritual.label} className="mystic-card p-6 md:p-7">
+              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                {ritual.label}
+              </p>
+              <h3 className="mt-3 font-literata text-3xl tracking-[0.12em] text-[#f5eee3]">
+                {ritual.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">{ritual.body}</p>
+              <Link
+                href={ritual.href}
+                className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f] underline-offset-4 hover:underline"
               >
-                <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                  Step {index + 1}
-                </p>
-                <p className="mt-2 text-[0.7rem] uppercase tracking-[0.22em] text-[#9f927f]">
-                  {step}
-                </p>
-                <h3 className="mt-3 font-literata text-3xl tracking-[0.12em]">
-                  {headline}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-                  {supporting}
-                </p>
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
-                    {product
-                      ? `From ${formatMoney(product.sale_price_cents ?? product.price_cents)}`
-                      : "Pricing on the shop"}
-                  </p>
-                  <Link
-                    href={
-                      product?.slug?.trim()
-                        ? `/products/${product.slug.trim()}`
-                        : getStepHref(step)
-                    }
-                    className="inline-flex text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f] underline-offset-4 hover:underline"
-                  >
-                    {product?.slug?.trim() ? "View product" : getStepLinkLabel(step)}
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
+                {ritual.linkLabel}
+              </Link>
+            </article>
+          ))}
         </div>
         <p className="mt-8 max-w-2xl text-sm leading-relaxed text-[#8f8576]">
-          Want the full catalog? Use the links above or open the{" "}
+          Ready to browse products? Open the{" "}
           <Link href="/shop" className="text-[#d6a85f] underline-offset-4 hover:underline">
             shop
           </Link>{" "}
-          and filter by category.
+          anytime.
         </p>
       </div>
     </section>
   );
 }
 
-async function IngredientSpotlightSection() {
-  const categories = await getCategories();
-  const ingredientIntroBody =
-    categories.length > 0
-      ? `A short list of ingredients you will see across our ${categories.length} ${categories.length === 1 ? "collection" : "collections"}—tap through to shop products that feature them.`
-      : "A short list of actives we build around—tap through to shop once your catalog publishes, or read the full ingredient guide for how we think about texture and barrier care.";
-  const ingredients = [
-    {
-      id: "hyaluronic-acid",
-      source: "Humectant",
-      name: "Hyaluronic Acid",
-      description: "Draws in lasting hydration for a plump, dewy finish.",
-      benefits: "Hydration, bounce, smoothness",
-    },
-    {
-      id: "centella-asiatica",
-      source: "Leaf extract",
-      name: "Centella Asiatica",
-      description: "Helps calm visible redness and support a comfort-first ritual.",
-      benefits: "Soothing, recovery, softness",
-    },
-    {
-      id: "niacinamide",
-      source: "Vitamin B3",
-      name: "Niacinamide",
-      description: "Refines the look of tone and texture for polished radiance.",
-      benefits: "Brightness, clarity, barrier support",
-    },
-  ];
+function IngredientSpotlightSection() {
+  const ingredients = MYSTIQUE_CANONICAL_INGREDIENTS;
 
   return (
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05060c]">
@@ -291,7 +206,6 @@ async function IngredientSpotlightSection() {
         <SectionIntro
           eyebrow="Ingredients"
           title="Actives we lean on."
-          body={ingredientIntroBody}
           ctaHref="/ingredients"
           ctaLabel="Full ingredient guide"
         />
@@ -307,74 +221,13 @@ async function IngredientSpotlightSection() {
               </h3>
               <p className="mt-3 text-sm text-[#b8ab95]">{ingredient.benefits}</p>
               <Link
-                href={`/shop?search=${encodeURIComponent(ingredient.name)}`}
+                href={`/shop?ingredient=${ingredient.id}`}
                 className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
               >
                 Shop products with {ingredient.name}
               </Link>
             </article>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function BrandStandardsSection() {
-  return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]">
-      <div className="mystic-section-shell">
-        <header className="mb-10 max-w-2xl space-y-3">
-          <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
-            Trust
-          </p>
-          <h2 className="font-literata text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
-            How we keep proof honest
-          </h2>
-          <p className="text-sm leading-relaxed text-[#b8ab95]">
-            No scripted homepage quotes or logo walls. Product pages show purchase-backed
-            reviews when shoppers publish them. Press listings link only to real articles.
-          </p>
-        </header>
-        <div className="grid gap-6 md:grid-cols-2">
-          <article className="mystic-card p-6">
-            <h3 className="font-literata text-2xl tracking-[0.1em] text-[#f5eee3]">
-              Press &amp; media
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-              Coverage appears with a working article link. Press kits, fact checks, and
-              wholesale all go through the same studio inbox.
-            </p>
-            <Link
-              href="/press"
-              className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
-            >
-              Press room
-            </Link>
-          </article>
-          <article className="mystic-card p-6">
-            <h3 className="font-literata text-2xl tracking-[0.1em] text-[#f5eee3]">
-              Care &amp; answers
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
-              Order issues, texture questions, or routing to the right teammate—use the
-              form and include your best contact email.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
-              <Link
-                href="/contact"
-                className="inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
-              >
-                Contact
-              </Link>
-              <Link
-                href="/faq"
-                className="inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
-              >
-                FAQ
-              </Link>
-            </div>
-          </article>
         </div>
       </div>
     </section>
@@ -391,12 +244,8 @@ function NewsletterSection() {
               Newsletter
             </p>
             <h2 className="mt-3 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-              Notes worth opening.
+              Letters from the house.
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
-              Restocks, launches, and studio edits—only when there is something useful to
-              share.
-            </p>
           </div>
           <div>
             <NewsletterForm />
@@ -419,7 +268,7 @@ function SectionIntro({
 }: {
   eyebrow: string;
   title: string;
-  body: string;
+  body?: string;
   ctaHref?: string;
   ctaLabel?: string;
 }) {
@@ -432,7 +281,9 @@ function SectionIntro({
         <h2 className="font-literata text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
           {title}
         </h2>
-        <p className="text-sm leading-relaxed text-[#b8ab95]">{body}</p>
+        {body ? (
+          <p className="text-sm leading-relaxed text-[#b8ab95]">{body}</p>
+        ) : null}
       </div>
       {ctaHref && ctaLabel ? (
         <Link
@@ -444,54 +295,6 @@ function SectionIntro({
       ) : null}
     </header>
   );
-}
-
-function getStepHref(step: string): string {
-  if (step === "Cleanse") {
-    return "/shop?search=cleanser";
-  }
-
-  if (step === "Tone") {
-    return "/shop?search=toner";
-  }
-
-  if (step === "Treat") {
-    return "/shop?search=serum";
-  }
-
-  if (step === "Moisturize") {
-    return "/shop?search=moisturizer";
-  }
-
-  if (step === "Protect") {
-    return "/shop?search=spf";
-  }
-
-  return "/shop";
-}
-
-function getStepLinkLabel(step: string): string {
-  if (step === "Cleanse") {
-    return "View cleansers";
-  }
-
-  if (step === "Tone") {
-    return "View toners";
-  }
-
-  if (step === "Treat") {
-    return "View serums";
-  }
-
-  if (step === "Moisturize") {
-    return "View creams";
-  }
-
-  if (step === "Protect") {
-    return "View SPF";
-  }
-
-  return "View rituals";
 }
 
 function SectionLoading({ title }: { title: string }) {

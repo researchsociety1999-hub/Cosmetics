@@ -213,48 +213,71 @@ export const mockProductVariants: ProductVariant[] = [
   },
 ];
 
-export const mockIngredients: Ingredient[] = [
+/**
+ * Canonical spotlight actives—same order and ids for `/`, `/ingredients`, and `getIngredients`
+ * merge (Supabase rows override copy when `id` matches).
+ */
+export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
   {
-    id: "pdrn",
-    name: "PDRN-inspired renewal",
+    id: "niacinamide",
+    name: "Niacinamide",
     description:
-      "Used in the Mystique story as a cue for next-generation skin recovery and glow support.",
-    benefits: "Bounce, rested look, renewal-minded ritual copy",
-    source: "Biotech-inspired",
+      "A multi-tasking vitamin we use for clarity, refined texture, and barrier-friendly polish in daily rituals.",
+    benefits: "Brightness, clarity, barrier support",
+    source: "Vitamin B3",
   },
   {
-    id: "peptides",
-    name: "Peptides",
+    id: "hyaluronic-acid",
+    name: "Hyaluronic Acid",
     description:
-      "Signal-support ingredients chosen for smoother, more resilient-looking skin over time.",
-    benefits: "Firm-feel support, softness, bounce",
-    source: "Lab-crafted",
+      "A humectant network that draws and holds water so skin reads supple, dewy, and comfortable under layers.",
+    benefits: "Hydration, bounce, smoothness",
+    source: "Humectant",
   },
   {
     id: "centella-asiatica",
     name: "Centella Asiatica",
     description:
-      "A calming botanical prized in Mystique Beauty routines for comfort and post-stress softness.",
-    benefits: "Soothing, redness support, recovery",
+      "A calming botanical we lean on when skin needs quiet recovery—comfort-first, never harsh.",
+    benefits: "Soothing, recovery, softness",
     source: "Leaf extract",
   },
   {
-    id: "hyaluronic-acid",
-    name: "Hyaluronic acid",
+    id: "ceramides",
+    name: "Ceramides",
     description:
-      "A hydration anchor that helps skin appear supple, dewy, and bloom-finished.",
-    benefits: "Hydration, plumpness, smoothness",
-    source: "Humectant",
+      "Skin-identical lipids that help reinforce the barrier so moisture stays in and stress stays out.",
+    benefits: "Barrier comfort, moisture retention, resilience",
+    source: "Skin-identical lipid",
   },
   {
-    id: "niacinamide",
-    name: "Niacinamide",
+    id: "squalane",
+    name: "Squalane",
     description:
-      "A staple active for clarity, tone balance, and a polished visible finish.",
-    benefits: "Brightness, barrier support, refined texture",
-    source: "Vitamin B3",
+      "A weightless emollient that seals without slipperiness—silk at the surface, breathable underneath.",
+    benefits: "Silky slip, soft finish, weightless seal",
+    source: "Emollient",
   },
 ];
+
+/** @deprecated Use MYSTIQUE_CANONICAL_INGREDIENTS — kept as alias for imports. */
+export const mockIngredients: Ingredient[] = MYSTIQUE_CANONICAL_INGREDIENTS;
+
+export function mergeMystiqueCanonicalIngredients(
+  fromDb: Ingredient[],
+): Ingredient[] {
+  const canonicalIds = new Set(
+    MYSTIQUE_CANONICAL_INGREDIENTS.map((row) => row.id),
+  );
+  const byId = new Map(fromDb.map((row) => [row.id, row]));
+  const ordered = MYSTIQUE_CANONICAL_INGREDIENTS.map(
+    (canonical) => byId.get(canonical.id) ?? canonical,
+  );
+  const extras = fromDb
+    .filter((row) => !canonicalIds.has(row.id))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return [...ordered, ...extras];
+}
 
 /**
  * Reserved for fixtures; the live Press page loads only from Supabase `press_mentions`.
@@ -301,25 +324,29 @@ export const mockTestimonials = [
 
 export const mockFaqs = [
   {
-    question: "What does U.S. shipping cost?",
-    answer:
-      "Shipping rates follow the same rules shown at checkout: standard U.S. delivery is complimentary on qualifying orders, with a flat rate below that threshold.",
-  },
-  {
     question: "How long does shipping take?",
-    answer: "Most U.S. orders arrive within 3 to 5 business days with tracking sent as soon as your order ships.",
+    answer:
+      "Most domestic orders leave our studio within two business days and arrive in three to five business days once the carrier has picked them up. You will receive tracking as soon as your parcel is scanned.",
   },
   {
-    question: "What is your returns policy?",
-    answer: "Returns are accepted within 30 days on eligible unopened items in their original condition.",
+    question: "Are your products suitable for sensitive skin?",
+    answer:
+      "Many Mystique formulas are built with barrier comfort in mind—calming botanicals, steady hydration, and textures that layer gently. Skin sensitivity is personal: introduce one new product at a time, and patch test along the jaw for forty-eight hours when you are unsure. This is general care guidance, not medical advice.",
   },
   {
-    question: "How should I layer the ritual?",
-    answer: "Cleanse, tone, treat, moisturize, then protect in the morning.",
+    question: "Do you offer international shipping?",
+    answer:
+      "Checkout is set up for U.S. domestic addresses today. If you are shopping from outside the United States, use Contact with your country and cart notes—we will confirm what is possible on a case-by-case basis or keep you on the list for future regions.",
   },
   {
-    question: "Which formulas suit sensitive skin?",
-    answer: "Look for centella, peptides, and hydration-focused textures. Patch testing is always recommended.",
+    question: "How do I know which product is right for me?",
+    answer:
+      "Start with the morning, night, and weekly ritual outlines on Routines, then browse by category on Shop. The First visit strip on our home page links common concerns to starting points. Ingredient pages explain how we use each active, and your order confirmation email is the best anchor if you need a human nudge—Contact us with your goals and what you already use.",
+  },
+  {
+    question: "Can I return my order?",
+    answer:
+      "Unopened items in original packaging may be returned within thirty days of delivery for a refund to the original payment method, subject to inspection. Opened skincare cannot be restocked for hygiene reasons. If something arrives damaged or incorrect, reach out right away with photos so we can make it right.",
   },
 ];
 

@@ -60,15 +60,26 @@ export async function createSupabaseServerClient() {
 }
 
 export async function getAuthenticatedUser(): Promise<User | null> {
-  const supabase = await createSupabaseServerClient();
+  try {
+    const supabase = await createSupabaseServerClient();
 
-  if (!supabase) {
+    if (!supabase) {
+      return null;
+    }
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+      console.warn("[auth] getUser:", error.message);
+      return null;
+    }
+
+    return user;
+  } catch (e) {
+    console.error("[auth] getAuthenticatedUser:", e);
     return null;
   }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return user;
 }
