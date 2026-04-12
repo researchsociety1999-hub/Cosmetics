@@ -27,6 +27,11 @@ export default function RouteErrorBoundary({
             Reference for support: {error.digest}
           </p>
         ) : null}
+        {process.env.NODE_ENV === "development" && error.message ? (
+          <p className="mt-4 max-h-40 overflow-y-auto rounded-lg border border-[rgba(214,168,95,0.15)] bg-black/40 p-3 text-left font-mono text-[0.7rem] leading-relaxed text-[#c4b8a4]">
+            {error.message}
+          </p>
+        ) : null}
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <button
             type="button"
