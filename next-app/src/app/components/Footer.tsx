@@ -14,9 +14,9 @@ export function Footer() {
       <div className="w-full px-4 pb-10 pt-14 md:px-6 md:pb-12 md:pt-20 lg:px-10 xl:px-14">
         <div className="relative border-t border-[rgba(214,168,95,0.12)] px-0 py-10 md:py-12">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.3),transparent)]" />
-          <div className="relative grid gap-10 md:grid-cols-[1.3fr_0.85fr_0.85fr_0.85fr] md:gap-8">
-            <div className="space-y-5 md:pr-8">
-              <div className="max-w-[min(100%,420px)]">
+          <div className="relative grid justify-items-center gap-10 text-center md:grid-cols-4 md:gap-8">
+            <div className="flex w-full max-w-md flex-col items-center space-y-5">
+              <div className="flex justify-center">
                 <BrandLogo />
               </div>
               <p className="inline-flex rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-[0.66rem] uppercase tracking-[0.28em] text-[#cdb58d]">
@@ -51,25 +51,12 @@ export function Footer() {
             </FooterColumn>
           </div>
 
-          <div className="relative mt-10 rounded-[22px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] px-5 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-sm md:px-6 md:py-6">
-            <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between md:gap-8">
-              <p className="shrink-0 text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
+          <div className="relative mx-auto mt-10 max-w-3xl rounded-[22px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] px-5 py-5 text-center shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-sm md:px-6 md:py-6">
+            <div className="flex flex-col items-center gap-5">
+              <p className="text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
                 Follow us
               </p>
-              <div className="flex min-w-0 flex-1 flex-col gap-4 md:max-w-2xl md:items-end">
-                <p className="text-sm leading-relaxed text-[#8f8576] md:text-right">
-                  Follow along via{" "}
-                  <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
-                    Journal
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/press" className="text-[#d6a85f] underline-offset-4 hover:underline">
-                    Press
-                  </Link>
-                  . TikTok, Instagram, and Facebook below become active links once their
-                  profile URLs are set in the codebase.
-                </p>
-                <ul className="flex flex-wrap gap-x-5 gap-y-3 md:justify-end">
+              <ul className="flex w-full min-w-0 flex-wrap justify-center gap-x-5 gap-y-3">
                   {footerSocialProfiles.map((profile) => {
                     const rowClass =
                       "inline-flex items-center gap-2 text-sm text-[#f5eee3] transition hover:text-[#f0d19a]";
@@ -101,14 +88,13 @@ export function Footer() {
                       </li>
                     );
                   })}
-                </ul>
-              </div>
+              </ul>
             </div>
           </div>
 
-          <div className="relative mt-10 flex flex-col gap-4 border-t border-[rgba(148,163,184,0.14)] pt-6 text-xs text-[#8b8b99] md:flex-row md:items-center md:justify-between">
+          <div className="relative mt-10 flex flex-col items-center gap-4 border-t border-[rgba(148,163,184,0.14)] pt-6 text-center text-xs text-[#8b8b99]">
             <p>Copyright {new Date().getFullYear()} Mystique. All rights reserved.</p>
-            <div className="flex flex-wrap gap-4 md:justify-end">
+            <div className="flex flex-wrap justify-center gap-4">
               <FooterLink href="/privacy">Privacy Policy</FooterLink>
               <FooterLink href="/terms">Terms</FooterLink>
               <FooterLink href="/cookies">Cookies</FooterLink>
@@ -128,11 +114,11 @@ function FooterColumn({
   children: ReactNode;
 }) {
   return (
-    <div className="border-t border-[rgba(214,168,95,0.1)] pt-5 md:border-none md:pt-0">
+    <div className="flex w-full max-w-xs flex-col items-center border-t border-[rgba(214,168,95,0.1)] pt-5 md:border-none md:pt-0">
       <h3 className="font-literata text-lg tracking-[0.16em] text-[#f5eee3]">
         {title}
       </h3>
-      <div className="mt-4 flex flex-col gap-2">{children}</div>
+      <div className="mt-4 flex flex-col items-center gap-2">{children}</div>
     </div>
   );
 }
@@ -147,7 +133,7 @@ function FooterLink({
   return (
     <Link
       href={href}
-      className="text-xs uppercase tracking-[0.18em] text-[#b8ab95] transition hover:text-[#f0d19a]"
+      className="text-center text-xs uppercase tracking-[0.18em] text-[#b8ab95] transition hover:text-[#f0d19a]"
     >
       {children}
     </Link>
