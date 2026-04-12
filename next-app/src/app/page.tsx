@@ -224,7 +224,7 @@ function IngredientSpotlightSection() {
               </h3>
               <p className="mt-3 text-sm text-[#b8ab95]">{ingredient.benefits}</p>
               <Link
-                href={`/shop?ingredient=${encodeURIComponent(ingredient.id)}`}
+                href={`/shop?ingredient=${ingredient.id}`}
                 className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
               >
                 Shop products with {ingredient.name}
