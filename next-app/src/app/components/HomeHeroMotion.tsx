@@ -49,7 +49,7 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[min(88vh,860px)] overflow-hidden border-b border-[rgba(214,168,95,0.08)]"
+      className="relative min-h-dvh overflow-x-clip overflow-y-hidden"
     >
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
@@ -95,15 +95,21 @@ export function HomeHeroMotion() {
         />
       </div>
 
-      {/* Watermark: above particles, below copy */}
-      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-6 sm:px-10">
-        <div className="relative aspect-[16/5] w-[min(92vw,920px)] max-h-[min(48vh,480px)] min-h-[180px] sm:max-h-[min(52vh,520px)] md:w-[min(88vw,1000px)]">
+      {/* Watermark: scales with viewport + safe area; fades at edges via BrandLogo mask */}
+      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-3 pb-8 [padding-left:max(0.75rem,env(safe-area-inset-left,0px))] [padding-right:max(0.75rem,env(safe-area-inset-right,0px))] [padding-top:max(4.25rem,env(safe-area-inset-top,0px))] [padding-bottom:max(1.25rem,env(safe-area-inset-bottom,0px))] sm:px-5 sm:pb-10 sm:pt-24 md:px-8 md:pt-28 lg:px-12">
+        <div className="relative aspect-[16/5] w-full max-w-[min(72rem,calc(100vw-1.5rem))] max-h-[min(44dvh,52svh)] min-h-[120px] sm:max-h-[min(48dvh,54svh)] md:max-h-[min(52dvh,56svh)] lg:max-h-[min(56dvh,58svh)] xl:max-w-[min(80rem,calc(100vw-2.5rem))] xl:max-h-[min(58dvh,60svh)]">
           <BrandLogo watermark priority />
         </div>
       </div>
 
+      {/* Merges hero into page: side vignette + bottom ramp to next section (#05060a family) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.65)_0%,transparent_12%,transparent_88%,rgba(1,2,3,0.65)_100%),linear-gradient(180deg,transparent_0%,transparent_32%,rgba(1,2,3,0.12)_58%,rgba(5,6,10,0.75)_78%,rgba(5,6,10,0.95)_90%,rgb(5,6,10)_100%)]"
+      />
+
       {/* Copy: vertically centered band, left-aligned (editorial) */}
-      <div className="relative z-10 mx-auto flex min-h-[min(88vh,860px)] w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
         <div
           ref={copyRef}
           className="w-full max-w-[min(36rem,92vw)] py-16 text-left sm:py-20 md:max-w-lg md:py-24"
