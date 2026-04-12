@@ -324,25 +324,29 @@ export const mockTestimonials = [
 
 export const mockFaqs = [
   {
-    question: "What does U.S. shipping cost?",
-    answer:
-      "Shipping rates follow the same rules shown at checkout: standard U.S. delivery is complimentary on qualifying orders, with a flat rate below that threshold.",
-  },
-  {
     question: "How long does shipping take?",
-    answer: "Most U.S. orders arrive within 3 to 5 business days with tracking sent as soon as your order ships.",
+    answer:
+      "Most domestic orders leave our studio within two business days and arrive in three to five business days once the carrier has picked them up. You will receive tracking as soon as your parcel is scanned.",
   },
   {
-    question: "What is your returns policy?",
-    answer: "Returns are accepted within 30 days on eligible unopened items in their original condition.",
+    question: "Are your products suitable for sensitive skin?",
+    answer:
+      "Many Mystique formulas are built with barrier comfort in mind—calming botanicals, steady hydration, and textures that layer gently. Skin sensitivity is personal: introduce one new product at a time, and patch test along the jaw for forty-eight hours when you are unsure. This is general care guidance, not medical advice.",
   },
   {
-    question: "How should I layer the ritual?",
-    answer: "Cleanse, tone, treat, moisturize, then protect in the morning.",
+    question: "Do you offer international shipping?",
+    answer:
+      "Checkout is set up for U.S. domestic addresses today. If you are shopping from outside the United States, use Contact with your country and cart notes—we will confirm what is possible on a case-by-case basis or keep you on the list for future regions.",
   },
   {
-    question: "Which formulas suit sensitive skin?",
-    answer: "Look for centella, peptides, and hydration-focused textures. Patch testing is always recommended.",
+    question: "How do I know which product is right for me?",
+    answer:
+      "Start with the morning, night, and weekly ritual outlines on Routines, then browse by category on Shop. The First visit strip on our home page links common concerns to starting points. Ingredient pages explain how we use each active, and your order confirmation email is the best anchor if you need a human nudge—Contact us with your goals and what you already use.",
+  },
+  {
+    question: "Can I return my order?",
+    answer:
+      "Unopened items in original packaging may be returned within thirty days of delivery for a refund to the original payment method, subject to inspection. Opened skincare cannot be restocked for hygiene reasons. If something arrives damaged or incorrect, reach out right away with photos so we can make it right.",
   },
 ];
 

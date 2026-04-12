@@ -198,8 +198,6 @@ function RitualStripSection() {
 }
 
 function IngredientSpotlightSection() {
-  const ingredientIntroBody =
-    "Five actives we return to—tap through to shop formulas that feature them, or read the full ingredient guide for texture and barrier care.";
   const ingredients = MYSTIQUE_CANONICAL_INGREDIENTS;
 
   return (
@@ -208,7 +206,6 @@ function IngredientSpotlightSection() {
         <SectionIntro
           eyebrow="Ingredients"
           title="Actives we lean on."
-          body={ingredientIntroBody}
           ctaHref="/ingredients"
           ctaLabel="Full ingredient guide"
         />

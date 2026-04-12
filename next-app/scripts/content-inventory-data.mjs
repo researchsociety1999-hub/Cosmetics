@@ -83,7 +83,7 @@ export const INVENTORY_ROWS = [
   r(
     "/",
     "Home — Ingredient spotlight",
-    "Ingredient spotlight; Actives we lean on.; five cards from MYSTIQUE_CANONICAL_INGREDIENTS (lib/data.ts), same list as /ingredients",
+    "Ingredient spotlight; Actives we lean on.; no SectionIntro body paragraph; five cards from MYSTIQUE_CANONICAL_INGREDIENTS (lib/data.ts), same list as /ingredients",
     "next-app/src/app/page.tsx",
     "Cards link to /shop?ingredient=<canonical id> (strict key_ingredients filter in getProducts).",
   ),
@@ -202,7 +202,7 @@ export const INVENTORY_ROWS = [
   r(
     "/faq",
     "FAQ listing",
-    "FAQ; Questions, answered softly.; each question/answer (display questions from faqCopy map + answers)",
+    "FAQ; Questions, answered softly.; five accordion Q&A from mockFaqs (data.ts)",
     "next-app/src/app/faq/page.tsx",
     "Underlying data: next-app/src/app/lib/data.ts → mockFaqs.",
   ),
