@@ -28,14 +28,17 @@ export function BrandLogo({
         aria-hidden
         className={`relative h-full w-full ${className}`}
       >
-        <Image
-          src={LOGO_SRC}
-          alt=""
-          fill
-          priority={priority}
-          sizes="(max-width: 768px) 100vw, 560px"
-          className="object-contain object-center opacity-[0.14] saturate-[0.88] contrast-[1.08] [filter:drop-shadow(0_0_80px_rgba(212,175,55,0.12))]"
-        />
+        {/* Dissolve edges + low contrast so the lockup reads as atmosphere, not a sticker */}
+        <div className="absolute inset-[-8%] [mask-image:radial-gradient(ellipse_58%_52%_at_50%_50%,#000_0%,#000_42%,transparent_78%)] [-webkit-mask-image:radial-gradient(ellipse_58%_52%_at_50%_50%,#000_0%,#000_42%,transparent_78%)]">
+          <Image
+            src={LOGO_SRC}
+            alt=""
+            fill
+            priority={priority}
+            sizes="(max-width: 640px) 96vw, (max-width: 1024px) 92vw, 1180px"
+            className="object-contain object-center opacity-[0.15] saturate-[0.85] contrast-[1.04] [filter:drop-shadow(0_0_100px_rgba(212,175,55,0.12))_drop-shadow(0_0_200px_rgba(0,0,0,0.32))]"
+          />
+        </div>
       </div>
     );
   }
