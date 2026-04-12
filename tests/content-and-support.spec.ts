@@ -10,7 +10,7 @@ test.describe("content and support routes", () => {
     await gotoAndWait(page, "/ingredients");
 
     await expectHeading(page, "Ingredients with intention.");
-    await expect(page.getByRole("heading", { name: "Niacinamide", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Niacinamide", exact: true }).first()).toBeVisible();
     await expect(page.getByText("Hydration-first textures")).toBeVisible();
   });
 
@@ -33,7 +33,7 @@ test.describe("content and support routes", () => {
   test("contact page shows support information", async ({ page }) => {
     await gotoAndWait(page, "/contact");
 
-    await expectHeading(page, "The studio is listening.");
+    await expectHeading(page, "Write the studio.");
     await expect(page.getByRole("button", { name: "Send message" })).toBeVisible();
     await expect(page.getByText("Studio inbox", { exact: true })).toBeVisible();
   });
