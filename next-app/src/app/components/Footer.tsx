@@ -110,7 +110,7 @@ export function Footer() {
             <p>Copyright {new Date().getFullYear()} Mystique. All rights reserved.</p>
             <div className="flex flex-wrap gap-4 md:justify-end">
               <FooterLink href="/privacy">Privacy Policy</FooterLink>
-              <FooterLink href="/terms">Terms of Service</FooterLink>
+              <FooterLink href="/terms">Terms</FooterLink>
               <FooterLink href="/cookies">Cookie Policy</FooterLink>
             </div>
           </div>
