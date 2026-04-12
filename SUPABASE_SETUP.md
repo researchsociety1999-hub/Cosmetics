@@ -2,7 +2,7 @@
 
 ## Environment variables (`next-app/.env.local`)
 
-Copy **`next-app/.env.example`** → **`next-app/.env.local`** (the latter is gitignored). Fill in the [Supabase dashboard](https://supabase.com/dashboard/project/_/settings/api) **Project URL** and **anon public** key (`eyJ...` JWT), plus Stripe/Resend as needed. Use **`GET /api/health/integrations`** (in dev, or with `ENABLE_INTEGRATION_HEALTH=1` in production) to see `readiness` and `missingEnv` without exposing secrets.
+Copy **`next-app/.env.example`** → **`next-app/.env.local`** (the latter is gitignored). In the [Supabase dashboard](https://supabase.com/dashboard/projects), open **your project** → **Project Settings** (gear) → **API**: copy the **Project URL** (`https://<ref>.supabase.co`) and the **anon public** / **publishable** key (`eyJ...` JWT), plus Stripe/Resend as needed. Use **`GET /api/health/integrations`** (in dev, or with `ENABLE_INTEGRATION_HEALTH=1` in production) to see `readiness` and `missingEnv` without exposing secrets.
 
 | Variable | Required | Notes |
 |----------|----------|--------|
