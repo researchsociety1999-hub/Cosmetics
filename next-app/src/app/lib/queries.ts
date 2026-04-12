@@ -1,6 +1,8 @@
 import {
+  mergeMystiqueCanonicalIngredients,
   mockCategories,
   mockIngredients,
+  MYSTIQUE_CANONICAL_INGREDIENTS,
   mockJournalEntries,
   mockProductVariants,
   mockProducts,
@@ -48,9 +50,54 @@ function allowMockCatalog(): boolean {
 interface GetProductsOptions {
   categoryId?: number;
   search?: string;
+  /** Canonical ingredient `id` from MYSTIQUE_CANONICAL_INGREDIENTS — strict match on key_ingredients / copy. */
+  ingredientId?: string;
   sortBy?: ProductSort;
   limit?: number;
   page?: number;
+}
+
+/** Extra tokens for matching real INCI / merchandising lines to canonical spotlight ids. */
+const INGREDIENT_ID_MATCH_ALIASES: Record<string, readonly string[]> = {
+  "hyaluronic-acid": ["hyaluronic", "hyaluronan", "sodium hyaluronate"],
+  "centella-asiatica": ["centella", "cica", "asiatica", "gotu kola"],
+  niacinamide: ["niacinamide", "vitamin b3", "b3", "nicotinamide"],
+  ceramides: ["ceramide", "ceramides", "ceramide np", "ceramide ap"],
+  squalane: ["squalane", "squalene"],
+};
+
+function productMentionsIngredientCanonical(
+  product: Product,
+  def: (typeof MYSTIQUE_CANONICAL_INGREDIENTS)[number],
+): boolean {
+  const aliases = new Set<string>(
+    [def.name, ...(INGREDIENT_ID_MATCH_ALIASES[def.id] ?? [])].map((s) =>
+      s.toLowerCase(),
+    ),
+  );
+  const keys = (product.key_ingredients ?? []).map((k) => k.toLowerCase());
+
+  if (keys.length > 0) {
+    return keys.some((k) => [...aliases].some((al) => k.includes(al)));
+  }
+
+  const blob = `${product.name ?? ""} ${product.description ?? ""}`.toLowerCase();
+  return [...aliases].some((al) => blob.includes(al));
+}
+
+function filterProductsByIngredientId(
+  products: Product[],
+  ingredientId: string,
+): Product[] {
+  const def = MYSTIQUE_CANONICAL_INGREDIENTS.find(
+    (row) => row.id === ingredientId.trim(),
+  );
+  if (!def) {
+    return products;
+  }
+  return products.filter((product) =>
+    productMentionsIngredientCanonical(product, def),
+  );
 }
 
 export interface CreatePendingOrderInput {
@@ -142,7 +189,7 @@ function filterMockProducts(
   products: Product[],
   options: GetProductsOptions = {},
 ): Product[] {
-  const { categoryId, search } = options;
+  const { categoryId, search, ingredientId } = options;
 
   let filtered = [...products];
 
@@ -150,7 +197,10 @@ function filterMockProducts(
     filtered = filtered.filter((product) => product.category_id === categoryId);
   }
 
-  if (search?.trim()) {
+  const ing = ingredientId?.trim();
+  if (ing) {
+    filtered = filterProductsByIngredientId(filtered, ing);
+  } else if (search?.trim()) {
     filtered = filterProductsBySearch(filtered, search.trim(), filtered.length || 24);
   }
 
@@ -392,7 +442,8 @@ export async function getProducts(
     );
   }
 
-  const { categoryId, search, sortBy = "newest", limit, page = 1 } = options;
+  const { categoryId, search, ingredientId, sortBy = "newest", limit, page = 1 } =
+    options;
 
   try {
     let query = supabase.from("products").select("*").eq("is_published", true);
@@ -401,7 +452,10 @@ export async function getProducts(
       query = query.eq("category_id", categoryId);
     }
 
-    if (search && search.trim()) {
+    const ing = ingredientId?.trim();
+    if (ing) {
+      // Ingredient mode: avoid loose `search` OR (synonym / substring) noise — filter in memory.
+    } else if (search && search.trim()) {
       const normalizedForConcern = normalizeSearchText(search.trim());
       const concernSyns = skinConcernSynonyms(normalizedForConcern);
       if (concernSyns && concernSyns.length > 0) {
@@ -431,7 +485,10 @@ export async function getProducts(
       return paginateProducts(sortProducts([], sortBy), page, limit);
     }
 
-    const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
+    let normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
+    if (ing) {
+      normalizedProducts = filterProductsByIngredientId(normalizedProducts, ing);
+    }
     return paginateProducts(sortProducts(normalizedProducts, sortBy), page, limit);
   } catch (e) {
     console.error("[Supabase] getProducts exception:", e);
@@ -798,16 +855,13 @@ export async function getIngredients(): Promise<Ingredient[]> {
   }
 
   try {
-    const { data, error } = await supabase
-      .from("ingredients")
-      .select("*")
-      .order("name", { ascending: true });
+    const { data, error } = await supabase.from("ingredients").select("*");
 
     if (error || !data?.length) {
       return mockIngredients;
     }
 
-    return data as Ingredient[];
+    return mergeMystiqueCanonicalIngredients(data as Ingredient[]);
   } catch {
     return mockIngredients;
   }

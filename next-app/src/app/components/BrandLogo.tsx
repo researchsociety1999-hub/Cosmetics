@@ -26,20 +26,20 @@ export function BrandLogo({
     return (
       <div aria-hidden className={`relative h-full w-full ${className}`}>
         {/* Large-field mask: keeps edges soft so the mark merges with Mystique ink + gold ambience */}
-        <div className="absolute inset-[-6%] [mask-image:radial-gradient(ellipse_92%_78%_at_50%_48%,#000_0%,#000_12%,rgba(0,0,0,0.75)_28%,rgba(0,0,0,0.38)_48%,rgba(0,0,0,0.14)_66%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_92%_78%_at_50%_48%,#000_0%,#000_12%,rgba(0,0,0,0.75)_28%,rgba(0,0,0,0.38)_48%,rgba(0,0,0,0.14)_66%,transparent_82%)]">
+        <div className="absolute inset-[-6%] [mask-image:radial-gradient(ellipse_88%_72%_at_50%_50%,#000_0%,#000_10%,rgba(0,0,0,0.78)_26%,rgba(0,0,0,0.42)_46%,rgba(0,0,0,0.16)_64%,transparent_80%)] [-webkit-mask-image:radial-gradient(ellipse_88%_72%_at_50%_50%,#000_0%,#000_10%,rgba(0,0,0,0.78)_26%,rgba(0,0,0,0.42)_46%,rgba(0,0,0,0.16)_64%,transparent_80%)]">
           <Image
             src={LOGO_SRC}
             alt=""
             fill
             priority={priority}
             sizes="100vw"
-            className="object-contain object-center mix-blend-soft-light opacity-[0.12] contrast-[1.02] saturate-[0.92] [filter:drop-shadow(0_0_140px_rgba(212,175,55,0.14))_drop-shadow(0_0_280px_rgba(0,0,0,0.35))]"
+            className="object-contain object-center mix-blend-soft-light opacity-[0.15] contrast-[1.04] saturate-[0.88] [filter:drop-shadow(0_0_90px_rgba(214,168,95,0.2))_drop-shadow(0_0_200px_rgba(212,175,55,0.1))_drop-shadow(0_0_320px_rgba(0,0,0,0.32))]"
           />
         </div>
         {/* Pull gold from the mark into surrounding UI chrome */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_60%_at_50%_45%,rgba(214,168,95,0.07),transparent_62%)] opacity-90 mix-blend-soft-light"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_82%_58%_at_50%_46%,rgba(214,168,95,0.1),transparent_58%)] opacity-95 mix-blend-soft-light"
         />
         <div
           aria-hidden

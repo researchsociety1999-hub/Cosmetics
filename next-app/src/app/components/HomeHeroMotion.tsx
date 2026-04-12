@@ -116,13 +116,13 @@ export function HomeHeroMotion() {
       <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
         <div
           ref={copyRef}
-          className="w-full max-w-[min(36rem,92vw)] py-16 text-left sm:py-20 md:max-w-lg md:py-24"
+          className="mt-10 w-full max-w-[min(36rem,92vw)] py-16 text-left sm:mt-12 sm:py-20 md:mt-14 md:max-w-lg md:py-24"
           style={{ opacity: 1 }}
         >
           <div className="space-y-10">
             <div className="space-y-5">
               <h1
-                className={`max-w-[17ch] font-literata text-[clamp(2.1rem,5vw,3.5rem)] font-medium leading-[1.05] tracking-[0.06em] text-[#faf6ef] [text-shadow:0_2px_32px_rgba(0,0,0,0.82),0_0_60px_rgba(0,0,0,0.35)] ${
+                className={`max-w-[18ch] font-literata text-[clamp(1.75rem,4vw,2.75rem)] font-normal leading-[1.12] tracking-[0.028em] text-[#e8e0d4] antialiased [text-shadow:0_1px_20px_rgba(0,0,0,0.55),0_0_40px_rgba(214,168,95,0.06)] ${
                   reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
@@ -130,7 +130,7 @@ export function HomeHeroMotion() {
               </h1>
               <div
                 aria-hidden
-                className="h-px w-12 bg-gradient-to-r from-[rgba(214,168,95,0.55)] to-transparent sm:w-14"
+                className="h-px w-12 bg-gradient-to-r from-[rgba(214,168,95,0.38)] to-transparent sm:w-14"
               />
             </div>
             <div
