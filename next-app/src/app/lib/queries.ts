@@ -178,6 +178,78 @@ function normalizeSearchText(value: string): string {
     .trim();
 }
 
+/** Homepage “First visit” chips — normalized `?search=` value → synonym tokens for catalog match. */
+function skinConcernSynonyms(normalizedQuery: string): readonly string[] | null {
+  const map: Record<string, readonly string[]> = {
+    dryness: [
+      "hydrat",
+      "moistur",
+      "dry",
+      "ceramide",
+      "hydration",
+      "dewy",
+      "plump",
+      "moisture",
+      "barrier",
+    ],
+    dullness: [
+      "dull",
+      "bright",
+      "texture",
+      "radiance",
+      "luminous",
+      "polish",
+      "refine",
+      "glow reset",
+    ],
+    sensitivity: [
+      "sensitive",
+      "centella",
+      "soothe",
+      "comfort",
+      "gentle",
+      "cushion",
+      "calm",
+    ],
+    "glow even tone": [
+      "niacinamide",
+      "glow",
+      "even",
+      "radiance",
+      "luminous",
+      "bright",
+      "tone",
+      "lumin",
+      "bloom",
+    ],
+  };
+  return map[normalizedQuery] ?? null;
+}
+
+/** Human label when `?search=` is a homepage skin-concern chip (see `skinConcernSynonyms`). */
+export function getSkinConcernShopLabel(rawSearch: string): string | null {
+  const key = normalizeSearchText(rawSearch);
+  if (!key) {
+    return null;
+  }
+  const labels: Record<string, string> = {
+    dryness: "Dryness",
+    dullness: "Dullness",
+    sensitivity: "Sensitivity",
+    "glow even tone": "Glow & Even tone",
+  };
+  return labels[key] ?? null;
+}
+
+function buildSupabaseProductSearchOr(synonyms: readonly string[]): string {
+  return synonyms
+    .flatMap((s) => {
+      const t = `%${s.replace(/%/g, "")}%`;
+      return [`name.ilike.${t}`, `description.ilike.${t}`, `slug.ilike.${t}`];
+    })
+    .join(",");
+}
+
 function expandSearchTerms(query: string): string[] {
   const normalizedQuery = normalizeSearchText(query);
   const terms = new Set(
@@ -186,6 +258,18 @@ function expandSearchTerms(query: string): string[] {
       .map((term) => term.trim())
       .filter(Boolean),
   );
+
+  const concernSyns = skinConcernSynonyms(normalizedQuery);
+  if (concernSyns) {
+    for (const s of concernSyns) {
+      const t = normalizeSearchText(s);
+      if (t) {
+        for (const part of t.split(" ")) {
+          if (part) terms.add(part);
+        }
+      }
+    }
+  }
 
   if (normalizedQuery.includes("bloom skin")) {
     terms.add("glow");
@@ -318,8 +402,14 @@ export async function getProducts(
     }
 
     if (search && search.trim()) {
-      const term = `%${search.trim()}%`;
-      query = query.or(`name.ilike.${term},description.ilike.${term},slug.ilike.${term}`);
+      const normalizedForConcern = normalizeSearchText(search.trim());
+      const concernSyns = skinConcernSynonyms(normalizedForConcern);
+      if (concernSyns && concernSyns.length > 0) {
+        query = query.or(buildSupabaseProductSearchOr(concernSyns));
+      } else {
+        const term = `%${search.trim()}%`;
+        query = query.or(`name.ilike.${term},description.ilike.${term},slug.ilike.${term}`);
+      }
     }
 
     if (sortBy === "price_asc") {

@@ -3,7 +3,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import ProductCard from "../components/productcard";
 import { SiteChrome } from "../components/SiteChrome";
-import { getCategories, getProducts, type ProductSort } from "../lib/queries";
+import {
+  getCategories,
+  getProducts,
+  getSkinConcernShopLabel,
+  type ProductSort,
+} from "../lib/queries";
 import { hasSupabaseEnv } from "../lib/supabaseClient";
 import { ShopFiltersBar } from "./ShopFiltersBar";
 import type { Product } from "../lib/types";
@@ -39,6 +44,7 @@ export default async function ShopPage({
     ? (params.sort as ProductSort)
     : "newest";
   const currentSearch = params.search?.trim() ?? "";
+  const skinConcernLabel = getSkinConcernShopLabel(currentSearch);
   const [categories, filteredProducts] = await Promise.all([
     getCategories(),
     getProducts({
@@ -73,6 +79,11 @@ export default async function ShopPage({
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
             Build your ritual by texture, need, and mood.
           </h1>
+          {skinConcernLabel ? (
+            <p className="text-[0.72rem] uppercase tracking-[0.26em] text-[#d6a85f]">
+              Showing products for: {skinConcernLabel}
+            </p>
+          ) : null}
           <p className="max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
             Explore the full Mystique catalog. Filter by category, discover your
             ritual step, or search by texture and concern.
