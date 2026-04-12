@@ -34,7 +34,7 @@ export function HomeHeroMotion() {
       const vh = window.innerHeight || 1;
       const raw = 1 - rect.bottom / (rect.height + vh);
       const progress = Math.max(0, Math.min(1, raw));
-      copy.style.opacity = String(1 - progress * 0.08);
+      copy.style.opacity = String(1 - progress * 0.06);
     }
 
     update();
@@ -49,124 +49,102 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[min(78vh,720px)] overflow-hidden border-b border-[rgba(214,168,95,0.1)]"
+      className="relative min-h-[min(88vh,860px)] overflow-hidden border-b border-[rgba(214,168,95,0.08)]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
+      {/* Quiet depth: vignette + soft gold wash */}
       <div
         aria-hidden
-        className="mystic-hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_18%,rgba(214,168,95,0.1),transparent_55%),radial-gradient(circle_at_50%_100%,rgba(255,120,60,0.05),transparent_42%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_45%,rgba(214,168,95,0.07),transparent_52%),radial-gradient(circle_at_0%_0%,rgba(255,154,80,0.06),transparent_35%),radial-gradient(circle_at_100%_20%,rgba(212,175,55,0.05),transparent_32%)]"
+      />
+      <div
+        aria-hidden
+        className="mystic-hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_50%_at_50%_22%,rgba(214,168,95,0.08),transparent_58%),radial-gradient(circle_at_50%_100%,rgba(255,120,60,0.04),transparent_45%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.55),inset_0_-80px_100px_rgba(0,0,0,0.45)]"
       />
 
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
-        <div className="relative aspect-[16/5] w-[min(92vw,640px)] max-h-[min(32vh,280px)] min-h-[120px]">
-          <BrandLogo watermark priority />
-        </div>
-      </div>
-
-      <div className="pointer-events-none absolute inset-0">
+      {/* Sparkle field sits *behind* the watermark so the lockup stays readable */}
+      <div className="pointer-events-none absolute inset-0 z-0">
         <span
-          className="mystic-particle mystic-particle-md left-[12%] top-[20%]"
+          className="mystic-particle mystic-particle-md left-[12%] top-[20%] opacity-90"
           style={{ animationDelay: "-1.2s" }}
         />
         <span
-          className="mystic-particle mystic-particle-sm left-[78%] top-[24%]"
+          className="mystic-particle mystic-particle-sm left-[78%] top-[24%] opacity-80"
           style={{ animationDelay: "-3.4s" }}
         />
         <span
-          className="mystic-particle mystic-particle-lg left-[88%] top-[58%]"
+          className="mystic-particle mystic-particle-lg left-[88%] top-[58%] opacity-70"
           style={{ animationDelay: "-0.6s" }}
         />
         <span
-          className="mystic-particle mystic-particle-sm left-[48%] top-[72%]"
+          className="mystic-particle mystic-particle-sm left-[48%] top-[72%] opacity-50"
           style={{ animationDelay: "-5.1s" }}
         />
         <span
-          className="mystic-particle mystic-particle-sm left-[24%] top-[56%] opacity-70"
+          className="mystic-particle mystic-particle-sm left-[24%] top-[56%] opacity-45"
           style={{ animationDelay: "-2.8s" }}
         />
         <span
-          className="mystic-particle mystic-particle-md left-[62%] top-[14%] opacity-60"
+          className="mystic-particle mystic-particle-md left-[62%] top-[14%] opacity-45"
           style={{ animationDelay: "-4.2s" }}
         />
       </div>
 
-      <div
-        ref={copyRef}
-        className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-[4.5rem] pt-8 text-center md:px-6 md:pb-[5.5rem] md:pt-10 lg:px-10 xl:px-14"
-        style={{ opacity: 1 }}
-      >
-        <div className="max-w-xl space-y-8">
-          <div className="space-y-5">
-            <h1
-              className={`font-literata text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.06] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)] ${
-                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
-              }`}
-            >
-              Where Beauty Transcends
-            </h1>
-            <p
-              className={`mx-auto max-w-md text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem] ${
-                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
-              }`}
-            >
-              Cleanse-to-SPF routines with layer-friendly textures—comfort first, then
-              glow.
-            </p>
-          </div>
-          <div
-            className={`flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4 ${
-              reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--cta"
-            }`}
-          >
-            <div className="transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
-              <Link
-                href="/shop"
-                className="mystic-button-primary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] transition-shadow duration-300 hover:shadow-[0_0_28px_rgba(214,168,95,0.35)] md:min-h-[46px] md:px-7"
-              >
-                Shop skincare
-              </Link>
-            </div>
-            <div className="transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
-              <Link
-                href="/ingredients"
-                className="mystic-button-secondary inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-full px-6 py-2.5 text-[0.65rem] uppercase tracking-[0.22em] transition-[box-shadow,transform] duration-300 hover:border-[rgba(214,168,95,0.45)] hover:shadow-[0_0_20px_rgba(214,168,95,0.12)] md:min-h-[46px] md:px-7"
-              >
-                Ingredient guide
-              </Link>
-            </div>
-          </div>
-          <div
-            className={`flex flex-wrap justify-center gap-2.5 pt-6 md:pt-8 ${
-              reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--badges"
-            }`}
-          >
-            {[
-              {
-                label: "Expert-informed formulas",
-                title:
-                  "Developed with input from independent skincare science advisors; not medical advice.",
-              },
-              {
-                label: "Five-step routine",
-                title: "Cleanse, tone, treat, moisturize, protect.",
-              },
-              {
-                label: "Free U.S. shipping $75+",
-                title: "Contiguous United States; threshold before tax.",
-              },
-            ].map((item, i) => (
-              <span
-                key={item.label}
-                title={item.title}
-                className={`rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#9a8f7e] backdrop-blur-md md:px-3.5 md:py-2 md:text-[0.62rem] ${
-                  reduce ? "" : "mystic-hero-reveal-pill"
+      {/* Watermark: above particles, below copy */}
+      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-6 sm:px-10">
+        <div className="relative aspect-[16/5] w-[min(92vw,920px)] max-h-[min(48vh,480px)] min-h-[180px] sm:max-h-[min(52vh,520px)] md:w-[min(88vw,1000px)]">
+          <BrandLogo watermark priority />
+        </div>
+      </div>
+
+      {/* Copy: vertically centered band, left-aligned (editorial) */}
+      <div className="relative z-10 mx-auto flex min-h-[min(88vh,860px)] w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
+        <div
+          ref={copyRef}
+          className="w-full max-w-[min(36rem,92vw)] py-16 text-left sm:py-20 md:max-w-lg md:py-24"
+          style={{ opacity: 1 }}
+        >
+          <div className="space-y-10">
+            <div className="space-y-5">
+              <h1
+                className={`max-w-[17ch] font-literata text-[clamp(2.1rem,5vw,3.5rem)] font-medium leading-[1.05] tracking-[0.06em] text-[#faf6ef] [text-shadow:0_2px_32px_rgba(0,0,0,0.82),0_0_60px_rgba(0,0,0,0.35)] ${
+                  reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
-                style={reduce ? undefined : { animationDelay: `${0.35 + i * 0.08}s` }}
               >
-                {item.label}
-              </span>
-            ))}
+                Where Beauty Transcends
+              </h1>
+              <div
+                aria-hidden
+                className="h-px w-12 bg-gradient-to-r from-[rgba(214,168,95,0.55)] to-transparent sm:w-14"
+              />
+            </div>
+            <div
+              className={`flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-4 ${
+                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--cta"
+              }`}
+            >
+              <div className="transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
+                <Link
+                  href="/shop"
+                  className="mystic-button-primary inline-flex min-h-[46px] min-w-[11rem] items-center justify-center rounded-full px-7 py-2.5 text-[0.64rem] uppercase tracking-[0.24em] transition-shadow duration-300 hover:shadow-[0_0_32px_rgba(214,168,95,0.32)] md:min-h-[48px] md:px-8"
+                >
+                  Shop skincare
+                </Link>
+              </div>
+              <div className="transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
+                <Link
+                  href="/ingredients"
+                  className="mystic-button-secondary inline-flex min-h-[46px] min-w-[11rem] items-center justify-center rounded-full px-7 py-2.5 text-[0.64rem] uppercase tracking-[0.24em] transition-[box-shadow,transform] duration-300 hover:border-[rgba(214,168,95,0.5)] hover:shadow-[0_0_24px_rgba(214,168,95,0.1)] md:min-h-[48px] md:px-8"
+                >
+                  Ingredient guide
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
