@@ -61,7 +61,7 @@ interface GetProductsOptions {
 const INGREDIENT_ID_MATCH_ALIASES: Record<string, readonly string[]> = {
   "hyaluronic-acid": ["hyaluronic", "hyaluronan", "sodium hyaluronate"],
   "centella-asiatica": ["centella", "cica", "asiatica", "gotu kola"],
-  niacinamide: ["niacinamide", "vitamin b3", "b3", "nicotinamide"],
+  niacinamide: ["niacinamide", "vitamin b3", "nicotinamide"],
   ceramides: ["ceramide", "ceramides", "ceramide np", "ceramide ap"],
   squalane: ["squalane", "squalene"],
 };
@@ -70,7 +70,7 @@ function productMentionsIngredientCanonical(
   product: Product,
   def: (typeof MYSTIQUE_CANONICAL_INGREDIENTS)[number],
 ): boolean {
-  const aliases = new Set<string>(
+  const keyAliases = new Set<string>(
     [def.name, ...(INGREDIENT_ID_MATCH_ALIASES[def.id] ?? [])].map((s) =>
       s.toLowerCase(),
     ),
@@ -78,22 +78,26 @@ function productMentionsIngredientCanonical(
   const keys = (product.key_ingredients ?? []).map((k) => k.toLowerCase());
 
   if (keys.length > 0) {
-    return keys.some((k) => [...aliases].some((al) => k.includes(al)));
+    return keys.some((k) =>
+      [...keyAliases].some((al) => k.includes(al)),
+    );
   }
 
+  /** No structured keys: only the canonical display name (avoids short-token false positives). */
   const blob = `${product.name ?? ""} ${product.description ?? ""}`.toLowerCase();
-  return [...aliases].some((al) => blob.includes(al));
+  return blob.includes(def.name.toLowerCase());
 }
 
 function filterProductsByIngredientId(
   products: Product[],
   ingredientId: string,
 ): Product[] {
+  const id = ingredientId.trim().toLowerCase();
   const def = MYSTIQUE_CANONICAL_INGREDIENTS.find(
-    (row) => row.id === ingredientId.trim(),
+    (row) => row.id.toLowerCase() === id,
   );
   if (!def) {
-    return products;
+    return [];
   }
   return products.filter((product) =>
     productMentionsIngredientCanonical(product, def),

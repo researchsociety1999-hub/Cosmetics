@@ -23,6 +23,13 @@ const SORT_OPTIONS: { label: string; value: ProductSort }[] = [
   { label: "Featured", value: "featured" },
 ];
 
+function firstQueryString(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    return String(value[0] ?? "").trim();
+  }
+  return String(value ?? "").trim();
+}
+
 export const metadata: Metadata = {
   title: "Shop",
   description: "Shop the Mystique ritual collection by category.",
@@ -39,8 +46,8 @@ export default async function ShopPage({
   const sort = SORT_OPTIONS.some((option) => option.value === params.sort)
     ? (params.sort as ProductSort)
     : "newest";
-  const currentSearch = params.search?.trim() ?? "";
-  const currentIngredient = params.ingredient?.trim() ?? "";
+  const currentSearch = firstQueryString(params.search);
+  const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
   const [categories, filteredProducts] = await Promise.all([
     getCategories(),
     getProducts({

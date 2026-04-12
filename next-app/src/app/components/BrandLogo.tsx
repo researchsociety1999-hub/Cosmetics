@@ -33,17 +33,17 @@ export function BrandLogo({
             fill
             priority={priority}
             sizes="100vw"
-            className="object-contain object-center mix-blend-soft-light opacity-[0.15] contrast-[1.04] saturate-[0.88] [filter:drop-shadow(0_0_90px_rgba(214,168,95,0.2))_drop-shadow(0_0_200px_rgba(212,175,55,0.1))_drop-shadow(0_0_320px_rgba(0,0,0,0.32))]"
+            className="object-contain object-center mix-blend-soft-light opacity-[0.22] [filter:brightness(1.08)_contrast(1.06)_saturate(0.94)_drop-shadow(0_0_72px_rgba(214,168,95,0.3))_drop-shadow(0_0_160px_rgba(212,175,55,0.16))_drop-shadow(0_0_260px_rgba(0,0,0,0.26))]"
           />
         </div>
         {/* Pull gold from the mark into surrounding UI chrome */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_82%_58%_at_50%_46%,rgba(214,168,95,0.1),transparent_58%)] opacity-95 mix-blend-soft-light"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_82%_58%_at_50%_46%,rgba(214,168,95,0.14),transparent_58%)] opacity-95 mix-blend-soft-light"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(1,2,3,0.25)] from-[0%] via-transparent via-[35%] to-[rgb(5,6,10)] to-[100%]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(1,2,3,0.16)] from-[0%] via-transparent via-[35%] to-[rgb(5,6,10)] to-[100%]"
         />
       </div>
     );

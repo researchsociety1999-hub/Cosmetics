@@ -112,11 +112,11 @@ export function HomeHeroMotion() {
         className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.72)_0%,transparent_14%,transparent_86%,rgba(1,2,3,0.72)_100%),linear-gradient(180deg,rgba(1,2,3,0.14)_0%,transparent_16%,transparent_28%,rgba(1,2,3,0.08)_52%,rgba(5,6,10,0.72)_76%,rgba(5,6,10,0.94)_88%,rgb(5,6,10)_100%),radial-gradient(ellipse_70%_55%_at_50%_38%,transparent_0%,rgba(1,2,3,0.22)_100%)]"
       />
 
-      {/* Copy: vertically centered band, left-aligned (editorial) */}
-      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
+      {/* Copy: bottom-weighted so the watermark reads clearly above the fold */}
+      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl items-end justify-start px-4 pb-16 pt-6 sm:px-8 sm:pb-20 sm:pt-8 md:px-10 md:pb-24 md:pt-10 lg:px-12 lg:pb-28 lg:pt-12 xl:px-14">
         <div
           ref={copyRef}
-          className="mt-10 w-full max-w-[min(36rem,92vw)] py-16 text-left sm:mt-12 sm:py-20 md:mt-14 md:max-w-lg md:py-24"
+          className="w-full max-w-[min(36rem,92vw)] py-8 text-left sm:py-10 md:max-w-lg md:py-12"
           style={{ opacity: 1 }}
         >
           <div className="space-y-10">
