@@ -49,7 +49,7 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-dvh overflow-x-clip overflow-y-hidden"
+      className="relative min-h-[90dvh] overflow-x-clip overflow-y-hidden"
     >
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
@@ -95,21 +95,25 @@ export function HomeHeroMotion() {
         />
       </div>
 
-      {/* Watermark: scales with viewport + safe area; fades at edges via BrandLogo mask */}
-      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-3 pb-8 [padding-left:max(0.75rem,env(safe-area-inset-left,0px))] [padding-right:max(0.75rem,env(safe-area-inset-right,0px))] [padding-top:max(4.25rem,env(safe-area-inset-top,0px))] [padding-bottom:max(1.25rem,env(safe-area-inset-bottom,0px))] sm:px-5 sm:pb-10 sm:pt-24 md:px-8 md:pt-28 lg:px-12">
-        <div className="relative aspect-[16/5] w-full max-w-[min(72rem,calc(100vw-1.5rem))] max-h-[min(44dvh,52svh)] min-h-[120px] sm:max-h-[min(48dvh,54svh)] md:max-h-[min(52dvh,56svh)] lg:max-h-[min(56dvh,58svh)] xl:max-w-[min(80rem,calc(100vw-2.5rem))] xl:max-h-[min(58dvh,60svh)]">
+      {/* Brand lockup as full-hero background: larger than viewport, clipped — reads as environmental texture */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_70%_at_50%_42%,rgba(214,168,95,0.09),transparent_55%)]" />
+        <div className="absolute left-1/2 top-[48%] aspect-[16/5] h-[min(104dvh,108svh)] w-auto -translate-x-1/2 -translate-y-1/2 sm:top-1/2 sm:h-[min(108dvh,112svh)] md:h-[min(112dvh,118svh)] lg:h-[min(118dvh,124svh)]">
           <BrandLogo watermark priority />
         </div>
       </div>
 
-      {/* Merges hero into page: side vignette + bottom ramp to next section (#05060a family) */}
+      {/* Theme knit: vignette + bottom ramp into first section (same ink family as logo field) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.65)_0%,transparent_12%,transparent_88%,rgba(1,2,3,0.65)_100%),linear-gradient(180deg,transparent_0%,transparent_32%,rgba(1,2,3,0.12)_58%,rgba(5,6,10,0.75)_78%,rgba(5,6,10,0.95)_90%,rgb(5,6,10)_100%)]"
+        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.72)_0%,transparent_14%,transparent_86%,rgba(1,2,3,0.72)_100%),linear-gradient(180deg,rgba(1,2,3,0.14)_0%,transparent_16%,transparent_28%,rgba(1,2,3,0.08)_52%,rgba(5,6,10,0.72)_76%,rgba(5,6,10,0.94)_88%,rgb(5,6,10)_100%),radial-gradient(ellipse_70%_55%_at_50%_38%,transparent_0%,rgba(1,2,3,0.22)_100%)]"
       />
 
       {/* Copy: vertically centered band, left-aligned (editorial) */}
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
+      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl items-center px-4 sm:px-8 md:px-10 lg:px-12 xl:px-14">
         <div
           ref={copyRef}
           className="w-full max-w-[min(36rem,92vw)] py-16 text-left sm:py-20 md:max-w-lg md:py-24"
