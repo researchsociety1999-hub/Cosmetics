@@ -58,6 +58,12 @@ export function HomeHeroMotion() {
         className="mystic-hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_18%,rgba(214,168,95,0.1),transparent_55%),radial-gradient(circle_at_50%_100%,rgba(255,120,60,0.05),transparent_42%)]"
       />
 
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
+        <div className="relative aspect-[16/5] w-[min(92vw,640px)] max-h-[min(32vh,280px)] min-h-[120px]">
+          <BrandLogo watermark priority />
+        </div>
+      </div>
+
       <div className="pointer-events-none absolute inset-0">
         <span
           className="mystic-particle mystic-particle-md left-[12%] top-[20%]"
@@ -90,20 +96,11 @@ export function HomeHeroMotion() {
         className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-[4.5rem] pt-8 text-center md:px-6 md:pb-[5.5rem] md:pt-10 lg:px-10 xl:px-14"
         style={{ opacity: 1 }}
       >
-        <div
-          className={`mb-10 md:mb-12 ${reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"}`}
-        >
-          <BrandLogo
-            priority
-            className="max-w-[min(100%,420px)] md:max-w-[min(100%,520px)]"
-          />
-        </div>
-
         <div className="max-w-xl space-y-8">
           <div className="space-y-5">
             <h1
               className={`font-literata text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.06] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)] ${
-                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
+                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
               }`}
             >
               Where Beauty Transcends

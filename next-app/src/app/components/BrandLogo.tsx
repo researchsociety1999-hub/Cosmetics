@@ -12,13 +12,34 @@ export function BrandLogo({
   compact = false,
   className = "",
   priority = false,
+  watermark = false,
 }: {
   href?: string;
   compact?: boolean;
   className?: string;
   /** Navbar: pass true for faster LCP on the wordmark. */
   priority?: boolean;
+  /** Large decorative mark behind hero copy (no link, hidden from assistive tech). */
+  watermark?: boolean;
 }) {
+  if (watermark) {
+    return (
+      <div
+        aria-hidden
+        className={`relative h-full w-full ${className}`}
+      >
+        <Image
+          src={LOGO_SRC}
+          alt=""
+          fill
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, 560px"
+          className="object-contain object-center opacity-[0.14] saturate-[0.88] contrast-[1.08] [filter:drop-shadow(0_0_80px_rgba(212,175,55,0.12))]"
+        />
+      </div>
+    );
+  }
+
   return (
     <Link
       href={href}
