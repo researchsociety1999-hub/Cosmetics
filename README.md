@@ -133,6 +133,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
 | `npm run start` | Start the production server |
 | `npm run lint` | Run ESLint across the project |
 | `npm run install` | Install all workspace dependencies |
+| `npm test` | Run Playwright end-to-end tests (`tests/`) |
 
 ---
 
@@ -141,8 +142,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
 This project uses [Playwright](https://playwright.dev/) for end-to-end testing.
 
 ```bash
-# Run all tests
+# Run all tests (from repo root; builds next-app and serves on :3001)
+npm test
+
+# Same as above
 npx playwright test
+
+# Run one file
+npx playwright test tests/account-page.spec.ts
 
 # Run tests with UI mode
 npx playwright test --ui

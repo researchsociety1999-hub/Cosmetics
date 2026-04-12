@@ -12,10 +12,16 @@ test.describe("storefront smoke", () => {
     await expectHeading(page, "Where Beauty Transcends");
     const siteHeader = page.getByRole("banner");
     await expect(siteHeader.getByRole("link", { name: "Shop", exact: true })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Routines", exact: true })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Home", exact: true })).toBeVisible();
     await expect(
       siteHeader.getByRole("link", { name: "Ingredients", exact: true }),
     ).toBeVisible();
-    await expect(siteHeader.getByRole("link", { name: "Search", exact: true })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "About", exact: true })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Account" })).toHaveAttribute(
+      "href",
+      "/account",
+    );
   });
 
   test("core shopper routes return working pages", async ({ page }) => {
