@@ -1,20 +1,15 @@
 import type { ReactNode } from "react";
-import { getCartSummary } from "../lib/cart";
-import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { BackToTopButton } from "./BackToTopButton";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 
-export async function SiteChrome({
+export function SiteChrome({
   children,
   showFooter = true,
 }: {
   children: ReactNode;
   showFooter?: boolean;
 }) {
-  const user = await getAuthenticatedUser();
-  const cart = await getCartSummary(user);
-
   return (
     <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-black text-[#f6f0e6]">
       <div
@@ -26,8 +21,8 @@ export async function SiteChrome({
         <span className="mystic-particle mystic-particle-md left-[76%] top-[12%] opacity-80" />
         <span className="mystic-particle mystic-particle-sm left-[88%] top-[36%] opacity-80" />
       </div>
-      <Navbar cartCount={cart.itemCount} isAuthenticated={Boolean(user)} />
-      <div className="relative z-10">{children}</div>
+      <Navbar />
+      <div className="relative z-10 pt-[4.25rem] md:pt-[4.75rem]">{children}</div>
       <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>
