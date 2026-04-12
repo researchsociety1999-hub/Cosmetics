@@ -111,7 +111,7 @@ export function Footer() {
             <div className="flex flex-wrap gap-4 md:justify-end">
               <FooterLink href="/privacy">Privacy Policy</FooterLink>
               <FooterLink href="/terms">Terms</FooterLink>
-              <FooterLink href="/cookies">Cookie Policy</FooterLink>
+              <FooterLink href="/cookies">Cookies</FooterLink>
             </div>
           </div>
         </div>
