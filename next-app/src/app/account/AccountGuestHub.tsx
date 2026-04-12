@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatMoney } from "../lib/format";
 import type { CartSummary } from "../lib/types";
+import { AccountPageFooterStrip } from "./AccountPageFooterStrip";
 
 export function AccountGuestHub({ cart }: { cart: CartSummary }) {
   const hasGuestLines = cart.lines.length > 0 && cart.source === "cookie";
@@ -72,6 +73,8 @@ export function AccountGuestHub({ cart }: { cart: CartSummary }) {
           </Link>
         </section>
       ) : null}
+
+      <AccountPageFooterStrip />
     </main>
   );
 }
