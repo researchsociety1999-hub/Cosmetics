@@ -24,24 +24,26 @@ export function BrandLogo({
 }) {
   if (watermark) {
     return (
-      <div
-        aria-hidden
-        className={`relative h-full w-full ${className}`}
-      >
-        {/* Soft oval mask + gentle bottom falloff so the mark dissolves into the page */}
-        <div className="absolute inset-[-10%] [mask-image:radial-gradient(ellipse_84%_68%_at_50%_50%,#000_0%,#000_16%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.45)_50%,rgba(0,0,0,0.18)_66%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_84%_68%_at_50%_50%,#000_0%,#000_16%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.45)_50%,rgba(0,0,0,0.18)_66%,transparent_82%)]">
+      <div aria-hidden className={`relative h-full w-full ${className}`}>
+        {/* Large-field mask: keeps edges soft so the mark merges with Mystique ink + gold ambience */}
+        <div className="absolute inset-[-6%] [mask-image:radial-gradient(ellipse_92%_78%_at_50%_48%,#000_0%,#000_12%,rgba(0,0,0,0.75)_28%,rgba(0,0,0,0.38)_48%,rgba(0,0,0,0.14)_66%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_92%_78%_at_50%_48%,#000_0%,#000_12%,rgba(0,0,0,0.75)_28%,rgba(0,0,0,0.38)_48%,rgba(0,0,0,0.14)_66%,transparent_82%)]">
           <Image
             src={LOGO_SRC}
             alt=""
             fill
             priority={priority}
             sizes="100vw"
-            className="object-contain object-center opacity-[0.14] saturate-[0.88] contrast-[1.03] [filter:drop-shadow(0_0_120px_rgba(212,175,55,0.1))_drop-shadow(0_0_220px_rgba(0,0,0,0.28))]"
+            className="object-contain object-center mix-blend-soft-light opacity-[0.12] contrast-[1.02] saturate-[0.92] [filter:drop-shadow(0_0_140px_rgba(212,175,55,0.14))_drop-shadow(0_0_280px_rgba(0,0,0,0.35))]"
           />
         </div>
+        {/* Pull gold from the mark into surrounding UI chrome */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-[42%] via-[rgba(5,6,10,0.12)] to-[rgb(5,6,10)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_60%_at_50%_45%,rgba(214,168,95,0.07),transparent_62%)] opacity-90 mix-blend-soft-light"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(1,2,3,0.25)] from-[0%] via-transparent via-[35%] to-[rgb(5,6,10)] to-[100%]"
         />
       </div>
     );
