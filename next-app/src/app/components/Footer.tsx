@@ -13,7 +13,7 @@ export function Footer() {
       <div className="w-full px-4 pb-10 pt-14 md:px-6 md:pb-12 md:pt-20 lg:px-10 xl:px-14">
         <div className="relative border-t border-[rgba(214,168,95,0.12)] px-0 py-10 md:py-12">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(214,168,95,0.3),transparent)]" />
-          <div className="relative grid gap-10 md:grid-cols-[1.3fr_0.8fr_0.8fr_0.8fr] md:gap-8">
+          <div className="relative grid gap-10 md:grid-cols-[1.3fr_0.85fr_0.85fr_0.85fr] md:gap-8">
             <div className="space-y-5 md:pr-8">
               <div className="max-w-[min(100%,420px)]">
                 <BrandLogo />
@@ -35,14 +35,14 @@ export function Footer() {
               <FooterLink href="/shop?search=moisturizer">Moisturizers</FooterLink>
             </FooterColumn>
 
-            <FooterColumn title="Brand">
-              <FooterLink href="/about">About</FooterLink>
+            <FooterColumn title="Explore">
+              <FooterLink href="/routines">Routines</FooterLink>
               <FooterLink href="/ingredients">Ingredients</FooterLink>
               <FooterLink href="/journal">Journal</FooterLink>
-              <FooterLink href="/press">Press</FooterLink>
+              <FooterLink href="/about">About</FooterLink>
             </FooterColumn>
 
-            <FooterColumn title="Support">
+            <FooterColumn title="Help">
               <FooterLink href="/faq">FAQ</FooterLink>
               <FooterLink href="/contact">Contact</FooterLink>
               <FooterLink href="/faq">Shipping & Returns</FooterLink>

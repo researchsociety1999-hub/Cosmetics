@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { signOutAction } from "../actions/auth";
-import { BrandLogo } from "./BrandLogo";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 
 interface NavbarProps {
@@ -13,44 +12,37 @@ export function Navbar({ cartCount = 0, isAuthenticated = false }: NavbarProps) 
   return (
     <header className="sticky top-0 z-40 border-b border-[rgba(212,175,55,0.14)] bg-[rgba(0,0,0,0.72)] shadow-[0_12px_40px_rgba(0,0,0,0.55),0_0_48px_rgba(212,175,55,0.04)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-[rgba(0,0,0,0.58)]">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.35),rgba(255,200,140,0.12),transparent)]" />
-      <div className="w-full px-4 pt-5 md:px-6 md:pt-6 lg:px-10 xl:px-14">
-        <div className="relative flex items-center justify-between gap-3 px-1 pb-4 md:hidden">
-          <div className="relative flex min-w-0 flex-1 justify-center px-1">
-            <BrandLogo compact priority className="mx-auto max-w-[min(360px,88vw)]" />
-          </div>
-
-          <NavbarMobileMenu isAuthenticated={isAuthenticated} cartCount={cartCount} />
-        </div>
-
-        <div className="relative hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 pb-5 md:grid lg:gap-8">
-          <div className="flex min-w-0 items-center justify-start gap-4 lg:gap-6">
+      <div className="w-full px-4 pt-4 md:px-6 md:pt-5 lg:px-10 xl:px-14">
+        <div className="relative flex items-center justify-between gap-3 pb-4 md:hidden">
+          <nav className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2">
+            <NavLink href="/shop" label="Shop" />
+            <NavLink href="/routines" label="Routines" />
+            <NavLink href="/ingredients" label="Ingredients" />
+            <NavLink href="/about" label="About" />
+          </nav>
+          <div className="flex shrink-0 items-center gap-2">
             <IconLink href="/search" label="Search">
               <SearchIcon />
             </IconLink>
-            <nav className="flex min-w-0 items-center gap-4 lg:gap-6">
-              <NavLink href="/shop" label="Shop" />
-              <NavLink href="/routines" label="Routines" />
-              <NavLink href="/ingredients" label="Ingredients" />
-              <NavLink href="/journal" label="Journal" />
-            </nav>
+            <NavbarMobileMenu isAuthenticated={isAuthenticated} />
+            <IconLink href="/cart" label="Bag" badge={cartCount}>
+              <CartIcon />
+            </IconLink>
           </div>
+        </div>
 
-          <div className="relative flex min-w-0 justify-center px-2">
-            <BrandLogo
-              compact
-              priority
-              className="mx-auto max-w-[min(400px,34vw)] lg:max-w-[min(440px,32vw)]"
-            />
-          </div>
+        <div className="relative hidden items-center justify-between gap-6 pb-5 md:flex lg:gap-8">
+          <nav className="flex min-w-0 flex-1 items-center gap-5 lg:gap-7">
+            <NavLink href="/shop" label="Shop" />
+            <NavLink href="/routines" label="Routines" />
+            <NavLink href="/ingredients" label="Ingredients" />
+            <NavLink href="/about" label="About" />
+          </nav>
 
-          <div className="flex min-w-0 items-center justify-end gap-3 lg:gap-5">
-            <nav className="flex min-w-0 items-center gap-4 lg:gap-6">
-              <NavLink href="/about" label="About" />
-              <NavLink href="/faq" label="FAQ" />
-              <NavLink href="/contact" label="Contact" />
-            </nav>
-
-            <div className="h-7 w-px bg-[rgba(214,168,95,0.12)]" />
+          <div className="flex shrink-0 items-center gap-3 lg:gap-4">
+            <IconLink href="/search" label="Search">
+              <SearchIcon />
+            </IconLink>
 
             {isAuthenticated ? (
               <>

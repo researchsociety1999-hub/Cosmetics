@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-
-const HERO_PORTRAIT_SRC = "/hero-portrait-silhouette.png";
+import { BrandLogo } from "./BrandLogo";
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(false);
@@ -23,28 +21,20 @@ function usePrefersReducedMotion() {
 export function HomeHeroMotion() {
   const reduce = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const portraitRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (reduce) return;
-    if (!portraitRef.current) return;
 
     function update() {
       const section = sectionRef.current;
-      const portrait = portraitRef.current;
-      if (!section || !portrait) return;
+      const copy = copyRef.current;
+      if (!section || !copy) return;
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const raw = 1 - rect.bottom / (rect.height + vh);
       const progress = Math.max(0, Math.min(1, raw));
-      const yPct = progress * 12;
-      const scale = 1 + progress * 0.04;
-      portrait.style.transform = `translate3d(0, ${yPct}%, 0) scale(${scale})`;
-      const copy = copyRef.current;
-      if (copy) {
-        copy.style.opacity = String(1 - progress * 0.08);
-      }
+      copy.style.opacity = String(1 - progress * 0.08);
     }
 
     update();
@@ -59,35 +49,14 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[min(85vh,800px)] overflow-hidden"
+      className="relative min-h-[min(78vh,720px)] overflow-hidden border-b border-[rgba(214,168,95,0.1)]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[#010203]" />
 
       <div
-        ref={portraitRef}
-        className="pointer-events-none absolute inset-0 will-change-transform"
-        style={reduce ? undefined : { transform: "translate3d(0, 0%, 0) scale(1)" }}
-      >
-        <Image
-          src={HERO_PORTRAIT_SRC}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[72%_30%] opacity-[0.4] sm:object-[76%_28%] md:object-[88%_22%] md:opacity-[0.44]"
-          aria-hidden
-        />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#000000_0%,rgba(0,0,0,0.92)_min(42%,22rem),rgba(0,0,0,0.55)_50%,rgba(3,4,6,0.2)_68%,rgba(5,6,9,0.45)_100%)]" />
-      {reduce ? (
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_65%_50%_at_78%_38%,rgba(214,168,95,0.07),transparent_58%),radial-gradient(circle_at_88%_88%,rgba(255,120,60,0.04),transparent_45%)]" />
-      ) : (
-        <div
-          aria-hidden
-          className="mystic-hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_65%_50%_at_78%_38%,rgba(214,168,95,0.09),transparent_58%),radial-gradient(circle_at_88%_88%,rgba(255,120,60,0.05),transparent_45%)]"
-        />
-      )}
+        aria-hidden
+        className="mystic-hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_18%,rgba(214,168,95,0.1),transparent_55%),radial-gradient(circle_at_50%_100%,rgba(255,120,60,0.05),transparent_42%)]"
+      />
 
       <div className="pointer-events-none absolute inset-0">
         <span
@@ -118,20 +87,29 @@ export function HomeHeroMotion() {
 
       <div
         ref={copyRef}
-        className="relative z-10 w-full px-4 pb-[4.5rem] pt-16 md:px-6 md:pb-[6rem] md:pt-24 lg:px-10 xl:px-14"
+        className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-[4.5rem] pt-12 text-center md:px-6 md:pb-[5.5rem] md:pt-16 lg:px-10 xl:px-14"
         style={{ opacity: 1 }}
       >
+        <div
+          className={`mb-10 md:mb-12 ${reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"}`}
+        >
+          <BrandLogo
+            priority
+            className="max-w-[min(100%,420px)] md:max-w-[min(100%,520px)]"
+          />
+        </div>
+
         <div className="max-w-xl space-y-8">
           <div className="space-y-5">
             <h1
               className={`font-literata text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.06] tracking-[0.04em] text-[#faf6ef] [text-shadow:0_2px_28px_rgba(0,0,0,0.75)] ${
-                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
+                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
               }`}
             >
               Where Beauty Transcends
             </h1>
             <p
-              className={`max-w-md text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem] ${
+              className={`mx-auto max-w-md text-sm font-normal leading-relaxed text-[#c4b8a4] [text-shadow:0_1px_18px_rgba(0,0,0,0.65)] md:text-[0.95rem] ${
                 reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
               }`}
             >
@@ -140,7 +118,7 @@ export function HomeHeroMotion() {
             </p>
           </div>
           <div
-            className={`flex flex-col gap-3 sm:flex-row sm:gap-4 ${
+            className={`flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4 ${
               reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--cta"
             }`}
           >
@@ -162,7 +140,7 @@ export function HomeHeroMotion() {
             </div>
           </div>
           <div
-            className={`flex flex-wrap gap-2.5 pt-10 ${
+            className={`flex flex-wrap justify-center gap-2.5 pt-6 md:pt-8 ${
               reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--badges"
             }`}
           >

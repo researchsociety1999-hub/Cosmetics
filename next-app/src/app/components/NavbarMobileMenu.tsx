@@ -6,13 +6,9 @@ import { signOutAction } from "../actions/auth";
 
 type NavbarMobileMenuProps = {
   isAuthenticated: boolean;
-  cartCount: number;
 };
 
-export function NavbarMobileMenu({
-  isAuthenticated,
-  cartCount,
-}: NavbarMobileMenuProps) {
+export function NavbarMobileMenu({ isAuthenticated }: NavbarMobileMenuProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -54,11 +50,10 @@ export function NavbarMobileMenu({
       <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[280px] overflow-hidden rounded-[22px] border border-[rgba(212,175,55,0.22)] bg-[linear-gradient(180deg,rgba(0,0,0,0.96),rgba(4,3,6,0.94))] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.08),0_28px_64px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(255,154,80,0.12),transparent_38%),radial-gradient(circle_at_100%_100%,rgba(212,175,55,0.08),transparent_42%)]" />
         <nav className="relative flex flex-col gap-2">
-          <MobileNavLink href="/shop" label="Shop" onNavigate={closeMenu} />
-          <MobileNavLink href="/routines" label="Routines" onNavigate={closeMenu} />
-          <MobileNavLink href="/ingredients" label="Ingredients" onNavigate={closeMenu} />
+          <p className="px-3 pb-1 text-[0.58rem] uppercase tracking-[0.2em] text-[#7a7265]">
+            More
+          </p>
           <MobileNavLink href="/journal" label="Journal" onNavigate={closeMenu} />
-          <MobileNavLink href="/about" label="About" onNavigate={closeMenu} />
           <MobileNavLink href="/faq" label="FAQ" onNavigate={closeMenu} />
           <MobileNavLink href="/contact" label="Contact" onNavigate={closeMenu} />
           {isAuthenticated ? (
@@ -79,8 +74,6 @@ export function NavbarMobileMenu({
               <MobileNavLink href="/account/signup" label="Sign up" onNavigate={closeMenu} />
             </>
           )}
-          <MobileNavLink href="/search" label="Search" onNavigate={closeMenu} />
-          <MobileNavLink href="/cart" label={`Bag (${cartCount})`} onNavigate={closeMenu} />
         </nav>
       </div>
     </details>
