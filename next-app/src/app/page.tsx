@@ -235,7 +235,7 @@ async function FeaturedProductsSection() {
         <SectionIntro
           eyebrow="Ritual signatures"
           title="Textures worth the ritual."
-          body="A short list of formulas we reach for first—layer-clean, barrier-kind, and built for morning, night, and the weekly reset."
+          body=""
           ctaHref="/shop?sort=featured"
           ctaLabel="Shop ritual staples"
         />
