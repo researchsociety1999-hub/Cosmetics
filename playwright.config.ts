@@ -13,8 +13,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: "./tests",
-  /** CI runners are slower; shop streams RSC + cold `next start` needs headroom. */
-  timeout: process.env.CI ? 90_000 : 45_000,
+  /** CI runners are slower; shop streams RSC + cart POST/redirect polling needs headroom. */
+  timeout: process.env.CI ? 120_000 : 45_000,
   expect: {
     timeout: 10_000,
   },

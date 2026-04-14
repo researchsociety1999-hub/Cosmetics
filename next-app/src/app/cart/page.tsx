@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { applyPromoCodeAction, removePromoCodeAction } from "../actions/promo";
-import { removeFromCartAction, updateCartQuantityAction } from "../actions/cart";
+import { removeFromCartAction } from "../actions/cart";
+import { CartQuantityUpdateForm } from "./CartQuantityUpdateForm";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
@@ -101,27 +102,12 @@ export default async function CartPage({
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <form action={updateCartQuantityAction} className="flex items-center gap-2">
-                        <input type="hidden" name="productId" value={line.product.id} />
-                        <input type="hidden" name="variantId" value={line.variantId ?? ""} />
-                        <label className="sr-only" htmlFor={`qty-${line.product.id}`}>
-                          Quantity
-                        </label>
-                        <input
-                          id={`qty-${line.product.id}`}
-                          name="quantity"
-                          type="number"
-                          min="0"
-                          defaultValue={line.quantity}
-                          className="mystic-input w-20 text-sm"
-                        />
-                        <button
-                          type="submit"
-                          className="rounded-full border border-[rgba(214,168,95,0.3)] px-4 py-2 text-xs uppercase tracking-[0.18em] text-[#f5eee3]"
-                        >
-                          Update
-                        </button>
-                      </form>
+                      <CartQuantityUpdateForm
+                        key={`${line.product.id}-${line.quantity}-${line.variantId ?? "null"}`}
+                        productId={line.product.id}
+                        variantId={line.variantId}
+                        initialQuantity={line.quantity}
+                      />
                       <form action={removeFromCartAction}>
                         <input type="hidden" name="productId" value={line.product.id} />
                         <input type="hidden" name="variantId" value={line.variantId ?? ""} />

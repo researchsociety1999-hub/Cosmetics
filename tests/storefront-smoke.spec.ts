@@ -13,7 +13,7 @@ test.describe("storefront smoke", () => {
     const siteHeader = page.getByRole("banner");
     await expect(siteHeader.getByRole("link", { name: "Shop", exact: true })).toBeVisible();
     await expect(siteHeader.getByRole("link", { name: "Routines", exact: true })).toBeVisible();
-    await expect(siteHeader.getByRole("link", { name: "Mystique home" })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Home", exact: true })).toBeVisible();
     await expect(
       siteHeader.getByRole("link", { name: "Ingredients", exact: true }),
     ).toBeVisible();
@@ -33,6 +33,10 @@ test.describe("storefront smoke", () => {
 
     await gotoAndWait(page, "/cart");
     await expectHeading(page, "Your ritual bag");
+
+    await gotoAndWait(page, "/checkout");
+    await expectHeading(page, "Checkout");
+    await expect(page.getByRole("heading", { name: "Order summary" })).toBeVisible();
 
     await gotoAndWait(page, "/about");
     await expectHeading(page, "Luxury ritual, reimagined.");

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ThemedImageFrame } from "../components/ThemedImageFrame";
 import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
@@ -49,19 +48,13 @@ export default function AboutPage() {
               </div>
             </header>
 
-            <div className="relative mx-auto flex w-full max-w-[560px] justify-center">
-              <ThemedImageFrame
-                  src="/hero-portrait-silhouette.png"
-                  alt="Mystique mood study — monochrome silhouette"
-                  width={560}
-                  height={320}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 560px"
-                  variant="brand"
-                  className="w-full"
-                  frameClassName="rounded-[32px] px-4 py-6"
-                  imageClassName="h-auto w-full object-contain"
-                />
+            <div
+              aria-hidden
+              className="relative mx-auto flex min-h-[16rem] w-full max-w-[560px] items-center justify-center rounded-[32px] border border-[rgba(214,168,95,0.2)] bg-[radial-gradient(ellipse_72%_85%_at_50%_42%,rgba(214,168,95,0.14),transparent_58%),radial-gradient(circle_at_18%_78%,rgba(255,154,80,0.1),transparent_46%),linear-gradient(158deg,rgba(18,16,22,0.96),rgba(6,7,12,0.99))] p-10 shadow-[inset_0_0_72px_rgba(0,0,0,0.38)]"
+            >
+              <span className="font-literata text-[0.62rem] uppercase tracking-[0.44em] text-[#d6a85f]/75">
+                Mystique
+              </span>
             </div>
           </div>
         </section>

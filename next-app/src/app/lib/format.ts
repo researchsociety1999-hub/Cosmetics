@@ -1,6 +1,14 @@
 import type { Product, ProductVariant } from "./types";
 
 /**
+ * Catalog URLs may include lifestyle or portrait photography. They stay off unless you
+ * explicitly opt in after verifying assets (e.g. packshots only).
+ */
+function catalogProductPhotosEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS === "1";
+}
+
+/**
  * Hostnames allowed in `image_url` / gallery URLs (must align with `next.config.js` `images.remotePatterns`).
  * Add comma-separated hostnames in `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS` for a custom CDN (exact hostname, no protocol).
  */
@@ -41,6 +49,9 @@ export function getUnitPriceCents(
 }
 
 export function getProductImages(product: Product): string[] {
+  if (!catalogProductPhotosEnabled()) {
+    return [];
+  }
   const images = [product.image_url, ...(product.extra_images ?? [])].filter(
     (value): value is string => Boolean(value),
   );
@@ -52,6 +63,9 @@ export function getProductImages(product: Product): string[] {
 export function getProductPrimaryImageUrl(
   product: Pick<Product, "image_url">,
 ): string | null {
+  if (!catalogProductPhotosEnabled()) {
+    return null;
+  }
   return isSafeImageSrc(product.image_url) ? product.image_url : null;
 }
 

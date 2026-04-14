@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { SiteChrome } from "../components/SiteChrome";
-import { HOME_BRAND_IMAGES } from "../lib/homeBrandImages";
 
 export const metadata: Metadata = {
   title: "Routines",
@@ -15,20 +13,14 @@ export default function RoutinesPage() {
     <SiteChrome>
       <main className="mystic-section-shell mystic-section">
         <header className="relative min-h-[14rem] overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.14)] md:min-h-[16rem]">
-          <div className="pointer-events-none absolute inset-0 min-h-[inherit]">
-            <Image
-              src={HOME_BRAND_IMAGES.editorial.profileMoon}
-              alt=""
-              fill
-              sizes="(max-width:768px) 100vw, 896px"
-              className="object-cover object-[center_28%] opacity-35"
-              quality={82}
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-[linear-gradient(120deg,rgba(4,5,10,0.92)_0%,rgba(4,5,10,0.78)_42%,rgba(4,5,10,0.55)_100%)]"
-            />
-          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 min-h-[inherit] bg-[radial-gradient(ellipse_88%_70%_at_72%_18%,rgba(214,168,95,0.14),transparent_54%),radial-gradient(circle_at_10%_55%,rgba(255,140,90,0.09),transparent_42%),linear-gradient(122deg,rgba(4,5,10,0.98)_0%,rgba(6,8,16,0.9)_46%,rgba(8,10,20,0.72)_100%)]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(4,5,10,0.88)_0%,rgba(4,5,10,0.72)_42%,rgba(4,5,10,0.5)_100%)]"
+          />
           <div className="relative z-10 max-w-3xl space-y-4 px-6 py-10 md:px-10 md:py-12">
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#d8c8aa]">
               Routines
