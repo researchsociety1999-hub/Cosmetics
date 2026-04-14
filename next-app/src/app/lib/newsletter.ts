@@ -1,4 +1,11 @@
-import { supabaseAdmin, hasSupabaseServiceEnv } from "./supabaseClient";
+import {
+  escapeHtml,
+  getContactNotificationEmail,
+  isEmailConfigured,
+  renderEmailLayout,
+  sendEmail,
+} from "./email";
+import { hasSupabaseServiceEnv, supabaseAdmin } from "./supabaseClient";
 import type { NewsletterSubscriber } from "./types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,6 +26,11 @@ export function validateNewsletterEmail(email: string): string | null {
   return null;
 }
 
+/** True when signup can run: Supabase admin (DB row) or Resend (notification email). */
+export function isNewsletterBackendConfigured(): boolean {
+  return Boolean(hasSupabaseServiceEnv && supabaseAdmin) || isEmailConfigured();
+}
+
 function requireAdminClient() {
   if (!supabaseAdmin || !hasSupabaseServiceEnv) {
     throw new Error("Supabase service role is not configured.");
@@ -27,13 +39,10 @@ function requireAdminClient() {
   return supabaseAdmin;
 }
 
-export async function subscribeToNewsletter({
-  email,
-  source,
-}: {
-  email: string;
-  source: string;
-}): Promise<{ status: "created" | "duplicate"; subscriber: NewsletterSubscriber | null }> {
+async function subscribeViaDatabase(
+  email: string,
+  source: string,
+): Promise<{ status: "created" | "duplicate"; subscriber: NewsletterSubscriber | null }> {
   const client = requireAdminClient();
   const normalizedEmail = normalizeNewsletterEmail(email);
   const { data: existing, error: existingError } = await client
@@ -78,4 +87,43 @@ export async function subscribeToNewsletter({
     status: "created",
     subscriber: data as NewsletterSubscriber,
   };
+}
+
+/** When the DB is unavailable, Resend notifies the studio. Duplicate emails are not deduped on this path. */
+async function subscribeViaStudioEmail(
+  email: string,
+  source: string,
+): Promise<{ status: "created"; subscriber: null }> {
+  const normalizedEmail = normalizeNewsletterEmail(email);
+  const html = renderEmailLayout({
+    preview: "New Mystique newsletter signup",
+    title: "Newsletter signup",
+    body: `<p style="margin:0 0 12px;">A visitor joined the list from <strong>${escapeHtml(source)}</strong>.</p><p style="margin:0;"><strong>Email:</strong> ${escapeHtml(normalizedEmail)}</p>`,
+  });
+  await sendEmail({
+    to: getContactNotificationEmail(),
+    subject: "Mystique — new newsletter signup",
+    html,
+    text: `Newsletter signup\nSource: ${source}\nEmail: ${normalizedEmail}`,
+    replyTo: normalizedEmail,
+  });
+  return { status: "created", subscriber: null };
+}
+
+export async function subscribeToNewsletter({
+  email,
+  source,
+}: {
+  email: string;
+  source: string;
+}): Promise<{ status: "created" | "duplicate"; subscriber: NewsletterSubscriber | null }> {
+  if (hasSupabaseServiceEnv && supabaseAdmin) {
+    return subscribeViaDatabase(email, source);
+  }
+
+  if (isEmailConfigured()) {
+    return subscribeViaStudioEmail(email, source);
+  }
+
+  throw new Error("Supabase service role is not configured.");
 }

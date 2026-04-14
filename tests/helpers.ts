@@ -37,6 +37,18 @@ export async function addFirstVisibleProductToCart(page: Page) {
   await addToCartButton.click();
 }
 
+/** Valid US shipping payload for `/api/create-checkout-session` integration tests. */
+export const SAMPLE_CHECKOUT_SHIPPING = {
+  fullName: "Mystique Test User",
+  email: "checkout-e2e@example.com",
+  addressLine1: "1200 Market Street",
+  addressLine2: "",
+  city: "Austin",
+  state: "TX",
+  postalCode: "78701",
+  country: "United States",
+} as const;
+
 export async function addProductToCart(
   page: Page,
   slug = "celestial-glow-serum",

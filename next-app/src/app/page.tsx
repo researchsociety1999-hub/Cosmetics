@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -7,7 +6,6 @@ import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
-import { HOME_BRAND_IMAGES } from "./lib/homeBrandImages";
 import { getProducts } from "./lib/queries";
 
 export const metadata: Metadata = {
@@ -133,32 +131,32 @@ const HOME_RITUAL_RHYTHMS: {
   title: string;
   href: string;
   linkLabel: string;
-  imageSrc: string;
-  imagePosition: string;
+  /** CSS-only wash (no photography). */
+  washClassName: string;
 }[] = [
   {
     label: "Morning",
     title: "Daylight Ritual",
     href: "/routines#morning-ritual",
     linkLabel: "Morning routine",
-    imageSrc: HOME_BRAND_IMAGES.rituals.morning,
-    imagePosition: "object-[center_25%]",
+    washClassName:
+      "bg-[radial-gradient(ellipse_90%_70%_at_18%_12%,rgba(255,186,120,0.22),transparent_55%),radial-gradient(circle_at_92%_78%,rgba(214,168,95,0.12),transparent_42%),linear-gradient(195deg,rgba(28,22,18,0.95)_0%,rgba(6,7,12,1)_55%,rgb(4,5,10)_100%)]",
   },
   {
     label: "Night",
     title: "Recovery Ritual",
     href: "/routines#night-ritual",
     linkLabel: "Night routine",
-    imageSrc: HOME_BRAND_IMAGES.rituals.night,
-    imagePosition: "object-[center_30%]",
+    washClassName:
+      "bg-[radial-gradient(ellipse_85%_65%_at_82%_8%,rgba(120,140,220,0.18),transparent_52%),radial-gradient(circle_at_12%_70%,rgba(214,168,95,0.08),transparent_45%),linear-gradient(205deg,rgba(10,12,24,1)_0%,rgba(4,5,10,1)_58%,rgb(3,4,8)_100%)]",
   },
   {
     label: "Weekly",
     title: "Reset Ritual",
     href: "/routines#weekly-ritual",
     linkLabel: "Weekly routine",
-    imageSrc: HOME_BRAND_IMAGES.rituals.weekly,
-    imagePosition: "object-[center_22%]",
+    washClassName:
+      "bg-[radial-gradient(ellipse_95%_60%_at_50%_0%,rgba(214,168,95,0.16),transparent_50%),radial-gradient(circle_at_30%_90%,rgba(255,140,90,0.07),transparent_48%),linear-gradient(185deg,rgba(14,12,18,1)_0%,rgba(5,6,11,1)_50%,rgb(4,5,10)_100%)]",
   },
 ];
 
@@ -179,13 +177,9 @@ function RitualStripSection() {
               className="group relative isolate flex min-h-[20rem] flex-col justify-end overflow-hidden mystic-card sm:min-h-[22rem]"
             >
               <div className="pointer-events-none absolute inset-0">
-                <Image
-                  src={ritual.imageSrc}
-                  alt=""
-                  fill
-                  sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-                  className={`object-cover opacity-45 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-55 ${ritual.imagePosition}`}
-                  quality={82}
+                <div
+                  aria-hidden
+                  className={`absolute inset-0 opacity-90 transition duration-700 ease-out group-hover:opacity-[0.98] ${ritual.washClassName}`}
                 />
                 <div
                   aria-hidden

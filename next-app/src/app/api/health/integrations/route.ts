@@ -8,6 +8,7 @@ import {
   probeStripeApi,
   probeSupabaseCatalog,
 } from "../../../lib/integrationProbes";
+import { isNewsletterBackendConfigured } from "../../../lib/newsletter";
 import {
   hasInvalidSupabasePublicKey,
   hasInvalidSupabaseUrl,
@@ -68,6 +69,9 @@ export async function GET() {
     resend: {
       apiKeyConfigured: resend,
       apiProbe: resendProbe ?? { skipped: true as const },
+    },
+    newsletter: {
+      backendConfigured: isNewsletterBackendConfigured(),
     },
     /** Live checks (Stripe balance, Resend domains, Supabase anon count). */
     probes: {

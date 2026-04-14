@@ -22,8 +22,10 @@ export function SiteChrome({
         <span className="mystic-particle mystic-particle-sm left-[88%] top-[36%] opacity-80" />
       </div>
       <Navbar />
-      {/* Offset for fixed navbar + hairline; extra on xs when links wrap */}
-      <div className="relative z-10 pt-[5.25rem] sm:pt-[5.35rem] md:pt-[5.65rem]">{children}</div>
+      {/* Offset for fixed navbar (+ desktop hairline); mobile uses a compact bar */}
+      <div className="relative z-10 pt-[max(4rem,calc(3.25rem+env(safe-area-inset-top,0px)))] sm:pt-[max(4.2rem,calc(3.45rem+env(safe-area-inset-top,0px)))] md:pt-[4.65rem]">
+        {children}
+      </div>
       <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>

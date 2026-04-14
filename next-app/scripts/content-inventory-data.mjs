@@ -40,13 +40,6 @@ export const INVENTORY_ROWS = [
   ),
   r(
     "(global)",
-    "Logo image alt / home link",
-    "aria-label Mystique home; img alt Mystique logo",
-    "next-app/src/app/components/BrandLogo.tsx",
-    "Logo asset path: LOGO_SRC in same file.",
-  ),
-  r(
-    "(global)",
     "Newsletter form (homepage section)",
     "Placeholder Enter your email; buttons Join the list / Joining...; helper Early access…; success/error messages",
     "next-app/src/app/components/NewsletterForm.tsx",

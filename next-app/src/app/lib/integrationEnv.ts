@@ -1,3 +1,5 @@
+import { isEmailConfigured } from "./email";
+import { isNewsletterBackendConfigured } from "./newsletter";
 import {
   hasInvalidSupabasePublicKey,
   hasInvalidSupabaseUrl,
@@ -5,7 +7,6 @@ import {
   hasSupabasePublicEnv,
   hasSupabaseServiceEnv,
 } from "./supabaseClient";
-import { isEmailConfigured } from "./email";
 import { isStripeConfigured, isStripeWebhookConfigured } from "./stripe";
 
 /**
@@ -20,6 +21,7 @@ export function getMissingIntegrationEnv(): {
   orderEmails: string[];
   contactForm: string[];
   stripeWebhooks: string[];
+  newsletter: string[];
 } {
   const catalog: string[] = [];
   const auth: string[] = [];
@@ -85,6 +87,13 @@ export function getMissingIntegrationEnv(): {
     stripeWebhooks.push("STRIPE_WEBHOOK_SECRET (plus endpoint /api/stripe/webhook in Stripe Dashboard)");
   }
 
+  const newsletter: string[] = [];
+  if (!isNewsletterBackendConfigured()) {
+    newsletter.push(
+      "SUPABASE_SERVICE_ROLE_KEY (newsletter_subscribers table) or RESEND_API_KEY + RESEND_FROM_EMAIL (studio email fallback)",
+    );
+  }
+
   return {
     catalog: dedupe(catalog),
     auth: dedupe(auth),
@@ -93,6 +102,7 @@ export function getMissingIntegrationEnv(): {
     orderEmails: dedupe(orderEmails),
     contactForm: dedupe(contactForm.filter(Boolean)),
     stripeWebhooks: dedupe(stripeWebhooks),
+    newsletter: dedupe(newsletter),
   };
 }
 
@@ -103,6 +113,8 @@ export function getIntegrationReadiness(): {
   stripeWebhooks: boolean;
   resendEmail: boolean;
   supabaseServiceRole: boolean;
+  /** DB insert or Resend studio notification — see `newsletter.ts`. */
+  newsletter: boolean;
 } {
   return {
     supabaseCatalog: hasSupabaseEnv,
@@ -111,6 +123,7 @@ export function getIntegrationReadiness(): {
     stripeWebhooks: isStripeWebhookConfigured(),
     resendEmail: isEmailConfigured(),
     supabaseServiceRole: hasSupabaseServiceEnv,
+    newsletter: isNewsletterBackendConfigured(),
   };
 }
 
