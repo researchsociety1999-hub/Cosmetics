@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { IngredientSpotlightThumb } from "../components/IngredientSpotlightThumb";
 import { SiteChrome } from "../components/SiteChrome";
 import { getIngredients } from "../lib/queries";
 
@@ -61,25 +62,35 @@ export default async function IngredientsPage() {
         </section>
         <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {ingredients.map((ingredient) => (
-            <article key={ingredient.id} className="mystic-card p-6">
-              {ingredient.source ? (
-                <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                  {ingredient.source}
+            <article
+              key={ingredient.id}
+              className="group mystic-card relative flex flex-row items-start gap-4 overflow-hidden border border-white/[0.04] bg-gradient-to-br from-[rgba(18,20,28,0.55)] via-[rgba(8,10,16,0.35)] to-[rgba(4,5,10,0.25)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] transition duration-300 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(ellipse_90%_80%_at_0%_0%,rgba(214,168,95,0.06),transparent_55%)] before:opacity-0 before:transition-opacity hover:before:opacity-100 sm:gap-5 sm:p-6"
+            >
+              <IngredientSpotlightThumb
+                id={ingredient.id}
+                imageSrc={ingredient.imageSrc}
+                name={ingredient.name}
+              />
+              <div className="relative z-[1] min-w-0 flex-1">
+                {ingredient.source ? (
+                  <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                    {ingredient.source}
+                  </p>
+                ) : null}
+                <h2
+                  className={`font-literata text-2xl tracking-[0.08em] text-[#f5eee3] sm:text-3xl ${
+                    ingredient.source ? "mt-2" : ""
+                  }`}
+                >
+                  {ingredient.name}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
+                  {ingredient.description}
                 </p>
-              ) : null}
-              <h2
-                className={`font-literata text-3xl tracking-[0.08em] text-[#f5eee3] ${
-                  ingredient.source ? "mt-3" : ""
-                }`}
-              >
-                {ingredient.name}
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
-                {ingredient.description}
-              </p>
-              <p className="mt-5 text-xs uppercase tracking-[0.2em] text-[#d6a85f]">
-                {ingredient.benefits}
-              </p>
+                <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[#d6a85f]">
+                  {ingredient.benefits}
+                </p>
+              </div>
             </article>
           ))}
         </section>
