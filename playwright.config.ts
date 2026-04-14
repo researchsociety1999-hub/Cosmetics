@@ -13,7 +13,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: "./tests",
-  timeout: 45_000,
+  /** CI runners are slower; shop streams RSC + cold `next start` needs headroom. */
+  timeout: process.env.CI ? 90_000 : 45_000,
   expect: {
     timeout: 10_000,
   },
@@ -77,8 +78,12 @@ export default defineConfig({
     env: {
       ...process.env,
       PORT: "3001",
-      // E2E expects demo slugs when no Supabase DB is configured.
-      ALLOW_MOCK_CATALOG: process.env.ALLOW_MOCK_CATALOG ?? "1",
+      // Deterministic embedded catalog even when `.env.local` has Supabase keys.
+      ALLOW_MOCK_CATALOG: "1",
+      E2E_MOCK_CATALOG: "1",
+      // `next start` uses NODE_ENV=production over http://localhost — allow guest cookies.
+      // Force "1": parent `process.env` may set this to "" which would not be replaced by `??`.
+      E2E_ALLOW_HTTP_COOKIES: "1",
       // `next start` runs as production; allow integration health checks in tests.
       ENABLE_INTEGRATION_HEALTH: process.env.ENABLE_INTEGRATION_HEALTH ?? "1",
     },

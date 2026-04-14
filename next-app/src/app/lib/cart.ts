@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
+import { httpCookieSecure } from "./httpCookieSecure";
 import { createSupabaseServerClient, getAuthenticatedUser } from "./supabaseServer";
 import { getProductsByIds, getProductVariantsByIds } from "./queries";
 import type {
@@ -70,7 +71,7 @@ export async function setCartItemsCookie(items: CartCookieItem[]): Promise<void>
   cookieStore.set(CART_COOKIE_NAME, JSON.stringify(normalized), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: httpCookieSecure(),
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
@@ -81,7 +82,7 @@ export async function clearCartItemsCookie(): Promise<void> {
   cookieStore.set(CART_COOKIE_NAME, "", {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: httpCookieSecure(),
     path: "/",
     maxAge: 0,
   });

@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { httpCookieSecure } from "../lib/httpCookieSecure";
 import { createSupabaseServerClient, getAuthenticatedUser } from "../lib/supabaseServer";
-import { getCartItemsFromCookie, getCartSummary } from "../lib/cart";
+import { clearCartItemsCookie, getCartItemsFromCookie, getCartSummary } from "../lib/cart";
 import { clearStoredPromoCode, getStoredPromoCode, validatePromoCodeForSubtotal } from "../lib/promo";
 import type { CartCookieItem } from "../lib/types";
 
@@ -53,23 +54,37 @@ function isSameCartLine(
   productId: number,
   variantId: number | null,
 ) {
-  return item.productId === productId && (item.variantId ?? null) === variantId;
+  const leftPid = Number(item.productId);
+  const rightPid = Number(productId);
+  const leftVid = item.variantId == null ? null : Number(item.variantId);
+  const rightVid = variantId == null ? null : Number(variantId);
+  return (
+    Number.isFinite(leftPid) &&
+    Number.isFinite(rightPid) &&
+    leftPid === rightPid &&
+    leftVid === rightVid
+  );
 }
 
 async function persistGuestCart(items: CartCookieItem[]) {
   const cookieStore = await cookies();
   const normalized = items
-    .filter((item) => Number.isFinite(item.productId) && item.quantity > 0)
+    .filter((item) => Number.isFinite(Number(item.productId)) && item.quantity > 0)
     .map((item) => ({
-      productId: item.productId,
+      productId: Math.floor(Number(item.productId)),
       quantity: Math.max(1, Math.floor(item.quantity)),
       variantId: item.variantId ?? null,
     }));
 
+  if (normalized.length === 0) {
+    await clearCartItemsCookie();
+    return;
+  }
+
   cookieStore.set(CART_COOKIE_NAME, JSON.stringify(normalized), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: httpCookieSecure(),
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
@@ -231,7 +246,7 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
     const updatedCart = await getCartSummary();
     await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
     revalidateCartRoutes();
-    return;
+    redirect("/cart");
   }
 
   const items = await getCartItemsFromCookie();
@@ -246,6 +261,9 @@ export async function updateCartQuantityAction(formData: FormData): Promise<void
   const updatedCart = await getCartSummary();
   await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
   revalidateCartRoutes();
+  // Full navigation so the next request always carries the updated cart cookie.
+  // RSC refresh alone can race with Set-Cookie and leave line totals out of sync with the input.
+  redirect("/cart");
 }
 
 export async function removeFromCartAction(formData: FormData): Promise<void> {
@@ -280,7 +298,7 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
     const updatedCart = await getCartSummary();
     await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
     revalidateCartRoutes();
-    return;
+    redirect("/cart");
   }
 
   const items = await getCartItemsFromCookie();
@@ -289,4 +307,5 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
   const updatedCart = await getCartSummary();
   await syncPromoCodeAfterCartMutation(updatedCart.subtotalCents);
   revalidateCartRoutes();
+  redirect("/cart");
 }

@@ -1,7 +1,18 @@
 import { expect, type Page } from "@playwright/test";
 
+function isShopPath(path: string) {
+  const pathname = path.split("?")[0]?.replace(/\/$/, "") ?? "";
+  return pathname === "/shop";
+}
+
 export async function gotoAndWait(page: Page, path: string) {
-  await page.goto(path, { waitUntil: "networkidle" });
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("load");
+  if (isShopPath(path)) {
+    const search = page.getByRole("searchbox", { name: /search shop/i });
+    await expect(search).toBeVisible({ timeout: 60_000 });
+    await expect(search).toBeEnabled({ timeout: 60_000 });
+  }
 }
 
 export async function expectHeading(
@@ -32,18 +43,20 @@ export async function addProductToCart(
   quantity = 1,
 ) {
   await gotoAndWait(page, `/products/${slug}`);
+  const purchase = page.locator("#product-purchase-block");
+  await expect(purchase).toBeVisible({ timeout: 30_000 });
 
   if (quantity > 1) {
-    const quantityInput = page.locator('input[name="quantity"]');
+    const quantityInput = purchase.locator('input[type="number"]').first();
     await expect(quantityInput).toBeVisible();
     await quantityInput.fill(String(quantity));
   }
 
-  const addToCartForm = page
-    .locator("form")
-    .filter({ has: page.locator('input[name="redirectTo"][value="cart"]') });
-  await addToCartForm
-    .getByRole("button", { name: /add to (cart|bag)/i })
-    .click();
-  await expect(page).toHaveURL(/\/cart$/);
+  const addButton = purchase.getByRole("button", { name: /^add to bag$/i });
+  await expect(addButton).toBeEnabled({ timeout: 20_000 });
+  await Promise.all([
+    page.waitForURL(/\/cart$/, { timeout: 30_000 }),
+    addButton.click(),
+  ]);
+  await page.waitForLoadState("load");
 }

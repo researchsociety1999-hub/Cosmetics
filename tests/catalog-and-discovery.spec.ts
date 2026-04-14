@@ -18,7 +18,7 @@ test.describe("catalog and discovery", () => {
   test("shop search narrows the catalog", async ({ page }) => {
     await gotoAndWait(page, "/shop");
 
-    const searchInput = page.locator("#shop-search");
+    const searchInput = page.getByRole("searchbox", { name: /search shop/i });
     await searchInput.fill("serum");
     await searchInput.press("Enter");
 
@@ -30,12 +30,13 @@ test.describe("catalog and discovery", () => {
     await gotoAndWait(page, "/products/celestial-glow-serum");
 
     await expectHeading(page, "Celestial Glow Serum");
-    await expect(page.getByText("Treat", { exact: true }).first()).toBeVisible();
-    const addToCartForm = page
-      .locator("form")
-      .filter({ has: page.locator('input[name="redirectTo"][value="cart"]') });
     await expect(
-      addToCartForm.getByRole("button", { name: /add to (cart|bag)/i }),
+      page.getByText("Treat", { exact: true }).first(),
+    ).toBeVisible();
+    await expect(
+      page
+        .locator("#product-purchase-block")
+        .getByRole("button", { name: /^add to bag$/i }),
     ).toBeVisible();
   });
 

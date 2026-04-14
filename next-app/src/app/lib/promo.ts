@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { httpCookieSecure } from "./httpCookieSecure";
 import { hasSupabaseServiceEnv, supabaseAdmin } from "./supabaseClient";
 import type { AppliedPromo, PromoCode } from "./types";
 
@@ -178,7 +179,7 @@ export async function setStoredPromoCode(code: string): Promise<void> {
   cookieStore.set(PROMO_COOKIE_NAME, normalizePromoCode(code), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: httpCookieSecure(),
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
@@ -189,7 +190,7 @@ export async function clearStoredPromoCode(): Promise<void> {
   cookieStore.set(PROMO_COOKIE_NAME, "", {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: httpCookieSecure(),
     path: "/",
     maxAge: 0,
   });

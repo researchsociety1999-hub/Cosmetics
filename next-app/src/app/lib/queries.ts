@@ -47,6 +47,18 @@ function allowMockCatalog(): boolean {
   );
 }
 
+/**
+ * Playwright webServer sets this so catalog reads use embedded mock data even when
+ * `.env.local` configures Supabase (avoids empty or mismatched DB fixtures during E2E).
+ */
+function e2eMockCatalog(): boolean {
+  return process.env.E2E_MOCK_CATALOG === "1";
+}
+
+function useEmbeddedCatalogSource(): boolean {
+  return e2eMockCatalog() || !hasSupabaseEnv || !supabase;
+}
+
 interface GetProductsOptions {
   categoryId?: number;
   search?: string;
@@ -434,13 +446,21 @@ function filterProductsBySearch(
 export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
-  if (!hasSupabaseEnv || !supabase) {
+  if (useEmbeddedCatalogSource()) {
     if (!allowMockCatalog()) {
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
     return paginateProducts(
       sortProducts(filteredProducts, options.sortBy),
+      options.page,
+      options.limit,
+    );
+  }
+
+  if (!supabase) {
+    return paginateProducts(
+      sortProducts([], options.sortBy ?? "newest"),
       options.page,
       options.limit,
     );
@@ -507,11 +527,15 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
 
   const requestedIds = new Set(ids);
 
-  if (!hasSupabaseEnv || !supabase) {
+  if (useEmbeddedCatalogSource()) {
     if (!allowMockCatalog()) {
       return [];
     }
     return getMockProducts().filter((product) => requestedIds.has(product.id));
+  }
+
+  if (!supabase) {
+    return [];
   }
 
   try {
@@ -535,11 +559,15 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (!hasSupabaseEnv || !supabase) {
+  if (useEmbeddedCatalogSource()) {
     if (!allowMockCatalog()) {
       return null;
     }
     return getMockProducts().find((product) => product.slug === slug) ?? null;
+  }
+
+  if (!supabase) {
+    return null;
   }
 
   try {
@@ -556,7 +584,16 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return null;
     }
 
-    return data ? normalizeProduct(data as Product) : null;
+    if (data) {
+      return normalizeProduct(data as Product);
+    }
+
+    // E2E / dev: Supabase can be configured but empty—honor demo slugs when explicitly allowed.
+    if (allowMockCatalog()) {
+      return getMockProducts().find((product) => product.slug === slug) ?? null;
+    }
+
+    return null;
   } catch (e) {
     console.error("[Supabase] getProductBySlug exception:", e);
     return null;
@@ -698,11 +735,15 @@ export async function getRoutineCompanionProducts(
 }
 
 export async function getCategories(): Promise<Category[]> {
-  if (!hasSupabaseEnv || !supabase) {
+  if (useEmbeddedCatalogSource()) {
     if (!allowMockCatalog()) {
       return [];
     }
     return getMockCategories();
+  }
+
+  if (!supabase) {
+    return [];
   }
 
   try {
@@ -731,11 +772,15 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
-  if (!hasSupabaseEnv || !supabase) {
+  if (useEmbeddedCatalogSource()) {
     if (!allowMockCatalog()) {
       return [];
     }
     return mockProductVariants.filter((v) => v.product_id === productId);
+  }
+
+  if (!supabase) {
+    return [];
   }
 
   try {
@@ -878,12 +923,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
     return [];
   }
 
-  const sourceProducts =
-    hasSupabaseEnv && supabase
-      ? await getProducts({ sortBy: "featured" })
-      : allowMockCatalog()
-        ? mockProducts.map(normalizeProduct)
-        : [];
+  const sourceProducts = await getProducts({ sortBy: "featured", limit: 200 });
 
   return filterProductsBySearch(sourceProducts, normalizedQuery, 24);
 }

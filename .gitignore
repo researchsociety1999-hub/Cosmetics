@@ -1,3 +1,7 @@
+# Secrets — never commit (use Vercel/hosting env + next-app/.env.example as template)
+.env
+.env.*
+!.env.example
 
 # Playwright
 node_modules/
