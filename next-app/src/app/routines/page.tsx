@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteChrome } from "../components/SiteChrome";
+import { HOME_BRAND_IMAGES } from "../lib/homeBrandImages";
 
 export const metadata: Metadata = {
   title: "Routines",
@@ -12,17 +14,33 @@ export default function RoutinesPage() {
   return (
     <SiteChrome>
       <main className="mystic-section-shell mystic-section">
-        <header className="max-w-3xl space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Routines
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Not sure where to start?
-          </h1>
-          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Morning, night, and a weekly reset—three cadences you can follow as written or adapt
-            to your skin. Shop the collection step by step from each card.
-          </p>
+        <header className="relative min-h-[14rem] overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.14)] md:min-h-[16rem]">
+          <div className="pointer-events-none absolute inset-0 min-h-[inherit]">
+            <Image
+              src={HOME_BRAND_IMAGES.editorial.profileMoon}
+              alt=""
+              fill
+              sizes="(max-width:768px) 100vw, 896px"
+              className="object-cover object-[center_28%] opacity-35"
+              quality={82}
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[linear-gradient(120deg,rgba(4,5,10,0.92)_0%,rgba(4,5,10,0.78)_42%,rgba(4,5,10,0.55)_100%)]"
+            />
+          </div>
+          <div className="relative z-10 max-w-3xl space-y-4 px-6 py-10 md:px-10 md:py-12">
+            <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#d8c8aa]">
+              Routines
+            </p>
+            <h1 className="font-literata text-4xl tracking-[0.12em] text-[#f5eee3] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)] md:text-5xl">
+              Not sure where to start?
+            </h1>
+            <p className="text-sm leading-relaxed text-[#d4caba] md:text-base">
+              Morning, night, and a weekly reset—three cadences you can follow as written or adapt
+              to your skin. Shop the collection step by step from each card.
+            </p>
+          </div>
         </header>
 
         <section className="mt-12 grid gap-6 lg:grid-cols-3">

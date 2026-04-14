@@ -22,7 +22,8 @@ export function SiteChrome({
         <span className="mystic-particle mystic-particle-sm left-[88%] top-[36%] opacity-80" />
       </div>
       <Navbar />
-      <div className="relative z-10 pt-[4.25rem] md:pt-[4.75rem]">{children}</div>
+      {/* Offset for fixed navbar + hairline; extra on xs when links wrap */}
+      <div className="relative z-10 pt-[5.25rem] sm:pt-[5.35rem] md:pt-[5.65rem]">{children}</div>
       <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -6,6 +7,7 @@ import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
+import { HOME_BRAND_IMAGES } from "./lib/homeBrandImages";
 import { getProducts } from "./lib/queries";
 
 export const metadata: Metadata = {
@@ -129,63 +131,91 @@ async function FeaturedProductsSection() {
 const HOME_RITUAL_RHYTHMS: {
   label: string;
   title: string;
-  body: string;
   href: string;
   linkLabel: string;
+  imageSrc: string;
+  imagePosition: string;
 }[] = [
   {
     label: "Morning",
-    title: "Daylight ritual",
-    body: "Light layers, clarity, and SPF-forward finish—built to move under makeup and real schedules.",
+    title: "Daylight Ritual",
     href: "/routines#morning-ritual",
     linkLabel: "Morning routine",
+    imageSrc: HOME_BRAND_IMAGES.rituals.morning,
+    imagePosition: "object-[center_25%]",
   },
   {
     label: "Night",
-    title: "Recovery ritual",
-    body: "Double cleanse, treatment, and seal—richer textures while skin resets overnight.",
+    title: "Recovery Ritual",
     href: "/routines#night-ritual",
     linkLabel: "Night routine",
+    imageSrc: HOME_BRAND_IMAGES.rituals.night,
+    imagePosition: "object-[center_30%]",
   },
   {
     label: "Weekly",
-    title: "Reset ritual",
-    body: "Exfoliation, masks, and focused care—one or two nights a week to refine tone and texture.",
+    title: "Reset Ritual",
     href: "/routines#weekly-ritual",
     linkLabel: "Weekly routine",
+    imageSrc: HOME_BRAND_IMAGES.rituals.weekly,
+    imagePosition: "object-[center_22%]",
   },
 ];
 
 function RitualStripSection() {
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a]">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a] !pt-24 !pb-24 md:!pt-32 md:!pb-32">
       <div className="mystic-section-shell">
         <SectionIntro
-          eyebrow="Rituals"
-          title="Morning, night, and weekly."
+          title="Rituals"
+          body="Morning, night, and weekly."
           ctaHref="/routines"
           ctaLabel="View routines"
         />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-10">
           {HOME_RITUAL_RHYTHMS.map((ritual) => (
-            <article key={ritual.label} className="mystic-card p-6 md:p-7">
-              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                {ritual.label}
-              </p>
-              <h3 className="mt-3 font-literata text-3xl tracking-[0.12em] text-[#f5eee3]">
-                {ritual.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">{ritual.body}</p>
-              <Link
-                href={ritual.href}
-                className="mt-5 inline-flex text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f] underline-offset-4 hover:underline"
-              >
-                {ritual.linkLabel}
-              </Link>
+            <article
+              key={ritual.label}
+              className="group relative isolate flex min-h-[20rem] flex-col justify-end overflow-hidden mystic-card sm:min-h-[22rem]"
+            >
+              <div className="pointer-events-none absolute inset-0">
+                <Image
+                  src={ritual.imageSrc}
+                  alt=""
+                  fill
+                  sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                  className={`object-cover opacity-45 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-55 ${ritual.imagePosition}`}
+                  quality={82}
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,5,10,0.5)_0%,rgba(4,5,10,0.72)_38%,rgba(4,5,10,0.92)_72%,rgb(4,5,10)_100%)]"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(214,168,95,0.12),transparent_55%)] opacity-80 mix-blend-soft-light"
+                />
+              </div>
+              <div className="relative z-10 flex flex-col gap-8 p-8 md:gap-10 md:p-10">
+                <div className="space-y-4">
+                  <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#e8d4b0] drop-shadow-[0_1px_12px_rgba(0,0,0,0.85)]">
+                    {ritual.label}
+                  </p>
+                  <h3 className="font-literata text-3xl tracking-[0.12em] text-[#f5eee3] drop-shadow-[0_2px_24px_rgba(0,0,0,0.75)] md:text-[2.125rem]">
+                    {ritual.title}
+                  </h3>
+                </div>
+                <Link
+                  href={ritual.href}
+                  className="inline-flex w-fit text-[0.65rem] uppercase tracking-[0.22em] text-[#e8c56e] underline-offset-4 transition hover:text-[#f5e6c8] hover:underline"
+                >
+                  {ritual.linkLabel}
+                </Link>
+              </div>
             </article>
           ))}
         </div>
-        <p className="mt-8 max-w-2xl text-sm leading-relaxed text-[#8f8576]">
+        <p className="mt-14 max-w-2xl text-sm leading-relaxed text-[#8f8576] md:mt-16">
           Ready to browse products? Open the{" "}
           <Link href="/shop" className="text-[#d6a85f] underline-offset-4 hover:underline">
             shop
@@ -266,23 +296,27 @@ function SectionIntro({
   ctaHref,
   ctaLabel,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   body?: string;
   ctaHref?: string;
   ctaLabel?: string;
 }) {
   return (
-    <header className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div className="max-w-2xl space-y-3">
-        <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
-          {eyebrow}
-        </p>
+    <header className="mb-12 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between md:gap-6">
+      <div className="max-w-2xl space-y-3 md:space-y-4">
+        {eyebrow ? (
+          <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
+            {eyebrow}
+          </p>
+        ) : null}
         <h2 className="font-literata text-3xl tracking-[0.14em] text-[#f5eee3] md:text-4xl">
           {title}
         </h2>
         {body ? (
-          <p className="text-sm leading-relaxed text-[#b8ab95]">{body}</p>
+          <p className="max-w-xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
+            {body}
+          </p>
         ) : null}
       </div>
       {ctaHref && ctaLabel ? (

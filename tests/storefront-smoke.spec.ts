@@ -13,7 +13,7 @@ test.describe("storefront smoke", () => {
     const siteHeader = page.getByRole("banner");
     await expect(siteHeader.getByRole("link", { name: "Shop", exact: true })).toBeVisible();
     await expect(siteHeader.getByRole("link", { name: "Routines", exact: true })).toBeVisible();
-    await expect(siteHeader.getByRole("link", { name: "Home", exact: true })).toBeVisible();
+    await expect(siteHeader.getByRole("link", { name: "Mystique home" })).toBeVisible();
     await expect(
       siteHeader.getByRole("link", { name: "Ingredients", exact: true }),
     ).toBeVisible();

@@ -20,7 +20,7 @@ test.describe("cart and checkout", () => {
 
   test("guest checkout prompts sign in instead of starting payment", async ({ page }) => {
     await addProductToCart(page);
-    await page.goto("/checkout", { waitUntil: "domcontentloaded" });
+    await gotoAndWait(page, "/checkout");
 
     await expectHeading(page, "Checkout");
     await expect(page.getByRole("link", { name: "Sign in to checkout" })).toBeVisible();
@@ -35,16 +35,22 @@ test.describe("cart and checkout", () => {
 
     const quantityInput = page.locator('input[id^="qty-"]').first();
     await expect(quantityInput).toBeVisible();
-    const lineTotal = page.getByText("Line total:").first();
-    const initialLineTotal = await lineTotal.textContent();
     await quantityInput.fill("2");
 
     const updateButton = page.getByRole("button", { name: "Update" }).first();
     await expect(updateButton).toBeVisible();
+    const postUpdate = page.waitForResponse(
+      (res) =>
+        res.request().method() === "POST" &&
+        res.url().includes("/cart") &&
+        res.status() < 500,
+      { timeout: 60_000 },
+    );
     await updateButton.click();
-
-    await expect(quantityInput).toHaveValue("2");
-    await expect(lineTotal).not.toHaveText(initialLineTotal ?? "");
+    await postUpdate;
+    // Mock Celestial Glow Serum: sale $58 × qty 2 → subtotal/line $116.00 (en-US currency).
+    await expect(page.locator("aside")).toContainText("$116.00", { timeout: 30_000 });
+    await expect(page.locator('input[id^="qty-"]').first()).toHaveValue("2");
     await expect(page.locator("aside")).toContainText("Items");
     await expect(page.locator("aside")).toContainText("2");
   });
@@ -52,11 +58,20 @@ test.describe("cart and checkout", () => {
   test("guest can remove an item and return to the empty cart state", async ({ page }) => {
     await addProductToCart(page);
 
-    await expect(page.getByRole("button", { name: "Remove" }).first()).toBeVisible();
-    await page.getByRole("button", { name: "Remove" }).first().click();
+    const removeButton = page.getByRole("button", { name: "Remove" }).first();
+    await expect(removeButton).toBeVisible();
+    const postRemove = page.waitForResponse(
+      (res) =>
+        res.request().method() === "POST" &&
+        res.url().includes("/cart") &&
+        res.status() < 500,
+      { timeout: 60_000 },
+    );
+    await removeButton.click();
+    await postRemove;
+    await expect(page.getByText(/Your bag is empty/i)).toBeVisible({ timeout: 30_000 });
 
     await expectHeading(page, "Your ritual bag");
-    await expect(page.getByText(/Your bag is empty/i)).toBeVisible();
     await expect(page.getByRole("link", { name: "Continue shopping" })).toBeVisible();
   });
 });
