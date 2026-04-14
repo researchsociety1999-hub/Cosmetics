@@ -225,6 +225,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A multi-tasking vitamin we use for clarity, refined texture, and barrier-friendly polish in daily rituals.",
     benefits: "Brightness, clarity, barrier support",
     source: "Vitamin B3",
+    imageSrc: "/ingredients/niacinamide.svg",
   },
   {
     id: "hyaluronic-acid",
@@ -233,6 +234,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A humectant network that draws and holds water so skin reads supple, dewy, and comfortable under layers.",
     benefits: "Hydration, bounce, smoothness",
     source: "Humectant",
+    imageSrc: "/ingredients/hyaluronic-acid.svg",
   },
   {
     id: "centella-asiatica",
@@ -241,6 +243,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A calming botanical we lean on when skin needs quiet recovery—comfort-first, never harsh.",
     benefits: "Soothing, recovery, softness",
     source: "Leaf extract",
+    imageSrc: "/ingredients/centella-asiatica.svg",
   },
   {
     id: "ceramides",
@@ -249,6 +252,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "Skin-identical lipids that help reinforce the barrier so moisture stays in and stress stays out.",
     benefits: "Barrier comfort, moisture retention, resilience",
     source: "Skin-identical lipid",
+    imageSrc: "/ingredients/ceramides.svg",
   },
   {
     id: "squalane",
@@ -257,6 +261,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A weightless emollient that seals without slipperiness—silk at the surface, breathable underneath.",
     benefits: "Silky slip, soft finish, weightless seal",
     source: "Emollient",
+    imageSrc: "/ingredients/squalane.svg",
   },
 ];
 
@@ -270,9 +275,14 @@ export function mergeMystiqueCanonicalIngredients(
     MYSTIQUE_CANONICAL_INGREDIENTS.map((row) => row.id),
   );
   const byId = new Map(fromDb.map((row) => [row.id, row]));
-  const ordered = MYSTIQUE_CANONICAL_INGREDIENTS.map(
-    (canonical) => byId.get(canonical.id) ?? canonical,
-  );
+  const ordered = MYSTIQUE_CANONICAL_INGREDIENTS.map((canonical) => {
+    const fromDb = byId.get(canonical.id);
+    if (!fromDb) return canonical;
+    return {
+      ...fromDb,
+      imageSrc: fromDb.imageSrc ?? canonical.imageSrc ?? null,
+    };
+  });
   const extras = fromDb
     .filter((row) => !canonicalIds.has(row.id))
     .sort((a, b) => a.name.localeCompare(b.name));

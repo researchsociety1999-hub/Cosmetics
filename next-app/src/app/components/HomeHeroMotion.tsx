@@ -52,7 +52,7 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[90dvh] overflow-x-clip overflow-y-hidden"
+      className="relative -mt-[max(5rem,calc(4rem+env(safe-area-inset-top,0px)))] min-h-[90dvh] overflow-x-clip overflow-y-hidden sm:-mt-[max(5.25rem,calc(4.1rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
     >
       {/* Full-bleed hero — CSS only (no photography) */}
       <div
@@ -147,48 +147,30 @@ export function HomeHeroMotion() {
         className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.7)_0%,rgba(1,2,3,0.22)_24%,transparent_46%,transparent_62%,rgba(1,2,3,0.12)_100%),linear-gradient(180deg,rgba(1,2,3,0.14)_0%,transparent_14%,transparent_30%,rgba(1,2,3,0.04)_50%,rgba(5,6,10,0.68)_78%,rgba(5,6,10,0.94)_90%,rgb(5,6,10)_100%),radial-gradient(ellipse_78%_62%_at_50%_38%,transparent_0%,rgba(1,2,3,0.06)_100%)]"
       />
 
-      {/* Copy: bottom-weighted editorial column — eyebrow, headline, lede, CTAs */}
-      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl flex-col justify-end px-4 pb-20 pt-10 sm:px-8 sm:pb-24 sm:pt-12 md:px-10 md:pb-28 md:pt-14 lg:px-12 lg:pb-32 lg:pt-16 xl:px-14">
+      {/* Copy: pinned to bottom of hero (spacer fills viewport; padding only below) */}
+      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl flex-col px-4 pb-[max(5rem,env(safe-area-inset-bottom,0px))] sm:px-8 sm:pb-24 md:px-10 md:pb-28 lg:px-12 lg:pb-32 xl:px-14">
+        <div className="min-h-0 flex-1" aria-hidden />
         <div
           ref={copyRef}
-          className="w-full max-w-[min(36rem,92vw)] text-left md:max-w-[min(38rem,92vw)]"
+          className="w-full max-w-[min(36rem,92vw)] shrink-0 text-left md:max-w-[min(38rem,92vw)]"
           style={{ opacity: 1 }}
         >
           <div className="border-l border-[rgba(214,168,95,0.2)] pl-5 sm:pl-7 md:pl-8">
-            <p
-              className={`text-[0.62rem] uppercase tracking-[0.42em] text-[#9e8f78] ${
-                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal-pill"
-              }`}
-            >
-              California-rooted skincare
-            </p>
-
-            <div className="mt-6 space-y-6 sm:mt-7 sm:space-y-7">
-              <div className="space-y-5">
-                <h1
-                  className={`max-w-[16ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[18ch] ${
-                    reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
-                  }`}
-                >
-                  Where Beauty Transcends
-                </h1>
-                <div
-                  aria-hidden
-                  className="flex items-center gap-3"
-                >
-                  <span className="h-px w-14 bg-gradient-to-r from-[rgba(214,168,95,0.5)] via-[rgba(214,168,95,0.22)] to-transparent sm:w-16" />
-                  <span className="h-1 w-1 shrink-0 rounded-full bg-[rgba(214,168,95,0.35)] shadow-[0_0_12px_rgba(214,168,95,0.25)]" />
-                </div>
-              </div>
-
-              <p
-                className={`max-w-[34ch] font-literata text-[0.95rem] font-normal leading-[1.65] text-[#b9aa95] sm:text-[1.05rem] sm:leading-[1.7] ${
-                  reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
+            <div className="space-y-5">
+              <h1
+                className={`max-w-[16ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[18ch] ${
+                  reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
-                Layer-clean formulas, barrier-kind rituals, and textures composed for morning, night, and the weekly
-                reset—without compromise.
-              </p>
+                Where Beauty Transcends
+              </h1>
+              <div
+                aria-hidden
+                className="flex items-center gap-3"
+              >
+                <span className="h-px w-14 bg-gradient-to-r from-[rgba(214,168,95,0.5)] via-[rgba(214,168,95,0.22)] to-transparent sm:w-16" />
+                <span className="h-1 w-1 shrink-0 rounded-full bg-[rgba(214,168,95,0.35)] shadow-[0_0_12px_rgba(214,168,95,0.25)]" />
+              </div>
             </div>
 
             <div

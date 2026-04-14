@@ -281,6 +281,8 @@ export interface Ingredient {
   description: string | null;
   benefits: string | null;
   source: string | null;
+  /** Card thumbnail: `/public` path or allowed remote URL (see `next.config.js`). */
+  imageSrc?: string | null;
 }
 
 export interface PromoCampaign {

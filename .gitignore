@@ -10,3 +10,12 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/next-app/test-results/
+
+# Local / tooling noise
+.openyak/
+*.log
+
+# Generated content inventory (optional; regenerate with npm run content-inventory in next-app)
+/Content-Inventory.xlsx
+/Content-Inventory.docx

@@ -61,7 +61,6 @@ Cosmetics/
 ├── .github/
 │   └── workflows/        # CI/CD GitHub Actions pipelines
 ├── .vscode/              # Editor configuration & debug settings
-├── TSx/                  # Shared TypeScript types and interfaces
 ├── next-app/             # Main Next.js application
 │   ├── app/              # App Router pages & layouts
 │   ├── components/       # Reusable UI components
@@ -71,7 +70,9 @@ Cosmetics/
 ├── SUPABASE_SETUP.md     # Database setup & migration guide
 ├── package.json          # Workspace scripts & dependencies
 ├── playwright.config.ts  # Playwright test configuration
-└── styles.css            # Global styles
+├── index.html            # Legacy static demo (not the Next.js app)
+├── script.js
+└── styles.css            # Styles for the legacy static demo only
 ```
 
 ---

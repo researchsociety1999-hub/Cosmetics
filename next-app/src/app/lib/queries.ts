@@ -55,7 +55,8 @@ function e2eMockCatalog(): boolean {
   return process.env.E2E_MOCK_CATALOG === "1";
 }
 
-function useEmbeddedCatalogSource(): boolean {
+/** Not a React hook — name avoids `use*` so eslint `react-hooks/rules-of-hooks` does not misfire. */
+function shouldLoadCatalogFromEmbeds(): boolean {
   return e2eMockCatalog() || !hasSupabaseEnv || !supabase;
 }
 
@@ -446,7 +447,7 @@ function filterProductsBySearch(
 export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
-  if (useEmbeddedCatalogSource()) {
+  if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
       return [];
     }
@@ -527,7 +528,7 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
 
   const requestedIds = new Set(ids);
 
-  if (useEmbeddedCatalogSource()) {
+  if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
       return [];
     }
@@ -559,7 +560,7 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (useEmbeddedCatalogSource()) {
+  if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
       return null;
     }
@@ -735,7 +736,7 @@ export async function getRoutineCompanionProducts(
 }
 
 export async function getCategories(): Promise<Category[]> {
-  if (useEmbeddedCatalogSource()) {
+  if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
       return [];
     }
@@ -772,7 +773,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
-  if (useEmbeddedCatalogSource()) {
+  if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
       return [];
     }
