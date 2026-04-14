@@ -19,3 +19,4 @@ node_modules/
 # Generated content inventory (optional; regenerate with npm run content-inventory in next-app)
 /Content-Inventory.xlsx
 /Content-Inventory.docx
+.vercel
