@@ -29,7 +29,7 @@ export const mockProducts: Product[] = [
     id: 1,
     name: "Celestial Glow Serum",
     description:
-      "A luminous treatment serum that layers niacinamide, PDRN-inspired regeneration messaging, and hydration for bloom-skin radiance.",
+      "A luminous treatment serum with niacinamide and hyaluronic support—layer-friendly, with a finish that reads soft, even, and well hydrated.",
     price_cents: 6800,
     sale_price_cents: 5800,
     image_url: null,
@@ -42,7 +42,7 @@ export const mockProducts: Product[] = [
     is_published: true,
     created_at: now.toISOString(),
     updated_at: now.toISOString(),
-    key_ingredients: ["Niacinamide", "PDRN-inspired complex", "Hyaluronic acid"],
+    key_ingredients: ["Niacinamide", "Peptide blend", "Hyaluronic acid"],
     benefits: ["Glow support", "Barrier comfort", "Plump finish"],
     routine_step: "Treat",
     skin_types: ["Dry", "Combination", "Dull"],
@@ -143,7 +143,7 @@ export const mockProducts: Product[] = [
     id: 6,
     name: "Midnight Recovery Ampoule",
     description:
-      "A concentrated evening ampoule inspired by regenerative aesthetics, built around peptides and exosome-inspired storytelling.",
+      "A concentrated evening ampoule with peptides and calming support actives—rich texture for overnight comfort and a smooth morning feel.",
     price_cents: 9200,
     sale_price_cents: 8400,
     image_url: null,
@@ -156,7 +156,7 @@ export const mockProducts: Product[] = [
     is_published: true,
     created_at: now.toISOString(),
     updated_at: now.toISOString(),
-    key_ingredients: ["Exosome-inspired complex", "Copper peptide", "Ectoin"],
+    key_ingredients: ["Peptide complex", "Copper peptide", "Ectoin"],
     benefits: ["Night renewal", "Bounce", "Lush texture"],
     routine_step: "Treat",
     skin_types: ["Dry", "Mature", "Combination"],
@@ -363,9 +363,9 @@ export const mockFaqs = [
 export const mockJournalEntries: JournalEntry[] = [
   {
     slug: "evening-ritual",
-    title: "The Evening Ritual for Bloom Skin",
+    title: "An Evening Ritual for Skin at Rest",
     excerpt:
-      "A five-step sequence for cleansing away the day and waking up visibly luminous.",
+      "Five deliberate steps—from first cleanse to final seal—to lift the day and leave the complexion quiet, supple, and ready for morning light.",
     category: "Ritual",
     readTime: "4 min read",
     content: [
@@ -401,9 +401,9 @@ export const mockJournalEntries: JournalEntry[] = [
   },
   {
     slug: "pdrn-101",
-    title: "PDRN 101: Why Regenerative Storytelling Is Everywhere",
+    title: "On PDRN and the Language of Renewal",
     excerpt:
-      "A grounded primer on the language behind modern skin-renewal categories.",
+      "Beyond the headline: what regenerative skincare is really signaling—and how to read the formula, not just the story.",
     category: "Science",
     readTime: "5 min read",
     content: [
@@ -432,9 +432,9 @@ export const mockJournalEntries: JournalEntry[] = [
   },
   {
     slug: "bloom-skin-guide",
-    title: "The Bloom Skin Guide",
+    title: "Bloom Skin: Luminosity in Measure",
     excerpt:
-      "How to build a routine that looks hydrated, refined, and softly radiant rather than shiny.",
+      "A guide to hydration, barrier, and finish—radiance that reads refined and composed, never loud.",
     category: "Glow",
     readTime: "6 min read",
     content: [
@@ -463,9 +463,9 @@ export const mockJournalEntries: JournalEntry[] = [
   },
   {
     slug: "layering-essence-serum",
-    title: "How to Layer Essence, Serum, and Cream",
+    title: "Layering Essence, Serum, and Cream",
     excerpt:
-      "The easiest way to stack hydration and treatment without overwhelming the skin.",
+      "Thin to rich, with patience between layers—structure for slip, treatment, and seal without heaviness.",
     category: "Routine",
     readTime: "3 min read",
     content: [

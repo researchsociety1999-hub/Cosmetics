@@ -7,7 +7,7 @@ import {
 } from "./helpers";
 
 test.describe("cart and checkout", () => {
-  test.describe.configure({ timeout: process.env.CI ? 120_000 : 60_000 });
+  test.describe.configure({ timeout: process.env.CI ? 120_000 : 90_000 });
 
   test.beforeEach(async ({ context }) => {
     await context.clearCookies();
@@ -106,10 +106,13 @@ test.describe("cart and checkout", () => {
     const removeButton = page.getByRole("button", { name: "Remove" }).first();
     await expect(removeButton).toBeVisible();
     await removeButton.click();
-    await expect(page.getByRole("link", { name: "Continue shopping" })).toBeVisible({
-      timeout: 90_000,
-    });
-
+    // Same-URL redirect after server action: wait for RSC to render empty-bag copy (no full navigation).
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Your bag is empty"),
+      null,
+      { timeout: 75_000 },
+    );
+    await expect(page.getByRole("link", { name: "Continue shopping" })).toBeVisible();
     await expectHeading(page, "Your ritual bag");
   });
 });

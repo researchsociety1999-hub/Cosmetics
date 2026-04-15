@@ -6,8 +6,9 @@ import { searchProducts } from "../lib/queries";
 type SearchParams = Promise<{ q?: string }>;
 
 export const metadata: Metadata = {
-  title: "Search",
-  description: "Search the Mystique product catalog.",
+  title: "Search products",
+  description:
+    "Search the Mystique collection by name, concern, or ingredient—fast paths to the right texture.",
 };
 
 export const revalidate = 300;

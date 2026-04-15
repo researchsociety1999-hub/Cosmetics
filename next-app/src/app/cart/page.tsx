@@ -13,7 +13,8 @@ import { getAppliedPromoFromStoredCode } from "../lib/promo";
 
 export const metadata: Metadata = {
   title: "Bag",
-  description: "Review your Mystique ritual bag and proceed to checkout.",
+  description:
+    "Review items, apply a promo if you have one, and continue to secure checkout.",
 };
 
 export const dynamic = "force-dynamic";

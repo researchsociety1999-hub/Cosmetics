@@ -13,7 +13,7 @@ type SearchParams = Promise<{ status?: string; email?: string; next?: string; me
 export const metadata: Metadata = {
   title: "Sign in",
   description:
-    "Sign in to your Mystique account with a secure magic link and return to checkout or saved orders.",
+    "Sign in to Mystique with a secure email link—return to checkout, your bag, or order history.",
 };
 
 export const dynamic = "force-dynamic";

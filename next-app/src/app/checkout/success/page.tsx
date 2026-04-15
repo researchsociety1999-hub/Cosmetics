@@ -13,8 +13,9 @@ import {
 } from "../../lib/stripe";
 
 export const metadata: Metadata = {
-  title: "Checkout status",
-  description: "Check the payment status of your Mystique order.",
+  title: "Order confirmation",
+  description:
+    "Confirm your Mystique order status, see your reference number, and find next steps after checkout.",
 };
 
 type SearchParams = Promise<{ session_id?: string }>;

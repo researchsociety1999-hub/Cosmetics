@@ -209,7 +209,7 @@ export const INVENTORY_ROWS = [
   r(
     "/journal",
     "Journal listing",
-    "Journal; Rituals, guides, and glow notes.; intro; cards with category label, read time, title, excerpt, Read entry",
+    "Journal; Care, craft, and the language of glow.; intro; cards with category label, read time, title, excerpt, Read the essay",
     "next-app/src/app/journal/page.tsx",
     "Entries from next-app/src/app/lib/data.ts → mockJournalEntries (or DB).",
   ),

@@ -9,7 +9,7 @@ import { AccountGuestHub } from "./AccountGuestHub";
 export const metadata: Metadata = {
   title: "Account",
   description:
-    "Your Mystique account—profile, order history, and bag in one place. Sign in with a secure magic link.",
+    "Mystique account hub—orders, saved bag after sign-in, and magic-link access.",
 };
 
 export const dynamic = "force-dynamic";

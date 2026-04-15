@@ -13,7 +13,7 @@ type SearchParams = Promise<{ status?: string; email?: string; next?: string; me
 export const metadata: Metadata = {
   title: "Create account",
   description:
-    "Create a Mystique account with email—one secure magic link completes signup and sign-in.",
+    "Create a Mystique account with your email—one magic link completes signup and sign-in.",
 };
 
 export const dynamic = "force-dynamic";

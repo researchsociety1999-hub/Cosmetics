@@ -20,20 +20,21 @@ export const metadata: Metadata = {
     template: "%s | Mystique",
   },
   description:
-    "Luxury dermatological skincare with a mystical edge, rooted in California minimalism and Mystique Beauty ritual.",
+    "Premium skincare from California—layer-friendly textures, barrier-minded formulas, and morning-to-night rituals you can keep.",
   applicationName: "Mystique",
   keywords: [
-    "Mystique Beauty",
+    "Mystique",
     "luxury skincare",
-    "bloom skin",
-    "peptides",
+    "California skincare",
+    "layered skincare routine",
     "centella",
     "niacinamide",
+    "ceramide moisturizer",
   ],
   openGraph: {
     title: "Mystique | Where Beauty Transcends",
     description:
-      "Luxury dermatological skincare with a mystical edge and bloom-skin ritual storytelling.",
+      "Premium skincare with disciplined layering—calm radiance, refined textures, and routines built for daily use.",
     siteName: "Mystique",
     type: "website",
   },
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mystique | Where Beauty Transcends",
     description:
-      "Luxury dermatological skincare with a mystical edge and bloom-skin ritual storytelling.",
+      "Premium skincare with disciplined layering—calm radiance, refined textures, and routines built for daily use.",
   },
 };
 

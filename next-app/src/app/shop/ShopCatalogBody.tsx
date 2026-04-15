@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ProductCard from "../components/productcard";
 import { getProducts, type ProductSort } from "../lib/queries";
+import { isProductPurchasable } from "../lib/productMerch";
 import { hasSupabaseEnv } from "../lib/supabaseClient";
 import type { Product } from "../lib/types";
 
@@ -79,32 +80,24 @@ export async function ShopCatalogBody({
         >
           <div className="space-y-2">
             <p className="text-[0.72rem] text-[#b8ab95]">
-              {section.productCount > 0 ? (
-                <>
-                  <span className="tabular-nums text-[#d6c4a8]">
-                    {section.productCount}
-                  </span>{" "}
-                  <span className="uppercase tracking-[0.24em]">
-                    {section.productCount === 1 ? "product" : "products"}
-                  </span>
-                </>
-              ) : (
-                <span className="uppercase tracking-[0.24em]">New arrivals soon</span>
-              )}
+              <span className="tabular-nums text-[#d6c4a8]">
+                {section.productCount}
+              </span>{" "}
+              <span className="uppercase tracking-[0.24em]">
+                {section.productCount === 1 ? "product" : "products"}
+              </span>
             </p>
             <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
               {section.title}
             </h2>
           </div>
-          {section.products.length === 0 ? (
-            <CategoryEmptyState title={section.title} isHair={section.isHair} />
-          ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
-              {section.products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
+            {[...section.products]
+              .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))
+              .map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </section>
       ))}
     </div>
@@ -145,8 +138,8 @@ function ShopWideEmptyState({
       </p>
       <p>
         {hasActiveFilters
-          ? "Try clearing search, choosing All, or another category—formulas appear here as soon as they are published."
-          : "New formulas will appear here as soon as they are ready. Until then, explore routines and ingredients, or write the studio for wholesale timelines."}
+          ? "Try clearing search, choosing All, or another category—matching products will show here when they are available."
+          : "The collection updates as new formulas arrive. In the meantime, explore routines and ingredients, or reach out for wholesale questions."}
       </p>
       <div className="flex flex-wrap gap-3 pt-2">
         <Link
@@ -360,55 +353,6 @@ function assignProductsToCategories({
   });
 }
 
-function CategoryEmptyState({ title, isHair }: { title: string; isHair: boolean }) {
-  if (isHair) {
-    return (
-      <div className="mystic-card relative overflow-hidden border-[rgba(214,168,95,0.2)] bg-[linear-gradient(135deg,rgba(255,255,255,0.035)_0%,rgba(214,168,95,0.07)_42%,rgba(6,8,12,0.65)_100%)] px-6 py-10 md:px-10 md:py-12">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-8 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full border border-[rgba(214,168,95,0.12)] opacity-50"
-        />
-        <p className="relative font-literata text-2xl font-medium leading-snug tracking-[0.04em] text-[#faf6ef] md:text-[1.75rem]">
-          Hair care is on the way.
-        </p>
-        <p className="relative mt-4 max-w-lg text-sm leading-relaxed text-[#b8ab95]">
-          This category is not stocked yet. Explore skin and body care now, or check back
-          as we expand the line.
-        </p>
-        <Link
-          href="/shop"
-          className="relative mystic-button-secondary mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
-        >
-          View all skincare
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mystic-card px-6 py-10 text-center text-sm leading-relaxed text-[#b8ab95] md:px-10">
-      <p className="font-literata text-xl tracking-[0.08em] text-[#f5eee3] md:text-2xl">
-        Nothing listed in {title} yet
-      </p>
-      <p className="mx-auto mt-4 max-w-md">
-        Try another category or clear your search—new drops land here as soon as they are
-        live in the studio.
-      </p>
-      <Link
-        href="/shop"
-        className="mystic-button-secondary mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
-      >
-        View all skincare
-      </Link>
-    </div>
-  );
-}
-
-function isHairCategory(category: { slug: string; name: string }) {
-  const s = `${category.slug} ${category.name}`.toLowerCase();
-  return s.includes("hair");
-}
-
 function buildProductSections({
   categories,
   assignments,
@@ -430,13 +374,9 @@ function buildProductSections({
         title: category.name,
         productCount: categoryProducts.length,
         products: categoryProducts,
-        isHair: isHairCategory(category),
       };
     })
-    .filter(
-      (section) =>
-        section.productCount > 0 || section.isHair,
-    );
+    .filter((section) => section.productCount > 0);
 
   const uncategorizedProducts = assignments
     .filter((assignment) => assignment.category === null)
@@ -445,10 +385,9 @@ function buildProductSections({
   if (uncategorizedProducts.length) {
     sections.push({
       key: "uncategorized",
-      title: "Uncategorized",
+      title: "More in the collection",
       productCount: uncategorizedProducts.length,
       products: uncategorizedProducts,
-      isHair: false,
     });
   }
 

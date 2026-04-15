@@ -8,13 +8,14 @@ import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
 import { getJournalEntries, getProducts } from "./lib/queries";
+import { isProductPurchasable } from "./lib/productMerch";
 
 export const metadata: Metadata = {
   title: {
     absolute: "Mystique | Where Beauty Transcends",
   },
   description:
-    "California-rooted skincare—five-step routines, layer-friendly textures, and calm, healthy-looking radiance.",
+    "Premium skincare with clear morning, night, and weekly rituals—shop formulas by concern, read ingredient notes, and build a routine you will keep.",
 };
 
 export const revalidate = 300;
@@ -98,60 +99,72 @@ function SectionLoading({
   );
 }
 
+const JOURNAL_CATEGORY_PILL: Record<string, string> = {
+  Ritual: "Ritual",
+  Science: "Science",
+  Glow: "Glow",
+  Routine: "Routine",
+};
+
 async function JournalHomeSection() {
   const entries = await getJournalEntries();
-  const labelByCategory: Record<string, string> = {
-    Ritual: "Ritual",
-    Science: "Ingredient",
-    Glow: "Guide",
-    Routine: "Guide",
-  };
   const preview = entries.slice(0, 3);
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a]">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[linear-gradient(180deg,#020308_0%,#04050a_42%,#03040a_100%)]">
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Journal"
-          title="Rituals, guides, and glow notes."
-          body="Short reads from the studio—layering, ingredients, and the quiet art of caring for your skin."
+          title="Skincare reads, written with care."
           ctaHref="/journal"
-          ctaLabel="All journal entries"
+          ctaLabel="Read the journal"
         />
         {preview.length === 0 ? (
-          <div className="mystic-card max-w-2xl p-8 text-sm leading-relaxed text-[#b8ab95]">
+          <div className="mystic-card max-w-2xl border border-[rgba(214,168,95,0.12)] p-8 text-sm leading-[1.7] text-[#a99e8e]">
             <p>
-              New essays are in edit. When they publish, you will find ritual
-              walk-throughs and ingredient notes here—and on the full{" "}
-              <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
+              New pieces will appear here as the library grows. Until then, browse the full{" "}
+              <Link href="/journal" className="text-[#d6c4a0] underline-offset-4 transition hover:text-[#e8d5b0] hover:underline">
                 journal
+              </Link>{" "}
+              or explore the{" "}
+              <Link href="/shop" className="text-[#d6c4a0] underline-offset-4 transition hover:text-[#e8d5b0] hover:underline">
+                shop
               </Link>
               .
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 md:gap-9 xl:grid-cols-3 xl:gap-10">
             {preview.map((entry) => (
-              <article key={entry.slug} className="mystic-card flex flex-col p-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="mystic-pill !px-3 !py-1.5 !text-[0.62rem] !tracking-[0.24em]">
-                    {labelByCategory[entry.category] ?? "Guide"}
+              <article
+                key={entry.slug}
+                className="group relative flex flex-col overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.13)] bg-[linear-gradient(165deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_48%,rgba(0,0,0,0.12)_100%)] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,box-shadow,transform] duration-500 ease-out before:pointer-events-none before:absolute before:inset-0 before:rounded-[var(--mystic-radius-card)] before:opacity-0 before:shadow-[0_0_48px_rgba(214,168,95,0.07)] before:transition-opacity before:duration-500 hover:-translate-y-0.5 hover:border-[rgba(214,168,95,0.32)] hover:shadow-[0_28px_56px_rgba(0,0,0,0.5)] hover:before:opacity-100 md:p-8"
+              >
+                <div className="flex items-center justify-between gap-4 border-b border-[rgba(214,168,95,0.11)] pb-5">
+                  <span className="mystic-pill !border-[rgba(214,168,95,0.22)] !px-3.5 !py-1.5 !text-[0.58rem] !tracking-[0.28em]">
+                    {JOURNAL_CATEGORY_PILL[entry.category] ?? entry.category}
                   </span>
-                  <p className="text-[0.72rem] uppercase tracking-[0.22em] text-[#d6a85f]">
-                    {entry.category} · {entry.readTime}
-                  </p>
+                  <span className="shrink-0 font-medium tabular-nums text-[0.65rem] uppercase tracking-[0.22em] text-[#7d7366]">
+                    {entry.readTime}
+                  </span>
                 </div>
-                <h3 className="mt-3 font-literata text-2xl tracking-[0.08em] text-[#f5eee3] md:text-[1.75rem]">
+                <h3 className="mt-6 text-balance font-literata text-[clamp(1.25rem,3.8vw,1.75rem)] leading-[1.18] tracking-[0.04em] text-[#f4efe6] md:mt-7">
                   {entry.title}
                 </h3>
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-[#b8ab95]">
+                <p className="mt-4 flex-1 text-[0.9375rem] leading-[1.7] text-[#9c9183] md:text-[0.96875rem]">
                   {entry.excerpt}
                 </p>
                 <Link
                   href={`/journal/${entry.slug}`}
-                  className="mt-6 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#f0d19a] underline-offset-4 hover:underline"
+                  className="mt-8 flex w-full items-center justify-between gap-3 border-t border-[rgba(214,168,95,0.08)] pt-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#b8a888] transition group-hover:border-[rgba(214,168,95,0.16)] group-hover:text-[#e3d4bc]"
                 >
-                  Continue reading
+                  <span className="underline-offset-[5px] group-hover:underline">Read the essay</span>
+                  <span
+                    aria-hidden
+                    className="text-[0.85rem] text-[rgba(214,168,95,0.45)] transition duration-300 group-hover:translate-x-0.5 group-hover:text-[rgba(214,168,95,0.85)]"
+                  >
+                    →
+                  </span>
                 </Link>
               </article>
             ))}
@@ -227,47 +240,27 @@ function FirstVisitGuidanceStrip() {
 }
 
 async function FeaturedProductsSection() {
-  const products = await getProducts({ sortBy: "featured", limit: 4 });
+  const products = await getProducts({ sortBy: "featured", limit: 12 });
+  const purchasable = products.filter(isProductPurchasable).slice(0, 4);
+
+  if (purchasable.length === 0) {
+    return null;
+  }
 
   return (
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80">
       <div className="mystic-section-shell">
         <SectionIntro
-          eyebrow="Ritual signatures"
-          title="Textures worth the ritual."
-          body=""
+          eyebrow="Featured"
+          title="Textures worth returning to."
           ctaHref="/shop?sort=featured"
-          ctaLabel="Shop ritual staples"
+          ctaLabel="Browse featured"
         />
-        {products.length === 0 ? (
-          <div className="mystic-card max-w-2xl p-8 text-sm leading-relaxed text-[#b8ab95]">
-            <p>
-              The ritual shelves are being stocked—published products will appear here
-              automatically once your catalog is live in the studio database.
-            </p>
-            <p className="mt-4 text-[#8f8576]">
-              Until then, explore{" "}
-              <Link href="/routines" className="text-[#d6a85f] underline-offset-4 hover:underline">
-                routines
-              </Link>
-              ,{" "}
-              <Link href="/journal" className="text-[#d6a85f] underline-offset-4 hover:underline">
-                journal
-              </Link>
-              , or{" "}
-              <Link href="/contact" className="text-[#d6a85f] underline-offset-4 hover:underline">
-                write the studio
-              </Link>{" "}
-              for wholesale or press.
-            </p>
-          </div>
-        ) : (
-          <div className="mx-auto grid w-full max-w-[min(100%,42rem)] grid-cols-2 gap-2.5 sm:max-w-[min(100%,48rem)] sm:gap-3 md:max-w-[min(100%,52rem)] md:grid-cols-4 md:gap-3.5 lg:gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} compact />
-            ))}
-          </div>
-        )}
+        <div className="mx-auto grid w-full max-w-[min(100%,42rem)] grid-cols-2 gap-2.5 sm:max-w-[min(100%,48rem)] sm:gap-3 md:max-w-[min(100%,52rem)] md:grid-cols-4 md:gap-3.5 lg:gap-4">
+          {purchasable.map((product) => (
+            <ProductCard key={product.id} product={product} compact />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -313,15 +306,14 @@ function RitualStripSection() {
       <div className="mystic-section-shell">
         <SectionIntro
           title="Our rituals"
-          body="Morning, night, and weekly."
           ctaHref="/routines"
-          ctaLabel="View routines"
+          ctaLabel="See routine steps"
         />
-        <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-7">
+        <div className="mx-auto grid max-w-5xl items-start gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-7">
           {HOME_RITUAL_RHYTHMS.map((ritual) => (
             <article
               key={ritual.label}
-              className="group relative isolate flex min-h-[15.5rem] flex-col justify-end overflow-hidden mystic-card sm:min-h-[16.5rem] md:min-h-[17rem]"
+              className="group relative isolate flex h-auto flex-col justify-start overflow-hidden mystic-card"
             >
               <div className="pointer-events-none absolute inset-0">
                 <div
@@ -337,18 +329,18 @@ function RitualStripSection() {
                   className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(214,168,95,0.12),transparent_55%)] opacity-80 mix-blend-soft-light"
                 />
               </div>
-              <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-7">
-                <div className="space-y-2.5">
+              <div className="relative z-10 flex flex-col gap-4 p-5 md:gap-5 md:p-6">
+                <div className="space-y-2">
                   <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#e8d4b0] drop-shadow-[0_1px_12px_rgba(0,0,0,0.85)]">
                     {ritual.label}
                   </p>
-                  <h3 className="font-literata text-2xl tracking-[0.1em] text-[#f5eee3] drop-shadow-[0_2px_24px_rgba(0,0,0,0.75)] md:text-[1.65rem]">
+                  <h3 className="font-literata text-[1.4rem] tracking-[0.1em] text-[#f5eee3] drop-shadow-[0_2px_24px_rgba(0,0,0,0.75)] md:text-[1.55rem]">
                     {ritual.title}
                   </h3>
                 </div>
                 <Link
                   href={ritual.href}
-                  className="inline-flex w-fit text-[0.62rem] uppercase tracking-[0.22em] text-[#e8c56e] underline-offset-4 transition hover:text-[#f5e6c8] hover:underline"
+                  className="inline-flex w-fit text-[0.6rem] uppercase tracking-[0.2em] text-[#e8c56e] underline-offset-4 transition hover:text-[#f5e6c8] hover:underline"
                 >
                   {ritual.linkLabel}
                 </Link>
@@ -356,13 +348,6 @@ function RitualStripSection() {
             </article>
           ))}
         </div>
-        <p className="mt-10 max-w-2xl text-sm leading-relaxed text-[#8f8576] md:mt-12">
-          Ready to browse products? Open the{" "}
-          <Link href="/shop" className="text-[#d6a85f] underline-offset-4 hover:underline">
-            shop
-          </Link>{" "}
-          anytime.
-        </p>
       </div>
     </section>
   );
@@ -376,12 +361,11 @@ function IngredientSpotlightSection() {
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ingredients"
-          title="Actives we lean on."
+          title="Actives we formulate around."
           ctaHref="/ingredients"
-          ctaLabel="Full ingredient guide"
+          ctaLabel="How we choose ingredients"
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {/* Highlights; replace with API-driven rows when ingredient categories ship. */}
           {ingredients.map((ingredient) => (
             <article
               key={ingredient.id}
@@ -399,12 +383,11 @@ function IngredientSpotlightSection() {
                 <h3 className="mt-2 font-literata text-2xl tracking-[0.08em] sm:text-3xl">
                   {ingredient.name}
                 </h3>
-                <p className="mt-2 text-sm text-[#b8ab95]">{ingredient.benefits}</p>
                 <Link
                   href={`/shop?ingredient=${ingredient.id}`}
                   className="mt-4 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
                 >
-                  Shop products with {ingredient.name}
+                  Shop {ingredient.name} formulas
                 </Link>
               </div>
             </article>
@@ -425,7 +408,7 @@ function NewsletterSection() {
               Newsletter
             </p>
             <h2 className="mt-3 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-              Letters from the house.
+              Notes from Mystique.
             </h2>
           </div>
           <div>

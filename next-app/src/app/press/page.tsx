@@ -5,9 +5,9 @@ import { getPressMentions } from "../lib/queries";
 import type { PressMention } from "../lib/types";
 
 export const metadata: Metadata = {
-  title: "Press",
+  title: "Press & media",
   description:
-    "Press room for Mystique—published coverage is listed only when we can link to the real piece.",
+    "Mystique in the press—coverage we can verify with a live link. For assets and inquiries, use Contact.",
 };
 
 export const revalidate = 300;
@@ -41,16 +41,16 @@ export default async function PressPage() {
         {pressMentions.length === 0 ? (
           <div className="mystic-card p-8 text-sm leading-relaxed text-[#b8ab95]">
             <p>
-              There is no public press list here yet. When features go live, we add them
-              with working outbound links—never placeholder URLs. Until then, browse the{" "}
-              <Link href="/shop" className="text-[#f0d19a] underline-offset-4 hover:underline">
-                collection
-              </Link>{" "}
-              or write{" "}
+              Coverage will appear here with a working link to each piece. For press kits,
+              fact checks, or scheduling, reach us through{" "}
               <Link href="/contact" className="text-[#f0d19a] underline-offset-4 hover:underline">
                 Contact
+              </Link>
+              —or browse the{" "}
+              <Link href="/shop" className="text-[#f0d19a] underline-offset-4 hover:underline">
+                shop
               </Link>{" "}
-              for media requests.
+              in the meantime.
             </p>
           </div>
         ) : (
@@ -133,7 +133,7 @@ function PressMentionCard({ mention }: { mention: PressMention }) {
         </a>
       ) : (
         <p className="mt-5 text-[0.65rem] uppercase tracking-[0.18em] text-[#7a7265]">
-          Link not published
+          Article link unavailable
         </p>
       )}
     </article>

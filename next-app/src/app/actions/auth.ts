@@ -38,6 +38,10 @@ function formatAuthErrorMessage(message: string) {
     return "Too many magic-link emails have been requested recently. Wait a few minutes and try again.";
   }
 
+  if (normalized.includes("signups not allowed") && normalized.includes("otp")) {
+    return "Account sign-up isn’t available right now. You can still shop as a guest, or sign in if you already have an account.";
+  }
+
   return message;
 }
 

@@ -2,10 +2,10 @@ import Link from "next/link";
 import { addToCartAction } from "../actions/cart";
 import { AddToCartForm } from "./AddToCartForm";
 import { ThemedImageFrame } from "./ThemedImageFrame";
+import { WaitlistModal } from "./WaitlistModal";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import {
   getPrimaryBenefitLine,
-  getRestockContactHref,
   getSkinTypesLine,
   getTextureFinishCue,
   getVolumeSizeLabel,
@@ -181,18 +181,18 @@ export default function ProductCard({ product, compact = false }: ProductCardPro
           ) : (
             <div className="flex shrink-0 flex-col items-end gap-1 text-right">
               <span className="text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]">
-                Unavailable
+                Out of stock
               </span>
-              <Link
-                href={getRestockContactHref(product)}
-                className={
+              <WaitlistModal
+                productName={product.name}
+                productSlug={product.slug}
+                triggerLabel="Get restock note"
+                triggerClassName={
                   compact
                     ? "rounded-full border border-[rgba(214,168,95,0.35)] px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:px-2.5 sm:py-1.5 sm:text-[0.58rem]"
                     : "rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
                 }
-              >
-                Restock note
-              </Link>
+              />
             </div>
           )}
           </div>

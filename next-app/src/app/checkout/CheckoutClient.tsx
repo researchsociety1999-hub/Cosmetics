@@ -10,7 +10,6 @@ const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
 type CheckoutClientProps = {
   defaultEmail: string;
   stripeReady: boolean;
-  isAuthenticated: boolean;
 };
 
 type CheckoutFormState = {
@@ -31,10 +30,6 @@ type CheckoutApiBody = {
 };
 
 function mapCheckoutStartError(status: number, body: CheckoutApiBody): string {
-  if (status === 401) {
-    return "Please sign in to your Mystique account before checking out.";
-  }
-
   if (status === 400 && body.error) {
     return body.error;
   }
@@ -60,7 +55,6 @@ function mapCheckoutStartError(status: number, body: CheckoutApiBody): string {
 export function CheckoutClient({
   defaultEmail,
   stripeReady,
-  isAuthenticated,
 }: CheckoutClientProps) {
   const [form, setForm] = useState<CheckoutFormState>({
     fullName: "",
@@ -76,24 +70,15 @@ export function CheckoutClient({
   const [error, setError] = useState<string | null>(null);
 
   const buttonLabel = useMemo(() => {
-    if (!isAuthenticated) {
-      return "Sign in to checkout";
-    }
-
     if (!stripeReady) {
       return "Payment unavailable";
     }
 
     return isLoading ? "Opening secure payment…" : "Continue to payment";
-  }, [isAuthenticated, isLoading, stripeReady]);
+  }, [isLoading, stripeReady]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    if (!isAuthenticated) {
-      setError("Please sign in to your Mystique account before checking out.");
-      return;
-    }
 
     if (!stripeReady || !stripePromise) {
       setError(
@@ -218,37 +203,18 @@ export function CheckoutClient({
         onChange={(value) => updateField("country", value)}
       />
       <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95] md:col-span-2">
-        {!isAuthenticated
-          ? "Sign in with your Mystique account to load your saved cart and continue to secure payment."
-          : stripeReady
-            ? "When you continue, you will leave Mystique for a moment to complete payment on Stripe’s secure checkout."
-            : "Secure checkout is not available at the moment. Please try again later or contact us if you need help completing an order."}
+        {stripeReady
+          ? "When you continue, you will leave Mystique for a moment to complete payment on Stripe’s secure checkout."
+          : "Secure checkout is not available at the moment. Please try again later or contact us if you need help completing an order."}
       </div>
-      {isAuthenticated ? (
-        <button
-          type="submit"
-          className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em] md:col-span-2 disabled:cursor-wait disabled:opacity-70"
-          disabled={!stripeReady || isLoading}
-          aria-busy={isLoading}
-        >
-          {buttonLabel}
-        </button>
-      ) : (
-        <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
-          <Link
-            href="/account/login?next=%2Fcheckout"
-            className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
-          >
-            Sign in to checkout
-          </Link>
-          <Link
-            href="/account/signup?next=%2Fcheckout"
-            className="mystic-button-secondary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-center text-xs uppercase tracking-[0.22em]"
-          >
-            Create account
-          </Link>
-        </div>
-      )}
+      <button
+        type="submit"
+        className="mystic-button-primary inline-flex min-h-[50px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em] md:col-span-2 disabled:cursor-wait disabled:opacity-70"
+        disabled={!stripeReady || isLoading}
+        aria-busy={isLoading}
+      >
+        {buttonLabel}
+      </button>
       {error ? (
         <p className="text-sm leading-relaxed text-[#d6a85f] md:col-span-2" role="alert">
           {error}

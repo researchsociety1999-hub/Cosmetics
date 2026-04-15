@@ -7,8 +7,9 @@ import { AddToCartForm } from "./AddToCartForm";
 import { PurchaseTrustFootnote } from "./PurchaseTrustFootnote";
 import { RatingSummaryText, StarRow } from "./StarRating";
 import { formatMoney, getUnitPriceCents } from "../lib/format";
-import { getRestockContactHref } from "../lib/productMerch";
+import { isProductPurchasable } from "../lib/productMerch";
 import type { Product, ProductVariant } from "../lib/types";
+import { WaitlistModal } from "./WaitlistModal";
 
 type ProductPurchaseClientProps = {
   product: Product;
@@ -81,23 +82,19 @@ export function ProductPurchaseClient({
       : "/shop";
   }, [product.category_slug]);
 
-  const restockHref = useMemo(() => getRestockContactHref(product), [product]);
-
   const purchasable = useMemo(() => {
+    // Canonical inventory truth: product-level flags first; variants refine selection only.
+    if (!isProductPurchasable(product)) {
+      return false;
+    }
     if (variants.length > 0) {
       if (!selectedVariant) {
         return false;
       }
       return (selectedVariant.stock ?? 0) > 0;
     }
-    if (product.in_stock === false) {
-      return false;
-    }
-    if (typeof product.stock === "number" && product.stock <= 0) {
-      return false;
-    }
     return true;
-  }, [product.in_stock, product.stock, selectedVariant, variants.length]);
+  }, [product, selectedVariant, variants.length]);
 
   const stockLabel = (() => {
     if (!purchasable) {
@@ -165,12 +162,13 @@ export function ProductPurchaseClient({
               is back, or help you pivot.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                href={restockHref}
-                className="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-6 py-2.5 text-center text-[0.65rem] uppercase tracking-[0.2em]"
-              >
-                Email for restock
-              </Link>
+              <WaitlistModal
+                productName={product.name}
+                productSlug={product.slug}
+                triggerLabel="Get restock note"
+                triggerClassName="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-6 py-2.5 text-center text-[0.65rem] uppercase tracking-[0.2em]"
+                align="left"
+              />
               <Link
                 href={browseSimilarHref}
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.45)] px-6 py-2.5 text-center text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"

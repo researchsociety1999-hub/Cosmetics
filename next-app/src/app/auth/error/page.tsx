@@ -5,7 +5,9 @@ import { getCustomerAuthFailureMessage } from "../../lib/authMessages";
 
 export const metadata: Metadata = {
   title: "Sign-in help",
-  description: "We could not complete sign-in with that link. Try a fresh magic link.",
+  description:
+    "That sign-in link could not be completed. Request a new email link and try again.",
+  robots: { index: false, follow: false },
 };
 
 type SearchParams = Promise<{ message?: string }>;

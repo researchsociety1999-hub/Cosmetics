@@ -1,6 +1,7 @@
 /**
  * Public site metadata — optional `NEXT_PUBLIC_*` URLs for social profiles.
- * If unset, the footer points to Journal and Press instead of placeholder social URLs.
+ * Footer shows each network with a link when `FOOTER_SOCIAL_PROFILE_URLS` has an https URL;
+ * otherwise the label stays visible without a link (no fake URLs).
  */
 export type SocialLink = {
   label: string;

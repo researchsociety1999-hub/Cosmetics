@@ -21,7 +21,10 @@ export function PurchaseTrustFootnote({ dense }: PurchaseTrustFootnoteProps) {
         <span className="mx-1.5 text-[#4a4035]">·</span>
         <span className="text-[#b8ab95]">Returns:</span> 30-day window for eligible unopened items
         — see{" "}
-        <Link href="/faq" className="text-[#d6a85f] underline-offset-4 hover:underline">
+        <Link
+          href="/faq#shipping-and-returns"
+          className="text-[#d6a85f] underline-offset-4 hover:underline"
+        >
           FAQ
         </Link>
         .

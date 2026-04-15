@@ -6,7 +6,7 @@ import { mockFaqs } from "../lib/data";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Shipping timing, international orders, sensitive-skin guidance, how to choose a product, and returns—plain answers for Mystique customers.",
+    "Shipping, returns, sensitive skin, international orders, and how to choose a formula—clear answers for Mystique shoppers.",
 };
 
 export default function FaqPage() {
@@ -27,9 +27,10 @@ export default function FaqPage() {
           </p>
         </header>
         <div className="space-y-4">
-          {mockFaqs.map((item) => (
+          {mockFaqs.map((item, index) => (
             <details
               key={item.question}
+              id={index === 0 ? "shipping-and-returns" : undefined}
               name="faq"
               className="mystic-card group p-5 md:p-6"
             >
