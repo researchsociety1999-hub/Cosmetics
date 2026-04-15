@@ -148,7 +148,7 @@ export function HomeHeroMotion() {
       />
 
       {/* Copy: pinned to bottom of hero (spacer fills viewport; padding only below) */}
-      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl flex-col px-4 pb-[max(5rem,env(safe-area-inset-bottom,0px))] sm:px-8 sm:pb-24 md:px-10 md:pb-28 lg:px-12 lg:pb-32 xl:px-14">
+      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl flex-col px-4 pb-[max(2.75rem,env(safe-area-inset-bottom,0px))] sm:px-8 sm:pb-16 md:px-10 md:pb-20 lg:px-12 lg:pb-24 xl:px-14">
         <div className="min-h-0 flex-1" aria-hidden />
         <div
           ref={copyRef}

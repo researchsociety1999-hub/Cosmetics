@@ -55,6 +55,15 @@ export function getTextureFinishCue(
   return RITUAL_TEXTURE_LABEL[step] ?? `${step} step`;
 }
 
+/**
+ * Inventory source of truth (storewide):
+ * - `products.in_stock` and `products.stock` are canonical for whether a SKU is purchasable.
+ * - Variant-level stock (when variants exist) refines availability on the PDP, but does not
+ *   override product-level "out of stock" states.
+ *
+ * If you later move to variant-only inventory, update this function and the PDP purchase logic
+ * in `components/ProductPurchaseClient.tsx`, plus any catalog filtering using `isProductPurchasable`.
+ */
 export function isProductPurchasable(product: Product): boolean {
   if (product.in_stock === false) {
     return false;

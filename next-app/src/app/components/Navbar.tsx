@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -16,6 +17,20 @@ const NAV_LINKS = [
  * Below `md`: centered links; account pinned top-right.
  */
 export function Navbar() {
+  const pathname = usePathname();
+  const isOnHome = pathname === "/";
+
+  const homeClickProps = isOnHome
+    ? {
+        onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
+          // Next.js treats same-route navigation as a no-op. For "Home", users expect
+          // a reliable return-to-top behavior even when already on `/`.
+          event.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        },
+      }
+    : {};
+
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
       {/* Veil: desktop only — mobile uses a solid bar so the hero stays unobstructed */}
@@ -33,13 +48,19 @@ export function Navbar() {
         <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 sm:right-4">
           <AccountIconLink />
         </div>
-        <div className="relative flex flex-col items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4">
+        <div className="relative flex items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4">
+          {/* Reserve room for the floating account button so links never wrap under it. */}
           <nav
-            className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 text-center text-[0.52rem] uppercase tracking-[0.24em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.56rem] min-[400px]:tracking-[0.26em] sm:gap-x-5 sm:text-[0.58rem]"
+            className="mx-auto flex w-full max-w-[calc(100%-3.25rem)] flex-nowrap items-center justify-center gap-x-3 overflow-x-auto overscroll-x-contain text-center text-[0.52rem] uppercase tracking-[0.24em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-4 min-[400px]:text-[0.56rem] min-[400px]:tracking-[0.26em] sm:gap-x-5 sm:text-[0.58rem] [&::-webkit-scrollbar]:hidden"
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
-              <MobileNavLink key={href} href={href} label={label} />
+              <MobileNavLink
+                key={href}
+                href={href}
+                label={label}
+                extraProps={href === "/" ? homeClickProps : undefined}
+              />
             ))}
           </nav>
         </div>
@@ -53,7 +74,12 @@ export function Navbar() {
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
-              <NavLink key={href} href={href} label={label} />
+              <NavLink
+                key={href}
+                href={href}
+                label={label}
+                extraProps={href === "/" ? homeClickProps : undefined}
+              />
             ))}
             <AccountIconLink />
           </nav>
@@ -68,12 +94,21 @@ export function Navbar() {
   );
 }
 
-function NavLink({ href, label }: { href: string; label: string }) {
+function NavLink({
+  href,
+  label,
+  extraProps,
+}: {
+  href: string;
+  label: string;
+  extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+}) {
   return (
     <Link
       href={href}
       prefetch
       className="inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0"
+      {...extraProps}
     >
       {label}
     </Link>
@@ -81,12 +116,21 @@ function NavLink({ href, label }: { href: string; label: string }) {
 }
 
 /** Tighter inline strip for the mobile header row (scroll container). */
-function MobileNavLink({ href, label }: { href: string; label: string }) {
+function MobileNavLink({
+  href,
+  label,
+  extraProps,
+}: {
+  href: string;
+  label: string;
+  extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+}) {
   return (
     <Link
       href={href}
       prefetch
       className="inline-flex shrink-0 items-center whitespace-nowrap py-2 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+      {...extraProps}
     >
       {label}
     </Link>

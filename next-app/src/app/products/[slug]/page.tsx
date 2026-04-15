@@ -11,6 +11,7 @@ import { RatingSummaryText, StarRow } from "../../components/StarRating";
 import { SiteChrome } from "../../components/SiteChrome";
 import { ThemedImageFrame } from "../../components/ThemedImageFrame";
 import { getProductImages, truncateMetaDescription } from "../../lib/format";
+import { isProductPurchasable } from "../../lib/productMerch";
 import {
   getProductBySlug,
   getProductReviews,
@@ -31,9 +32,9 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Unavailable",
+      title: "Product not found",
       description:
-        "That Mystique piece is not in the current collection. Explore the shop for rituals in stock.",
+        "That Mystique product is not in the current collection. Browse the shop for formulas in stock.",
       robots: { index: false, follow: true },
     };
   }
@@ -154,6 +155,8 @@ export default async function ProductPage({
 
   const routineIds = new Set(routineProducts.map((p) => p.id));
   const relatedFiltered = relatedProducts.filter((p) => !routineIds.has(p.id));
+  const routinePurchasable = routineProducts.filter(isProductPurchasable);
+  const relatedPurchasable = relatedFiltered.filter(isProductPurchasable);
 
   return (
     <SiteChrome>
@@ -282,7 +285,7 @@ export default async function ProductPage({
           </div>
         </section>
 
-        {routineProducts.length > 0 ? (
+        {routinePurchasable.length > 0 ? (
           <section className="mt-16 lg:mt-20">
             <header className="mb-8 max-w-2xl">
               <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -297,7 +300,7 @@ export default async function ProductPage({
               </p>
             </header>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-4">
-              {routineProducts.map((item, index) => (
+              {routinePurchasable.map((item, index) => (
                 <div key={item.id} className="relative">
                   <span className="absolute left-3 top-3 z-10 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.85)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#f0d19a]">
                     Step {index + 1}
@@ -367,7 +370,7 @@ export default async function ProductPage({
           </div>
         </section>
 
-        {relatedFiltered.length ? (
+        {relatedPurchasable.length ? (
           <section className="mt-16 lg:mt-20">
             <header className="mb-8">
               <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -378,7 +381,7 @@ export default async function ProductPage({
               </h2>
             </header>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-4">
-              {relatedFiltered.map((item) => (
+              {relatedPurchasable.map((item) => (
                 <ProductCard key={item.id} product={item} />
               ))}
             </div>

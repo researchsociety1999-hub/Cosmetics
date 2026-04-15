@@ -30,8 +30,9 @@ function firstQueryString(value: string | string[] | undefined): string {
 }
 
 export const metadata: Metadata = {
-  title: "Shop",
-  description: "Shop the Mystique ritual collection by category.",
+  title: "Shop skincare",
+  description:
+    "Browse Mystique by category—serums, cleansers, masks, moisturizers, and daily protection with clear ritual steps.",
 };
 
 export const revalidate = 300;
@@ -104,7 +105,7 @@ export default async function ShopPage({
               name="search"
               type="search"
               defaultValue={currentSearch}
-              placeholder="Search rituals…"
+              placeholder="Search products…"
               className="mystic-input min-h-[44px] w-full flex-1 text-sm sm:max-w-md"
             />
             <button

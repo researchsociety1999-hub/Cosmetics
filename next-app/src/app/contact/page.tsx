@@ -10,7 +10,7 @@ type SearchParams = Promise<{ status?: string; topic?: string; ref?: string }>;
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact Mystique for orders, press, wholesale, and product questions. Replies in one to two business days.",
+    "Reach Mystique for orders, press, wholesale, and product help. We reply within one to two business days, Pacific time.",
 };
 
 export default async function ContactPage({
@@ -117,9 +117,8 @@ export default async function ContactPage({
                 </>
               ) : (
                 <p className="mt-4 leading-relaxed">
-                  We reply through this form—add the email you check most often so our note
-                  reaches you. A public studio address will appear here once it is live and
-                  monitored.
+                  We reply through this form—use an email you monitor so our response reaches
+                  you. If we list a shared inbox here later, it will appear in this panel.
                 </p>
               )}
             </div>
@@ -135,7 +134,7 @@ export default async function ContactPage({
                 </li>
                 <li>
                   <Link href="/shop" className="text-[#f0d19a] underline-offset-4 hover:underline">
-                    Shop the collection
+                    Browse the shop
                   </Link>
                 </li>
               </ul>

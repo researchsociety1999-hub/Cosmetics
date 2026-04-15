@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Mystique",
   description:
-    "Discover Mystique—California-rooted skincare with calm textures, disciplined layering, and healthy-looking radiance.",
+    "Our California-rooted approach: calm textures, disciplined five-step rituals, and formulas meant for bathrooms you use every day.",
 };
 
 export default function AboutPage() {
@@ -102,15 +102,15 @@ export default function AboutPage() {
             Start where you have the most questions.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[#b8ab95]">
-            Shop the line, read how we choose actives on Ingredients, or write Contact for
-            orders, press, and wholesale.
+            Browse the shop, read how we choose actives, or use Contact for orders, press,
+            and wholesale.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/shop"
               className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
-              Shop the collection
+              Explore the shop
             </Link>
             <Link
               href="/ingredients"

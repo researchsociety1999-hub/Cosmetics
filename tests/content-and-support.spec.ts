@@ -17,9 +17,11 @@ test.describe("content and support routes", () => {
   test("journal page exposes editorial entries", async ({ page }) => {
     await gotoAndWait(page, "/journal");
 
-    await expectHeading(page, "Rituals, guides, and glow notes.");
-    await expect(page.getByRole("heading", { name: "The Bloom Skin Guide", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Continue reading" }).first()).toBeVisible();
+    await expectHeading(page, "Skincare reads, written with care.");
+    await expect(
+      page.getByRole("heading", { name: "Bloom Skin: Luminosity in Measure", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Read the essay" }).first()).toBeVisible();
   });
 
   test("faq page expands answers for shoppers", async ({ page }) => {

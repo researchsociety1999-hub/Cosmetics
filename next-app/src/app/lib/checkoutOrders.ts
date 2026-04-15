@@ -102,7 +102,7 @@ export async function createPendingOrderFromCart({
   cart,
   appliedPromo = null,
 }: {
-  userId: string;
+  userId: string | null;
   shippingDetails: ShippingDetails;
   cart: CartSummary;
   appliedPromo?: AppliedPromo | null;
@@ -113,10 +113,12 @@ export async function createPendingOrderFromCart({
     throw new Error("Bag is empty.");
   }
 
-  const [shippingAddress, billingAddress] = await Promise.all([
-    upsertDefaultAddress({ userId, type: "shipping", details: shippingDetails }),
-    upsertDefaultAddress({ userId, type: "billing", details: shippingDetails }),
-  ]);
+  const [shippingAddress, billingAddress] = userId
+    ? await Promise.all([
+        upsertDefaultAddress({ userId, type: "shipping", details: shippingDetails }),
+        upsertDefaultAddress({ userId, type: "billing", details: shippingDetails }),
+      ])
+    : [null, null];
   const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
   const orderNumber = buildOrderNumber();
 
@@ -142,8 +144,8 @@ export async function createPendingOrderFromCart({
     state: shippingDetails.state,
     postal_code: shippingDetails.postalCode,
     country: shippingDetails.country,
-    shipping_address_id: shippingAddress.id,
-    billing_address_id: billingAddress.id,
+    shipping_address_id: shippingAddress?.id ?? null,
+    billing_address_id: billingAddress?.id ?? null,
   };
 
   const { data: order, error: orderError } = await client

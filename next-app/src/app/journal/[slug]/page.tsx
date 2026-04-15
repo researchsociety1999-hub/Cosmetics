@@ -12,7 +12,10 @@ export async function generateMetadata({
   const entry = (await getJournalEntries()).find((item) => item.slug === slug);
 
   if (!entry) {
-    return { title: "Journal entry not found" };
+    return {
+      title: "Journal entry not found",
+      robots: { index: false, follow: false },
+    };
   }
 
   return {

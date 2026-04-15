@@ -85,7 +85,7 @@ test.describe("account, legal, and status routes", () => {
   test("journal detail page renders full editorial content", async ({ page }) => {
     await gotoAndWait(page, "/journal/bloom-skin-guide");
 
-    await expectHeading(page, "The Bloom Skin Guide");
+    await expectHeading(page, "Bloom Skin: Luminosity in Measure");
     await expect(page.getByRole("heading", { name: "Bloom skin is glow with restraint" })).toBeVisible();
     await expect(page.getByText(/Protect the finish in the morning/i)).toBeVisible();
   });

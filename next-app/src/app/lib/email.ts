@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resendFromEmail = process.env.RESEND_FROM_EMAIL;
+const resendApiKey = process.env.RESEND_API_KEY?.trim();
+const resendFromEmail = process.env.RESEND_FROM_EMAIL?.trim();
 
 export function escapeHtml(value: string): string {
   return value

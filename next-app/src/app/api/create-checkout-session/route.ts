@@ -8,7 +8,6 @@ import {
   markOrderFailedForCheckout,
 } from "../../lib/checkoutOrders";
 import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
-import { getAuthenticatedUser } from "../../lib/supabaseServer";
 import { getConfiguredSiteUrl } from "../../lib/siteUrl";
 import { hasSupabasePublicEnv } from "../../lib/supabaseClient";
 import { createStripeCheckoutSession, isStripeConfigured } from "../../lib/stripe";
@@ -57,19 +56,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await getAuthenticatedUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "Please sign in before checking out." },
-        { status: 401 },
-      );
-    }
-
     const body = (await request.json()) as Record<string, unknown>;
     const shippingDetails: ShippingDetails = {
       fullName: normalizeField(body.fullName),
-      email: normalizeField(body.email) || user.email || "",
+      email: normalizeField(body.email),
       addressLine1: normalizeField(body.addressLine1),
       addressLine2: normalizeField(body.addressLine2),
       city: normalizeField(body.city),
@@ -89,9 +79,9 @@ export async function POST(request: Request) {
       cart.subtotalCents,
     );
 
-    if (cart.userId !== user.id || cart.source !== "database" || !cart.lines.length) {
+    if (!cart.lines.length) {
       return NextResponse.json(
-        { error: "Your bag is empty or not linked to your account." },
+        { error: "Your bag is empty. Add products before checking out." },
         { status: 400 },
       );
     }
@@ -109,7 +99,7 @@ export async function POST(request: Request) {
     let order;
     try {
       const created = await createPendingOrderFromCart({
-        userId: user.id,
+        userId: cart.userId,
         shippingDetails,
         cart,
         appliedPromo,

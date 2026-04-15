@@ -5,7 +5,8 @@ import { getOrderNumberByIdForDisplay } from "../../lib/checkoutOrders";
 
 export const metadata: Metadata = {
   title: "Checkout cancelled",
-  description: "Return to checkout after cancelling a Stripe payment.",
+  description:
+    "Your bag is unchanged. Return to checkout or review your cart whenever you are ready.",
 };
 
 type SearchParams = Promise<{ order_id?: string }>;

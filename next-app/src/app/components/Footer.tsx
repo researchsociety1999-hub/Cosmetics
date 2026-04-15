@@ -24,14 +24,17 @@ export function Footer() {
             <Link href="/faq" className={FOOTER_CENTER_LINK_CLASS}>
               FAQ
             </Link>
+            <Link
+              href="/faq#shipping-and-returns"
+              className={FOOTER_CENTER_LINK_CLASS}
+            >
+              Shipping &amp; returns
+            </Link>
             <Link href="/contact" className={FOOTER_CENTER_LINK_CLASS}>
               Contact
             </Link>
             <Link href="/journal" className={FOOTER_CENTER_LINK_CLASS}>
               Journal
-            </Link>
-            <Link href="/faq" className={FOOTER_CENTER_LINK_CLASS}>
-              Shipping &amp; Returns
             </Link>
           </nav>
 
@@ -64,7 +67,7 @@ export function Footer() {
                     <li key={profile.id}>
                       <span
                         className={`${rowClass} cursor-default opacity-60 hover:text-[#f5eee3]`}
-                        title="Profile URL not set yet — add it in siteConfig.ts"
+                        title="Link not available yet"
                       >
                         <span className={iconClass}>{socialIconForId(profile.id)}</span>
                         {profile.label}

@@ -5,7 +5,7 @@ import { SiteChrome } from "../components/SiteChrome";
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "Careers at Mystique—open roles and studio inquiries. We hire slowly and reply with care.",
+    "Careers at Mystique—studio updates and how to reach the team when roles are not publicly listed.",
   robots: { index: true, follow: true },
 };
 

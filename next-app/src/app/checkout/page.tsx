@@ -7,12 +7,12 @@ import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
 import { formatMoney } from "../lib/format";
 import { getAppliedPromoFromStoredCode } from "../lib/promo";
-import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { isStripeConfigured } from "../lib/stripe";
 
 export const metadata: Metadata = {
   title: "Checkout",
-  description: "Enter shipping details and review your Mystique order summary.",
+  description:
+    "Secure checkout—review your bag, shipping details, and order total before payment.",
 };
 
 export const dynamic = "force-dynamic";
@@ -24,15 +24,13 @@ export default async function CheckoutPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const user = await getAuthenticatedUser();
-  const cart = await getCartSummary(user);
+  const cart = await getCartSummary();
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
   const { appliedPromo, invalidMessage } = await getAppliedPromoFromStoredCode(
     cart.subtotalCents,
   );
   const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
-  const isAuthenticated = Boolean(user);
 
   return (
     <SiteChrome>
@@ -51,21 +49,9 @@ export default async function CheckoutPage({
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
           <div className="space-y-4">
             <CheckoutClient
-              defaultEmail={user?.email ?? ""}
-              isAuthenticated={isAuthenticated}
+              defaultEmail=""
               stripeReady={stripeReady}
             />
-            {!isAuthenticated ? (
-              <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#d6a85f]">
-                <p>Sign in first so we can load your saved bag for checkout.</p>
-                <Link
-                  href="/account/login?next=%2Fcheckout"
-                  className="mt-3 inline-flex text-xs uppercase tracking-[0.2em] text-[#f0d19a] underline-offset-4 hover:underline"
-                >
-                  Continue to sign in
-                </Link>
-              </div>
-            ) : null}
             {params.status === "cancelled" ? (
               <p className="text-sm text-[#d6a85f]">
                 Secure checkout was cancelled. Your bag is still here, and you can

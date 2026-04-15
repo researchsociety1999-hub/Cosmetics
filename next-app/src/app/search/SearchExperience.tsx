@@ -103,7 +103,7 @@ export function SearchExperience({
             id="search-query"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search serums, bloom skin, peptides..."
+            placeholder="Search products, concerns, or ingredients…"
             className="mystic-input w-full text-sm"
           />
         </label>
