@@ -212,7 +212,7 @@ export function AccountDashboard({
             href="/cart"
             className="mystic-button-secondary mt-8 inline-flex w-full min-h-[48px] items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.22em]"
           >
-            {cart.lines.length ? "View full bag" : "Browse shop"}
+            {cart.lines.length ? "View full bag" : "Shop the collection"}
           </Link>
         </aside>
       </div>
