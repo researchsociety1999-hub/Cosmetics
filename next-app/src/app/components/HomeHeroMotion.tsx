@@ -71,12 +71,12 @@ export function HomeHeroMotion() {
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-5 pt-[min(12vh,6rem)] sm:px-8 sm:pt-[min(10vh,5rem)]"
+        className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-2 pt-[min(10vh,5rem)] sm:px-4 sm:pt-[min(9vh,4.5rem)] md:pt-[min(8vh,4rem)]"
       >
-        <div className="relative isolate w-full max-w-[min(94vw,50rem)] sm:max-w-[54rem]">
+        <div className="relative isolate w-full max-w-[min(118vw,68rem)] sm:max-w-[min(112vw,76rem)] lg:max-w-[min(104vw,84rem)]">
           {/* Soft bloom behind the mark — diffuse, no hard box */}
-          <div className="pointer-events-none absolute left-1/2 top-[46%] h-[min(52vh,28rem)] w-[min(118vw,52rem)] max-w-none -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_75%_55%_at_50%_50%,rgba(214,168,95,0.14),rgba(214,168,95,0.05)_42%,transparent_72%)] blur-3xl sm:h-[min(48vh,30rem)] sm:w-[56rem]" />
-          <div className="pointer-events-none absolute left-1/2 top-[48%] h-[min(38vh,20rem)] w-[min(90vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,186,120,0.06),transparent_68%)] blur-2xl opacity-80" />
+          <div className="pointer-events-none absolute left-1/2 top-[44%] h-[min(58vh,34rem)] w-[min(132vw,64rem)] max-w-none -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_75%_55%_at_50%_50%,rgba(214,168,95,0.16),rgba(214,168,95,0.06)_40%,transparent_72%)] blur-3xl sm:h-[min(54vh,36rem)] sm:w-[72rem]" />
+          <div className="pointer-events-none absolute left-1/2 top-[46%] h-[min(44vh,24rem)] w-[min(102vw,48rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,186,120,0.08),transparent_68%)] blur-2xl opacity-90" />
           <div
             className="relative mx-auto w-full [mask-image:radial-gradient(ellipse_82%_72%_at_50%_48%,#000_0%,#000_36%,rgba(0,0,0,0.55)_58%,rgba(0,0,0,0.18)_76%,transparent_92%)] [-webkit-mask-image:radial-gradient(ellipse_82%_72%_at_50%_48%,#000_0%,#000_36%,rgba(0,0,0,0.55)_58%,rgba(0,0,0,0.18)_76%,transparent_92%)]"
           >
@@ -86,8 +86,8 @@ export function HomeHeroMotion() {
               width={1120}
               height={640}
               priority
-              sizes="(max-width:640px) 94vw, (max-width:1024px) 88vw, 54rem"
-              className="h-auto w-full scale-[1.01] object-contain object-center opacity-[0.34] mix-blend-screen [filter:brightness(1.06)_contrast(0.96)_saturate(0.88)] sm:opacity-[0.38]"
+              sizes="(max-width:640px) 118vw, (max-width:1024px) 100vw, 84rem"
+              className="h-auto w-full scale-[1.08] object-contain object-center opacity-[0.4] mix-blend-screen [filter:brightness(1.08)_contrast(0.98)_saturate(0.9)] sm:scale-[1.12] sm:opacity-[0.44] lg:scale-[1.14]"
             />
           </div>
         </div>
@@ -147,12 +147,12 @@ export function HomeHeroMotion() {
         className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,rgba(1,2,3,0.7)_0%,rgba(1,2,3,0.22)_24%,transparent_46%,transparent_62%,rgba(1,2,3,0.12)_100%),linear-gradient(180deg,rgba(1,2,3,0.14)_0%,transparent_14%,transparent_30%,rgba(1,2,3,0.04)_50%,rgba(5,6,10,0.68)_78%,rgba(5,6,10,0.94)_90%,rgb(5,6,10)_100%),radial-gradient(ellipse_78%_62%_at_50%_38%,transparent_0%,rgba(1,2,3,0.06)_100%)]"
       />
 
-      {/* Copy: pinned to bottom of hero (spacer fills viewport; padding only below) */}
-      <div className="relative z-10 mx-auto flex min-h-[90dvh] w-full max-w-6xl flex-col px-4 pb-[max(2.75rem,env(safe-area-inset-bottom,0px))] sm:px-8 sm:pb-16 md:px-10 md:pb-20 lg:px-12 lg:pb-24 xl:px-14">
+      {/* Copy: pinned to bottom-left of hero (full-bleed width; inset matches page gutters) */}
+      <div className="relative z-10 flex min-h-[90dvh] w-full flex-col px-4 pb-[max(2.75rem,env(safe-area-inset-bottom,0px))] sm:px-8 sm:pb-16 md:px-10 md:pb-20 lg:px-12 lg:pb-24 xl:px-14">
         <div className="min-h-0 flex-1" aria-hidden />
         <div
           ref={copyRef}
-          className="w-full max-w-[min(36rem,92vw)] shrink-0 text-left md:max-w-[min(38rem,92vw)]"
+          className="w-full max-w-[min(36rem,calc(100vw-2rem))] shrink-0 self-start text-left sm:max-w-[min(38rem,calc(100vw-4rem))] md:max-w-[min(40rem,calc(100vw-5rem))]"
           style={{ opacity: 1 }}
         >
           <div className="border-l border-[rgba(214,168,95,0.2)] pl-5 sm:pl-7 md:pl-8">

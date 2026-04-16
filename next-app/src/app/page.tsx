@@ -80,7 +80,7 @@ function SectionLoading({
           className={
             isFeatured
               ? "mx-auto mt-6 grid w-full max-w-[min(100%,42rem)] grid-cols-2 gap-2.5 sm:max-w-[min(100%,48rem)] sm:gap-3 md:max-w-[min(100%,52rem)] md:grid-cols-4 md:gap-3.5 lg:gap-4"
-              : "mt-6 grid gap-6 md:grid-cols-3"
+              : "mt-6 grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:grid-cols-3"
           }
         >
           {(isFeatured ? [0, 1, 2, 3] : [0, 1, 2]).map((i) => (
@@ -89,7 +89,7 @@ function SectionLoading({
               className={
                 isFeatured
                   ? "mystic-card aspect-[3/5] max-h-72 animate-pulse sm:max-h-none"
-                  : "mystic-card h-64 animate-pulse"
+                  : "mystic-card min-h-[15.5rem] animate-pulse rounded-[var(--mystic-radius-card)]"
               }
             />
           ))}
@@ -111,14 +111,24 @@ async function JournalHomeSection() {
   const preview = entries.slice(0, 3);
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[linear-gradient(180deg,#020308_0%,#04050a_42%,#03040a_100%)]">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[linear-gradient(180deg,#020308_0%,#04050a_42%,#03040a_100%)] !py-[5.25rem] md:!py-28 lg:!py-32">
       <div className="mystic-section-shell">
-        <SectionIntro
-          eyebrow="Journal"
-          title="Skincare reads, written with care."
-          ctaHref="/journal"
-          ctaLabel="Read the journal"
-        />
+        <header className="mb-14 flex max-w-4xl flex-col gap-8 border-b border-[rgba(214,168,95,0.09)] pb-12 sm:mb-16 sm:flex-row sm:items-end sm:justify-between sm:gap-10 sm:pb-14 md:mb-20 md:max-w-none md:pb-16">
+          <div className="space-y-4 md:space-y-5">
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#8a8275]">
+              Journal
+            </p>
+            <h2 className="max-w-xl font-literata text-[clamp(1.625rem,3.6vw,2.375rem)] font-normal leading-[1.2] tracking-[0.1em] text-[#f2ebe4]">
+              Skincare reads, written with care.
+            </h2>
+          </div>
+          <Link
+            href="/journal"
+            className="shrink-0 self-start border border-[rgba(214,168,95,0.2)] bg-[rgba(2,3,6,0.35)] px-6 py-3 text-[0.65rem] uppercase tracking-[0.24em] text-[#d4c9b4] backdrop-blur-sm transition hover:border-[rgba(214,168,95,0.35)] hover:text-[#f0e8dc] sm:self-auto"
+          >
+            View all
+          </Link>
+        </header>
         {preview.length === 0 ? (
           <div className="mystic-card max-w-2xl border border-[rgba(214,168,95,0.12)] p-8 text-sm leading-[1.7] text-[#a99e8e]">
             <p>
@@ -134,39 +144,43 @@ async function JournalHomeSection() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 md:gap-9 xl:grid-cols-3 xl:gap-10">
+          <div className="mx-auto grid max-w-6xl gap-10 sm:gap-12 md:grid-cols-2 md:gap-x-10 md:gap-y-14 lg:grid-cols-3 lg:gap-x-12">
             {preview.map((entry) => (
-              <article
+              <Link
                 key={entry.slug}
-                className="group relative flex flex-col overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.13)] bg-[linear-gradient(165deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_48%,rgba(0,0,0,0.12)_100%)] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,box-shadow,transform] duration-500 ease-out before:pointer-events-none before:absolute before:inset-0 before:rounded-[var(--mystic-radius-card)] before:opacity-0 before:shadow-[0_0_48px_rgba(214,168,95,0.07)] before:transition-opacity before:duration-500 hover:-translate-y-0.5 hover:border-[rgba(214,168,95,0.32)] hover:shadow-[0_28px_56px_rgba(0,0,0,0.5)] hover:before:opacity-100 md:p-8"
+                href={`/journal/${entry.slug}`}
+                className="group relative block rounded-[var(--mystic-radius-card)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04050a]"
               >
-                <div className="flex items-center justify-between gap-4 border-b border-[rgba(214,168,95,0.11)] pb-5">
-                  <span className="mystic-pill !border-[rgba(214,168,95,0.22)] !px-3.5 !py-1.5 !text-[0.58rem] !tracking-[0.28em]">
-                    {JOURNAL_CATEGORY_PILL[entry.category] ?? entry.category}
-                  </span>
-                  <span className="shrink-0 font-medium tabular-nums text-[0.65rem] uppercase tracking-[0.22em] text-[#7d7366]">
-                    {entry.readTime}
-                  </span>
-                </div>
-                <h3 className="mt-6 text-balance font-literata text-[clamp(1.25rem,3.8vw,1.75rem)] leading-[1.18] tracking-[0.04em] text-[#f4efe6] md:mt-7">
-                  {entry.title}
-                </h3>
-                <p className="mt-4 flex-1 text-[0.9375rem] leading-[1.7] text-[#9c9183] md:text-[0.96875rem]">
-                  {entry.excerpt}
-                </p>
-                <Link
-                  href={`/journal/${entry.slug}`}
-                  className="mt-8 flex w-full items-center justify-between gap-3 border-t border-[rgba(214,168,95,0.08)] pt-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#b8a888] transition group-hover:border-[rgba(214,168,95,0.16)] group-hover:text-[#e3d4bc]"
-                >
-                  <span className="underline-offset-[5px] group-hover:underline">Read the essay</span>
-                  <span
+                <article className="relative flex h-full min-h-[15.5rem] flex-col overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.1)] bg-[linear-gradient(168deg,rgba(255,255,255,0.035)_0%,rgba(255,255,255,0.012)_42%,rgba(0,0,0,0.14)_100%)] px-7 py-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,box-shadow,transform] duration-500 ease-out before:pointer-events-none before:absolute before:inset-0 before:rounded-[var(--mystic-radius-card)] before:bg-[radial-gradient(ellipse_90%_70%_at_0%_0%,rgba(214,168,95,0.07),transparent_55%)] before:opacity-60 group-hover:-translate-y-0.5 group-hover:border-[rgba(214,168,95,0.24)] group-hover:shadow-[0_32px_64px_rgba(0,0,0,0.42)] md:min-h-[16rem] md:px-8 md:py-9">
+                  <p className="text-[0.6rem] uppercase tracking-[0.26em] text-[#7d7568]">
+                    <span className="text-[#b5a892]">
+                      {JOURNAL_CATEGORY_PILL[entry.category] ?? entry.category}
+                    </span>
+                    <span className="mx-2.5 inline-block text-[rgba(214,168,95,0.22)]">·</span>
+                    <span className="font-medium tabular-nums tracking-[0.18em]">
+                      {entry.readTime}
+                    </span>
+                  </p>
+                  <div
                     aria-hidden
-                    className="text-[0.85rem] text-[rgba(214,168,95,0.45)] transition duration-300 group-hover:translate-x-0.5 group-hover:text-[rgba(214,168,95,0.85)]"
-                  >
-                    →
-                  </span>
-                </Link>
-              </article>
+                    className="mt-5 h-px w-10 bg-gradient-to-r from-[rgba(214,168,95,0.35)] via-[rgba(214,168,95,0.1)] to-transparent"
+                  />
+                  <h3 className="mt-6 text-balance font-literata text-[clamp(1.2rem,2.4vw,1.45rem)] leading-[1.35] tracking-[0.06em] text-[#f5f0ea] transition group-hover:text-[#faf7f3]">
+                    {entry.title}
+                  </h3>
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-10">
+                    <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#9d8f78] transition group-hover:text-[#c9b896]">
+                      Essay
+                    </span>
+                    <span
+                      aria-hidden
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(214,168,95,0.14)] text-[0.75rem] text-[rgba(214,168,95,0.55)] transition duration-300 group-hover:border-[rgba(214,168,95,0.28)] group-hover:text-[rgba(214,168,95,0.9)]"
+                    >
+                      →
+                    </span>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         )}
@@ -305,7 +319,7 @@ function RitualStripSection() {
     <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a] !pt-24 !pb-24 md:!pt-32 md:!pb-32">
       <div className="mystic-section-shell">
         <SectionIntro
-          title="Our rituals"
+          title="Our Rituals"
           ctaHref="/routines"
           ctaLabel="See routine steps"
         />
