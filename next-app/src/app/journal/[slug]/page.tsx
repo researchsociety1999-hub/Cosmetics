@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteChrome } from "../../components/SiteChrome";
 import { getJournalEntries } from "../../lib/queries";
@@ -38,7 +39,23 @@ export default async function JournalEntryPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+      <main className="w-full px-4 pb-28 pt-10 md:px-6 lg:px-10 lg:pb-14 lg:pt-14 xl:px-14">
+        <nav
+          className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
+          aria-label="Breadcrumb"
+        >
+          <Link href="/" className="transition hover:text-[#d6a85f]">
+            Home
+          </Link>
+          <span aria-hidden>/</span>
+          <Link href="/journal" className="transition hover:text-[#d6a85f]">
+            Journal
+          </Link>
+          <span aria-hidden>/</span>
+          <span className="max-w-[min(42ch,100%)] truncate text-[#b8ab95]" title={entry.title}>
+            {entry.title}
+          </span>
+        </nav>
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           {entry.category}
         </p>
@@ -62,6 +79,22 @@ export default async function JournalEntryPage({
             ))}
           </div>
         </article>
+
+        <nav
+          className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-[rgba(214,168,95,0.1)] pt-8 text-[0.68rem] uppercase tracking-[0.2em] text-[#8a8072]"
+          aria-label="Journal navigation"
+        >
+          <Link
+            href="/journal"
+            className="inline-flex items-center gap-2 transition hover:text-[#d6a85f]"
+          >
+            <span aria-hidden>←</span>
+            All journal essays
+          </Link>
+          <Link href="/" className="transition hover:text-[#d6a85f]">
+            Home
+          </Link>
+        </nav>
       </main>
     </SiteChrome>
   );

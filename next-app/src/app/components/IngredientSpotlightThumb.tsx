@@ -2,7 +2,7 @@ import Image from "next/image";
 
 type IngredientSpotlightThumbProps = {
   id: string;
-  /** Prefer `/ingredients/{id}.svg` from `public`; remote URLs allowed if configured in `next.config.js`. */
+  /** Prefer `/ingredients/{id}.jpg` in `public`; SVG still supported; remote URLs need `next.config.js`. */
   imageSrc?: string | null;
   /** Used for accessible labeling; heading nearby keeps alt decorative if empty. */
   name: string;
@@ -16,7 +16,7 @@ export function IngredientSpotlightThumb({
   imageSrc,
   name,
 }: IngredientSpotlightThumbProps) {
-  const src = (imageSrc?.trim() || `/ingredients/${id}.svg`) as string;
+  const src = (imageSrc?.trim() || `/ingredients/${id}.jpg`) as string;
   const isSvg = src.endsWith(".svg");
 
   return (
@@ -28,15 +28,16 @@ export function IngredientSpotlightThumb({
       <div className="relative h-[5.25rem] w-[5.25rem] overflow-hidden rounded-[1.125rem] shadow-[0_10px_32px_rgba(0,0,0,0.5),inset_0_0_0_1px_rgba(255,255,255,0.06)] sm:h-24 sm:w-24">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_90%_65%_at_40%_15%,rgba(214,168,95,0.18),transparent_58%)] mix-blend-soft-light"
+          className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_90%_65%_at_40%_15%,rgba(214,168,95,0.22),transparent_55%)] mix-blend-soft-light"
         />
         <Image
           src={src}
           alt=""
           width={192}
           height={192}
+          sizes="(max-width:640px) 5.25rem, 6rem"
           unoptimized={isSvg}
-          className="h-full w-full scale-[1.02] object-cover object-center brightness-[1.05] saturate-[0.92] transition duration-500 ease-out group-hover:scale-[1.06] group-hover:brightness-110 group-hover:saturate-100"
+          className="h-full w-full scale-[1.02] object-cover object-center brightness-[1.02] saturate-[0.95] transition duration-500 ease-out group-hover:scale-[1.06] group-hover:brightness-105 group-hover:saturate-100"
         />
         <div
           aria-hidden

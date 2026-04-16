@@ -3,6 +3,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { SiteChrome } from "../components/SiteChrome";
+import {
+  resolveMerchFilterFromCategoryParam,
+  SHOP_MERCH_GROUPS,
+} from "../lib/shopMerchGroups";
 import { getCategories, type ProductSort } from "../lib/queries";
 import { ShopCatalogBody, ShopCatalogFallback } from "./ShopCatalogBody";
 
@@ -48,10 +52,11 @@ export default async function ShopPage({
     : "newest";
   const currentSearch = firstQueryString(params.search);
   const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
-  const availableCategories = await getCategories();
-  const matchedCategory = params.category
-    ? availableCategories.find((category) => category.slug === params.category) ?? null
-    : null;
+  const dbCategories = await getCategories();
+  const matchedMerchGroup = resolveMerchFilterFromCategoryParam(
+    firstQueryString(params.category),
+    dbCategories,
+  );
 
   return (
     <SiteChrome>
@@ -64,22 +69,22 @@ export default async function ShopPage({
               ingredient: currentIngredient,
               sort,
             })}
-            active={!matchedCategory}
+            active={!matchedMerchGroup}
           >
             All
           </CategoryChip>
-          {availableCategories.map((category) => (
+          {SHOP_MERCH_GROUPS.map((group) => (
             <CategoryChip
-              key={category.id}
+              key={group.slug}
               href={buildShopHref({
-                category: category.slug,
+                category: group.slug,
                 search: currentSearch,
                 ingredient: currentIngredient,
                 sort,
               })}
-              active={matchedCategory?.slug === category.slug}
+              active={matchedMerchGroup?.slug === group.slug}
             >
-              {category.name}
+              {group.label}
             </CategoryChip>
           ))}
         </section>
@@ -90,8 +95,8 @@ export default async function ShopPage({
             action="/shop"
             className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center"
           >
-            {matchedCategory ? (
-              <input type="hidden" name="category" value={matchedCategory.slug} />
+            {matchedMerchGroup ? (
+              <input type="hidden" name="category" value={matchedMerchGroup.slug} />
             ) : null}
             {currentIngredient ? (
               <input type="hidden" name="ingredient" value={currentIngredient} />
@@ -119,14 +124,14 @@ export default async function ShopPage({
 
         <section className="mb-8">
           <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#b8ab95]">
-            {matchedCategory
-              ? `${matchedCategory.name} products`
-              : "Shop by category"}
+            {matchedMerchGroup
+              ? `${matchedMerchGroup.name}`
+              : "Shop the collection"}
           </p>
           <p className="mt-2 text-sm text-[#8f8576]">
-            {matchedCategory
-              ? `Showing products from the ${matchedCategory.name} section.`
-              : "Browse rituals by category."}
+            {matchedMerchGroup
+              ? `Filtered to ${matchedMerchGroup.name.toLowerCase()}. Choose All to see the full collection.`
+              : "Skincare & rituals, body & sun, hair care, and tools & accessories—each chip groups your catalog categories into one place."}
           </p>
         </section>
 
@@ -135,8 +140,8 @@ export default async function ShopPage({
             sort={sort}
             currentSearch={currentSearch}
             currentIngredient={currentIngredient}
-            matchedCategory={matchedCategory}
-            availableCategories={availableCategories}
+            matchedMerchGroup={matchedMerchGroup}
+            dbCategories={dbCategories}
           />
         </Suspense>
       </main>

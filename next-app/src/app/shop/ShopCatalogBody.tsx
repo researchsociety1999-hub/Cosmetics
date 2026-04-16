@@ -1,5 +1,9 @@
 import Link from "next/link";
 import ProductCard from "../components/productcard";
+import {
+  resolveMerchGroupForProduct,
+  virtualMerchCategories,
+} from "../lib/shopMerchGroups";
 import { getProducts, type ProductSort } from "../lib/queries";
 import { isProductPurchasable } from "../lib/productMerch";
 import { hasSupabaseEnv } from "../lib/supabaseClient";
@@ -30,16 +34,16 @@ type ShopCatalogBodyProps = {
   sort: ProductSort;
   currentSearch: string;
   currentIngredient: string;
-  matchedCategory: { id: number; slug: string; name: string } | null;
-  availableCategories: { id: number; slug: string; name: string }[];
+  matchedMerchGroup: { slug: string; name: string } | null;
+  dbCategories: { id: number; slug: string; name: string }[];
 };
 
 export async function ShopCatalogBody({
   sort,
   currentSearch,
   currentIngredient,
-  matchedCategory,
-  availableCategories,
+  matchedMerchGroup,
+  dbCategories,
 }: ShopCatalogBodyProps) {
   const filteredProducts = await getProducts({
     search: currentIngredient ? "" : currentSearch,
@@ -47,17 +51,23 @@ export async function ShopCatalogBody({
     sortBy: sort,
   });
 
-  const productAssignments = assignProductsToCategories({
-    categories: availableCategories,
-    products: filteredProducts,
-  });
+  const productAssignments = assignProductsToMerchGroups(
+    filteredProducts,
+    dbCategories,
+  );
+  const virtual = virtualMerchCategories();
+  const categoriesForSections = matchedMerchGroup
+    ? virtual.filter((c) => c.slug === matchedMerchGroup.slug)
+    : virtual;
+  const assignmentsForSections = matchedMerchGroup
+    ? productAssignments.filter(
+        (a) => a.category.slug === matchedMerchGroup.slug,
+      )
+    : productAssignments;
+
   const productSections = buildProductSections({
-    categories: matchedCategory ? [matchedCategory] : availableCategories,
-    assignments: matchedCategory
-      ? productAssignments.filter(
-          (assignment) => assignment.category?.slug === matchedCategory.slug,
-        )
-      : productAssignments,
+    categories: categoriesForSections,
+    assignments: assignmentsForSections,
   });
 
   if (productSections.length === 0) {
@@ -65,7 +75,7 @@ export async function ShopCatalogBody({
       <ShopWideEmptyState
         hasSupabase={hasSupabaseEnv}
         hasActiveFilters={Boolean(
-          currentSearch || currentIngredient || matchedCategory,
+          currentSearch || currentIngredient || matchedMerchGroup,
         )}
       />
     );
@@ -165,191 +175,19 @@ function ShopWideEmptyState({
   );
 }
 
-function productMatchesCategory(
-  product: {
-    name?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    routine_step?: string | null;
-    category_id: number | null;
-    category_slug?: string | null;
-    category_name?: string | null;
-  },
-  category: { id: number; slug: string; name: string },
-) {
-  if (typeof product.category_id === "number" && product.category_id === category.id) {
-    return true;
-  }
-
-  const normalizedSlug = product.category_slug?.trim().toLowerCase();
-  if (normalizedSlug && normalizedSlug === category.slug.toLowerCase()) {
-    return true;
-  }
-
-  const normalizedName = product.category_name?.trim().toLowerCase();
-  if (normalizedName === category.name.toLowerCase()) {
-    return true;
-  }
-
-  const haystack = [
-    product.name ?? "",
-    product.slug ?? "",
-    product.description ?? "",
-    product.routine_step ?? "",
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  const categorySlug = category.slug.toLowerCase();
-  const categoryName = category.name.toLowerCase();
-  const categoryLabel = `${categorySlug} ${categoryName}`;
-
-  const matchesAnyKeyword = (keywords: string[]) =>
-    keywords.some((keyword) => haystack.includes(keyword));
-
-  if (categoryLabel.includes("body")) {
-    return matchesAnyKeyword([
-      "body",
-      "lotion",
-      "body lotion",
-      "body cream",
-      "body wash",
-      "body oil",
-      "scrub",
-      "butter",
-      "hand cream",
-    ]);
-  }
-
-  if (
-    categoryLabel.includes("skin care") ||
-    categoryLabel.includes("skincare") ||
-    categoryLabel.includes("face")
-  ) {
-    return matchesAnyKeyword([
-      "serum",
-      "cleanser",
-      "moistur",
-      "moisturizer",
-      "cream",
-      "face",
-      "spf",
-      "sunscreen",
-      "sun screen",
-      "toner",
-      "essence",
-      "ampoule",
-      "mask",
-      "peptide",
-      "hydrat",
-    ]);
-  }
-
-  if (
-    categoryLabel.includes("toner") ||
-    categoryLabel.includes("accessor") ||
-    categoryLabel.includes("tool")
-  ) {
-    return matchesAnyKeyword([
-      "toner",
-      "mist",
-      "pad",
-      "tool",
-      "accessory",
-      "roller",
-      "gua sha",
-      "brush",
-      "spatula",
-      "headband",
-    ]);
-  }
-
-  if (categorySlug.includes("serum") || categoryName.includes("serum")) {
-    return haystack.includes("serum") || haystack.includes("ampoule");
-  }
-
-  if (categorySlug.includes("cleanser") || categoryName.includes("cleanser")) {
-    return haystack.includes("cleanser");
-  }
-
-  if (categorySlug.includes("mask") || categoryName.includes("mask")) {
-    return haystack.includes("mask");
-  }
-
-  if (categorySlug.includes("moistur") || categoryName.includes("moistur")) {
-    return (
-      haystack.includes("moistur") ||
-      haystack.includes("cream") ||
-      haystack.includes("lotion") ||
-      haystack.includes("emulsion")
-    );
-  }
-
-  if (categorySlug.includes("protect") || categoryName.includes("protect")) {
-    return (
-      haystack.includes("spf") ||
-      haystack.includes("sunscreen") ||
-      haystack.includes("sun screen") ||
-      haystack.includes("protect")
-    );
-  }
-
-  return haystack.includes(categorySlug) || haystack.includes(categoryName);
-}
-
-function getCategoryMatchScore(
-  product: {
-    name?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    routine_step?: string | null;
-    category_id: number | null;
-    category_slug?: string | null;
-    category_name?: string | null;
-  },
-  category: { id: number; slug: string; name: string },
-) {
-  if (typeof product.category_id === "number" && product.category_id === category.id) {
-    return 100;
-  }
-
-  const normalizedSlug = product.category_slug?.trim().toLowerCase();
-  if (normalizedSlug && normalizedSlug === category.slug.toLowerCase()) {
-    return 95;
-  }
-
-  const normalizedName = product.category_name?.trim().toLowerCase();
-  if (normalizedName === category.name.toLowerCase()) {
-    return 90;
-  }
-
-  return productMatchesCategory(product, category) ? 10 : -1;
-}
-
-function assignProductsToCategories({
-  categories,
-  products,
-}: {
-  categories: { id: number; slug: string; name: string }[];
-  products: Product[];
-}) {
+function assignProductsToMerchGroups(
+  products: Product[],
+  dbCategories: { id: number; slug: string; name: string }[],
+): Array<{
+  product: Product;
+  category: { id: number; slug: string; name: string };
+}> {
+  const virtual = virtualMerchCategories();
+  const fallback = virtual.find((v) => v.slug === "skincare") ?? virtual[0];
   return products.map((product) => {
-    let bestCategory: { id: number; slug: string; name: string } | null = null;
-    let bestScore = -1;
-
-    for (const category of categories) {
-      const score = getCategoryMatchScore(product, category);
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestCategory = score >= 0 ? category : bestCategory;
-      }
-    }
-
-    return {
-      product,
-      category: bestScore >= 0 ? bestCategory : null,
-    };
+    const slug = resolveMerchGroupForProduct(product, dbCategories);
+    const category = virtual.find((v) => v.slug === slug) ?? fallback;
+    return { product, category };
   });
 }
 
@@ -360,13 +198,13 @@ function buildProductSections({
   categories: { id: number; slug: string; name: string }[];
   assignments: Array<{
     product: Product;
-    category: { id: number; slug: string; name: string } | null;
+    category: { id: number; slug: string; name: string };
   }>;
 }) {
   const sections = categories
     .map((category) => {
       const categoryProducts = assignments
-        .filter((assignment) => assignment.category?.slug === category.slug)
+        .filter((assignment) => assignment.category.slug === category.slug)
         .map((assignment) => assignment.product);
 
       return {
@@ -377,19 +215,6 @@ function buildProductSections({
       };
     })
     .filter((section) => section.productCount > 0);
-
-  const uncategorizedProducts = assignments
-    .filter((assignment) => assignment.category === null)
-    .map((assignment) => assignment.product);
-
-  if (uncategorizedProducts.length) {
-    sections.push({
-      key: "uncategorized",
-      title: "More in the collection",
-      productCount: uncategorizedProducts.length,
-      products: uncategorizedProducts,
-    });
-  }
 
   return sections;
 }
