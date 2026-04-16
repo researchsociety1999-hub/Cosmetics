@@ -12,9 +12,9 @@ import type {
 const now = new Date();
 
 /**
- * Demo catalog when `ALLOW_MOCK_CATALOG=1`. `image_url` may be null; the storefront resolves
- * routine-based fallbacks under `/public/product-photos/`. In production, set `products.image_url`
- * to a Supabase Storage URL or a path under `public/`.
+ * Demo catalog when `ALLOW_MOCK_CATALOG=1`. `image_url` may be null; the UI shows a branded
+ * placeholder unless `NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS=1` and URLs are set. In production,
+ * set `products.image_url` to a Supabase Storage URL or a path under `public/`.
  */
 export const mockCategories: Category[] = [
   { id: 1, name: "Serums", slug: "serums", image_url: null },

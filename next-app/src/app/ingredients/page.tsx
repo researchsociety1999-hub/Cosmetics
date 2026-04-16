@@ -111,7 +111,7 @@ export default async function IngredientsPage() {
             href="/shop"
             className="mystic-button-primary inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
           >
-            Shop formulas
+            Shop the collection
           </Link>
         </section>
       </main>

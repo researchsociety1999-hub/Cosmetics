@@ -453,25 +453,77 @@ function getProductBenefits(product: {
     : [];
 }
 
+/** Adds a short “why it’s here” note when the catalog only lists a plain name. */
+function enrichIngredientCatalogLine(raw: string): string {
+  const t = raw.trim();
+  if (!t || /\s—\s/.test(t)) {
+    return t;
+  }
+  const lower = t.toLowerCase();
+  const notes: Record<string, string> = {
+    niacinamide: "helps refine the look of tone and texture with barrier-minded comfort",
+    peptides: "support bounce and a smoother-feeling surface",
+    "peptide blend": "supports bounce and a smoother-feeling surface",
+    ceramides: "reinforce the barrier so moisture stays where it belongs",
+    "centella asiatica": "soothes and steadies skin that looks stressed",
+    "hyaluronic acid": "draws and holds water for a supple, cushioned feel",
+    squalane: "seals without weight for a silky, breathable finish",
+    "green tea": "antioxidant comfort for skin exposed to daily stressors",
+    "rice enzymes": "gentle refinement for texture and brightness",
+    kaolin: "helps lift excess oil while the ritual still feels composed",
+    panthenol: "comfort-first conditioning after cleansing",
+    ectoin: "helps skin feel resilient in dry or taxing air",
+    "uv filters": "broad-spectrum protection as part of your morning seal",
+    "copper peptide": "recovery-minded support for overnight comfort",
+    "peptide complex": "layers with other steps for a rested-looking finish",
+  };
+
+  if (notes[lower]) {
+    return `${t} — ${notes[lower]}`;
+  }
+  for (const [key, note] of Object.entries(notes)) {
+    if (lower.includes(key)) {
+      return `${t} — ${note}`;
+    }
+  }
+  return t;
+}
+
 function getProductIngredients(product: {
   key_ingredients?: string[] | null;
   description: string | null;
   routine_step?: string | null;
 }): string[] {
   if (Array.isArray(product.key_ingredients) && product.key_ingredients.length) {
-    return product.key_ingredients;
+    return product.key_ingredients.map(enrichIngredientCatalogLine);
   }
 
   const desc = (product.description ?? "").toLowerCase();
   const inferred: string[] = [];
 
-  if (desc.includes("niacinamide")) inferred.push("Niacinamide");
-  if (desc.includes("peptide")) inferred.push("Peptides");
-  if (desc.includes("ceramide")) inferred.push("Ceramides");
-  if (desc.includes("centella")) inferred.push("Centella asiatica");
-  if (desc.includes("hyaluronic")) inferred.push("Hyaluronic acid");
-  if (desc.includes("squalane")) inferred.push("Squalane");
-  if (desc.includes("green tea")) inferred.push("Green tea");
+  if (desc.includes("niacinamide")) {
+    inferred.push(
+      "Niacinamide — helps refine the look of tone and texture with barrier-minded comfort",
+    );
+  }
+  if (desc.includes("peptide")) {
+    inferred.push("Peptides — support bounce and a smoother-feeling surface");
+  }
+  if (desc.includes("ceramide")) {
+    inferred.push("Ceramides — reinforce the barrier so moisture stays where it belongs");
+  }
+  if (desc.includes("centella")) {
+    inferred.push("Centella asiatica — soothes and steadies skin that looks stressed");
+  }
+  if (desc.includes("hyaluronic")) {
+    inferred.push("Hyaluronic acid — draws and holds water for a supple feel");
+  }
+  if (desc.includes("squalane")) {
+    inferred.push("Squalane — seals without weight for a silky finish");
+  }
+  if (desc.includes("green tea")) {
+    inferred.push("Green tea — antioxidant comfort for daily exposure");
+  }
 
   if (inferred.length) {
     return inferred;
@@ -479,49 +531,58 @@ function getProductIngredients(product: {
 
   if (product.routine_step === "Cleanse") {
     return [
-      "Calming botanical extracts",
-      "Barrier-supporting hydrators",
-      "Gentle cleansing agents",
+      "Mild surfactants — lift sunscreen and buildup without stripping",
+      "Botanicals and humectants — keep the cleanse soft and skin-comforting",
+      "Barrier-minded hydrators — leave the canvas ready for the next layer",
     ];
   }
 
   if (product.routine_step === "Tone") {
     return [
-      "Humectant support",
-      "Comfort-first botanicals",
-      "Lightweight conditioning agents",
+      "Humectants — refresh moisture after cleansing",
+      "Botanicals — comfort-first conditioning before treatment",
+      "Light conditioners — create slip so serums absorb evenly",
     ];
   }
 
   if (product.routine_step === "Treat") {
     return [
-      "Glow-supporting actives",
-      "Hydration-support complex",
-      "Texture-refining ingredients",
+      "Targeted actives — chosen for tone, texture, or glow (see packaging for specifics)",
+      "Hydration partners — keep strong steps feeling balanced",
+      "Texture agents — elegant spread so the layer sits cleanly under cream",
     ];
   }
 
   if (product.routine_step === "Moisturize") {
     return [
-      "Barrier-supporting lipids",
-      "Comforting emollients",
-      "Smoothing hydrators",
+      "Lipids and ceramides — help skin feel cushioned and held together",
+      "Emollients — refine the surface so makeup or SPF glides on evenly",
+      "Humectants — lock water in for a pliant, comfortable finish",
     ];
   }
 
   if (product.routine_step === "Protect") {
     return [
-      "Broad-spectrum UV filters",
-      "Hydrating support ingredients",
-      "Skin-comforting finish enhancers",
+      "Broad-spectrum UV filters — your daytime shield, per labeled SPF",
+      "Hydrating and finish ingredients — luminous wear without a heavy cast (varies by formula)",
+      "Antioxidant support — complements SPF as part of a sun-smart ritual",
     ];
   }
 
   return [
-    "Humectants and skin-conditioning ingredients",
-    "Texture agents selected for elegant application",
-    "Refer to packaging for the complete INCI list",
+    "Humectants and conditioners — everyday comfort and slip",
+    "Texture agents — chosen for a refined, layer-friendly feel",
+    "Full INCI — always on your carton when you need the complete list",
   ];
+}
+
+function isBodySunscreenLotion(name: string): boolean {
+  const n = name.toLowerCase();
+  return (
+    n.includes("body") &&
+    n.includes("lotion") &&
+    (n.includes("spf") || n.includes("sun") || n.includes("sunscreen"))
+  );
 }
 
 function getProductHowToUse(product: {
@@ -531,37 +592,38 @@ function getProductHowToUse(product: {
   category_name?: string | null;
 }): string[] {
   const slug = (product.slug ?? "").trim();
+  const displayName = product.name ?? "this ritual";
 
   const bySlug: Record<string, string[]> = {
     "celestial-glow-serum": [
-      "After cleansing (and toner, if you use one), apply 2–3 drops to clean, dry skin.",
-      "Press and sweep across face and neck; give it 20–30 seconds to settle before the next layer.",
-      "Seal with moisturizer. In the morning, finish with SPF.",
+      "Cleanse, then (optionally) tone—skin should feel clean and dry.",
+      "Dispense 2–3 drops; press and sweep across face and neck.",
+      "Wait 20–30 seconds, then layer moisturizer. In the morning, finish with SPF.",
     ],
     "moon-veil-cleanser": [
-      "Use on dry or damp skin. Massage slowly to lift sunscreen and makeup without tugging.",
-      "Add a little water to emulsify, then rinse thoroughly with lukewarm water.",
-      "Pat dry and continue with the rest of your ritual.",
+      "On dry or damp skin, massage in slow circles to lift sunscreen and makeup.",
+      "Add lukewarm water to emulsify, then rinse until nothing remains.",
+      "Pat dry and move into toner or treatment—lightest to richest.",
     ],
     "golden-eclipse-mask": [
-      "Apply an even layer to clean, dry skin, avoiding the eye area.",
-      "Leave on for the time noted on packaging; mist lightly if it begins to feel tight.",
-      "Rinse with lukewarm water and follow with serum and moisturizer.",
+      "On clean, dry skin, apply an even layer—avoid the eye area unless the label allows otherwise.",
+      "Rest for the time on packaging; mist lightly if the mask begins to feel tight.",
+      "Rinse with lukewarm water, then continue with serum and moisturizer.",
     ],
     "noir-velvet-emulsion": [
-      "Smooth over face and neck after serums while skin is still slightly damp.",
-      "Use gentle upward strokes; allow a minute to absorb before makeup.",
-      "Morning: finish with SPF. Evening: layer a richer cream on top if desired.",
+      "After serums, smooth over face and neck while skin still holds a trace of moisture.",
+      "Use light upward strokes; give it a minute before sunscreen or makeup.",
+      "Morning: end with SPF. Evening: add a richer cream on top if your skin asks for more.",
     ],
     "bloom-screen-essence-spf": [
-      "Apply generously as the last step of your morning routine, 15 minutes before sun exposure.",
-      "Reapply every two hours when outdoors, and after swimming, sweating, or toweling.",
-      "Pair with hats and shade; this isn’t a substitute for sun-smart habits.",
+      "As the last step of your morning ritual, apply generously—about two finger-lengths for face and neck—15 minutes before sun.",
+      "Reapply every two hours outdoors, and after swimming, sweating, or toweling.",
+      "Treat SPF as part of a sun-smart day: hats, shade, and mindful exposure.",
     ],
     "midnight-recovery-ampoule": [
-      "After cleansing and treatment serums, warm the ampoule between palms.",
-      "Press into face and neck; focus on areas that feel tight or depleted.",
-      "Follow with moisturizer to seal. Reserve for evenings unless directed otherwise.",
+      "After cleansing and serums, warm the product between palms.",
+      "Press into face and neck; linger where skin feels tight or depleted.",
+      "Seal with moisturizer. Evenings only unless your carton says otherwise.",
     ],
   };
 
@@ -572,53 +634,61 @@ function getProductHowToUse(product: {
   const step = (product.routine_step ?? "").trim();
   const name = (product.name ?? "").toLowerCase();
 
+  if (isBodySunscreenLotion(name)) {
+    return [
+      "On clean, dry skin, smooth an even layer over exposed areas—arms, legs, and anywhere the sun reaches.",
+      "Allow a moment to set before dressing; reapply every two hours when you’re outdoors, and after swimming or toweling.",
+      "Pair with shade and cover-ups on peak days; SPF supports your ritual—it doesn’t replace mindful sun habits.",
+    ];
+  }
+
   if (step === "Cleanse") {
     return [
-      `Massage ${product.name ?? "the cleanser"} onto damp skin to lift daily buildup and SPF.`,
-      "Rinse with lukewarm water; pat dry—no scrubbing.",
-      "Continue with the rest of your ritual, moving from lightest to richest texture.",
+      `Begin with damp skin. Massage ${displayName} in slow circles to lift oil, SPF, and the day.`,
+      "Rinse with lukewarm water; pat dry with a soft towel—no rubbing.",
+      "Continue from lightest to richest: tone (if you use one), treat, moisturize, then SPF when it’s morning.",
     ];
   }
   if (step === "Tone") {
     return [
-      "Press onto clean skin with palms or a soft pad—no harsh rubbing.",
-      "Let it absorb for a few moments before serums.",
-      "Follow with treatment and moisturizer while skin still feels comfortably hydrated.",
+      "After cleansing, sweep or press onto skin with palms or a soft pad—no dragging.",
+      "Pause a few seconds so humectants can sink in before treatment.",
+      "Follow with serum and moisturizer while skin still feels supple, not tight.",
     ];
   }
   if (step === "Treat") {
     return [
-      `Apply ${product.name ?? "the treatment"} to clean skin, focusing on areas you want to refine.`,
-      "If you’re new to actives, start slowly and increase frequency as skin adjusts.",
-      "Seal with moisturizer. In the morning, wear SPF—especially when using actives.",
+      `On clean, dry skin, apply ${displayName} where you want tone, texture, or glow support—see packaging for amount.`,
+      "New to actives? Introduce slowly (fewer nights per week), then build as skin stays comfortable.",
+      "Layer moisturizer on top; in the morning, always finish with SPF when using actives.",
     ];
   }
   if (step === "Moisturize") {
     return [
-      `Smooth ${product.name ?? "the moisturizer"} over face and neck after serums.`,
-      "Press in where skin feels drier; allow a minute before sunscreen or makeup.",
-      "Adjust by season—more when air is dry, less when humidity is high.",
+      `After serums, smooth ${displayName} over face and neck—press extra into cheeks or anywhere that feels dry.`,
+      "Give it a minute before SPF or makeup so layers don’t pill.",
+      "Use a little more in dry seasons, a little less in humid weather.",
     ];
   }
   if (step === "Protect") {
     return [
-      `Apply ${product.name ?? "the SPF"} generously as the final morning step.`,
-      "Reapply through the day for continuous outdoor exposure, following packaging guidance.",
-      "Pair with shade and protective clothing for comfortable daily wear.",
+      `Each morning, apply ${displayName} generously as your final step before makeup—follow the labeled SPF and reapplication guidance.`,
+      "Reapply through the day when you’re outside continuously, after swimming, or after heavy sweating.",
+      "Combine with hats, sleeves, and shade so protection feels effortless, not forced.",
     ];
   }
 
   if (name.includes("mask")) {
     return [
-      "Apply an even layer to clean skin, avoiding eyes and lips unless the label allows.",
-      "Leave on for the time indicated; rinse or tissue off as directed.",
-      "Follow with your usual serum and moisturizer.",
+      "Apply an even layer to clean skin, avoiding eyes and lips unless the label invites you closer.",
+      "Rest for the time indicated; rinse or remove as the formula directs.",
+      "Follow with serum, then moisturizer, to seal the reset.",
     ];
   }
 
   return [
-    "Use as directed on the carton, following the order suggested for clean layering.",
-    "If your skin is reactive—or you’re introducing multiple actives—patch test first and add one new step at a time.",
-    "Store closed and away from heat and light. Refer to packaging for PAO (period after opening).",
+    "Follow the order on your carton—thin textures first, richer ones last—so each step has room to work.",
+    "If you’re sensitive or stacking new actives, patch test and add one new product at a time.",
+    "Store closed, away from heat and direct light. Your packaging notes PAO (period after opening).",
   ];
 }

@@ -5,9 +5,19 @@
 -- 2) Inspect rows (replace the name):
 -- SELECT id, name, slug, price_cents, sale_price_cents FROM products WHERE name ILIKE '%Body Lotion with SPF%' ORDER BY id;
 --
--- 3) Rename one row so each SKU has a distinct customer-facing name, e.g.:
--- UPDATE products
--- SET name = 'Body Lotion with SPF — Sheer finish', updated_at = now()
--- WHERE id = <id_of_the_row_you_want_to_rename>;
+-- 3) Rename each row so every SKU has a distinct customer-facing name.
+--    Pick names that reflect finish, SPF level, size, or scent—not internal codes.
 --
--- Prefer names that reflect size, finish, or scent rather than internal codes.
+-- Example pair (replace ids after inspecting your rows):
+--
+-- Option A — finish-led
+-- UPDATE products SET name = 'Sun Veil Body Lotion SPF — Sheer', updated_at = now() WHERE id = <id1>;
+-- UPDATE products SET name = 'Sun Veil Body Lotion SPF — Satin', updated_at = now() WHERE id = <id2>;
+--
+-- Option B — use-case led
+-- UPDATE products SET name = 'Sun Veil Body SPF — Daily', updated_at = now() WHERE id = <id1>;
+-- UPDATE products SET name = 'Sun Veil Body SPF — Active', updated_at = now() WHERE id = <id2>;
+--
+-- Option C — sensory / line names
+-- UPDATE products SET name = 'Golden Hour Body Lotion SPF', updated_at = now() WHERE id = <id1>;
+-- UPDATE products SET name = 'Twilight Body Lotion SPF', updated_at = now() WHERE id = <id2>;

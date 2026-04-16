@@ -25,7 +25,7 @@ export default function NotFound() {
             href="/shop"
             className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
           >
-            Browse shop
+            Shop the collection
           </Link>
         </div>
       </div>

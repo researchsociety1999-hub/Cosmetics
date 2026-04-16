@@ -1,35 +1,12 @@
 import type { Product, ProductVariant } from "./types";
 
 /**
- * Catalog images are on by default (`image_url`, gallery, or routine-based fallbacks under
- * `/public/product-photos/`). Set `NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS=0` only if you
- * must suppress all catalog photography (e.g. legal hold).
+ * Catalog product photos (`image_url`, `extra_images`) are off by default so the storefront
+ * shows only the branded placeholder until real photography exists. Opt in with
+ * `NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS=1`.
  */
 function catalogProductPhotosEnabled(): boolean {
-  return process.env.NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS !== "0";
-}
-
-/** When no safe `image_url` is set, use a branded local still per ritual step. */
-export function getRoutineFallbackImagePath(
-  routineStep: string | null | undefined,
-): string {
-  const step = (routineStep ?? "").trim().toLowerCase();
-  if (step === "cleanse") {
-    return "/product-photos/cleanse.jpg";
-  }
-  if (step === "tone") {
-    return "/product-photos/treat.jpg";
-  }
-  if (step === "treat") {
-    return "/product-photos/treat.jpg";
-  }
-  if (step === "moisturize") {
-    return "/product-photos/moisturize.jpg";
-  }
-  if (step === "protect") {
-    return "/product-photos/protect.jpg";
-  }
-  return "/product-photos/default.jpg";
+  return process.env.NEXT_PUBLIC_SHOW_CATALOG_PRODUCT_PHOTOS === "1";
 }
 
 /**
@@ -81,13 +58,10 @@ export function getProductImages(product: Product): string[] {
   );
 
   const unique = [...new Set(images)].filter(isSafeImageSrc);
-  if (unique.length > 0) {
-    return unique;
-  }
-  return [getRoutineFallbackImagePath(product.routine_step)];
+  return unique;
 }
 
-/** Primary catalog image URL, or routine fallback under `/public/product-photos/`. */
+/** Primary catalog image URL when photos are enabled and `image_url` is allowed. */
 export function getProductPrimaryImageUrl(
   product: Pick<Product, "image_url" | "routine_step">,
 ): string | null {
@@ -97,7 +71,7 @@ export function getProductPrimaryImageUrl(
   if (isSafeImageSrc(product.image_url)) {
     return product.image_url;
   }
-  return getRoutineFallbackImagePath(product.routine_step);
+  return null;
 }
 
 export function slugToTitle(slug: string): string {

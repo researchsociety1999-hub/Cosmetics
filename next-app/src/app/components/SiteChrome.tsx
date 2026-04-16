@@ -44,7 +44,6 @@ export async function SiteChrome({
       {/* Offset for fixed navbar (+ desktop hairline) */}
       <div className="relative z-10 pt-[max(5rem,calc(4rem+env(safe-area-inset-top,0px)))] sm:pt-[max(5.25rem,calc(4.1rem+env(safe-area-inset-top,0px)))] md:pt-[4.65rem]">
         {/* Prelaunch banner: shows only when there are 0 purchasable products in the catalog. */}
-        {/* TODO (business): set MYSTIQUE_PRELAUNCH_BANNER=0 once the store is fully live. */}
         <PrelaunchBanner />
         {children}
       </div>
@@ -82,7 +81,7 @@ async function PrelaunchBanner() {
               href="/shop"
               className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
             >
-              Browse shop
+              Shop the collection
             </Link>
           </div>
         </div>

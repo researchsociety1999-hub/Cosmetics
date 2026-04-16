@@ -114,7 +114,7 @@ export default async function JournalPage() {
               href="/shop"
               className="mystic-button-secondary mt-6 inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
             >
-              Go to shop
+              Shop the collection
             </Link>
           </section>
         ) : null}

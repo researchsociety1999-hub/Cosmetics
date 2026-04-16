@@ -80,30 +80,42 @@ export function buildProductAccordionItems({
       content: (
         <div className="space-y-3">
           {keyIngredients.length ? (
-            <ul className="space-y-2">
-              {keyIngredients.map((ing) => (
-                <li key={ing}>{ing}</li>
-              ))}
+            <ul className="space-y-3">
+              {keyIngredients.map((ing) => {
+                const parts = ing.split(/\s—\s/);
+                if (parts.length === 2) {
+                  return (
+                    <li key={ing} className="leading-relaxed">
+                      <span className="text-[#e8dcc8]">{parts[0].trim()}</span>
+                      <span className="text-[#b9aa8f]"> — {parts[1].trim()}</span>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={ing} className="leading-relaxed">
+                    {ing}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p>
-              We’ll add highlighted ingredients here as each formula’s story is finalized.
-              The complete INCI (International Nomenclature of Cosmetic Ingredients) is always
-              listed on the carton and unit packaging. If you need the list before you buy,
-              request it via{" "}
+              Highlighted notes will appear here as each formula is finalized. Your carton
+              always carries the full INCI—the authoritative list for what you’re holding. If
+              you’d like that list before you decide, we’re happy to send it through{" "}
               <a
                 href="/contact"
                 className="text-[#d6a85f] underline-offset-4 hover:underline"
               >
                 Contact
-              </a>{" "}
+              </a>
               .
             </p>
           )}
           {keyIngredients.length ? (
             <p className="text-xs leading-relaxed text-[#7a7265]">
-              Ingredient lists can change. Always refer to your carton for the most current,
-              authoritative INCI.
+              Formulas may evolve gently over time; your carton remains the true reference for
+              the current INCI.
             </p>
           ) : null}
         </div>
