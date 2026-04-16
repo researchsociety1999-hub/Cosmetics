@@ -92,6 +92,24 @@ function inferMerchGroupFromProductCopy(product: Product): ShopMerchGroupSlug {
   return "skincare";
 }
 
+/** Count published products per merchandising bucket (for hiding empty shop filters). */
+export function countProductsByMerchGroup(
+  products: Product[],
+  dbCategories: { id: number; slug: string; name: string }[],
+): Record<ShopMerchGroupSlug, number> {
+  const counts: Record<ShopMerchGroupSlug, number> = {
+    skincare: 0,
+    "body-sun": 0,
+    hair: 0,
+    tools: 0,
+  };
+  for (const product of products) {
+    const slug = resolveMerchGroupForProduct(product, dbCategories);
+    counts[slug] += 1;
+  }
+  return counts;
+}
+
 export function resolveMerchGroupForProduct(
   product: Product,
   dbCategories: { id: number; slug: string; name: string }[],

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CheckoutClient } from "./CheckoutClient";
 import { PurchaseTrustFootnote } from "../components/PurchaseTrustFootnote";
 import { SiteChrome } from "../components/SiteChrome";

@@ -41,14 +41,14 @@ export function NewsletterForm() {
         throw new Error(
           typeof data.error === "string" && data.error.trim()
             ? data.error
-            : "We couldn't save your signup right now. Please try again in a moment.",
+            : "We couldn’t save your signup right now. Please try again in a moment.",
         );
       }
 
       setStatus(data.duplicate ? "duplicate" : "success");
       setMessage(
         data.message ??
-          "You're on the list. Expect early access, ritual drops, and seasonal notes.",
+          "You’re in. Expect early access, ritual drops, and seasonal notes.",
       );
       setEmail("");
     } catch (error) {
@@ -56,7 +56,7 @@ export function NewsletterForm() {
       setMessage(
         error instanceof Error
           ? error.message
-          : "We couldn't save your signup right now. Please try again in a moment.",
+          : "We couldn’t save your signup right now. Please try again in a moment.",
       );
     }
   }
@@ -73,7 +73,7 @@ export function NewsletterForm() {
           type="email"
           inputMode="email"
           required
-          placeholder="Enter your email"
+          placeholder="Email address"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           className="mystic-input w-full text-sm"
@@ -90,7 +90,7 @@ export function NewsletterForm() {
         </button>
       </form>
       <p className="mt-3 text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
-        Restocks, launches, and studio notes—no daily noise.
+        Restocks, launches, and studio notes—never daily noise.
       </p>
       <div className="mt-2 min-h-[1.5rem]" aria-live="polite">
         {status === "success" || status === "duplicate" ? (

@@ -1,7 +1,3 @@
-/**
- * TODO (legal counsel): Review for your entity, jurisdiction, data retention, subprocessors,
- * and regional requirements (e.g. CCPA/CPRA-style notices) before relying on this as final.
- */
 import type { Metadata } from "next";
 import { LegalPage } from "../components/LegalPage";
 import { getPublicStudioEmail } from "../lib/siteConfig";

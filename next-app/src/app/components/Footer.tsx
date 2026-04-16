@@ -41,7 +41,7 @@ export function Footer() {
           <div className="relative mx-auto mt-10 max-w-3xl rounded-[22px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] px-5 py-5 text-center shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-sm md:px-6 md:py-6">
             <div className="flex flex-col items-center gap-5">
               <p className="text-sm uppercase tracking-[0.2em] text-[#b8ab95]">
-                Follow us
+                Follow Mystique
               </p>
               <ul className="flex w-full min-w-0 flex-wrap justify-center gap-x-5 gap-y-3">
                 {footerSocialProfiles.map((profile) => {

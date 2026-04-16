@@ -103,7 +103,7 @@ export function SearchExperience({
             id="search-query"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search products, concerns, or ingredients…"
+            placeholder="Search rituals, concerns, or ingredients…"
             className="mystic-input w-full text-sm"
           />
         </label>
@@ -118,7 +118,7 @@ export function SearchExperience({
 
       {!trimmedQuery ? (
         <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-          Search the catalog by name, texture, ingredient, or ritual step.
+          Search the collection by name, texture, ingredient, or ritual step.
         </div>
       ) : loadError ? (
         <div className="mystic-card p-8 text-sm text-[#d6a85f]" role="alert">
@@ -126,7 +126,7 @@ export function SearchExperience({
         </div>
       ) : products.length === 0 ? (
         <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-          No results for &quot;{trimmedQuery}&quot;. Try a broader search.
+          No results for &quot;{trimmedQuery}&quot;. Try a broader search, or browse the shop.
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">

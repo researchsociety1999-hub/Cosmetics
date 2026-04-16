@@ -152,7 +152,6 @@ export function WaitlistModal({
               By requesting a restock note, you agree to receive a one-time email about
               availability. If you’re already subscribed, this may also add you to Mystique
               launch notes and seasonal updates.
-              {/* TODO (business/legal): confirm whether restock should be transactional-only or opt-in marketing. */}
             </p>
 
             <button

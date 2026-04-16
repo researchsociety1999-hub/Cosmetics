@@ -1,7 +1,3 @@
-/**
- * TODO (legal counsel): Review governing law, dispute resolution, warranty disclaimers,
- * and product liability language for your market before publication.
- */
 import type { Metadata } from "next";
 import { LegalPage } from "../components/LegalPage";
 import { getPublicStudioEmail } from "../lib/siteConfig";

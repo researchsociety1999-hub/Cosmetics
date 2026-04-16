@@ -43,9 +43,10 @@ export default async function IngredientsPage() {
               ritual-friendly layering rather than aggressive claims or overcomplication.
             </p>
             <p className="text-xs leading-relaxed text-[#7a7265]">
-              Category labels like &ldquo;PDRN-inspired&rdquo; describe how we group
-              storytelling and texture—not a guarantee that every SKU contains a
-              specific INCI. Each product page lists what that formula actually includes.
+              When we use phrases like &ldquo;PDRN-inspired,&rdquo; we mean the feel and
+              intention of a formula&mdash;not a promise about a single ingredient. For the
+              exact INCI, always check the product page and your carton, which list what
+              that specific ritual contains.
             </p>
           </div>
           <div className="grid gap-4 text-sm text-[#cdbca1] sm:grid-cols-3">
