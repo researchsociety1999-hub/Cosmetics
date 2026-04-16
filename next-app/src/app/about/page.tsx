@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { SiteChrome } from "../components/SiteChrome";
 
@@ -48,13 +49,19 @@ export default function AboutPage() {
               </div>
             </header>
 
-            <div
-              aria-hidden
-              className="relative mx-auto flex min-h-[16rem] w-full max-w-[560px] items-center justify-center rounded-[32px] border border-[rgba(214,168,95,0.2)] bg-[radial-gradient(ellipse_72%_85%_at_50%_42%,rgba(214,168,95,0.14),transparent_58%),radial-gradient(circle_at_18%_78%,rgba(255,154,80,0.1),transparent_46%),linear-gradient(158deg,rgba(18,16,22,0.96),rgba(6,7,12,0.99))] p-10 shadow-[inset_0_0_72px_rgba(0,0,0,0.38)]"
-            >
-              <span className="font-literata text-[0.62rem] uppercase tracking-[0.44em] text-[#d6a85f]/75">
-                Mystique
-              </span>
+            <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] overflow-hidden rounded-[32px] border border-[rgba(214,168,95,0.2)] shadow-[inset_0_0_72px_rgba(0,0,0,0.22)]">
+              <Image
+                src="/about/hero.jpg"
+                alt="Mystique skincare ritual—calm light on skin and texture"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 560px"
+                priority
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(6,7,12,0.55)] via-transparent to-[rgba(6,7,12,0.15)]"
+              />
             </div>
           </div>
         </section>

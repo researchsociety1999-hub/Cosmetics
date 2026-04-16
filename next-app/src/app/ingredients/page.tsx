@@ -70,6 +70,7 @@ export default async function IngredientsPage() {
                 id={ingredient.id}
                 imageSrc={ingredient.imageSrc}
                 name={ingredient.name}
+                size="lg"
               />
               <div className="relative z-[1] min-w-0 flex-1">
                 {ingredient.source ? (

@@ -39,7 +39,7 @@ function formatAuthErrorMessage(message: string) {
   }
 
   if (normalized.includes("signups not allowed") && normalized.includes("otp")) {
-    return "Account sign-up isn’t available right now. You can still shop as a guest, or sign in if you already have an account.";
+    return "New accounts are turned off in authentication settings (only existing customers can use email sign-in). You can still shop as a guest, or sign in with an account that already exists.";
   }
 
   return message;
@@ -81,11 +81,17 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
   });
 
   if (error) {
+    const hint =
+      error.message.toLowerCase().includes("signups not allowed") &&
+      error.message.toLowerCase().includes("otp")
+        ? "Fix: Supabase Dashboard → Authentication → Sign In / Providers → Email → enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md → Magic links & sign-up."
+        : undefined;
     console.error("Magic link request failed", {
       email,
       message: error.message,
       status: error.status,
       name: error.name,
+      hint,
     });
     redirect(
       `${statusPath}?status=error&message=${encodeURIComponent(formatAuthErrorMessage(error.message))}`,
