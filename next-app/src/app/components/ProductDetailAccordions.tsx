@@ -60,8 +60,8 @@ export function buildProductAccordionItems({
       content: (
         <div className="space-y-3">
           <p>
-            {productName} is designed for the {routineStep.toLowerCase()} step—layered
-            to sit comfortably alongside other Mystique formulas and suited to{" "}
+            {productName} is designed for your {routineStep.toLowerCase()} step—meant to
+            layer cleanly with the rest of your ritual and feel comfortable on{" "}
             {skinLine}.
           </p>
           {benefits.length ? (
@@ -87,22 +87,23 @@ export function buildProductAccordionItems({
             </ul>
           ) : (
             <p>
-              Highlights are listed here as you refine each formula. The complete INCI
-              (International Nomenclature of Cosmetic Ingredients) appears on the carton and
-              unit packaging—request a PDF from{" "}
+              We’ll add highlighted ingredients here as each formula’s story is finalized.
+              The complete INCI (International Nomenclature of Cosmetic Ingredients) is always
+              listed on the carton and unit packaging. If you need the list before you buy,
+              request it via{" "}
               <a
                 href="/contact"
                 className="text-[#d6a85f] underline-offset-4 hover:underline"
               >
                 Contact
               </a>{" "}
-              if you need it before purchase.
+              .
             </p>
           )}
           {keyIngredients.length ? (
             <p className="text-xs leading-relaxed text-[#7a7265]">
-              Formulas evolve with supplier batches; always refer to your product packaging
-              for the authoritative ingredient list.
+              Ingredient lists can change. Always refer to your carton for the most current,
+              authoritative INCI.
             </p>
           ) : null}
         </div>
@@ -126,7 +127,10 @@ export function buildProductAccordionItems({
         skinTypes.length > 0 ? (
           <p>{skinTypes.join(" · ")}</p>
         ) : (
-          <p>Formulated for most skin types; patch test if you have sensitivities.</p>
+          <p>
+            Formulated for many skin types. If you’re sensitive or introducing new actives,
+            patch test first.
+          </p>
         ),
     },
     {
@@ -139,8 +143,8 @@ export function buildProductAccordionItems({
               United States
             </p>
             <p>
-              Standard and expedited options at checkout. Processing typically
-              1–2 business days; you&apos;ll receive tracking by email.
+              Standard and expedited options at checkout. Processing is typically 1–2 business
+              days, and you’ll receive tracking by email once your parcel is scanned.
             </p>
           </div>
           <div>
@@ -148,9 +152,8 @@ export function buildProductAccordionItems({
               International
             </p>
             <p>
-              Where available, duties and import taxes may be charged at
-              delivery depending on destination—shown when you enter your
-              shipping country. Returns from outside the US may differ; see our{" "}
+              Where available, duties and import taxes may be due at delivery depending on
+              destination. Returns from outside the U.S. may differ; see our{" "}
               <Link
                 href="/terms"
                 className="text-[#d6a85f] underline-offset-4 hover:underline"

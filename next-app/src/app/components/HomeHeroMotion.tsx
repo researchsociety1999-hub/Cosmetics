@@ -162,7 +162,7 @@ export function HomeHeroMotion() {
                   reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
-                Where Beauty Transcends
+                California skincare, refined by ritual.
               </h1>
               <div
                 aria-hidden
@@ -183,7 +183,7 @@ export function HomeHeroMotion() {
                   href="/shop"
                   className="mystic-button-primary flex min-h-[48px] w-full items-center justify-center rounded-full px-6 py-3 text-[0.62rem] uppercase tracking-[0.26em] shadow-[0_8px_32px_rgba(0,0,0,0.35)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(214,168,95,0.28),0_12px_40px_rgba(0,0,0,0.4)] sm:min-w-[12.5rem] sm:px-8"
                 >
-                  Shop skincare
+                  Shop the rituals
                 </Link>
               </div>
               <div className="min-w-0 flex-1 transition-transform duration-300 ease-out hover:scale-[1.015] active:scale-[0.99]">
@@ -191,7 +191,7 @@ export function HomeHeroMotion() {
                   href="/ingredients"
                   className="mystic-button-secondary flex min-h-[48px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.42)] bg-[rgba(2,3,6,0.35)] px-6 py-3 text-[0.62rem] uppercase tracking-[0.26em] backdrop-blur-sm transition-[box-shadow,transform,border-color] duration-300 hover:border-[rgba(214,168,95,0.55)] hover:bg-[rgba(8,9,14,0.45)] hover:shadow-[0_0_36px_rgba(214,168,95,0.12)] sm:min-w-[12.5rem] sm:px-8"
                 >
-                  Ingredient guide
+                  Ingredient notes
                 </Link>
               </div>
             </div>

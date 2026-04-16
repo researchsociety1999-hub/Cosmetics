@@ -53,7 +53,7 @@ export default async function CartPage({
         {cart.lines.length === 0 ? (
           <div className="mystic-card p-8">
             <p className="text-sm text-[#b8ab95]">
-              Your bag is empty. Begin with the newest Mystique rituals.
+              Your bag is empty. Start with the latest Mystique rituals.
             </p>
             {promoMessage ? (
               <p className="mt-4 text-sm text-[#d6a85f]">{promoMessage}</p>
@@ -62,7 +62,7 @@ export default async function CartPage({
               href="/shop"
               className="mystic-button-secondary mt-6 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
             >
-              Continue shopping
+              Shop the collection
             </Link>
           </div>
         ) : (

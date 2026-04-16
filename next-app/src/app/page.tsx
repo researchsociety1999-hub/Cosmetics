@@ -422,13 +422,13 @@ function NewsletterSection() {
               Newsletter
             </p>
             <h2 className="mt-3 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-              Notes from Mystique.
+              Notes from the studio.
             </h2>
           </div>
           <div>
             <NewsletterForm />
             <p className="mt-3 text-xs text-[#8f8576]">
-              No spam. Unsubscribe anytime.
+              Unsubscribe anytime. We send only what feels worth opening.
             </p>
           </div>
         </div>

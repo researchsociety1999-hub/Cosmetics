@@ -1,7 +1,6 @@
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -49,7 +48,7 @@ function mapCheckoutStartError(status: number, body: CheckoutApiBody): string {
     return "We couldn't open the secure payment window. Your bag is unchanged—please try again shortly.";
   }
 
-  return "We couldn't start secure checkout. Please try again in a moment, or contact Mystique if this continues.";
+  return "We couldn’t start secure checkout. Please try again in a moment, or contact Mystique if this continues.";
 }
 
 export function CheckoutClient({
@@ -132,7 +131,7 @@ export function CheckoutClient({
       }
     } catch {
       setError(
-        "Something interrupted checkout. Check your connection and try again.",
+        "Something interrupted checkout. Check your connection, then try again.",
       );
       setIsLoading(false);
     }

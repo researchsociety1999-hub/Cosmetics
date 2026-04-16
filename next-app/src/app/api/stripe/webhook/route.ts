@@ -142,13 +142,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    const name = error instanceof Error ? error.name : undefined;
+    const isSignatureError =
+      name === "StripeSignatureVerificationError" ||
+      message.toLowerCase().includes("signature");
+
     console.error("[stripe webhook] Handler error", {
       message,
-      name: error instanceof Error ? error.name : undefined,
+      name,
+      status: isSignatureError ? 400 : 500,
     });
+
+    // 4xx tells Stripe "do not retry" — reserve it for invalid signatures / bad requests.
+    // 5xx tells Stripe "please retry" — use for transient failures (DB/email outages, etc.).
     return NextResponse.json(
-      { success: false, error: "Webhook handler failed." },
-      { status: 400 },
+      { success: false, error: isSignatureError ? "Invalid signature." : "Webhook handler failed." },
+      { status: isSignatureError ? 400 : 500 },
     );
   }
 }

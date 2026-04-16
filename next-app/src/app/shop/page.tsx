@@ -4,10 +4,11 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { SiteChrome } from "../components/SiteChrome";
 import {
+  countProductsByMerchGroup,
   resolveMerchFilterFromCategoryParam,
   SHOP_MERCH_GROUPS,
 } from "../lib/shopMerchGroups";
-import { getCategories, type ProductSort } from "../lib/queries";
+import { getCategories, getProducts, type ProductSort } from "../lib/queries";
 import { ShopCatalogBody, ShopCatalogFallback } from "./ShopCatalogBody";
 
 type SearchParams = Promise<{
@@ -52,7 +53,14 @@ export default async function ShopPage({
     : "newest";
   const currentSearch = firstQueryString(params.search);
   const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
-  const dbCategories = await getCategories();
+  const [dbCategories, catalogForMerchCounts] = await Promise.all([
+    getCategories(),
+    getProducts({ sortBy: "newest" }),
+  ]);
+  const merchCounts = countProductsByMerchGroup(catalogForMerchCounts, dbCategories);
+  const visibleMerchGroups = SHOP_MERCH_GROUPS.filter(
+    (group) => (merchCounts[group.slug] ?? 0) > 0,
+  );
   const matchedMerchGroup = resolveMerchFilterFromCategoryParam(
     firstQueryString(params.category),
     dbCategories,
@@ -73,7 +81,7 @@ export default async function ShopPage({
           >
             All
           </CategoryChip>
-          {SHOP_MERCH_GROUPS.map((group) => (
+          {visibleMerchGroups.map((group) => (
             <CategoryChip
               key={group.slug}
               href={buildShopHref({
@@ -110,14 +118,14 @@ export default async function ShopPage({
               name="search"
               type="search"
               defaultValue={currentSearch}
-              placeholder="Search products…"
+              placeholder="Search rituals…"
               className="mystic-input min-h-[44px] w-full flex-1 text-sm sm:max-w-md"
             />
             <button
               type="submit"
               className="mystic-button-secondary shrink-0 px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.2em]"
             >
-              Search
+              Find
             </button>
           </form>
         </section>
@@ -131,7 +139,7 @@ export default async function ShopPage({
           <p className="mt-2 text-sm text-[#8f8576]">
             {matchedMerchGroup
               ? `Filtered to ${matchedMerchGroup.name.toLowerCase()}. Choose All to see the full collection.`
-              : "Skincare & rituals, body & sun, hair care, and tools & accessories—each chip groups your catalog categories into one place."}
+              : "Each chip groups related categories so you can explore a focused slice of the collection."}
           </p>
         </section>
 

@@ -146,11 +146,14 @@ export default async function ProductPage({
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
 
+  const howToLines = getProductHowToUse(product);
   const accordionItems = buildProductAccordionItems({
+    productName,
     benefits,
     keyIngredients,
     skinTypes,
     routineStep,
+    howToLines,
   });
 
   const routineIds = new Set(routineProducts.map((p) => p.id));
@@ -273,12 +276,12 @@ export default async function ProductPage({
             The formula
           </p>
           <h2 className="mt-3 font-literata text-3xl tracking-[0.12em] text-[#f5eee3]">
-            Claims you can check
+            A ritual, clearly explained
           </h2>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#b8ab95]">
-            Every product page spells out who it is for, what it does, and where it sits in
-            cleanse-to-SPF. Formulas are developed with input from independent skincare
-            science advisors—education only, not medical advice.
+            Each product page spells out who it’s for, what you can expect, and where it
+            belongs in cleanse-to-SPF. Our ingredient notes are educational and meant to help
+            you shop thoughtfully—they aren’t medical advice.
           </p>
           <div className="mt-8 max-w-3xl">
             <ProductDetailAccordions items={accordionItems} />
@@ -514,5 +517,108 @@ function getProductIngredients(product: {
     ];
   }
 
-  return [];
+  return [
+    "Humectants and skin-conditioning ingredients",
+    "Texture agents selected for elegant application",
+    "Refer to packaging for the complete INCI list",
+  ];
+}
+
+function getProductHowToUse(product: {
+  slug?: string | null;
+  name?: string | null;
+  routine_step?: string | null;
+  category_name?: string | null;
+}): string[] {
+  const slug = (product.slug ?? "").trim();
+
+  const bySlug: Record<string, string[]> = {
+    "celestial-glow-serum": [
+      "After cleansing (and toner, if you use one), apply 2–3 drops to clean, dry skin.",
+      "Press and sweep across face and neck; give it 20–30 seconds to settle before the next layer.",
+      "Seal with moisturizer. In the morning, finish with SPF.",
+    ],
+    "moon-veil-cleanser": [
+      "Use on dry or damp skin. Massage slowly to lift sunscreen and makeup without tugging.",
+      "Add a little water to emulsify, then rinse thoroughly with lukewarm water.",
+      "Pat dry and continue with the rest of your ritual.",
+    ],
+    "golden-eclipse-mask": [
+      "Apply an even layer to clean, dry skin, avoiding the eye area.",
+      "Leave on for the time noted on packaging; mist lightly if it begins to feel tight.",
+      "Rinse with lukewarm water and follow with serum and moisturizer.",
+    ],
+    "noir-velvet-emulsion": [
+      "Smooth over face and neck after serums while skin is still slightly damp.",
+      "Use gentle upward strokes; allow a minute to absorb before makeup.",
+      "Morning: finish with SPF. Evening: layer a richer cream on top if desired.",
+    ],
+    "bloom-screen-essence-spf": [
+      "Apply generously as the last step of your morning routine, 15 minutes before sun exposure.",
+      "Reapply every two hours when outdoors, and after swimming, sweating, or toweling.",
+      "Pair with hats and shade; this isn’t a substitute for sun-smart habits.",
+    ],
+    "midnight-recovery-ampoule": [
+      "After cleansing and treatment serums, warm the ampoule between palms.",
+      "Press into face and neck; focus on areas that feel tight or depleted.",
+      "Follow with moisturizer to seal. Reserve for evenings unless directed otherwise.",
+    ],
+  };
+
+  if (slug && bySlug[slug]) {
+    return bySlug[slug];
+  }
+
+  const step = (product.routine_step ?? "").trim();
+  const name = (product.name ?? "").toLowerCase();
+
+  if (step === "Cleanse") {
+    return [
+      `Massage ${product.name ?? "the cleanser"} onto damp skin to lift daily buildup and SPF.`,
+      "Rinse with lukewarm water; pat dry—no scrubbing.",
+      "Continue with the rest of your ritual, moving from lightest to richest texture.",
+    ];
+  }
+  if (step === "Tone") {
+    return [
+      "Press onto clean skin with palms or a soft pad—no harsh rubbing.",
+      "Let it absorb for a few moments before serums.",
+      "Follow with treatment and moisturizer while skin still feels comfortably hydrated.",
+    ];
+  }
+  if (step === "Treat") {
+    return [
+      `Apply ${product.name ?? "the treatment"} to clean skin, focusing on areas you want to refine.`,
+      "If you’re new to actives, start slowly and increase frequency as skin adjusts.",
+      "Seal with moisturizer. In the morning, wear SPF—especially when using actives.",
+    ];
+  }
+  if (step === "Moisturize") {
+    return [
+      `Smooth ${product.name ?? "the moisturizer"} over face and neck after serums.`,
+      "Press in where skin feels drier; allow a minute before sunscreen or makeup.",
+      "Adjust by season—more when air is dry, less when humidity is high.",
+    ];
+  }
+  if (step === "Protect") {
+    return [
+      `Apply ${product.name ?? "the SPF"} generously as the final morning step.`,
+      "Reapply through the day for continuous outdoor exposure, following packaging guidance.",
+      "Pair with shade and protective clothing for comfortable daily wear.",
+    ];
+  }
+
+  if (name.includes("mask")) {
+    return [
+      "Apply an even layer to clean skin, avoiding eyes and lips unless the label allows.",
+      "Leave on for the time indicated; rinse or tissue off as directed.",
+      "Follow with your usual serum and moisturizer.",
+    ];
+  }
+
+  return [
+    "Use as directed on the carton, following the order suggested for clean layering.",
+    "If your skin is reactive—or you’re introducing multiple actives—patch test first and add one new step at a time.",
+    "Store closed and away from heat and light. Refer to packaging for PAO (period after opening).",
+  ];
 }

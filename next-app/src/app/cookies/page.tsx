@@ -1,7 +1,3 @@
-/**
- * TODO (legal counsel): Align cookie categories and consent approach with your privacy program
- * and any analytics or marketing tools you enable.
- */
 import type { Metadata } from "next";
 import { LegalPage } from "../components/LegalPage";
 
