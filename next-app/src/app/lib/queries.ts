@@ -911,7 +911,10 @@ export async function getIngredients(): Promise<Ingredient[]> {
       return mockIngredients;
     }
 
-    return mergeMystiqueCanonicalIngredients(data as Ingredient[]);
+    // Match homepage ingredient spotlight: canonical ids only (no extra Supabase-only rows).
+    return mergeMystiqueCanonicalIngredients(data as Ingredient[], {
+      includeNonCanonicalRows: false,
+    });
   } catch {
     return mockIngredients;
   }

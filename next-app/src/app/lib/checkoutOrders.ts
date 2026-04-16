@@ -1,3 +1,4 @@
+import type Stripe from "stripe";
 import { clearCartItemsCookie } from "./cart";
 import {
   buildOrderNumber,
@@ -240,6 +241,85 @@ export async function getOrderNumberByIdForDisplay(
   }
 
   return data.order_number as string;
+}
+
+/** Stripe returns `shipping_details` on completed Checkout Sessions; SDK types may lag. */
+type CheckoutSessionShipping = {
+  shipping_details?: {
+    name?: string | null;
+    address?: Stripe.Address | null;
+  } | null;
+};
+
+/**
+ * After Stripe Checkout completes, the customer-confirmed shipping address lives on the
+ * Session (`shipping_details`). Merge that into our pending order row so emails and
+ * fulfillment match what was charged (guest or logged-in).
+ */
+export async function applyStripeCheckoutSessionToOrder(
+  session: Stripe.Checkout.Session,
+): Promise<{ updated: boolean }> {
+  const orderWithItems = await getOrderWithItemsByStripeSessionId(session.id);
+  if (!orderWithItems) {
+    return { updated: false };
+  }
+
+  const client = clientForCheckoutWrites();
+  const updates: Record<string, unknown> = {};
+
+  const sd = (session as Stripe.Checkout.Session & CheckoutSessionShipping)
+    .shipping_details;
+  if (sd?.address) {
+    const a = sd.address;
+    if (sd.name) {
+      updates.full_name = sd.name;
+    }
+    if (a.line1) {
+      updates.address_line1 = a.line1;
+    }
+    if (a.line2 !== undefined) {
+      updates.address_line2 = a.line2 || null;
+    }
+    if (a.city) {
+      updates.city = a.city;
+    }
+    if (a.state) {
+      updates.state = a.state;
+    }
+    if (a.postal_code) {
+      updates.postal_code = a.postal_code;
+    }
+    if (a.country) {
+      updates.country = a.country;
+    }
+  }
+
+  const email =
+    session.customer_email ?? session.customer_details?.email ?? null;
+  if (email) {
+    updates.email = email;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { updated: false };
+  }
+
+  updates.updated_at = new Date().toISOString();
+
+  const { error } = await client
+    .from("orders")
+    .update(updates)
+    .eq("id", orderWithItems.order.id);
+
+  if (error) {
+    console.error(
+      "[checkout] applyStripeCheckoutSessionToOrder failed:",
+      error.message,
+    );
+    throw new Error(error.message);
+  }
+
+  return { updated: true };
 }
 
 export async function getOrderWithItemsByStripeSessionId(sessionId: string): Promise<{

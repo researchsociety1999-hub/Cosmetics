@@ -12,9 +12,9 @@ import type {
 const now = new Date();
 
 /**
- * Demo catalog when `ALLOW_MOCK_CATALOG=1`. Product imagery is intentionally unset so the UI
- * exercises the branded in-app placeholder. In production, set `products.image_url` to a full
- * HTTPS URL (e.g. Supabase Storage public object URL) or a site-relative path under `public/`.
+ * Demo catalog when `ALLOW_MOCK_CATALOG=1`. `image_url` may be null; the storefront resolves
+ * routine-based fallbacks under `/public/product-photos/`. In production, set `products.image_url`
+ * to a Supabase Storage URL or a path under `public/`.
  */
 export const mockCategories: Category[] = [
   { id: 1, name: "Serums", slug: "serums", image_url: null },
@@ -214,8 +214,9 @@ export const mockProductVariants: ProductVariant[] = [
 ];
 
 /**
- * Canonical spotlight actives—same order and ids for `/`, `/ingredients`, and `getIngredients`
- * merge (Supabase rows override copy when `id` matches).
+ * Canonical spotlight actives—same order and ids as the homepage “Actives we formulate around”
+ * section. `/ingredients` uses `getIngredients()` with `includeNonCanonicalRows: false` so only
+ * these rows appear (Supabase still overrides copy when `id` matches).
  */
 export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
   {
@@ -225,7 +226,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A multi-tasking vitamin we use for clarity, refined texture, and barrier-friendly polish in daily rituals.",
     benefits: "Brightness, clarity, barrier support",
     source: "Vitamin B3",
-    imageSrc: "/ingredients/niacinamide.jpg",
+    imageSrc: "/ingredients/niacinamide.svg",
   },
   {
     id: "hyaluronic-acid",
@@ -234,7 +235,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A humectant network that draws and holds water so skin reads supple, dewy, and comfortable under layers.",
     benefits: "Hydration, bounce, smoothness",
     source: "Humectant",
-    imageSrc: "/ingredients/hyaluronic-acid.jpg",
+    imageSrc: "/ingredients/hyaluronic-acid.svg",
   },
   {
     id: "centella-asiatica",
@@ -243,7 +244,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A calming botanical we lean on when skin needs quiet recovery—comfort-first, never harsh.",
     benefits: "Soothing, recovery, softness",
     source: "Leaf extract",
-    imageSrc: "/ingredients/centella-asiatica.jpg",
+    imageSrc: "/ingredients/centella-asiatica.svg",
   },
   {
     id: "ceramides",
@@ -252,7 +253,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "Skin-identical lipids that help reinforce the barrier so moisture stays in and stress stays out.",
     benefits: "Barrier comfort, moisture retention, resilience",
     source: "Skin-identical lipid",
-    imageSrc: "/ingredients/ceramides.jpg",
+    imageSrc: "/ingredients/ceramides.svg",
   },
   {
     id: "squalane",
@@ -261,7 +262,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A weightless emollient that seals without slipperiness—silk at the surface, breathable underneath.",
     benefits: "Silky slip, soft finish, weightless seal",
     source: "Emollient",
-    imageSrc: "/ingredients/squalane.jpg",
+    imageSrc: "/ingredients/squalane.svg",
   },
 ];
 
@@ -270,19 +271,23 @@ export const mockIngredients: Ingredient[] = MYSTIQUE_CANONICAL_INGREDIENTS;
 
 export function mergeMystiqueCanonicalIngredients(
   fromDb: Ingredient[],
+  options?: { includeNonCanonicalRows?: boolean },
 ): Ingredient[] {
   const canonicalIds = new Set(
     MYSTIQUE_CANONICAL_INGREDIENTS.map((row) => row.id),
   );
   const byId = new Map(fromDb.map((row) => [row.id, row]));
   const ordered = MYSTIQUE_CANONICAL_INGREDIENTS.map((canonical) => {
-    const fromDb = byId.get(canonical.id);
-    if (!fromDb) return canonical;
+    const fromDbRow = byId.get(canonical.id);
+    if (!fromDbRow) return canonical;
     return {
-      ...fromDb,
-      imageSrc: fromDb.imageSrc ?? canonical.imageSrc ?? null,
+      ...fromDbRow,
+      imageSrc: fromDbRow.imageSrc ?? canonical.imageSrc ?? null,
     };
   });
+  if (options?.includeNonCanonicalRows === false) {
+    return ordered;
+  }
   const extras = fromDb
     .filter((row) => !canonicalIds.has(row.id))
     .sort((a, b) => a.name.localeCompare(b.name));

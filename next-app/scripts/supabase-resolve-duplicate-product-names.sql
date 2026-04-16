@@ -1,0 +1,13 @@
+-- Run in Supabase SQL Editor when two products share the same display name (e.g. "Body Lotion with SPF").
+-- 1) List duplicates:
+-- SELECT name, COUNT(*) AS n FROM products GROUP BY name HAVING COUNT(*) > 1;
+--
+-- 2) Inspect rows (replace the name):
+-- SELECT id, name, slug, price_cents, sale_price_cents FROM products WHERE name ILIKE '%Body Lotion with SPF%' ORDER BY id;
+--
+-- 3) Rename one row so each SKU has a distinct customer-facing name, e.g.:
+-- UPDATE products
+-- SET name = 'Body Lotion with SPF — Sheer finish', updated_at = now()
+-- WHERE id = <id_of_the_row_you_want_to_rename>;
+--
+-- Prefer names that reflect size, finish, or scent rather than internal codes.

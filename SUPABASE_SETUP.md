@@ -15,6 +15,42 @@ Copy **`next-app/.env.example`** → **`next-app/.env.local`** (the latter is gi
 
 **Auth + service role together:** keep the **anon (or publishable) key** set for `NEXT_PUBLIC_*` even when you add `SUPABASE_SERVICE_ROLE_KEY`. The SSR client (`@supabase/ssr`) used for magic links and sessions **does not** use the service key; omitting the anon key breaks sign-in while the catalog might still work from server-side queries.
 
+## Magic links, sign-up, and “Signups not allowed for otp”
+
+The storefront calls `signInWithOtp` with `emailRedirectTo` pointing at **`/auth/confirm`** on your site. If something is wrong, Supabase returns an error and the app shows a short message—**it does not mean your React email template is broken**; it usually means a **project setting** blocks the request.
+
+### 1. Allow new users (required for “Create account”)
+
+If **new sign-ups are disabled**, only **existing** Auth users can receive a magic link. The **Create account** flow will fail with an error like **Signups not allowed for otp**.
+
+1. Open [Supabase Dashboard](https://supabase.com/dashboard) → your project → **Authentication**.
+2. Go to **Sign In / Providers** (or **Providers**) → **Email**.
+3. Turn **on** the option to **allow new users to sign up** (wording may be “Allow new users” / “Enable sign ups”—do **not** leave “Disable sign ups” enabled if you want `/account/signup` to work).
+
+After saving, try **Create account** again from the Mystique site.
+
+### 2. Redirect URLs (required for the link in the email to work)
+
+1. **Authentication** → **URL Configuration**.
+2. **Site URL** — set to your real origin, e.g. `http://localhost:3000` for local dev or `https://yourdomain.com` in production.
+3. **Redirect URLs** — add allowlisted URLs, including:
+   - `http://localhost:3000/auth/confirm`
+   - `http://localhost:3000/**` (wildcard is convenient for dev), and your production `/auth/confirm` URL.
+
+The magic link in the email must redirect to one of these; otherwise verification can fail after the user clicks.
+
+### 3. Email templates (login / sign-up only)
+
+**Authentication** → **Email Templates** — customize **Magic link**, **Confirm sign up**, etc. These templates apply only to **Supabase Auth** (passwordless login and sign-up). They **do not** include shopping cart or order line items.
+
+### 4. Order confirmation emails (separate system)
+
+**Paid orders** trigger emails from the Next.js app via **Resend** (`RESEND_API_KEY`, `RESEND_FROM_EMAIL`), not from Supabase Auth templates. Configure Resend and optional `ORDERS_ADMIN_EMAIL` in `next-app/.env.local`. See `next-app/src/app/lib/orderNotifications.ts`.
+
+### 5. Custom SMTP (optional)
+
+If you use **custom SMTP** in Supabase for Auth mail, verify **SMTP** settings under project **Authentication** / **Settings** so magic-link messages are actually delivered (inbox vs spam).
+
 ## Product catalog not showing?
 
 1. **Published flag** — The app loads only rows where `is_published` is **true**. Draft or `NULL` rows are hidden.

@@ -36,16 +36,23 @@ export function ProductDetailAccordions({
 }
 
 export function buildProductAccordionItems({
+  productName,
   benefits,
   keyIngredients,
   skinTypes,
   routineStep,
+  howToLines,
 }: {
+  productName: string;
   benefits: string[];
   keyIngredients: string[];
   skinTypes: string[];
   routineStep: string;
+  howToLines: string[];
 }): AccordionItem[] {
+  const skinLine =
+    skinTypes.length > 0 ? skinTypes.join(" · ") : "a range of skin types";
+
   return [
     {
       id: "details",
@@ -53,8 +60,9 @@ export function buildProductAccordionItems({
       content: (
         <div className="space-y-3">
           <p>
-            Structured like a luxury PDP: what it is, who it&apos;s for, and how
-            it fits your ritual—without burying the facts in marketing fluff.
+            {productName} is designed for the {routineStep.toLowerCase()} step—layered
+            to sit comfortably alongside other Mystique formulas and suited to{" "}
+            {skinLine}.
           </p>
           {benefits.length ? (
             <ul className="list-inside list-disc space-y-1">
@@ -63,24 +71,41 @@ export function buildProductAccordionItems({
               ))}
             </ul>
           ) : null}
-          <p className="text-[0.7rem] uppercase tracking-[0.16em] text-[#7a7265]">
-            Claims reflect brand positioning; adjust copy to match your
-            substantiation and market.
-          </p>
         </div>
       ),
     },
     {
       id: "ingredients",
       title: "Key ingredients",
-      content: keyIngredients.length ? (
-        <ul className="space-y-2">
-          {keyIngredients.map((ing) => (
-            <li key={ing}>{ing}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>Full INCI list ships on packaging and is available on request.</p>
+      content: (
+        <div className="space-y-3">
+          {keyIngredients.length ? (
+            <ul className="space-y-2">
+              {keyIngredients.map((ing) => (
+                <li key={ing}>{ing}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              Highlights are listed here as you refine each formula. The complete INCI
+              (International Nomenclature of Cosmetic Ingredients) appears on the carton and
+              unit packaging—request a PDF from{" "}
+              <a
+                href="/contact"
+                className="text-[#d6a85f] underline-offset-4 hover:underline"
+              >
+                Contact
+              </a>{" "}
+              if you need it before purchase.
+            </p>
+          )}
+          {keyIngredients.length ? (
+            <p className="text-xs leading-relaxed text-[#7a7265]">
+              Formulas evolve with supplier batches; always refer to your product packaging
+              for the authoritative ingredient list.
+            </p>
+          ) : null}
+        </div>
       ),
     },
     {
@@ -88,9 +113,9 @@ export function buildProductAccordionItems({
       title: "How to use",
       content: (
         <ol className="list-inside list-decimal space-y-2">
-          <li>Use during the {routineStep.toLowerCase()} step of your routine.</li>
-          <li>Layer from thinnest to richest texture.</li>
-          <li>Follow with SPF during the day when using actives or as directed.</li>
+          {howToLines.map((line, index) => (
+            <li key={index}>{line}</li>
+          ))}
         </ol>
       ),
     },
