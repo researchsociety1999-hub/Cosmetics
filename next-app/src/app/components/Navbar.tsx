@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const NAV_LINKS = [
+const NAV_LEFT = [
   { href: "/shop", label: "Shop" },
   { href: "/routines", label: "Routines" },
-  { href: "/", label: "Home" },
+] as const;
+
+const NAV_CENTER = { href: "/", label: "Home" } as const;
+
+const NAV_RIGHT = [
   { href: "/ingredients", label: "Ingredients" },
   { href: "/about", label: "About" },
 ] as const;
@@ -14,7 +18,7 @@ const NAV_LINKS = [
 /**
  * Floats over content: soft vertical fade into the hero, centered gold hairline
  * (not edge-to-edge), gentle fade-in on load.
- * Below `md`: centered links; account pinned top-right.
+ * Below `md`: Home centered between pairs; account pinned top-right.
  */
 export function Navbar() {
   const pathname = usePathname();
@@ -23,8 +27,6 @@ export function Navbar() {
   const homeClickProps = isOnHome
     ? {
         onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
-          // Next.js treats same-route navigation as a no-op. For "Home", users expect
-          // a reliable return-to-top behavior even when already on `/`.
           event.preventDefault();
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
@@ -39,49 +41,66 @@ export function Navbar() {
         className="pointer-events-none absolute inset-x-0 top-0 hidden h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] md:block"
       />
 
-      {/* Mobile: centered nav strip; account floats */}
+      {/* Mobile: Home centered; account floats */}
       <div className="pointer-events-auto relative overflow-hidden border-b border-white/[0.07] bg-[rgba(2,3,6,0.78)] backdrop-blur-xl md:hidden">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_100%_at_50%_0%,rgba(214,168,95,0.07),transparent_55%),linear-gradient(180deg,rgba(8,9,14,0.35)_0%,rgba(2,3,6,0.2)_100%)]"
         />
-        <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 sm:right-4">
+        <div className="absolute right-[max(0.5rem,env(safe-area-inset-right,0px))] top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 sm:right-4">
           <AccountIconLink />
         </div>
-        <div className="relative flex items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4">
-          {/* Reserve room for the floating account button so links never wrap under it. */}
+        <div className="relative flex items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] pr-[max(3.75rem,calc(2.75rem+env(safe-area-inset-right,0px)))] sm:px-6 sm:pb-4">
           <nav
-            className="mx-auto flex w-full max-w-[calc(100%-3.25rem)] flex-nowrap items-center justify-center gap-x-3 overflow-x-auto overscroll-x-contain text-center text-[0.52rem] uppercase tracking-[0.24em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-4 min-[400px]:text-[0.56rem] min-[400px]:tracking-[0.26em] sm:gap-x-5 sm:text-[0.58rem] [&::-webkit-scrollbar]:hidden"
+            className="flex w-full min-w-0 flex-nowrap items-center gap-x-1.5 text-[0.5rem] uppercase tracking-[0.2em] text-[#d4c4a8] min-[360px]:gap-x-2 min-[360px]:text-[0.52rem] min-[360px]:tracking-[0.22em] min-[400px]:gap-x-2.5 min-[400px]:text-[0.56rem] min-[400px]:tracking-[0.24em] sm:gap-x-3 sm:text-[0.58rem]"
             aria-label="Primary"
           >
-            {NAV_LINKS.map(({ href, label }) => (
-              <MobileNavLink
-                key={href}
-                href={href}
-                label={label}
-                extraProps={href === "/" ? homeClickProps : undefined}
-              />
-            ))}
+            <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-end gap-x-1.5 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] min-[360px]:gap-x-2 min-[400px]:gap-x-2.5 sm:gap-x-3 [&::-webkit-scrollbar]:hidden">
+              {NAV_LEFT.map(({ href, label }) => (
+                <MobileNavLink key={href} href={href} label={label} />
+              ))}
+            </div>
+            <MobileNavLink
+              href={NAV_CENTER.href}
+              label={NAV_CENTER.label}
+              extraProps={homeClickProps}
+              className="shrink-0 px-0.5"
+            />
+            <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-start gap-x-1.5 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] min-[360px]:gap-x-2 min-[400px]:gap-x-2.5 sm:gap-x-3 [&::-webkit-scrollbar]:hidden">
+              {NAV_RIGHT.map(({ href, label }) => (
+                <MobileNavLink key={href} href={href} label={label} />
+              ))}
+            </div>
           </nav>
         </div>
       </div>
 
-      {/* Desktop: centered strip + hairline */}
-      <div className="mystic-nav-fade relative hidden px-4 pb-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 sm:pb-6 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:block md:px-10 lg:px-14">
-        <div className="pointer-events-auto -mx-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:overflow-x-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+      {/* Desktop: Home centered; account at end of row */}
+      <div className="mystic-nav-fade relative hidden min-w-0 px-4 pb-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 sm:pb-6 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:block md:px-10 lg:px-14">
+        <div className="pointer-events-auto relative -mx-1 max-w-full min-w-0 px-1 sm:mx-0 sm:px-0">
+          <div className="absolute right-0 top-1/2 z-10 -translate-y-1/2 sm:right-0 md:right-0">
+            <AccountIconLink />
+          </div>
           <nav
-            className="mx-auto flex w-max max-w-none flex-nowrap items-center justify-center gap-x-3 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.32em] sm:min-w-0 sm:max-w-full sm:gap-x-6 sm:text-[0.64rem] sm:tracking-[0.34em] md:gap-x-8 md:tracking-[0.36em]"
+            className="mx-auto flex min-w-0 max-w-full flex-nowrap items-center gap-x-2 pr-12 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-3 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.3em] sm:gap-x-4 sm:text-[0.64rem] sm:tracking-[0.32em] md:gap-x-6 md:pr-14 md:tracking-[0.34em] lg:gap-x-8 lg:tracking-[0.36em]"
             aria-label="Primary"
           >
-            {NAV_LINKS.map(({ href, label }) => (
-              <NavLink
-                key={href}
-                href={href}
-                label={label}
-                extraProps={href === "/" ? homeClickProps : undefined}
-              />
-            ))}
-            <AccountIconLink />
+            <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-end gap-x-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-4 sm:gap-x-6 md:gap-x-8 [&::-webkit-scrollbar]:hidden">
+              {NAV_LEFT.map(({ href, label }) => (
+                <NavLink key={href} href={href} label={label} />
+              ))}
+            </div>
+            <NavLink
+              href={NAV_CENTER.href}
+              label={NAV_CENTER.label}
+              extraProps={homeClickProps}
+              className="shrink-0 px-1"
+            />
+            <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-start gap-x-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-4 sm:gap-x-6 md:gap-x-8 [&::-webkit-scrollbar]:hidden">
+              {NAV_RIGHT.map(({ href, label }) => (
+                <NavLink key={href} href={href} label={label} />
+              ))}
+            </div>
           </nav>
         </div>
 
@@ -94,20 +113,28 @@ export function Navbar() {
   );
 }
 
+const navLinkClass =
+  "inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0";
+
+const mobileNavLinkClass =
+  "inline-flex shrink-0 items-center whitespace-nowrap py-2 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+
 function NavLink({
   href,
   label,
   extraProps,
+  className,
 }: {
   href: string;
   label: string;
   extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+  className?: string;
 }) {
   return (
     <Link
       href={href}
       prefetch
-      className="inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0"
+      className={className ? `${navLinkClass} ${className}` : navLinkClass}
       {...extraProps}
     >
       {label}
@@ -115,21 +142,22 @@ function NavLink({
   );
 }
 
-/** Tighter inline strip for the mobile header row (scroll container). */
 function MobileNavLink({
   href,
   label,
   extraProps,
+  className,
 }: {
   href: string;
   label: string;
   extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+  className?: string;
 }) {
   return (
     <Link
       href={href}
       prefetch
-      className="inline-flex shrink-0 items-center whitespace-nowrap py-2 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+      className={className ? `${mobileNavLinkClass} ${className}` : mobileNavLinkClass}
       {...extraProps}
     >
       {label}
