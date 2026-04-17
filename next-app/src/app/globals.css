@@ -744,4 +744,99 @@ optgroup {
     opacity: 1;
     transform: none;
   }
+
+  .home-hero-studio-bg {
+    filter: saturate(0.55) contrast(0.92) brightness(0.85);
+  }
+}
+
+/* Home: motif stack — soft gold washes + cross-hairline lattice + stipple (fixed, behind grain) */
+.home-premium-bg-patterns {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: transparent;
+  background-image:
+    radial-gradient(
+      ellipse 120% 70% at 50% -8%,
+      rgba(212, 175, 55, 0.09),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 108% 92%,
+      rgba(255, 154, 80, 0.06),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 45% 50% at -8% 38%,
+      rgba(130, 110, 180, 0.05),
+      transparent 48%
+    ),
+    repeating-linear-gradient(
+      122deg,
+      transparent 0,
+      transparent 68px,
+      rgba(212, 175, 55, 0.045) 68px,
+      rgba(212, 175, 55, 0.045) 69px
+    ),
+    repeating-linear-gradient(
+      32deg,
+      transparent 0,
+      transparent 68px,
+      rgba(255, 255, 255, 0.022) 68px,
+      rgba(255, 255, 255, 0.022) 69px
+    ),
+    radial-gradient(rgba(214, 168, 95, 0.11) 0.55px, transparent 0.65px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    auto,
+    auto,
+    44px 44px;
+  background-position:
+    center top,
+    center,
+    center,
+    0 0,
+    14px 9px,
+    0 0;
+  opacity: 0.92;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-premium-bg-patterns {
+    opacity: 0.82;
+  }
+}
+
+/* Home: editorial film grain (fixed, sits behind .home-premium-stack) */
+.home-premium-filmgrain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.65'/%3E%3C/svg%3E");
+}
+
+.home-premium-stack {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-premium-filmgrain {
+    opacity: 0.03;
+  }
+}
+
+/* Home: soft gold hairline frame for primary surfaces */
+.home-luxury-frame {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 0 0 1px rgba(212, 175, 55, 0.06),
+    0 28px 72px rgba(0, 0, 0, 0.38);
 }

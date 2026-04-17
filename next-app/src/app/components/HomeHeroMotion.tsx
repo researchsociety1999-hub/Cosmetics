@@ -54,10 +54,24 @@ export function HomeHeroMotion() {
       ref={sectionRef}
       className="relative -mt-[max(5rem,calc(4rem+env(safe-area-inset-top,0px)))] min-h-[90dvh] overflow-x-clip overflow-y-hidden sm:-mt-[max(5.25rem,calc(4.1rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
     >
-      {/* Full-bleed hero — CSS only (no photography) */}
+      {/* Brand studio still — Mystique /public only; heavily graded into palette */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_110%_55%_at_50%_12%,rgba(214,168,95,0.14),transparent_52%),radial-gradient(circle_at_88%_22%,rgba(255,154,80,0.1),transparent_36%),radial-gradient(circle_at_8%_40%,rgba(120,90,160,0.08),transparent_40%),linear-gradient(168deg,rgba(12,10,16,1)_0%,rgba(4,5,10,1)_38%,rgba(6,8,14,1)_72%,rgb(2,3,6)_100%)]"
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      >
+        <Image
+          src="/about/hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="home-hero-studio-bg object-cover object-[center_22%] opacity-[0.22] saturate-[0.55] contrast-[0.9] brightness-[0.72] sm:opacity-[0.26] sm:object-[center_28%]"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(168deg,rgba(8,6,10,0.75)_0%,rgba(4,5,10,0.55)_32%,rgba(4,5,10,0.82)_100%)]" />
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_110%_55%_at_50%_12%,rgba(214,168,95,0.14),transparent_52%),radial-gradient(circle_at_88%_22%,rgba(255,154,80,0.1),transparent_36%),radial-gradient(circle_at_8%_40%,rgba(120,90,160,0.08),transparent_40%),linear-gradient(168deg,rgba(12,10,16,0.92)_0%,rgba(4,5,10,0.96)_38%,rgba(6,8,14,0.98)_72%,rgb(2,3,6)_100%)]"
       />
       <div
         aria-hidden
@@ -155,14 +169,15 @@ export function HomeHeroMotion() {
           className="w-full max-w-[min(36rem,calc(100vw-2rem))] shrink-0 self-start text-left sm:max-w-[min(38rem,calc(100vw-4rem))] md:max-w-[min(40rem,calc(100vw-5rem))]"
           style={{ opacity: 1 }}
         >
-          <div className="border-l border-[rgba(214,168,95,0.2)] pl-5 sm:pl-7 md:pl-8">
+          <div className="relative border-l border-[rgba(214,168,95,0.28)] bg-[linear-gradient(90deg,rgba(2,3,6,0.55)_0%,rgba(2,3,6,0.08)_52%,transparent_100%)] py-1 pl-5 shadow-[inset_8px_0_32px_-8px_rgba(214,168,95,0.06)] backdrop-blur-[2px] sm:pl-7 md:pl-8">
+            <div className="pointer-events-none absolute -left-px top-0 h-full w-px bg-gradient-to-b from-[rgba(214,168,95,0.55)] via-[rgba(214,168,95,0.2)] to-[rgba(214,168,95,0.08)]" aria-hidden />
             <div className="space-y-5">
               <h1
-                className={`max-w-[16ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[18ch] ${
+                className={`max-w-[22ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[26ch] ${
                   reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
-                California skincare, refined by ritual.
+                Where Beauty Transcends
               </h1>
               <div
                 aria-hidden

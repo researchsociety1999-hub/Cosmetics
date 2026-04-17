@@ -34,8 +34,12 @@ function SectionIntro({
   ctaLabel?: string;
 }) {
   return (
-    <header className="mb-12 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between md:gap-6">
-      <div className="max-w-2xl space-y-3 md:space-y-4">
+    <header className="mb-12 flex flex-col gap-5 md:mb-16 md:flex-row md:items-end md:justify-between md:gap-8">
+      <div className="relative max-w-2xl space-y-3 md:space-y-4 md:pl-1">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-1 top-1 hidden h-[calc(100%-0.25rem)] w-px bg-gradient-to-b from-[rgba(214,168,95,0.35)] via-[rgba(214,168,95,0.12)] to-transparent md:block"
+        />
         {eyebrow ? (
           <p className="text-[0.75rem] uppercase tracking-[0.3em] text-[#b8ab95]">
             {eyebrow}
@@ -192,18 +196,22 @@ async function JournalHomeSection() {
 export default async function HomePage() {
   return (
     <SiteChrome>
-      <main>
-        <HomeHeroMotion />
-        <RitualStripSection />
-        <FirstVisitGuidanceStrip />
-        <Suspense fallback={<SectionLoading title="Ritual signatures" layout="featuredProducts" />}>
-          <FeaturedProductsSection />
-        </Suspense>
-        <IngredientSpotlightSection />
-        <Suspense fallback={<SectionLoading title="Journal" />}>
-          <JournalHomeSection />
-        </Suspense>
-        <NewsletterSection />
+      <main className="relative isolate">
+        <div className="home-premium-bg-patterns" aria-hidden />
+        <div className="home-premium-filmgrain" aria-hidden />
+        <div className="home-premium-stack">
+          <HomeHeroMotion />
+          <RitualStripSection />
+          <FirstVisitGuidanceStrip />
+          <Suspense fallback={<SectionLoading title="Ritual signatures" layout="featuredProducts" />}>
+            <FeaturedProductsSection />
+          </Suspense>
+          <IngredientSpotlightSection />
+          <Suspense fallback={<SectionLoading title="Journal" />}>
+            <JournalHomeSection />
+          </Suspense>
+          <NewsletterSection />
+        </div>
       </main>
     </SiteChrome>
   );
@@ -220,7 +228,7 @@ function FirstVisitGuidanceStrip() {
   return (
     <section
       aria-labelledby="first-visit-heading"
-      className="border-b border-[rgba(214,168,95,0.1)] bg-[linear-gradient(180deg,rgba(5,6,10,0.95),rgba(4,5,9,0.88))]"
+      className="relative border-b border-[rgba(214,168,95,0.12)] bg-[linear-gradient(180deg,rgba(6,7,12,0.97),rgba(4,5,9,0.9))] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
     >
       <div className="mystic-section-shell py-9 md:py-10">
         <div className="flex max-w-3xl flex-col gap-2">
@@ -262,7 +270,7 @@ async function FeaturedProductsSection() {
   }
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05070d]/80">
+    <section className="mystic-section relative border-b border-[rgba(17,24,39,0.85)] bg-[linear-gradient(180deg,rgba(5,7,14,0.92)_0%,rgba(5,7,13,0.96)_45%,#05070d_100%)]">
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Featured"
@@ -316,7 +324,7 @@ const HOME_RITUAL_RHYTHMS: {
 
 function RitualStripSection() {
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#04050a] !pt-24 !pb-24 md:!pt-32 md:!pb-32">
+    <section className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-[#04050a] !pt-24 !pb-24 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:!pt-32 md:!pb-32">
       <div className="mystic-section-shell">
         <SectionIntro
           title="Our Rituals"
@@ -327,7 +335,7 @@ function RitualStripSection() {
           {HOME_RITUAL_RHYTHMS.map((ritual) => (
             <article
               key={ritual.label}
-              className="group relative isolate flex h-auto flex-col justify-start overflow-hidden mystic-card"
+              className="group relative isolate flex h-auto flex-col justify-start overflow-hidden mystic-card shadow-[0_24px_56px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-[rgba(212,175,55,0.07)] transition-[box-shadow,transform] duration-500 ease-out hover:shadow-[0_32px_72px_rgba(0,0,0,0.52)] hover:ring-[rgba(212,175,55,0.11)]"
             >
               <div className="pointer-events-none absolute inset-0">
                 <div
@@ -371,7 +379,7 @@ function IngredientSpotlightSection() {
   const ingredients = MYSTIQUE_CANONICAL_INGREDIENTS;
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[#05060c]">
+    <section className="mystic-section relative border-b border-[rgba(17,24,39,0.88)] bg-[linear-gradient(185deg,#05060c_0%,#04050e_50%,#03040a_100%)]">
       <div className="mystic-section-shell">
         <SectionIntro
           eyebrow="Ingredients"
@@ -414,9 +422,9 @@ function IngredientSpotlightSection() {
 
 function NewsletterSection() {
   return (
-    <section className="mystic-section">
+    <section className="mystic-section relative pb-20 md:pb-24">
       <div className="mystic-section-shell">
-        <div className="mystic-card grid gap-8 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
+        <div className="home-luxury-frame mystic-card grid gap-8 rounded-[26px] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
               Newsletter
