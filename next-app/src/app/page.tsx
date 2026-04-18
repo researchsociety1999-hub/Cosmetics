@@ -197,7 +197,6 @@ export default async function HomePage() {
   return (
     <SiteChrome>
       <main className="relative isolate">
-        <div className="home-premium-bg-patterns" aria-hidden />
         <div className="home-premium-filmgrain" aria-hidden />
         <div className="home-premium-stack">
           <HomeHeroMotion />
