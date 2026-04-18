@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteChrome } from "../components/SiteChrome";
 import { mockFaqs } from "../lib/data";
+import { FaqHashSync } from "./FaqHashSync";
 
 type FaqItem = (typeof mockFaqs)[number];
 
@@ -32,8 +33,9 @@ export default function FaqPage() {
 
   return (
     <SiteChrome>
+      <FaqHashSync />
       <main className="mystic-section-shell mystic-section">
-        <header className="mb-10 max-w-3xl space-y-4">
+        <header id="faq-top" className="mb-10 max-w-3xl scroll-mt-[max(5.5rem,env(safe-area-inset-top,0px))] space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             FAQ
           </p>
@@ -47,7 +49,10 @@ export default function FaqPage() {
           </p>
         </header>
         <div className="space-y-4">
-          <section id="shipping-and-returns" className="space-y-4">
+          <section
+            id="shipping-and-returns"
+            className="scroll-mt-[max(5.5rem,env(safe-area-inset-top,0px))] space-y-4"
+          >
             {shippingAndReturns.map((item) => (
               <FaqAccordion key={item.question} item={item} />
             ))}

@@ -21,7 +21,7 @@ export function Footer() {
             aria-label="Footer"
             className="mx-auto flex max-w-md flex-col items-center justify-center gap-6 py-6 md:gap-7 md:py-10"
           >
-            <Link href="/faq" className={FOOTER_CENTER_LINK_CLASS}>
+            <Link href="/faq#faq-top" className={FOOTER_CENTER_LINK_CLASS}>
               FAQ
             </Link>
             <Link
