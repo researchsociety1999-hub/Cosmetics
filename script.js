@@ -49,7 +49,7 @@ const fallbackProducts = [
   },
   {
     id: 5,
-    name: "Mystic Night Cream",
+    name: "Mystique Night Cream",
     category: "Skincare",
     price: 72,
     image:
@@ -157,7 +157,7 @@ function bindEvents() {
       e.preventDefault();
       const email = document.getElementById("newsletterEmail")?.value.trim();
       if (!email) return;
-      alert("Thanks for subscribing to Mystic.");
+      alert("Thanks for subscribing to Mystique.");
       newsletterForm.reset();
     });
   }
@@ -236,7 +236,7 @@ function renderProducts(list) {
       <article class="product-card">
         <div class="product-media">
           <img src="${product.image}" alt="${product.name}" />
-          <span class="product-tag">${product.tag || "Mystic"}</span>
+          <span class="product-tag">${product.tag || "Mystique"}</span>
           <button class="icon-button wishlist-btn" data-wishlist="${product.id}" aria-label="Add to wishlist">♡</button>
         </div>
         <div class="product-body">
@@ -333,7 +333,7 @@ function updateCartUI() {
     cartItems.innerHTML = `
       <div class="empty-cart">
         <p>Your cart is empty.</p>
-        <p>Add a few Mystic essentials to begin your ritual.</p>
+        <p>Add a few Mystique essentials to begin your ritual.</p>
       </div>
     `;
   } else {
@@ -372,7 +372,7 @@ function updateCartUI() {
 function applyPromoCode() {
   const code = promoCodeInput?.value.trim().toUpperCase();
 
-  if (code === "MYSTIC10") {
+  if (code === "MYSTIQUE10") {
     promoDiscount = 0.1;
     alert("Promo code applied: 10% off");
   } else if (code === "GLOW15") {

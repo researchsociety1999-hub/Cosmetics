@@ -237,9 +237,9 @@ export const INVENTORY_ROWS = [
   r(
     "/careers",
     "Careers placeholder",
-    "Careers; Join the Mystic team; placeholder card copy",
+    "Careers; Join the Mystique team; placeholder card copy",
     "next-app/src/app/careers/page.tsx",
-    "Note: says Mystic — consider aligning brand name to Mystique.",
+    "Note: static demo copy uses Mystique as the brand name.",
   ),
   r(
     "/account",
@@ -307,9 +307,9 @@ export const INVENTORY_ROWS = [
   r(
     "/test",
     "Internal test route",
-    "Internal route; Mystic test page; body about safe route; Go to shop",
+    "Internal route; Mystique test page; body about safe route; Go to shop",
     "next-app/src/app/test/page.tsx",
-    "Dev-only; brand says Mystic.",
+    "Dev-only; brand says Mystique.",
   ),
   r(
     "(data)",
@@ -328,9 +328,9 @@ export const INVENTORY_ROWS = [
   r(
     "index.html (static)",
     "Head & top bar",
-    "Title Mystic — Where Beauty Transcends; meta description; Free U.S. shipping…; Luxury rituals. Timeless glow.",
+    "Title Mystique — Where Beauty Transcends; meta description; Free U.S. shipping…; Luxury rituals. Timeless glow.",
     "index.html",
-    "Separate from Next app; brand name Mystic.",
+    "Separate from Next app; brand name Mystique.",
   ),
   r(
     "index.html (static)",
@@ -342,14 +342,14 @@ export const INVENTORY_ROWS = [
   r(
     "index.html (static)",
     "Hero & intro strips",
-    "Luxury Beauty • Mystic Rituals; H1 Beauty reimagined…; hero text; Shop Collection / Our Story; Premium/Curated/Elegant; intro 01–03 blocks",
+    "Luxury Beauty • Mystique Rituals; H1 Beauty reimagined…; hero text; Shop Collection / Our Story; Premium/Curated/Elegant; intro 01–03 blocks",
     "index.html",
     "",
   ),
   r(
     "index.html (static)",
     "Shop section",
-    "The Collection; Shop Mystic essentials; Search products placeholder; filter All Categories + options Skincare/Serum/Cleanser/Mask/Body/Set",
+    "The Collection; Shop Mystique essentials; Search products placeholder; filter All Categories + options Skincare/Serum/Cleanser/Mask/Body/Set",
     "index.html",
     "Product cards injected by script.js",
   ),
@@ -363,7 +363,7 @@ export const INVENTORY_ROWS = [
   r(
     "index.html (static)",
     "FAQ & newsletter",
-    "Questions; Frequently asked questions; four FAQ Q&A (Supabase, cart, Stripe, script.js); Stay Connected; Join the Mystic circle; email placeholder; Subscribe",
+    "Questions; Frequently asked questions; four FAQ Q&A (Supabase, cart, Stripe, script.js); Stay Connected; Join the Mystique circle; email placeholder; Subscribe",
     "index.html",
     "",
   ),

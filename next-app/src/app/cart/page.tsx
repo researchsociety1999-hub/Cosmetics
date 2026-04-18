@@ -51,9 +51,12 @@ export default async function CartPage({
         </header>
 
         {cart.lines.length === 0 ? (
-          <div className="mystic-card p-8">
-            <p className="text-sm text-[#b8ab95]">
-              Your bag is empty. Start with the latest Mystique rituals.
+          <div className="mystic-panel p-8 md:p-10">
+            <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#d6a85f]">
+              Your bag
+            </p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-[#c9bcaa] md:text-base">
+              Nothing here yet—browse the collection and add rituals you want to try.
             </p>
             {promoMessage ? (
               <p className="mt-4 text-sm text-[#d6a85f]">{promoMessage}</p>

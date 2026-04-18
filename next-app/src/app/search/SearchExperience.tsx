@@ -117,16 +117,22 @@ export function SearchExperience({
       </div>
 
       {!trimmedQuery ? (
-        <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-          Search the collection by name, texture, ingredient, or ritual step.
+        <div className="mystic-panel p-8 text-sm leading-relaxed text-[#b8ab95] md:p-10">
+          <p className="text-[0.65rem] uppercase tracking-[0.24em] text-[#7a7265]">Browse</p>
+          <p className="mt-3 text-[#c9bcaa]">
+            Search the collection by name, texture, ingredient, or ritual step.
+          </p>
         </div>
       ) : loadError ? (
-        <div className="mystic-card p-8 text-sm text-[#d6a85f]" role="alert">
+        <div className="mystic-panel p-8 text-sm leading-relaxed text-[#d6a85f] md:p-10" role="alert">
           {loadError}
         </div>
       ) : products.length === 0 ? (
-        <div className="mystic-card p-8 text-sm text-[#b8ab95]">
-          No results for &quot;{trimmedQuery}&quot;. Try a broader search, or browse the shop.
+        <div className="mystic-panel p-8 text-sm leading-relaxed text-[#b8ab95] md:p-10">
+          <p className="text-[0.65rem] uppercase tracking-[0.24em] text-[#7a7265]">No matches</p>
+          <p className="mt-3 text-[#c9bcaa]">
+            Nothing for &quot;{trimmedQuery}&quot; yet—try a shorter term or browse the shop.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">
