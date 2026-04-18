@@ -750,67 +750,6 @@ optgroup {
   }
 }
 
-/* Home: motif stack — soft gold washes + cross-hairline lattice + stipple (fixed, behind grain) */
-.home-premium-bg-patterns {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-color: transparent;
-  background-image:
-    radial-gradient(
-      ellipse 120% 70% at 50% -8%,
-      rgba(212, 175, 55, 0.09),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 55% 40% at 108% 92%,
-      rgba(255, 154, 80, 0.06),
-      transparent 52%
-    ),
-    radial-gradient(
-      ellipse 45% 50% at -8% 38%,
-      rgba(130, 110, 180, 0.05),
-      transparent 48%
-    ),
-    repeating-linear-gradient(
-      122deg,
-      transparent 0,
-      transparent 68px,
-      rgba(212, 175, 55, 0.045) 68px,
-      rgba(212, 175, 55, 0.045) 69px
-    ),
-    repeating-linear-gradient(
-      32deg,
-      transparent 0,
-      transparent 68px,
-      rgba(255, 255, 255, 0.022) 68px,
-      rgba(255, 255, 255, 0.022) 69px
-    ),
-    radial-gradient(rgba(214, 168, 95, 0.11) 0.55px, transparent 0.65px);
-  background-size:
-    100% 100%,
-    100% 100%,
-    100% 100%,
-    auto,
-    auto,
-    44px 44px;
-  background-position:
-    center top,
-    center,
-    center,
-    0 0,
-    14px 9px,
-    0 0;
-  opacity: 0.92;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-premium-bg-patterns {
-    opacity: 0.82;
-  }
-}
-
 /* Home: editorial film grain (fixed, sits behind .home-premium-stack) */
 .home-premium-filmgrain {
   pointer-events: none;

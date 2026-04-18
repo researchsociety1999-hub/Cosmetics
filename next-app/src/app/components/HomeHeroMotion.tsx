@@ -173,11 +173,11 @@ export function HomeHeroMotion() {
             <div className="pointer-events-none absolute -left-px top-0 h-full w-px bg-gradient-to-b from-[rgba(214,168,95,0.55)] via-[rgba(214,168,95,0.2)] to-[rgba(214,168,95,0.08)]" aria-hidden />
             <div className="space-y-5">
               <h1
-                className={`max-w-[22ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[26ch] ${
+                className={`max-w-[16ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[18ch] ${
                   reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
-                Where Beauty Transcends
+                California skincare, refined by ritual.
               </h1>
               <div
                 aria-hidden
