@@ -39,7 +39,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: max(6rem, env(safe-area-inset-top, 0px));
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -132,6 +132,19 @@ summary:focus-visible {
     radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 36%);
   border: 1px solid var(--mystic-card-border);
   box-shadow: var(--mystic-shadow-soft);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mystic-card:hover {
+    border-color: rgba(212, 175, 55, 0.32);
+    box-shadow:
+      0 26px 64px rgba(0, 0, 0, 0.78),
+      0 0 0 1px rgba(212, 175, 55, 0.06);
+  }
 }
 
 /* Frosted glass — shop filters, chips (black glass + gold rim, matches dropdowns) */
@@ -218,10 +231,18 @@ summary:focus-visible {
   background: var(--mystic-gold);
   color: #000000;
   font-weight: 700;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
 .mystic-button-primary:hover {
   background: var(--mystic-gold-bright);
+}
+
+.mystic-button-primary:active {
+  transform: scale(0.99);
 }
 
 .mystic-button-secondary {
@@ -229,10 +250,25 @@ summary:focus-visible {
   border: 1px solid var(--mystic-gold);
   color: var(--mystic-gold);
   background: transparent;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .mystic-button-secondary:hover {
   background: color-mix(in srgb, var(--mystic-gold) 10%, transparent);
+}
+
+.mystic-button-secondary:active {
+  transform: scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystic-button-primary:active,
+  .mystic-button-secondary:active {
+    transform: none;
+  }
 }
 
 .mystic-input {

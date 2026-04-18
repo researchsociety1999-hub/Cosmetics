@@ -87,14 +87,14 @@ const doc = new Document({
       },
       children: [
         new Paragraph({
-          text: "Mystique / Mystic — site content inventory",
+          text: "Mystique — site content inventory",
           heading: HeadingLevel.TITLE,
         }),
         new Paragraph({
           text: `Generated: ${new Date().toISOString().slice(0, 10)}`,
         }),
         new Paragraph({
-          text: "Next.js storefront lives under next-app/ (routes starting with /). Static Mystic demo: index.html + script.js + styles.css at repo root. Product and journal copy may also come from Supabase when configured.",
+          text: "Next.js storefront lives under next-app/ (routes starting with /). Static demo: index.html + script.js + styles.css at repo root. Product and journal copy may also come from Supabase when configured.",
         }),
         new Paragraph({ text: "" }),
         new Table({

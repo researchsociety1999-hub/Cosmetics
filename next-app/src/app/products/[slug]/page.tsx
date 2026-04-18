@@ -90,14 +90,14 @@ export default async function ProductPage({
     return (
       <SiteChrome>
         <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
-          <section className="mystic-card p-8 text-center">
-            <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+          <section className="mystic-panel p-8 text-center md:p-10">
+            <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Unavailable
             </p>
             <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
               We couldn&apos;t find that ritual.
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
+            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#b8ab95]">
               This ritual is not available right now. Return to the collection to
               continue exploring Mystique.
             </p>
@@ -315,7 +315,10 @@ export default async function ProductPage({
           </section>
         ) : null}
 
-        <section id="reviews" className="mt-16 scroll-mt-28 lg:mt-20">
+        <section
+          id="reviews"
+          className="mt-16 scroll-mt-[max(6rem,env(safe-area-inset-top,0px))] lg:mt-20"
+        >
           <header className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -361,12 +364,16 @@ export default async function ProductPage({
                 </article>
               ))
             ) : (
-              <article className="mystic-card p-5 text-sm leading-relaxed text-[#b8ab95]">
-                <p className="font-literata text-lg tracking-[0.08em] text-[#f5eee3]">
+              <article className="mystic-panel col-span-full p-6 text-sm leading-relaxed text-[#b8ab95] md:col-span-2">
+                <p className="text-[0.65rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                  Early days
+                </p>
+                <p className="mt-3 font-literata text-xl tracking-[0.08em] text-[#f5eee3]">
                   No reviews yet
                 </p>
-                <p className="mt-3 text-[#8f8576]">
-                  When shoppers leave reviews, they will appear here.
+                <p className="mt-3 max-w-xl text-[#a89a88]">
+                  When shoppers share texture, finish, and wear-time notes, they will appear
+                  here in plain language.
                 </p>
               </article>
             )}

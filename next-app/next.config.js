@@ -12,6 +12,8 @@ function extraImageRemotePatterns() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /** Hides the floating Next.js dev indicator (N badge) in development; no effect on production builds. */
+  devIndicators: false,
   outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
     // `next/image` requires remote hosts to be explicitly allowed (must stay in sync with

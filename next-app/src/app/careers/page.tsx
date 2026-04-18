@@ -25,8 +25,11 @@ export default function CareersPage() {
             storytelling. When a role opens, it will be listed here first.
           </p>
         </header>
-        <div className="mystic-card max-w-2xl space-y-4 p-6 text-sm leading-relaxed text-[#b8ab95] md:p-8 md:text-base">
-          <p>
+        <div className="mystic-panel max-w-2xl space-y-4 p-6 text-sm leading-relaxed text-[#b8ab95] md:p-8 md:text-base">
+          <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#d6a85f]">
+            Studio
+          </p>
+          <p className="text-[#e8dcc8]">
             There are no public openings at the moment. For press, wholesale, or general
             studio inquiries, write us through Contact—we read every note.
           </p>

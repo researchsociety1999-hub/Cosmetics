@@ -173,11 +173,12 @@ export function HomeHeroMotion() {
             <div className="pointer-events-none absolute -left-px top-0 h-full w-px bg-gradient-to-b from-[rgba(214,168,95,0.55)] via-[rgba(214,168,95,0.2)] to-[rgba(214,168,95,0.08)]" aria-hidden />
             <div className="space-y-5">
               <h1
-                className={`max-w-[16ch] font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.06] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[18ch] ${
+                className={`flex max-w-[min(22rem,calc(100vw-2.5rem))] flex-col gap-2 font-literata text-[clamp(1.875rem,4.5vw,3.125rem)] font-normal leading-[1.12] tracking-[0.02em] text-[#f2ebe1] antialiased [text-shadow:0_1px_32px_rgba(0,0,0,0.78),0_2px_56px_rgba(0,0,0,0.42),0_0_48px_rgba(214,168,95,0.06)] sm:max-w-[min(24rem,calc(100vw-4rem))] sm:gap-2.5 ${
                   reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--title"
                 }`}
               >
-                California skincare, refined by ritual.
+                <span className="block text-balance">Where</span>
+                <span className="block text-balance">Beauty Transcends</span>
               </h1>
               <div
                 aria-hidden

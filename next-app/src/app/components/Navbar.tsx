@@ -8,14 +8,33 @@ const NAV_LINKS = [
   { href: "/routines", label: "Routines" },
   { href: "/", label: "Home" },
   { href: "/ingredients", label: "Ingredients" },
+  { href: "/journal", label: "Journal" },
   { href: "/about", label: "About" },
 ] as const;
 
+const NAV_LINK_BASE =
+  "inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0";
+
+const NAV_LINK_IDLE = `${NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
+const NAV_LINK_ACTIVE = `${NAV_LINK_BASE} text-[#f0d19a]`;
+
+const MOBILE_NAV_LINK_BASE =
+  "inline-flex shrink-0 items-center whitespace-nowrap py-2 [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+
+const MOBILE_NAV_LINK_IDLE = `${MOBILE_NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
+const MOBILE_NAV_LINK_ACTIVE = `${MOBILE_NAV_LINK_BASE} text-[#f0d19a]`;
+
 /**
- * Floats over content: soft vertical fade into the hero, centered gold hairline
- * (not edge-to-edge), gentle fade-in on load.
- * Below `md`: centered links; account pinned top-right.
+ * Centered gold nav (Shop · Routines · Home · Ingredients · About) + account icon
+ * on the right; hairline below — matches the editorial header reference.
  */
+function isNavActive(href: string, pathname: string): boolean {
+  if (href === "/") {
+    return pathname === "/";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const isOnHome = pathname === "/";
@@ -23,8 +42,6 @@ export function Navbar() {
   const homeClickProps = isOnHome
     ? {
         onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
-          // Next.js treats same-route navigation as a no-op. For "Home", users expect
-          // a reliable return-to-top behavior even when already on `/`.
           event.preventDefault();
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
@@ -33,13 +50,12 @@ export function Navbar() {
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
-      {/* Veil: desktop only — mobile uses a solid bar so the hero stays unobstructed */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 hidden h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] md:block"
       />
 
-      {/* Mobile: centered nav strip; account floats */}
+      {/* Mobile: centered link strip; account pinned top-right */}
       <div className="pointer-events-auto relative overflow-hidden border-b border-white/[0.07] bg-[rgba(2,3,6,0.78)] backdrop-blur-xl md:hidden">
         <div
           aria-hidden
@@ -49,9 +65,8 @@ export function Navbar() {
           <AccountIconLink />
         </div>
         <div className="relative flex items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4">
-          {/* Reserve room for the floating account button so links never wrap under it. */}
           <nav
-            className="mx-auto flex w-full max-w-[calc(100%-3.25rem)] flex-nowrap items-center justify-center gap-x-3 overflow-x-auto overscroll-x-contain text-center text-[0.52rem] uppercase tracking-[0.24em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-4 min-[400px]:text-[0.56rem] min-[400px]:tracking-[0.26em] sm:gap-x-5 sm:text-[0.58rem] [&::-webkit-scrollbar]:hidden"
+            className="mx-auto flex w-full max-w-[calc(100%-3.75rem)] flex-nowrap items-center justify-center gap-x-2.5 overflow-x-auto overscroll-x-contain text-center text-[0.5rem] uppercase tracking-[0.22em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-3.5 min-[400px]:text-[0.54rem] min-[400px]:tracking-[0.24em] sm:max-w-[calc(100%-3.25rem)] sm:gap-x-4 sm:text-[0.56rem] sm:tracking-[0.26em] [&::-webkit-scrollbar]:hidden"
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
@@ -59,6 +74,7 @@ export function Navbar() {
                 key={href}
                 href={href}
                 label={label}
+                active={isNavActive(href, pathname)}
                 extraProps={href === "/" ? homeClickProps : undefined}
               />
             ))}
@@ -66,11 +82,12 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Desktop: centered strip + hairline */}
-      <div className="mystic-nav-fade relative hidden px-4 pb-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 sm:pb-6 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:block md:px-10 lg:px-14">
-        <div className="pointer-events-auto -mx-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:overflow-x-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+      {/* Desktop: true center nav + account only on the right */}
+      <div className="mystic-nav-fade relative hidden md:block">
+        <div className="pointer-events-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 sm:pb-6 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:px-10 lg:px-14">
+          <div aria-hidden className="min-w-0" />
           <nav
-            className="mx-auto flex w-max max-w-none flex-nowrap items-center justify-center gap-x-3 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.32em] sm:min-w-0 sm:max-w-full sm:gap-x-6 sm:text-[0.64rem] sm:tracking-[0.34em] md:gap-x-8 md:tracking-[0.36em]"
+            className="mx-auto flex w-max max-w-[100vw] flex-nowrap items-center justify-center gap-x-3 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.32em] sm:gap-x-6 sm:text-[0.64rem] sm:tracking-[0.34em] md:gap-x-8 md:tracking-[0.36em]"
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
@@ -78,11 +95,14 @@ export function Navbar() {
                 key={href}
                 href={href}
                 label={label}
+                active={isNavActive(href, pathname)}
                 extraProps={href === "/" ? homeClickProps : undefined}
               />
             ))}
-            <AccountIconLink />
           </nav>
+          <div className="flex min-w-0 justify-end">
+            <AccountIconLink />
+          </div>
         </div>
 
         <div
@@ -97,17 +117,20 @@ export function Navbar() {
 function NavLink({
   href,
   label,
+  active,
   extraProps,
 }: {
   href: string;
   label: string;
+  active: boolean;
   extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }) {
   return (
     <Link
       href={href}
       prefetch
-      className="inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0"
+      className={active ? NAV_LINK_ACTIVE : NAV_LINK_IDLE}
+      aria-current={active ? "page" : undefined}
       {...extraProps}
     >
       {label}
@@ -115,21 +138,23 @@ function NavLink({
   );
 }
 
-/** Tighter inline strip for the mobile header row (scroll container). */
 function MobileNavLink({
   href,
   label,
+  active,
   extraProps,
 }: {
   href: string;
   label: string;
+  active: boolean;
   extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }) {
   return (
     <Link
       href={href}
       prefetch
-      className="inline-flex shrink-0 items-center whitespace-nowrap py-2 text-[#e8dcc4] [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 hover:text-[#f5ebd4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+      className={active ? MOBILE_NAV_LINK_ACTIVE : MOBILE_NAV_LINK_IDLE}
+      aria-current={active ? "page" : undefined}
       {...extraProps}
     >
       {label}
@@ -143,7 +168,7 @@ function AccountIconLink() {
       href="/account"
       prefetch
       aria-label="Account"
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
     >
       <span className="sr-only">Account</span>
       <AccountGlyph />
@@ -151,10 +176,9 @@ function AccountIconLink() {
   );
 }
 
-function AccountGlyph({ className }: { className?: string }) {
+function AccountGlyph() {
   return (
     <svg
-      className={className}
       width="18"
       height="18"
       viewBox="0 0 24 24"

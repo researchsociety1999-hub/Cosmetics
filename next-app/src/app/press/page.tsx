@@ -39,10 +39,17 @@ export default async function PressPage() {
           <div className="h-px flex-1 bg-[rgba(214,168,95,0.12)]" />
         </div>
         {pressMentions.length === 0 ? (
-          <div className="mystic-card p-8 text-sm leading-relaxed text-[#b8ab95]">
-            <p>
-              Coverage will appear here with a working link to each piece. For press kits,
-              fact checks, or scheduling, reach us through{" "}
+          <div className="mystic-panel relative overflow-hidden p-8 text-center md:p-10 md:text-left">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(214,168,95,0.14),transparent_68%)]"
+            />
+            <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#d6a85f]">
+              Coming soon
+            </p>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
+              Verified credits will appear here with a live link to each piece. For press
+              kits, fact checks, or scheduling, reach us through{" "}
               <Link href="/contact" className="text-[#f0d19a] underline-offset-4 hover:underline">
                 Contact
               </Link>
@@ -68,6 +75,9 @@ export default async function PressPage() {
 function safePressHref(link: string | null): string | null {
   if (!link?.trim()) {
     return null;
+  }
+  if (link.trim() === "#") {
+    return "#";
   }
   try {
     const parsed = new URL(link);

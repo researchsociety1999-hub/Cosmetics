@@ -878,6 +878,20 @@ export async function getActivePromo(): Promise<PromoCampaign | null> {
   }
 }
 
+// TODO: replace with real article URLs before launch
+const PRESS_PLACEHOLDER_HOMEPAGE_LINKS = new Set([
+  "https://vogue.com/",
+  "https://allure.com/",
+  "https://byrdie.com/",
+]);
+
+function normalizePressLink(link: string | null): string | null {
+  if (link && PRESS_PLACEHOLDER_HOMEPAGE_LINKS.has(link.trim())) {
+    return "#";
+  }
+  return link;
+}
+
 export async function getPressMentions(): Promise<PressMention[]> {
   if (!hasSupabaseEnv || !supabase) {
     return [];
@@ -893,7 +907,10 @@ export async function getPressMentions(): Promise<PressMention[]> {
       return [];
     }
 
-    return data as PressMention[];
+    return (data as PressMention[]).map((row) => ({
+      ...row,
+      link: normalizePressLink(row.link),
+    }));
   } catch {
     return [];
   }
