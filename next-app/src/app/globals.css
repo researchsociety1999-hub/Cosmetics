@@ -57,6 +57,20 @@ body {
   min-width: 0;
   /* Crescent-side warmth + drifting gold bokeh + deep smoke falloff */
   background:
+    /* Hairline mesh + top depth (fine grain is body::before, data-URI only). */
+    repeating-linear-gradient(
+      135deg,
+      rgba(212, 175, 55, 0.035) 0,
+      rgba(212, 175, 55, 0.035) 0.5px,
+      transparent 0.5px,
+      transparent 4px
+    ),
+    radial-gradient(
+      ellipse 130% 85% at 50% 0%,
+      rgba(255, 176, 112, 0.1) 0%,
+      rgba(32, 26, 18, 0.28) 38%,
+      transparent 62%
+    ),
     radial-gradient(ellipse 120% 90% at 0% 0%, rgba(255, 154, 70, 0.16), transparent 46%),
     radial-gradient(circle at 14% 42%, rgba(212, 175, 55, 0.09), transparent 28%),
     radial-gradient(circle at 88% 18%, rgba(232, 197, 110, 0.07), transparent 22%),
@@ -66,6 +80,20 @@ body {
   color: var(--mystic-text);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
+}
+
+/* Film grain ~2–3%: inline SVG only (no file paths). z-index above shell fills, below main chrome (z-10). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
 }
 
 .font-literata {
@@ -131,7 +159,9 @@ summary:focus-visible {
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
     radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 36%);
   border: 1px solid var(--mystic-card-border);
-  box-shadow: var(--mystic-shadow-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(212, 175, 55, 0.08),
+    var(--mystic-shadow-soft);
   transition:
     border-color 0.35s ease,
     box-shadow 0.35s ease,
@@ -142,9 +172,21 @@ summary:focus-visible {
   .mystic-card:hover {
     border-color: rgba(212, 175, 55, 0.32);
     box-shadow:
+      inset 0 1px 0 rgba(212, 175, 55, 0.08),
       0 26px 64px rgba(0, 0, 0, 0.78),
       0 0 0 1px rgba(212, 175, 55, 0.06);
   }
+}
+
+/* Product grid cards (no `mystic-card` class): top-edge gold shimmer; `:has()` avoids matching journal/essay shells. */
+article:has(> a[href^="/products/"]):not(.mystic-card)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 6;
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.08);
 }
 
 /* Frosted glass — shop filters, chips (black glass + gold rim, matches dropdowns) */
@@ -802,6 +844,19 @@ optgroup {
   z-index: 1;
 }
 
+/* Home hero: bottom fade into next section — above scrims (z≤4), below copy (z≥10). */
+.home-premium-stack > section:first-of-type::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(52vh, 28rem);
+  pointer-events: none;
+  z-index: 8;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-premium-filmgrain {
     opacity: 0.03;
@@ -814,4 +869,17 @@ optgroup {
     inset 0 1px 0 rgba(255, 255, 255, 0.045),
     0 0 0 1px rgba(212, 175, 55, 0.06),
     0 28px 72px rgba(0, 0, 0, 0.38);
+}
+
+/* Site footer: hairline glow (does not replace inner layout borders in Footer.tsx). */
+footer.relative::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+  pointer-events: none;
+  z-index: 4;
 }
