@@ -52,7 +52,7 @@ export function HomeHeroMotion() {
   return (
     <section
       ref={sectionRef}
-      className="relative -mt-[max(5rem,calc(4rem+env(safe-area-inset-top,0px)))] min-h-[90dvh] overflow-x-clip overflow-y-hidden sm:-mt-[max(5.25rem,calc(4.1rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
+      className="relative -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[90dvh] overflow-x-clip overflow-y-hidden sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
     >
       {/* Brand studio still — Mystique /public only; heavily graded into palette */}
       <div
@@ -180,6 +180,14 @@ export function HomeHeroMotion() {
                 <span className="block text-balance">Where</span>
                 <span className="block text-balance">Beauty Transcends</span>
               </h1>
+              <p
+                className={`max-w-[min(22rem,calc(100vw-2.5rem))] text-sm leading-relaxed text-[#c9bcaa] sm:max-w-[min(26rem,calc(100vw-4rem))] sm:text-[0.95rem] ${
+                  reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--sub"
+                }`}
+              >
+                California skincare—layer-friendly textures and rituals you can keep, morning to
+                night.
+              </p>
               <div
                 aria-hidden
                 className="flex items-center gap-3"
@@ -210,6 +218,35 @@ export function HomeHeroMotion() {
                   Ingredient notes
                 </Link>
               </div>
+            </div>
+
+            <div
+              className={`mt-8 flex max-w-md flex-wrap gap-2 border-t border-[rgba(214,168,95,0.12)] pt-6 sm:mt-9 sm:gap-2.5 ${
+                reduce ? "" : "mystic-hero-reveal mystic-hero-reveal--badges"
+              }`}
+            >
+              <button
+                type="button"
+                disabled
+                className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-full border border-white/[0.08] bg-[rgba(2,3,6,0.25)] px-3.5 py-2 text-[0.58rem] uppercase tracking-[0.16em] text-[#6d665c] sm:px-4 sm:text-[0.6rem]"
+                aria-label="Quick view, coming soon"
+              >
+                Quick view
+              </button>
+              <Link
+                href="/routines"
+                className="inline-flex min-h-[44px] items-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(255,255,255,0.03)] px-3.5 py-2 text-[0.58rem] uppercase tracking-[0.16em] text-[#e8dcc8] transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(214,168,95,0.06)] sm:px-4 sm:text-[0.6rem]"
+              >
+                Shop routine
+              </Link>
+              <button
+                type="button"
+                disabled
+                className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-full border border-white/[0.08] bg-[rgba(2,3,6,0.25)] px-3.5 py-2 text-[0.58rem] uppercase tracking-[0.16em] text-[#6d665c] sm:px-4 sm:text-[0.6rem]"
+                aria-label="Shade finder, coming soon"
+              >
+                Shade finder
+              </button>
             </div>
           </div>
         </div>

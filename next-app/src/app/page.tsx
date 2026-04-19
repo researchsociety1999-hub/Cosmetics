@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { HomeEditorialModules } from "./components/home/HomeEditorialModules";
+import { HomeGuidedDiscovery } from "./components/home/HomeGuidedDiscovery";
+import { HomeServicesModule } from "./components/home/HomeServicesModule";
+import { HomeTrustStrip } from "./components/home/HomeTrustStrip";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
 import { IngredientSpotlightThumb } from "./components/IngredientSpotlightThumb";
 import { NewsletterForm } from "./components/NewsletterForm";
@@ -83,7 +87,7 @@ function SectionLoading({
         <div
           className={
             isFeatured
-              ? "mx-auto mt-6 grid w-full max-w-[min(100%,42rem)] grid-cols-2 gap-2.5 sm:max-w-[min(100%,48rem)] sm:gap-3 md:max-w-[min(100%,52rem)] md:grid-cols-4 md:gap-3.5 lg:gap-4"
+              ? "mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 sm:gap-4"
               : "mt-6 grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:grid-cols-3"
           }
         >
@@ -92,7 +96,7 @@ function SectionLoading({
               key={i}
               className={
                 isFeatured
-                  ? "mystic-card aspect-[3/5] max-h-72 animate-pulse sm:max-h-none"
+                  ? "mystic-card aspect-[3/5] w-[min(78vw,20rem)] shrink-0 snap-start animate-pulse sm:w-[min(46vw,18rem)] md:w-[min(40vw,17rem)] lg:w-[min(32vw,16rem)]"
                   : "mystic-card min-h-[15.5rem] animate-pulse rounded-[var(--mystic-radius-card)]"
               }
             />
@@ -200,15 +204,19 @@ export default async function HomePage() {
         <div className="home-premium-filmgrain" aria-hidden />
         <div className="home-premium-stack">
           <HomeHeroMotion />
+          <HomeTrustStrip />
+          <HomeGuidedDiscovery />
           <RitualStripSection />
           <FirstVisitGuidanceStrip />
           <Suspense fallback={<SectionLoading title="Ritual signatures" layout="featuredProducts" />}>
             <FeaturedProductsSection />
           </Suspense>
+          <HomeEditorialModules />
           <IngredientSpotlightSection />
           <Suspense fallback={<SectionLoading title="Journal" />}>
             <JournalHomeSection />
           </Suspense>
+          <HomeServicesModule />
           <NewsletterSection />
         </div>
       </main>
@@ -277,9 +285,19 @@ async function FeaturedProductsSection() {
           ctaHref="/shop?sort=featured"
           ctaLabel="Browse featured"
         />
-        <div className="mx-auto grid w-full max-w-[min(100%,42rem)] grid-cols-2 gap-2.5 sm:max-w-[min(100%,48rem)] sm:gap-3 md:max-w-[min(100%,52rem)] md:grid-cols-4 md:gap-3.5 lg:gap-4">
+        <div
+          role="region"
+          aria-label="Featured products"
+          tabIndex={0}
+          className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-3 [-webkit-overflow-scrolling:touch] sm:gap-4 md:gap-4"
+        >
           {purchasable.map((product) => (
-            <ProductCard key={product.id} product={product} compact />
+            <div
+              key={product.id}
+              className="w-[min(78vw,20rem)] shrink-0 snap-start sm:w-[min(46vw,18rem)] md:w-[min(40vw,17rem)] lg:w-[min(32vw,16rem)]"
+            >
+              <ProductCard product={product} compact showQuickView />
+            </div>
           ))}
         </div>
       </div>
