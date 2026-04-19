@@ -1,5 +1,7 @@
 "use client";
 
+import { useId } from "react";
+
 type AddToCartFormProps = {
   action: (formData: FormData) => void | Promise<void>;
   productId: number;
@@ -29,6 +31,7 @@ export function AddToCartForm({
   controlledQuantity,
   disabled = false,
 }: AddToCartFormProps) {
+  const quantityFieldId = useId();
   const useControlled =
     typeof controlledQuantity === "number" && Number.isFinite(controlledQuantity);
   const qtyHiddenValue = useControlled
@@ -46,10 +49,14 @@ export function AddToCartForm({
         <input type="hidden" name="quantity" value={qtyHiddenValue} />
       ) : showQuantity ? (
         <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-[#b8ab95]">
+          <label
+            htmlFor={quantityFieldId}
+            className="mb-2 block text-xs uppercase tracking-[0.22em] text-[#b8ab95]"
+          >
             Quantity
           </label>
           <input
+            id={quantityFieldId}
             type="number"
             min="1"
             max="10"
