@@ -105,7 +105,7 @@ export async function ShopCatalogBody({
             {[...section.products]
               .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))
               .map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} showQuickView />
             ))}
           </div>
         </section>

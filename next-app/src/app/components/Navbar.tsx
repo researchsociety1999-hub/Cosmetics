@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -24,6 +25,9 @@ const MOBILE_NAV_LINK_BASE =
 const MOBILE_NAV_LINK_IDLE = `${MOBILE_NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
 const MOBILE_NAV_LINK_ACTIVE = `${MOBILE_NAV_LINK_BASE} text-[#f0d19a]`;
 
+const HELP_CHOOSING_LINK =
+  "inline-flex min-h-[44px] max-w-full items-center justify-center whitespace-normal break-words py-1 text-center text-[0.5rem] uppercase leading-snug tracking-[0.2em] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0 md:justify-start md:text-left md:text-[0.52rem] md:tracking-[0.22em]";
+
 /**
  * Centered gold nav (Shop · Routines · Home · Ingredients · About) + account icon
  * on the right; hairline below — matches the editorial header reference.
@@ -35,15 +39,47 @@ function isNavActive(href: string, pathname: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function GuidedDiscoveryLink({
+  isOnHome,
+  className,
+}: {
+  isOnHome: boolean;
+  className: string;
+}) {
+  if (isOnHome) {
+    return (
+      <a href="#guided-discovery" className={className}>
+        Need help choosing?
+      </a>
+    );
+  }
+  return (
+    <Link href="/#guided-discovery" prefetch={false} className={className}>
+      Need help choosing?
+    </Link>
+  );
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const isOnHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const homeClickProps = isOnHome
     ? {
         onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
           event.preventDefault();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          const instant =
+            typeof window !== "undefined" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
         },
       }
     : {};
@@ -64,7 +100,11 @@ export function Navbar() {
         <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 sm:right-4">
           <AccountIconLink />
         </div>
-        <div className="relative flex items-center px-4 pb-3.5 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4">
+        <div
+          className={`relative flex items-center px-4 pt-[max(0.65rem,env(safe-area-inset-top,0px))] transition-[padding] duration-300 ease-out motion-reduce:transition-none sm:px-6 ${
+            scrolled ? "pb-2 sm:pb-2.5" : "pb-3.5 sm:pb-4"
+          }`}
+        >
           <nav
             className="mx-auto flex w-full max-w-[calc(100%-3.75rem)] flex-nowrap items-center justify-center gap-x-2.5 overflow-x-auto overscroll-x-contain text-center text-[0.5rem] uppercase tracking-[0.22em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-3.5 min-[400px]:text-[0.54rem] min-[400px]:tracking-[0.24em] sm:max-w-[calc(100%-3.25rem)] sm:gap-x-4 sm:text-[0.56rem] sm:tracking-[0.26em] [&::-webkit-scrollbar]:hidden"
             aria-label="Primary"
@@ -80,12 +120,21 @@ export function Navbar() {
             ))}
           </nav>
         </div>
+        <div className="relative border-t border-white/[0.06] px-4 pb-2.5 pt-1 sm:px-6 sm:pb-3 sm:pt-1.5">
+          <GuidedDiscoveryLink isOnHome={isOnHome} className={`${HELP_CHOOSING_LINK} w-full`} />
+        </div>
       </div>
 
       {/* Desktop: true center nav + account only on the right */}
       <div className="mystic-nav-fade relative hidden md:block">
-        <div className="pointer-events-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 sm:pb-6 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:px-10 lg:px-14">
-          <div aria-hidden className="min-w-0" />
+        <div
+          className={`pointer-events-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 pt-[max(1.25rem,env(safe-area-inset-top,0px))] transition-[padding] duration-300 ease-out motion-reduce:transition-none sm:px-8 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:px-10 lg:px-14 ${
+            scrolled ? "pb-3 sm:pb-4" : "pb-5 sm:pb-6"
+          }`}
+        >
+          <div className="flex min-w-0 items-center justify-start self-center pr-2">
+            <GuidedDiscoveryLink isOnHome={isOnHome} className={HELP_CHOOSING_LINK} />
+          </div>
           <nav
             className="mx-auto flex w-max max-w-[100vw] flex-nowrap items-center justify-center gap-x-3 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.32em] sm:gap-x-6 sm:text-[0.64rem] sm:tracking-[0.34em] md:gap-x-8 md:tracking-[0.36em]"
             aria-label="Primary"
@@ -107,7 +156,9 @@ export function Navbar() {
 
         <div
           aria-hidden
-          className="pointer-events-none mx-auto mt-5 h-px w-[min(28rem,72vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] sm:mt-6 md:w-[min(32rem,78vw)]"
+          className={`pointer-events-none mx-auto h-px w-[min(28rem,72vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] transition-[margin-top] duration-300 ease-out motion-reduce:transition-none md:w-[min(32rem,78vw)] ${
+            scrolled ? "mt-3 sm:mt-4" : "mt-5 sm:mt-6"
+          }`}
         />
       </div>
     </header>
@@ -168,7 +219,7 @@ function AccountIconLink() {
       href="/account"
       prefetch
       aria-label="Account"
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
     >
       <span className="sr-only">Account</span>
       <AccountGlyph />
