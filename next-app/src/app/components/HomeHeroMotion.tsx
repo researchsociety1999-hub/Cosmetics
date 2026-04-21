@@ -15,7 +15,7 @@ export function HomeHeroMotion({
   return (
     <section
       data-hero-section="home"
-      className="relative -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[90dvh] overflow-x-clip overflow-y-hidden sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
+      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
     >
       {/* —— Atmosphere (behind all content) —— */}
       <div
@@ -36,6 +36,10 @@ export function HomeHeroMotion({
         />
         <div className="absolute inset-0 bg-[linear-gradient(175deg,rgba(6,5,9,0.62)_0%,rgba(3,4,10,0.42)_40%,rgba(4,5,12,0.72)_100%)]" />
       </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-black/30 to-black/70"
+      />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_18%,rgba(214,168,95,0.12),transparent_55%),radial-gradient(circle_at_90%_18%,rgba(255,154,80,0.07),transparent_38%),radial-gradient(circle_at_10%_45%,rgba(120,90,160,0.06),transparent_42%),linear-gradient(168deg,rgba(10,8,14,0.85)_0%,rgba(4,5,10,0.9)_45%,rgb(2,3,7)_100%)]"
@@ -100,11 +104,11 @@ export function HomeHeroMotion({
       />
 
       {/* —— Foreground: logo band + bottom copy (no overlap) —— */}
-      <div className="relative z-10 grid min-h-[90dvh] w-full grid-rows-[1fr_auto]">
+      <div className="absolute inset-0 z-10 flex min-h-[100svh] w-full flex-col">
         {/* Logo: primary focal — large, bright, centered in upper stage */}
         <div
           aria-hidden
-          className="relative flex min-h-0 items-center justify-center px-3 pt-2 pb-4 sm:px-6 sm:pb-6 md:px-10 md:pb-8"
+          className="relative flex min-h-0 flex-1 items-center justify-center px-3 pt-2 pb-4 sm:px-6 sm:pb-6 md:px-10 md:pb-8"
         >
           <div className="pointer-events-none absolute left-1/2 top-[46%] hidden h-[min(52vh,38rem)] w-[min(140vw,72rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_72%_58%_at_50%_50%,rgba(214,168,95,0.2),rgba(214,168,95,0.07)_42%,transparent_74%)] blur-3xl md:block" />
           <div className="pointer-events-none absolute left-1/2 top-[48%] h-[min(40vh,16rem)] w-[min(130vw,48rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_68%_56%_at_50%_50%,rgba(255,200,140,0.1),transparent_70%)] blur-2xl md:hidden" />
