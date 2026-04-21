@@ -13,6 +13,7 @@ import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
 import { getJournalEntries, getProducts } from "./lib/queries";
 import { isProductPurchasable } from "./lib/productMerch";
+import type { Product } from "./lib/types";
 
 export const metadata: Metadata = {
   title: {
@@ -198,19 +199,21 @@ async function JournalHomeSection() {
 }
 
 export default async function HomePage() {
+  const catalog = await getProducts({ sortBy: "featured", limit: 12 });
+  const featuredPurchasable = catalog.filter(isProductPurchasable);
+  const heroQuickViewProduct = featuredPurchasable[0] ?? null;
+
   return (
     <SiteChrome>
       <main className="relative isolate">
         <div className="home-premium-filmgrain" aria-hidden />
-        <div className="home-premium-stack">
-          <HomeHeroMotion />
+        <div className="home-premium-stack min-w-0">
+          <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
           <HomeTrustStrip />
           <HomeGuidedDiscovery />
           <RitualStripSection />
           <FirstVisitGuidanceStrip />
-          <Suspense fallback={<SectionLoading title="Ritual signatures" layout="featuredProducts" />}>
-            <FeaturedProductsSection />
-          </Suspense>
+          <FeaturedProductsSection products={featuredPurchasable} />
           <HomeEditorialModules />
           <IngredientSpotlightSection />
           <Suspense fallback={<SectionLoading title="Journal" />}>
@@ -268,9 +271,8 @@ function FirstVisitGuidanceStrip() {
   );
 }
 
-async function FeaturedProductsSection() {
-  const products = await getProducts({ sortBy: "featured", limit: 12 });
-  const purchasable = products.filter(isProductPurchasable).slice(0, 4);
+function FeaturedProductsSection({ products }: { products: Product[] }) {
+  const purchasable = products.slice(0, 4);
 
   if (purchasable.length === 0) {
     return null;
