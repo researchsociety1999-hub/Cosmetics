@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteChrome } from "../../components/SiteChrome";
 import { getJournalEntries } from "../../lib/queries";
+import { buildPageMetadata } from "../../lib/seo";
 
 export async function generateMetadata({
   params,
@@ -14,15 +15,20 @@ export async function generateMetadata({
 
   if (!entry) {
     return {
-      title: "Journal entry not found",
+      ...buildPageMetadata({
+        title: "Journal entry not found",
+        canonicalPath: `/journal/${slug}`,
+      }),
       robots: { index: false, follow: false },
     };
   }
 
-  return {
+  return buildPageMetadata({
     title: entry.title,
     description: entry.excerpt,
-  };
+    canonicalPath: `/journal/${slug}`,
+    openGraphType: "article",
+  });
 }
 
 export default async function JournalEntryPage({

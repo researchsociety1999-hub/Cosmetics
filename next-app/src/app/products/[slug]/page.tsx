@@ -19,6 +19,11 @@ import {
   getRelatedProducts,
   getRoutineCompanionProducts,
 } from "../../lib/queries";
+import { buildPageMetadata } from "../../lib/seo";
+import {
+  buildBreadcrumbListJsonLd,
+  buildProductJsonLd,
+} from "../../lib/structuredData";
 
 export const revalidate = 300;
 
@@ -48,34 +53,13 @@ export async function generateMetadata({
   const ogImage = images[0];
   const canonicalPath = `/products/${product.slug?.trim() ?? slug}`;
 
-  return {
+  return buildPageMetadata({
     title: productName,
     description,
-    alternates: { canonical: canonicalPath },
-    openGraph: {
-      title: productName,
-      description,
-      url: canonicalPath,
-      siteName: "Mystique",
-      type: "website",
-      ...(ogImage
-        ? {
-            images: [
-              {
-                url: ogImage,
-                alt: `${productName} — Mystique`,
-              },
-            ],
-          }
-        : {}),
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: productName,
-      description,
-      ...(ogImage ? { images: [ogImage] } : {}),
-    },
-  };
+    canonicalPath,
+    openGraphType: "website",
+    images: ogImage ? [{ url: ogImage, alt: `${productName} — Mystique` }] : undefined,
+  });
 }
 
 export default async function ProductPage({
@@ -160,9 +144,44 @@ export default async function ProductPage({
   const relatedFiltered = relatedProducts.filter((p) => !routineIds.has(p.id));
   const routinePurchasable = routineProducts.filter(isProductPurchasable);
   const relatedPurchasable = relatedFiltered.filter(isProductPurchasable);
+  const canonicalPath = `/products/${product.slug?.trim() ?? slug}`;
+  const offerPriceCents = product.sale_price_cents ?? product.price_cents ?? null;
+  const isInStock =
+    Boolean(product.in_stock) && (typeof product.stock === "number" ? product.stock > 0 : true);
+  const jsonLdProduct = buildProductJsonLd({
+    name: productName,
+    description: product.description,
+    slug: product.slug?.trim() ?? slug,
+    sku: product.sku,
+    imageUrls: images,
+    priceCents: offerPriceCents,
+    currency: "USD",
+    inStock: isInStock,
+  });
+  const jsonLdBreadcrumbs = buildBreadcrumbListJsonLd([
+    { name: "Home", href: "/" },
+    { name: "Shop", href: "/shop" },
+    ...(product.category_name && product.category_slug
+      ? [
+          {
+            name: product.category_name,
+            href: `/shop?category=${encodeURIComponent(product.category_slug)}` as `/${string}`,
+          },
+        ]
+      : []),
+    { name: productName, href: canonicalPath },
+  ]);
 
   return (
     <SiteChrome>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProduct) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumbs) }}
+      />
       <main className="w-full px-4 pb-28 pt-10 md:px-6 lg:px-10 lg:pb-14 lg:pt-14 xl:px-14">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"

@@ -81,7 +81,7 @@ export default async function JournalPage() {
                   <h2 className="mt-6 text-balance font-literata text-[clamp(1.25rem,2.6vw,1.65rem)] leading-[1.3] tracking-[0.06em] text-[#f5f0ea] transition group-hover:text-[#faf7f3]">
                     {entry.title}
                   </h2>
-                  <p className="mt-4 line-clamp-2 text-[0.8125rem] leading-[1.55] text-[#8f867a]">
+                  <p className="mt-4 line-clamp-3 text-[0.8125rem] leading-[1.55] text-[#8f867a]">
                     {entry.excerpt}
                   </p>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-8">

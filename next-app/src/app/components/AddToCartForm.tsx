@@ -1,6 +1,7 @@
 "use client";
 
 import { useId } from "react";
+import { useFormStatus } from "react-dom";
 
 type AddToCartFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -17,6 +18,39 @@ type AddToCartFormProps = {
   controlledQuantity?: number;
   disabled?: boolean;
 };
+
+function SubmitButton({
+  label,
+  className,
+  disabled,
+}: {
+  label: string;
+  className: string;
+  disabled: boolean;
+}) {
+  const { pending } = useFormStatus();
+  const isDisabled = disabled || pending;
+
+  return (
+    <button
+      type="submit"
+      className={className}
+      disabled={isDisabled}
+      aria-disabled={isDisabled}
+      aria-busy={pending}
+    >
+      <span className="inline-flex items-center justify-center gap-2">
+        <span>{pending ? "Adding…" : label}</span>
+        {pending ? (
+          <span
+            aria-hidden
+            className="inline-flex h-1.5 w-1.5 rounded-full bg-current opacity-70 shadow-[0_0_10px_rgba(214,168,95,0.35)]"
+          />
+        ) : null}
+      </span>
+    </button>
+  );
+}
 
 export function AddToCartForm({
   action,
@@ -68,9 +102,11 @@ export function AddToCartForm({
       ) : (
         <input type="hidden" name="quantity" value={defaultQuantity} />
       )}
-      <button type="submit" className={buttonClassName} disabled={disabled}>
-        {buttonLabel}
-      </button>
+      <SubmitButton
+        label={buttonLabel}
+        className={buttonClassName}
+        disabled={disabled}
+      />
     </form>
   );
 }

@@ -9,6 +9,7 @@ import { AddToCartForm } from "./AddToCartForm";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import { isProductPurchasable } from "../lib/productMerch";
 import type { Product } from "../lib/types";
+import { StarRow } from "./StarRating";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input:not([type="hidden"]), select, [tabindex]:not([tabindex="-1"])';
@@ -214,6 +215,14 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
                   {formatMoney(displayPrice)}
                 </span>
               )}
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-[0.7rem]">
+                <StarRow rating={5} />
+              </span>
+              <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7a7265]">
+                Coming soon
+              </span>
             </div>
 
             {product.description ? (

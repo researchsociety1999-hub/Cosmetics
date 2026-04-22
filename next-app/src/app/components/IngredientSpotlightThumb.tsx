@@ -33,7 +33,7 @@ export function IngredientSpotlightThumb({
   const rimRounded = isLg ? "rounded-[1.25rem]" : "rounded-[1.125rem]";
 
   return (
-    <div className="group relative shrink-0">
+    <div className="group relative shrink-0" data-image-slot={`ingredient:${id}`}>
       <div
         aria-hidden
         className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-[rgba(214,168,95,0.38)] via-[rgba(214,168,95,0.05)] to-transparent opacity-95 [mask-image:linear-gradient(155deg,black,transparent_88%)]"
@@ -44,7 +44,7 @@ export function IngredientSpotlightThumb({
         {/* Base photo: pull into brand palette (cooler shadows, less “stock” saturation) */}
         <Image
           src={src}
-          alt=""
+          alt={isSvg ? "" : `${name} ingredient texture`}
           width={imgPx}
           height={imgPx}
           sizes={sizesAttr}

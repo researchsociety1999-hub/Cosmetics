@@ -7,6 +7,7 @@ import { AddToCartForm } from "./AddToCartForm";
 import { PurchaseTrustFootnote } from "./PurchaseTrustFootnote";
 import { RatingSummaryText, StarRow } from "./StarRating";
 import { formatMoney, getUnitPriceCents } from "../lib/format";
+import { FREE_SHIPPING_THRESHOLD_CENTS } from "../lib/checkout";
 import { isProductPurchasable } from "../lib/productMerch";
 import type { Product, ProductVariant } from "../lib/types";
 import { WaitlistModal } from "./WaitlistModal";
@@ -74,6 +75,15 @@ export function ProductPurchaseClient({
     product.sale_price_cents != null &&
     selectedVariant?.price_cents == null &&
     unitCents < baseList;
+
+  const freeShipProgress = Math.min(
+    1,
+    Math.max(0, (unitCents * quantity) / FREE_SHIPPING_THRESHOLD_CENTS),
+  );
+  const freeShipRemainingCents = Math.max(
+    0,
+    FREE_SHIPPING_THRESHOLD_CENTS - unitCents * quantity,
+  );
 
   const browseSimilarHref = useMemo(() => {
     const slug = product.category_slug?.trim();
@@ -232,6 +242,25 @@ export function ProductPurchaseClient({
         )}
 
         <div className="mystic-card space-y-5 p-5">
+          <div className="space-y-2">
+            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-[#b8ab95]">
+              Free shipping on {formatMoney(FREE_SHIPPING_THRESHOLD_CENTS)}
+            </p>
+            <div
+              aria-hidden
+              className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06] ring-1 ring-inset ring-white/[0.06]"
+            >
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,rgba(214,168,95,0.7),rgba(232,197,110,0.92))] shadow-[0_0_18px_rgba(214,168,95,0.18)] transition-[width] duration-300 ease-out motion-reduce:transition-none"
+                style={{ width: `${Math.round(freeShipProgress * 100)}%` }}
+              />
+            </div>
+            <p className="text-xs text-[#7a7265]">
+              {freeShipRemainingCents > 0
+                ? `Add ${formatMoney(freeShipRemainingCents)} more to unlock free shipping.`
+                : "Free shipping unlocked for this order."}
+            </p>
+          </div>
           <div>
             <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-[#b8ab95]">
               Quantity
