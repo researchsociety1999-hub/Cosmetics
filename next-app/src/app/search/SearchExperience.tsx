@@ -1,30 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ThemedImageFrame } from "../components/ThemedImageFrame";
-import { formatMoney, getProductPrimaryImageUrl } from "../lib/format";
-
-type SearchProduct = {
-  id: number;
-  slug: string;
-  name: string;
-  description: string | null;
-  image_url: string | null;
-  price_cents: number;
-  sale_price_cents: number | null;
-  routine_step?: string | null;
-};
+import ProductCard from "../components/productcard";
+import type { Product } from "../lib/types";
 
 export function SearchExperience({
   initialQuery,
   initialProducts,
 }: {
   initialQuery: string;
-  initialProducts: SearchProduct[];
+  initialProducts: Product[];
 }) {
   const [query, setQuery] = useState(initialQuery);
-  const [products, setProducts] = useState<SearchProduct[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const firstRenderRef = useRef(true);
@@ -62,9 +50,9 @@ export function SearchExperience({
         const response = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
           cache: "no-store",
         });
-        let data: { products?: SearchProduct[]; error?: string } = {};
+        let data: { products?: Product[]; error?: string } = {};
         try {
-          data = (await response.json()) as { products?: SearchProduct[]; error?: string };
+          data = (await response.json()) as { products?: Product[]; error?: string };
         } catch {
           data = {};
         }
@@ -107,7 +95,12 @@ export function SearchExperience({
             className="mystic-input w-full text-sm"
           />
         </label>
-        <p className="text-xs uppercase tracking-[0.22em] text-[#b8ab95]">
+        <p
+          className="text-xs uppercase tracking-[0.22em] text-[#b8ab95]"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {isLoading
             ? "Searching…"
             : trimmedQuery
@@ -136,48 +129,9 @@ export function SearchExperience({
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">
-          {products.map((product) => {
-            const imageSrc = getProductPrimaryImageUrl(product);
-            const displayPrice = formatMoney(product.sale_price_cents ?? product.price_cents);
-            const slug = product.slug?.trim();
-            const productHref = slug ? `/products/${slug}` : "/shop";
-
-            return (
-              <Link
-                key={product.id}
-                href={productHref}
-                className="group mystic-card overflow-hidden p-0 transition hover:border-[rgba(214,168,95,0.32)]"
-              >
-                <ThemedImageFrame
-                  src={imageSrc}
-                  displayTitle={product.name}
-                  alt={`${product.name} — Mystique`}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 25vw"
-                  variant="product"
-                  className="aspect-[4/5]"
-                  frameClassName="rounded-none"
-                  imageClassName="object-cover"
-                />
-                <div className="space-y-2 p-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                    {product.routine_step ?? "Ritual"}
-                  </p>
-                  <h3 className="font-literata text-2xl tracking-[0.08em] text-[#f5eee3]">
-                    {product.name}
-                  </h3>
-                  {product.description ? (
-                    <p className="text-sm leading-relaxed text-[#b8ab95]">
-                      {product.description}
-                    </p>
-                  ) : null}
-                  <p className="pt-2 text-sm uppercase tracking-[0.22em] text-[#f0d19a]">
-                    {displayPrice}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} showQuickView />
+          ))}
         </div>
       )}
     </section>

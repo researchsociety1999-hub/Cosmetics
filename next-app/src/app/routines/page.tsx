@@ -59,7 +59,7 @@ export default function RoutinesPage() {
           />
         </section>
 
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           <Link
             href="/shop"
             className="mystic-button-primary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
@@ -71,6 +71,12 @@ export default function RoutinesPage() {
             className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
           >
             Explore ingredients
+          </Link>
+          <Link
+            href="/#guided-discovery"
+            className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
+          >
+            Need help choosing?
           </Link>
         </div>
       </main>

@@ -19,7 +19,10 @@ export function BackToTopButton() {
     <button
       type="button"
       aria-label="Back to top"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => {
+        const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
+      }}
       className={`fixed right-5 top-1/2 z-50 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border text-[#f5eee3] transition-all duration-300 md:right-7 ${
         isVisible
           ? "pointer-events-auto border-[rgba(214,168,95,0.42)] bg-[rgba(214,168,95,0.12)] opacity-100 shadow-[0_0_28px_rgba(214,168,95,0.22)]"
