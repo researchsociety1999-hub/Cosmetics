@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { HomeEditorialModules } from "./components/home/HomeEditorialModules";
 import { HomeGuidedDiscovery } from "./components/home/HomeGuidedDiscovery";
+import { HomeLovedByStrip } from "./components/home/HomeLovedByStrip";
 import { HomeServicesModule } from "./components/home/HomeServicesModule";
 import { HomeTrustStrip } from "./components/home/HomeTrustStrip";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
@@ -13,14 +14,17 @@ import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
 import { getJournalEntries, getProducts } from "./lib/queries";
 import { isProductPurchasable } from "./lib/productMerch";
+import { buildPageMetadata } from "./lib/seo";
 import type { Product } from "./lib/types";
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Mystique | Where Beauty Transcends",
-  },
-  description:
-    "Premium skincare with clear morning, night, and weekly rituals—shop formulas by concern, read ingredient notes, and build a routine you will keep.",
+  ...buildPageMetadata({
+    title: "Mystique | Where Beauty Transcends",
+    description:
+      "Premium skincare with clear morning, night, and weekly rituals—shop formulas by concern, read ingredient notes, and build a routine you will keep.",
+    canonicalPath: "/",
+  }),
+  title: { absolute: "Mystique | Where Beauty Transcends" },
 };
 
 export const revalidate = 300;
@@ -177,6 +181,9 @@ async function JournalHomeSection() {
                   <h3 className="mt-6 text-balance font-literata text-[clamp(1.2rem,2.4vw,1.45rem)] leading-[1.35] tracking-[0.06em] text-[#f5f0ea] transition group-hover:text-[#faf7f3]">
                     {entry.title}
                   </h3>
+                  <p className="mt-4 line-clamp-3 text-[0.8125rem] leading-[1.55] text-[#8f867a]">
+                    {entry.excerpt}
+                  </p>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-10">
                     <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#9d8f78] transition group-hover:text-[#c9b896]">
                       Essay
@@ -210,8 +217,9 @@ export default async function HomePage() {
         <div className="home-premium-stack min-w-0">
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
           <HomeTrustStrip />
-          <HomeGuidedDiscovery />
           <RitualStripSection />
+          <HomeLovedByStrip />
+          <HomeGuidedDiscovery />
           <FirstVisitGuidanceStrip />
           <FeaturedProductsSection products={featuredPurchasable} />
           <HomeEditorialModules />
@@ -443,6 +451,40 @@ function NewsletterSection() {
   return (
     <section className="mystic-section relative pb-20 md:pb-24">
       <div className="mystic-section-shell">
+        <section
+          aria-labelledby="home-story-heading"
+          className="mb-10 overflow-hidden rounded-[26px] border border-[rgba(214,168,95,0.12)] bg-[linear-gradient(168deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.012)_46%,rgba(0,0,0,0.16)_100%)] shadow-[0_28px_80px_rgba(0,0,0,0.45)]"
+        >
+          <div className="grid gap-8 p-6 md:grid-cols-[1.05fr_0.95fr] md:items-center md:p-8">
+            <div className="space-y-4">
+              <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+                The story
+              </p>
+              <h2
+                id="home-story-heading"
+                className="font-literata text-3xl tracking-[0.12em] text-[#f5eee3] md:text-4xl"
+              >
+                California restraint, built into ritual.
+              </h2>
+              <p className="max-w-xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
+                Mystique is designed for the routines you repeat: plush textures, clear steps,
+                and finishes that look calm in real light.
+              </p>
+              <Link
+                href="/about"
+                className="inline-flex min-h-[44px] items-center text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 transition hover:text-[#e8c56e] hover:underline"
+              >
+                Read the story
+              </Link>
+            </div>
+            <div
+              data-image-slot="home-story"
+              aria-hidden
+              className="relative aspect-[4/3] w-full overflow-hidden rounded-[22px] border border-white/[0.06] bg-[radial-gradient(circle_at_18%_22%,rgba(255,154,80,0.12),transparent_26%),radial-gradient(circle_at_78%_34%,rgba(214,168,95,0.1),transparent_32%),linear-gradient(190deg,rgba(18,20,28,0.55)_0%,rgba(6,7,12,0.9)_55%,rgb(4,5,10)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+            />
+          </div>
+        </section>
+
         <div className="home-luxury-frame mystic-card grid gap-8 rounded-[26px] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
@@ -451,12 +493,13 @@ function NewsletterSection() {
             <h2 className="mt-3 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
               Notes from the studio.
             </h2>
+            <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#b8ab95]">
+              Join for early access to launches, restock alerts, and ritual guidance—written
+              with restraint.
+            </p>
           </div>
           <div>
             <NewsletterForm />
-            <p className="mt-3 text-xs text-[#8f8576]">
-              Unsubscribe anytime. We send only what feels worth opening.
-            </p>
           </div>
         </div>
       </div>

@@ -2,11 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { SiteChrome } from "../components/SiteChrome";
+import { buildPageMetadata } from "../lib/seo";
 
 export const metadata: Metadata = {
-  title: "About Mystique",
-  description:
-    "Our California-rooted approach: calm textures, disciplined five-step rituals, and formulas meant for bathrooms you use every day.",
+  ...buildPageMetadata({
+    title: "About Mystique",
+    description:
+      "Our California-rooted approach: calm textures, disciplined five-step rituals, and formulas meant for bathrooms you use every day.",
+    canonicalPath: "/about",
+  }),
 };
 
 export default function AboutPage() {

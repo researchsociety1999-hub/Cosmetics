@@ -5,6 +5,7 @@ import { AddToCartForm } from "./AddToCartForm";
 import { ProductCardQuickView } from "./ProductCardQuickView";
 import { ThemedImageFrame } from "./ThemedImageFrame";
 import { WaitlistModal } from "./WaitlistModal";
+import { StarRow } from "./StarRating";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import {
   getPrimaryBenefitLine,
@@ -162,6 +163,14 @@ export default function ProductCard({
           >
             {product.name}
           </Link>
+          <div className="flex items-center gap-2">
+            <span className={compact ? "text-[0.62rem]" : "text-[0.7rem]"}>
+              <StarRow rating={5} />
+            </span>
+            <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7a7265]">
+              Coming soon
+            </span>
+          </div>
           {scanLine ? (
             <p
               className={

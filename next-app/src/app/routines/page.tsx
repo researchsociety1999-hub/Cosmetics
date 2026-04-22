@@ -98,7 +98,10 @@ function RoutineCard({
   steps: string[];
 }) {
   return (
-    <article id={id} className="mystic-card scroll-mt-28 p-6 md:p-8 lg:scroll-mt-32">
+    <article
+      id={id}
+      className="group mystic-card scroll-mt-28 p-6 md:p-8 lg:scroll-mt-32"
+    >
       <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
         Starter sequence
       </p>
@@ -132,9 +135,15 @@ function RoutineCard({
       <div className="mt-8 flex flex-wrap items-center gap-3">
         <Link
           href="/shop"
-          className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2 text-[0.68rem] uppercase tracking-[0.2em]"
+          className="group inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.3)] bg-[rgba(2,3,6,0.3)] px-5 py-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#e8dcc8] backdrop-blur-sm transition hover:border-[rgba(214,168,95,0.5)] hover:bg-[rgba(214,168,95,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
         >
-          Shop this routine
+          <span>Shop this routine</span>
+        </Link>
+        <Link
+          href="/shop"
+          className="inline-flex items-center text-[0.65rem] uppercase tracking-[0.22em] text-[#d6a85f] opacity-100 underline-offset-4 transition hover:text-[#e8c56e] hover:underline md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+        >
+          Shop this step
         </Link>
         <p className="text-xs uppercase tracking-[0.2em] text-[#9f927f]">
           {steps.join(" · ")}

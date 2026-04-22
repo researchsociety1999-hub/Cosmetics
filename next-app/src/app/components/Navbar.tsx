@@ -64,12 +64,34 @@ export function Navbar() {
   const pathname = usePathname();
   const isOnHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState<number>(0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCartCount() {
+      try {
+        const res = await fetch("/api/cart-summary", { cache: "no-store" });
+        const data = (await res.json()) as { itemCount?: number };
+        if (cancelled) return;
+        setCartCount(Math.max(0, Math.floor(Number(data.itemCount ?? 0))));
+      } catch {
+        if (cancelled) return;
+        setCartCount(0);
+      }
+    }
+    loadCartCount();
+    window.addEventListener("focus", loadCartCount);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("focus", loadCartCount);
+    };
   }, []);
 
   const homeClickProps = isOnHome
@@ -97,7 +119,8 @@ export function Navbar() {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_100%_at_50%_0%,rgba(214,168,95,0.07),transparent_55%),linear-gradient(180deg,rgba(8,9,14,0.35)_0%,rgba(2,3,6,0.2)_100%)]"
         />
-        <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 sm:right-4">
+        <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 flex items-center gap-2 sm:right-4">
+          <CartIconLink count={cartCount} />
           <AccountIconLink />
         </div>
         <div
@@ -150,6 +173,7 @@ export function Navbar() {
             ))}
           </nav>
           <div className="flex min-w-0 justify-end">
+            <CartIconLink count={cartCount} />
             <AccountIconLink />
           </div>
         </div>
@@ -162,6 +186,26 @@ export function Navbar() {
         />
       </div>
     </header>
+  );
+}
+
+function CartIconLink({ count }: { count: number }) {
+  const showBadge = Number.isFinite(count) && count > 0;
+  return (
+    <Link
+      href="/cart"
+      prefetch
+      aria-label={showBadge ? `Cart (${count} items)` : "Cart"}
+      className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
+    >
+      <span className="sr-only">Cart</span>
+      <CartGlyph />
+      {showBadge ? (
+        <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-[#d6a85f] px-1 text-[0.6rem] font-semibold tabular-nums text-black shadow-[0_0_18px_rgba(214,168,95,0.25)]">
+          {count > 99 ? "99+" : count}
+        </span>
+      ) : null}
+    </Link>
   );
 }
 
@@ -215,15 +259,25 @@ function MobileNavLink({
 
 function AccountIconLink() {
   return (
-    <Link
-      href="/account"
-      prefetch
-      aria-label="Account"
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
-    >
-      <span className="sr-only">Account</span>
-      <AccountGlyph />
-    </Link>
+    <div className="relative shrink-0">
+      <Link
+        href="/account"
+        prefetch
+        aria-label="Account"
+        className="group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 md:px-3.5"
+      >
+        <span className="sr-only">Account</span>
+        <span className="inline-flex h-11 w-11 items-center justify-center sm:h-9 sm:w-9">
+          <AccountGlyph />
+        </span>
+        <span className="hidden font-ui text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#d6c4a8] md:inline">
+          ACCOUNT
+        </span>
+      </Link>
+      <span className="pointer-events-none absolute left-1/2 top-[calc(100%+0.35rem)] z-50 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-[rgba(214,168,95,0.24)] bg-[rgba(6,8,14,0.96)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-[#f5eee3] opacity-0 shadow-[0_10px_32px_rgba(0,0,0,0.5)] transition-opacity duration-200 group-focus-within:opacity-100 sm:group-focus-within:opacity-0 sm:hidden">
+        Account
+      </span>
+    </div>
   );
 }
 
@@ -245,6 +299,30 @@ function AccountGlyph() {
         strokeLinecap="round"
         strokeOpacity="0.9"
       />
+    </svg>
+  );
+}
+
+function CartGlyph() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M7.25 7.5h13l-1.2 6.6a2.25 2.25 0 0 1-2.21 1.85H9.1a2.25 2.25 0 0 1-2.2-1.78L5.2 4.75H3.25"
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeOpacity="0.9"
+      />
+      <circle cx="9.75" cy="19.25" r="1.1" fill="currentColor" fillOpacity="0.9" />
+      <circle cx="17.25" cy="19.25" r="1.1" fill="currentColor" fillOpacity="0.9" />
     </svg>
   );
 }
