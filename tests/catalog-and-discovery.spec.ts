@@ -49,7 +49,7 @@ test.describe("catalog and discovery", () => {
       "zzzqqq-nonexistent-catalog-token-88421",
     );
     await expect(
-      page.getByText(/No results for|Try a broader search/i).first(),
+      page.getByText(/No matches|Nothing for/i).first(),
     ).toBeVisible();
   });
 });

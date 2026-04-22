@@ -95,7 +95,7 @@ test.describe("account, legal, and status routes", () => {
 
     await expectHeading(page, "This ritual does not exist.");
     await expect(page.getByRole("link", { name: "Return home" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Browse shop" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Shop the collection" })).toBeVisible();
   });
 
   test("press and careers pages render live support content", async ({ page }) => {

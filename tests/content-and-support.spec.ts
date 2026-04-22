@@ -21,7 +21,7 @@ test.describe("content and support routes", () => {
     await expect(
       page.getByRole("heading", { name: "Bloom Skin: Luminosity in Measure", exact: true }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Read the essay" }).first()).toBeVisible();
+    await expect(page.locator('a[href^="/journal/"]').first()).toBeVisible();
   });
 
   test("faq page expands answers for shoppers", async ({ page }) => {

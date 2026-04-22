@@ -71,8 +71,6 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   /* `next dev` holds a project lock — a second dev instance fails. Build + start avoids clashing with a normal dev server on :3000. */
   webServer: {
-    // Playwright's webServer doesn't consistently honor `cwd` across versions.
-    // Use `--prefix` so Next always runs from `next-app/`.
     command: "npm --prefix next-app run build && npm --prefix next-app run start",
     url: "http://localhost:3001",
     reuseExistingServer: false,
