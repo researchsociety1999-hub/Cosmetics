@@ -14,19 +14,13 @@ const NAV_LINKS = [
 ] as const;
 
 const NAV_LINK_BASE =
-  "inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap py-1 [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0";
+  "inline-flex shrink-0 items-center whitespace-nowrap py-1 [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
 const NAV_LINK_IDLE = `${NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
 const NAV_LINK_ACTIVE = `${NAV_LINK_BASE} text-[#f0d19a]`;
 
-const MOBILE_NAV_LINK_BASE =
-  "inline-flex shrink-0 items-center whitespace-nowrap py-2 [text-shadow:0_1px_14px_rgba(0,0,0,0.85)] transition duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
-
-const MOBILE_NAV_LINK_IDLE = `${MOBILE_NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
-const MOBILE_NAV_LINK_ACTIVE = `${MOBILE_NAV_LINK_BASE} text-[#f0d19a]`;
-
 const HELP_CHOOSING_LINK =
-  "inline-flex min-h-[44px] max-w-full items-center justify-center whitespace-normal break-words py-1 text-center text-[0.5rem] uppercase leading-snug tracking-[0.2em] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:min-h-0 sm:py-0 md:justify-start md:text-left md:text-[0.52rem] md:tracking-[0.22em]";
+  "inline-flex max-w-full items-center justify-center whitespace-normal break-words py-1 text-center text-[clamp(0.5rem,1.2vw,0.62rem)] uppercase leading-snug tracking-[clamp(0.18em,0.6vw,0.28em)] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
 /**
  * Centered gold nav (Shop · Routines · Home · Ingredients · About) + account icon
@@ -110,56 +104,31 @@ export function Navbar() {
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 hidden h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] md:block"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)]"
       />
 
-      {/* Mobile: centered link strip; account pinned top-right */}
-      <div className="pointer-events-auto relative overflow-hidden border-b border-white/[0.07] bg-[rgba(2,3,6,0.78)] backdrop-blur-xl md:hidden">
+      {/* Fluid header: no hamburger, wraps to keep all links visible */}
+      <div className="pointer-events-auto relative overflow-hidden border-b border-white/[0.07] bg-[rgba(2,3,6,0.78)] backdrop-blur-xl">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_100%_at_50%_0%,rgba(214,168,95,0.07),transparent_55%),linear-gradient(180deg,rgba(8,9,14,0.35)_0%,rgba(2,3,6,0.2)_100%)]"
         />
-        <div className="absolute right-2 top-[max(0.35rem,env(safe-area-inset-top,0px))] z-10 flex items-center gap-2 sm:right-4">
-          <CartIconLink count={cartCount} />
-          <AccountIconLink />
-        </div>
         <div
-          className={`relative flex items-center px-4 pt-[max(0.65rem,env(safe-area-inset-top,0px))] transition-[padding] duration-300 ease-out motion-reduce:transition-none sm:px-6 ${
-            scrolled ? "pb-2 sm:pb-2.5" : "pb-3.5 sm:pb-4"
+          className={`relative flex flex-col gap-2 px-4 pt-[max(0.65rem,env(safe-area-inset-top,0px))] transition-[padding] duration-300 ease-out motion-reduce:transition-none sm:px-6 md:px-10 lg:px-14 ${
+            scrolled ? "pb-2.5" : "pb-3.5"
           }`}
         >
-          <nav
-            className="mx-auto flex w-full max-w-[calc(100%-3.75rem)] flex-nowrap items-center justify-center gap-x-2.5 overflow-x-auto overscroll-x-contain text-center text-[0.5rem] uppercase tracking-[0.22em] text-[#d4c4a8] [-ms-overflow-style:none] [scrollbar-width:none] min-[400px]:gap-x-3.5 min-[400px]:text-[0.54rem] min-[400px]:tracking-[0.24em] sm:max-w-[calc(100%-3.25rem)] sm:gap-x-4 sm:text-[0.56rem] sm:tracking-[0.26em] [&::-webkit-scrollbar]:hidden"
-            aria-label="Primary"
-          >
-            {NAV_LINKS.map(({ href, label }) => (
-              <MobileNavLink
-                key={href}
-                href={href}
-                label={label}
-                active={isNavActive(href, pathname)}
-                extraProps={href === "/" ? homeClickProps : undefined}
-              />
-            ))}
-          </nav>
-        </div>
-        <div className="relative border-t border-white/[0.06] px-4 pb-2.5 pt-1 sm:px-6 sm:pb-3 sm:pt-1.5">
-          <GuidedDiscoveryLink isOnHome={isOnHome} className={`${HELP_CHOOSING_LINK} w-full`} />
-        </div>
-      </div>
-
-      {/* Desktop: true center nav + account only on the right */}
-      <div className="mystic-nav-fade relative hidden md:block">
-        <div
-          className={`pointer-events-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 pt-[max(1.25rem,env(safe-area-inset-top,0px))] transition-[padding] duration-300 ease-out motion-reduce:transition-none sm:px-8 sm:pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:px-10 lg:px-14 ${
-            scrolled ? "pb-3 sm:pb-4" : "pb-5 sm:pb-6"
-          }`}
-        >
-          <div className="flex min-w-0 items-center justify-start self-center pr-2">
-            <GuidedDiscoveryLink isOnHome={isOnHome} className={HELP_CHOOSING_LINK} />
+          <div className="flex w-full min-w-0 items-center justify-between gap-3">
+            <div className="min-w-0">
+              <GuidedDiscoveryLink isOnHome={isOnHome} className={HELP_CHOOSING_LINK} />
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <CartIconLink count={cartCount} />
+              <AccountIconLink />
+            </div>
           </div>
           <nav
-            className="mx-auto flex w-max max-w-[100vw] flex-nowrap items-center justify-center gap-x-3 text-[0.58rem] uppercase tracking-[0.26em] text-[#d4c4a8] min-[400px]:gap-x-4 min-[400px]:text-[0.62rem] min-[400px]:tracking-[0.32em] sm:gap-x-6 sm:text-[0.64rem] sm:tracking-[0.34em] md:gap-x-8 md:tracking-[0.36em]"
+            className="mx-auto flex w-full flex-wrap items-center justify-center gap-x-[clamp(0.5rem,2vw,2rem)] gap-y-2 text-center text-[clamp(0.5rem,1.35vw,0.64rem)] uppercase tracking-[clamp(0.22em,0.6vw,0.36em)] text-[#d4c4a8]"
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
@@ -172,16 +141,12 @@ export function Navbar() {
               />
             ))}
           </nav>
-          <div className="flex min-w-0 justify-end">
-            <CartIconLink count={cartCount} />
-            <AccountIconLink />
-          </div>
         </div>
 
         <div
           aria-hidden
-          className={`pointer-events-none mx-auto h-px w-[min(28rem,72vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] transition-[margin-top] duration-300 ease-out motion-reduce:transition-none md:w-[min(32rem,78vw)] ${
-            scrolled ? "mt-3 sm:mt-4" : "mt-5 sm:mt-6"
+          className={`pointer-events-none mx-auto h-px w-[min(32rem,92vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] transition-[margin-top] duration-300 ease-out motion-reduce:transition-none ${
+            scrolled ? "mt-3" : "mt-4.5"
           }`}
         />
       </div>
@@ -225,30 +190,6 @@ function NavLink({
       href={href}
       prefetch
       className={active ? NAV_LINK_ACTIVE : NAV_LINK_IDLE}
-      aria-current={active ? "page" : undefined}
-      {...extraProps}
-    >
-      {label}
-    </Link>
-  );
-}
-
-function MobileNavLink({
-  href,
-  label,
-  active,
-  extraProps,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-  extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
-}) {
-  return (
-    <Link
-      href={href}
-      prefetch
-      className={active ? MOBILE_NAV_LINK_ACTIVE : MOBILE_NAV_LINK_IDLE}
       aria-current={active ? "page" : undefined}
       {...extraProps}
     >
