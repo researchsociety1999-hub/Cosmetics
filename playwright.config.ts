@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from "path";
 
 /**
  * Read environment variables from file.
@@ -71,6 +72,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   /* `next dev` holds a project lock — a second dev instance fails. Build + start avoids clashing with a normal dev server on :3000. */
   webServer: {
+    cwd: path.join(__dirname, "next-app"),
     command: "npm run build && npm run start",
     url: "http://localhost:3001",
     reuseExistingServer: false,
