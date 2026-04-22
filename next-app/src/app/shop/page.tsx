@@ -9,6 +9,7 @@ import {
   SHOP_MERCH_GROUPS,
 } from "../lib/shopMerchGroups";
 import { getCategories, getProducts, type ProductSort } from "../lib/queries";
+import { buildPageMetadata } from "../lib/seo";
 import { ShopCatalogBody, ShopCatalogFallback } from "./ShopCatalogBody";
 
 type SearchParams = Promise<{
@@ -34,13 +35,32 @@ function firstQueryString(value: string | string[] | undefined): string {
   return String(value ?? "").trim();
 }
 
-export const metadata: Metadata = {
-  title: "Shop skincare",
-  description:
-    "Browse Mystique by category—serums, cleansers, masks, moisturizers, and daily protection with clear ritual steps.",
-};
-
 export const revalidate = 300;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<Metadata> {
+  const params = await searchParams;
+
+  const category = firstQueryString(params.category);
+  const ingredient = firstQueryString(params.ingredient).toLowerCase();
+
+  const canonicalParams = new URLSearchParams();
+  if (category) canonicalParams.set("category", category);
+  if (ingredient) canonicalParams.set("ingredient", ingredient);
+
+  const query = canonicalParams.toString();
+  const canonicalPath = query ? (`/shop?${query}` as const) : "/shop";
+
+  return buildPageMetadata({
+    title: "Shop skincare",
+    description:
+      "Browse Mystique by category—serums, cleansers, masks, moisturizers, and daily protection with clear ritual steps.",
+    canonicalPath,
+  });
+}
 
 export default async function ShopPage({
   searchParams,

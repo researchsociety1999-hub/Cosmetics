@@ -47,16 +47,16 @@ export function Footer() {
                 <Link href="/journal" className={FOOTER_CENTER_LINK_CLASS}>
                   Journal
                 </Link>
-                <Link href="/press" className={FOOTER_CENTER_LINK_CLASS}>
-                  Press
+                <Link href="/media" className={FOOTER_CENTER_LINK_CLASS}>
+                  Media
                 </Link>
               </div>
             </nav>
             <nav aria-label="Company" className="flex flex-col items-center text-center md:items-start md:text-left">
               <p className={FOOTER_SECTION_LABEL_CLASS}>Company</p>
               <div className="flex flex-col gap-5 md:gap-6">
-                <Link href="/careers" className={FOOTER_CENTER_LINK_CLASS}>
-                  Careers
+                <Link href="/stockists" className={FOOTER_CENTER_LINK_CLASS}>
+                  Stockists
                 </Link>
               </div>
             </nav>
@@ -75,9 +75,7 @@ export function Footer() {
               <ul className="flex w-full min-w-0 flex-wrap justify-center gap-x-8 gap-y-4 md:gap-x-10">
                 {footerSocialProfiles.map((profile) => {
                   const rowClass =
-                    "inline-flex items-center gap-2.5 text-sm uppercase tracking-[0.14em] text-[#e8dcc8] transition duration-300 hover:text-[#f0d19a]";
-                  const iconClass =
-                    "shrink-0 text-[#d6a85f] transition duration-300 group-hover:text-[#e8c56e]";
+                    "group inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(214,168,95,0.18)] bg-[rgba(2,3,6,0.4)] text-[#d6a85f] shadow-[0_10px_28px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color,box-shadow] duration-200 hover:border-[rgba(214,168,95,0.34)] hover:bg-[rgba(8,9,14,0.52)] hover:text-[#e8c56e] hover:shadow-[0_0_28px_rgba(214,168,95,0.12),0_12px_34px_rgba(0,0,0,0.4)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070d]";
                   if (profile.href) {
                     return (
                       <li key={profile.id}>
@@ -85,10 +83,11 @@ export function Footer() {
                           href={profile.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`group ${rowClass}`}
+                          aria-label={`Mystique on ${profile.label}`}
+                          className={rowClass}
                         >
-                          <span className={iconClass}>{socialIconForId(profile.id)}</span>
-                          {profile.label}
+                          {socialIconForId(profile.id)}
+                          <span className="sr-only">{profile.label}</span>
                         </a>
                       </li>
                     );
@@ -96,13 +95,11 @@ export function Footer() {
                   return (
                     <li key={profile.id}>
                       <span
-                        className={`group ${rowClass} cursor-default opacity-85 hover:opacity-100`}
+                        className={`${rowClass} cursor-default opacity-65`}
                         title="Link not available yet"
                       >
-                        <span className={iconClass}>{socialIconForId(profile.id)}</span>
-                        <span className="transition duration-300 group-hover:text-[#f5eee3]">
-                          {profile.label}
-                        </span>
+                        {socialIconForId(profile.id)}
+                        <span className="sr-only">{profile.label}</span>
                       </span>
                     </li>
                   );

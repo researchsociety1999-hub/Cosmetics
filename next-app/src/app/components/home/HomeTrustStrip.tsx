@@ -3,8 +3,8 @@
  */
 export function HomeTrustStrip() {
   const items = [
-    { title: "Free shipping", hint: "Thresholds at checkout" },
-    { title: "Easy returns", hint: "Plain-language policy" },
+    { title: "Free shipping", hint: "Calculated at checkout" },
+    { title: "Easy returns", hint: "Straightforward policy" },
     { title: "Authentic products", hint: "Sourced with care" },
     { title: "Samples", hint: "When available" },
   ] as const;
@@ -24,7 +24,9 @@ export function HomeTrustStrip() {
               <span className="text-[0.62rem] uppercase tracking-[0.22em] text-[#d6c4a0]">
                 {item.title}
               </span>
-              <span className="text-[0.65rem] leading-snug text-[#7a7265]">{item.hint}</span>
+              <span className="text-[0.65rem] leading-snug text-[#A89060]">
+                {item.hint}
+              </span>
             </li>
           ))}
         </ul>

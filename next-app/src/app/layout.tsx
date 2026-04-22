@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Literata } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
+import { Inter, Literata, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
+import { CookieBanner } from "./components/CookieBanner";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
 
@@ -10,6 +10,21 @@ const literata = Literata({
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-literata",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -62,12 +77,13 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${literata.variable} ${GeistSans.variable} scroll-smooth`}
+      className={`${literata.variable} ${playfair.variable} ${inter.variable} scroll-smooth`}
     >
       <body
-        className={`${GeistSans.className} min-w-0 w-full bg-black text-[#f6f0e6] antialiased`}
+        className={`${inter.className} min-w-0 w-full bg-black text-[#f6f0e6] antialiased`}
       >
         {children}
+        <CookieBanner />
       </body>
     </html>
   );

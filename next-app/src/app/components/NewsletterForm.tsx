@@ -67,20 +67,32 @@ export function NewsletterForm() {
         <label className="sr-only" htmlFor="newsletter-email">
           Email address
         </label>
-        <input
-          id="newsletter-email"
-          name="email"
-          type="email"
-          inputMode="email"
-          required
-          placeholder="Email address"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          className="mystic-input w-full text-sm"
-          autoComplete="email"
-          spellCheck={false}
-          aria-busy={status === "loading"}
-        />
+        <div className="w-full">
+          <input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            inputMode="email"
+            required
+            placeholder="Email address"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            className="mystic-input w-full text-sm"
+            autoComplete="email"
+            spellCheck={false}
+            aria-busy={status === "loading"}
+          />
+          <p className="mt-1.5 text-[11px] text-[#8A7440]">
+            By subscribing you agree to our{" "}
+            <a
+              href="/privacy"
+              className="text-[#A89060] underline underline-offset-4"
+            >
+              Privacy Policy
+            </a>
+            . Unsubscribe anytime.
+          </p>
+        </div>
         <button
           type="submit"
           disabled={status === "loading"}
@@ -90,14 +102,23 @@ export function NewsletterForm() {
         </button>
       </form>
       <p className="mt-3 text-xs uppercase tracking-[0.18em] text-[#b8ab95]">
-        Restocks, launches, and studio notes—never daily noise.
+        Early access, restocks, and studio notes—never daily noise.
       </p>
-      <div className="mt-2 min-h-[1.5rem]" aria-live="polite">
-        {status === "success" || status === "duplicate" ? (
-          <p className="text-sm text-[#d6a85f]">{message}</p>
-        ) : null}
+      <div className="mt-4" aria-live="polite">
+        <div
+          className={`mystic-card overflow-hidden rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(4,5,10,0.55)] px-4 py-3 shadow-[0_12px_36px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-all duration-300 ease-out motion-reduce:transition-none ${
+            status === "success" || status === "duplicate"
+              ? "translate-y-0 opacity-100"
+              : "pointer-events-none -translate-y-1 opacity-0"
+          }`}
+        >
+          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+            Confirmed
+          </p>
+          <p className="mt-1 text-sm leading-relaxed text-[#d6a85f]">{message}</p>
+        </div>
         {status === "error" ? (
-          <p className="text-sm text-[#d6a85f]" role="alert">
+          <p className="mt-2 text-sm text-[#d6a85f]" role="alert">
             {message}
           </p>
         ) : null}

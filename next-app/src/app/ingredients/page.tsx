@@ -3,11 +3,15 @@ import Link from "next/link";
 import { IngredientSpotlightThumb } from "../components/IngredientSpotlightThumb";
 import { SiteChrome } from "../components/SiteChrome";
 import { getIngredients } from "../lib/queries";
+import { buildPageMetadata } from "../lib/seo";
 
 export const metadata: Metadata = {
-  title: "Ingredients",
-  description:
-    "How Mystique chooses actives and textures—hydration-first, barrier-minded, and always written in language you can trust.",
+  ...buildPageMetadata({
+    title: "Ingredients",
+    description:
+      "How Mystique chooses actives and textures—hydration-first, barrier-minded, and always written in language you can trust.",
+    canonicalPath: "/ingredients",
+  }),
 };
 
 export const revalidate = 300;
