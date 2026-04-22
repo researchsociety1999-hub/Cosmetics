@@ -39,7 +39,8 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: max(6rem, env(safe-area-inset-top, 0px));
+  /* Match SiteChrome main offset so #anchors (e.g. guided discovery) clear the fixed header */
+  scroll-padding-top: max(6.75rem, calc(5.75rem + env(safe-area-inset-top, 0px)));
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -47,6 +48,24 @@ html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+@media (min-width: 640px) {
+  html {
+    scroll-padding-top: max(7rem, calc(5.9rem + env(safe-area-inset-top, 0px)));
+  }
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: max(4.65rem, env(safe-area-inset-top, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
