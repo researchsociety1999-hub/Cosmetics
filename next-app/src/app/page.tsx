@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { HomeEditorialModules } from "./components/home/HomeEditorialModules";
 import { HomeGuidedDiscovery } from "./components/home/HomeGuidedDiscovery";
-import { HomeLovedByStrip } from "./components/home/HomeLovedByStrip";
 import { HomeServicesModule } from "./components/home/HomeServicesModule";
 import { HomeTrustStrip } from "./components/home/HomeTrustStrip";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
@@ -218,7 +217,6 @@ export default async function HomePage() {
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
           <HomeTrustStrip />
           <RitualStripSection />
-          <HomeLovedByStrip />
           <HomeGuidedDiscovery />
           <FirstVisitGuidanceStrip />
           <FeaturedProductsSection products={featuredPurchasable} />

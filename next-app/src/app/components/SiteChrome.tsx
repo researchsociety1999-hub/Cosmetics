@@ -47,7 +47,7 @@ export async function SiteChrome({
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 outline-none pt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] sm:pt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:pt-[4.65rem]"
+        className="relative z-10 outline-none pt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] sm:pt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:pt-[4.65rem]"
       >
         {/* Prelaunch banner: shows only when there are 0 purchasable products in the catalog. */}
         <PrelaunchBanner />
@@ -77,12 +77,6 @@ async function PrelaunchBanner() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2.5">
-            <Link
-              href="/routines"
-              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
-            >
-              View routines
-            </Link>
             <Link
               href="/shop"
               className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
