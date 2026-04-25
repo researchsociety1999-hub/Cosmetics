@@ -4,7 +4,7 @@ import type { Product } from "../lib/types";
 import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
 
 /** Wide lockup: wordmark + tagline + arc — `/public` asset (prefer export with transparency). */
-const HERO_BRAND_MARK_SRC = "/mystique-brand-logo.png";
+const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.jpg";
 
 export function HomeHeroMotion({
   quickViewProduct: _quickViewProduct = null,
@@ -15,7 +15,7 @@ export function HomeHeroMotion({
   return (
     <section
       data-hero-section="home"
-      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:-mt-[4.65rem]"
+      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,oklch(0.10_0.025_55)_0%,oklch(0.05_0.01_55)_60%,oklch(0.04_0_0)_100%)] sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:-mt-[4.65rem]"
     >
       {/* —— Atmosphere (behind all content) —— */}
       <div
@@ -104,41 +104,36 @@ export function HomeHeroMotion({
       />
 
       {/* —— Foreground: 52vh mark + content block below (Phase 2A) —— */}
-      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-4 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] pt-[max(7.25rem,calc(6.1rem+env(safe-area-inset-top,0px)))] sm:px-6 sm:pt-[max(7.5rem,calc(6.3rem+env(safe-area-inset-top,0px)))] md:px-10 md:pt-[max(5.25rem,calc(4.75rem+env(safe-area-inset-top,0px)))] lg:px-12 xl:px-14">
-        <div className="flex min-h-0 flex-1 flex-col justify-start">
-          {/* Brand mark: max 52vh */}
-          <div className="mx-auto flex w-full max-w-[min(92rem,calc(100vw-2rem))] items-center justify-center">
-            <div className="relative w-full max-w-[min(60rem,96vw)]">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[min(52vh,26rem)] w-[min(96vw,58rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_70%_58%_at_50%_44%,rgba(214,168,95,0.14)_0%,rgba(214,168,95,0.06)_28%,rgba(8,9,16,0.35)_56%,transparent_78%)] blur-[22px] opacity-[0.95]"
-              />
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-4 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] pt-[max(7.25rem,calc(6.1rem+env(safe-area-inset-top,0px)))] sm:px-6 sm:pt-[max(7.5rem,calc(6.3rem+env(safe-area-inset-top,0px)))] md:px-10 lg:pt-[max(5.25rem,calc(4.75rem+env(safe-area-inset-top,0px)))] lg:px-12 xl:px-14">
+        <div className="relative flex min-h-0 flex-1 items-center">
+          {/* Watermark logo (cinematic, integrated): sits behind copy, centered/right. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+            <div className="absolute left-1/2 top-[46%] h-[min(60vh,32rem)] w-[min(120vw,84rem)] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_70%_55%_at_55%_50%,rgba(2,3,7,0.40)_0%,rgba(2,3,7,0.16)_55%,rgba(2,3,7,0)_100%)] opacity-[0.55]" />
+            <div className="absolute left-1/2 top-[46%] h-[min(54vh,30rem)] w-[min(110vw,78rem)] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_60%_55%_at_55%_50%,rgba(201,168,76,0.11)_0%,rgba(201,168,76,0.05)_32%,transparent_72%)] blur-[22px] opacity-[0.30]" />
+            <div className="absolute left-1/2 top-[46%] w-[min(120vw,92rem)] -translate-x-1/2 -translate-y-1/2 opacity-[0.26] sm:opacity-[0.30] md:opacity-[0.34]">
               <Image
                 src={HERO_BRAND_MARK_SRC}
-                alt="Mystique logo in metallic gold with arc linework, on a dark background"
-                width={1024}
-                height={682}
+                alt=""
+                width={1600}
+                height={900}
                 priority
-                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 80vw, 960px"
-                className="relative mx-auto block h-auto max-h-[52vh] w-full object-contain object-center opacity-[0.92] [filter:brightness(1.08)_contrast(1.06)_saturate(1.02)] drop-shadow-[0_10px_44px_rgba(0,0,0,0.5),0_0_70px_rgba(214,168,95,0.075)]"
+                sizes="(max-width: 768px) 110vw, (max-width: 1280px) 120vw, 1440px"
+                className="mx-auto block h-auto w-full object-contain object-center [filter:brightness(0.96)_contrast(1.04)_saturate(0.98)]"
               />
             </div>
           </div>
 
-          {/* Copy block: immediately below mark */}
+          {/* Copy block (left, anchored; logo remains the hero mood behind). */}
           <div
             data-hero-copy="home"
-            className="mx-auto w-full max-w-[56rem] pt-6 text-center md:pt-8"
+            className="relative z-10 w-full max-w-[34rem] pt-2 text-left md:max-w-[38rem] lg:max-w-[40rem]"
             style={{ opacity: 1 }}
           >
             <h1 className="font-playfair text-[40px] leading-[1.06] font-semibold tracking-[-0.01em] text-white md:text-[64px] mystic-hero-reveal mystic-hero-reveal--title">
               Where Beauty Transcends.
             </h1>
-            <p className="font-playfair mt-4 text-[18px] leading-[1.6] italic text-[#C9A84C] md:text-[20px]">
-              Premium rituals for luminous skin.
-            </p>
 
-            <div className="mystic-hero-reveal mystic-hero-reveal--cta mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:gap-4">
+            <div className="mystic-hero-reveal mystic-hero-reveal--cta mt-6 flex flex-col items-stretch justify-start gap-3 sm:flex-row sm:gap-4">
               <Link
                 href="/shop"
                 className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-[#C9A84C] px-8 py-3 font-ui text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-black shadow-[0_14px_36px_rgba(0,0,0,0.45)] transition duration-200 hover:shadow-[0_0_32px_rgba(201,168,76,0.22),0_16px_42px_rgba(0,0,0,0.5)] hover:scale-[1.02] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto sm:min-w-[14rem]"

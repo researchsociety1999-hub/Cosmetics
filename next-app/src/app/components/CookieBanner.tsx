@@ -1,44 +1,56 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 type ConsentState = "accepted" | "managed" | null;
 
 const STORAGE_KEY = "mystique_cookie_consent";
+const CONSENT_EVENT = "mystique:cookie-consent";
+
+function readConsent(): ConsentState {
+  if (typeof window === "undefined") return null;
+  try {
+    const value = window.localStorage.getItem(STORAGE_KEY);
+    if (value === "accepted" || value === "managed") return value;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function writeConsent(next: Exclude<ConsentState, null>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, next);
+  } catch {
+    // ignore storage access issues
+  }
+  window.dispatchEvent(new Event(CONSENT_EVENT));
+}
+
+function subscribe(onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const handler = () => onStoreChange();
+  window.addEventListener("storage", handler);
+  window.addEventListener(CONSENT_EVENT, handler);
+  return () => {
+    window.removeEventListener("storage", handler);
+    window.removeEventListener(CONSENT_EVENT, handler);
+  };
+}
 
 export function CookieBanner() {
-  const [consent, setConsent] = useState<ConsentState>(null);
-
-  useEffect(() => {
-    try {
-      const value = window.localStorage.getItem(STORAGE_KEY) as ConsentState;
-      if (value === "accepted" || value === "managed") {
-        setConsent(value);
-      }
-    } catch {
-      // ignore storage access issues
-    }
-  }, []);
+  const consent = useSyncExternalStore(subscribe, readConsent, () => null);
 
   if (consent) return null;
 
   const acceptAll = () => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, "accepted");
-    } catch {
-      // ignore storage access issues
-    }
-    setConsent("accepted");
+    writeConsent("accepted");
   };
 
   const manage = () => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, "managed");
-    } catch {
-      // ignore storage access issues
-    }
-    setConsent("managed");
+    writeConsent("managed");
   };
 
   return (

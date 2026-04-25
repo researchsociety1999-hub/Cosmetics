@@ -33,19 +33,17 @@ type QuickViewDialogProps = {
 };
 
 export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps) {
-  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const urls = collectGalleryUrls(product);
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
     if (!open) return;
-    setActiveIdx(0);
+    const id = window.requestAnimationFrame(() => {
+      setActiveIdx(0);
+    });
+    return () => window.cancelAnimationFrame(id);
   }, [open, product.id]);
 
   useEffect(() => {
@@ -58,14 +56,14 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   }, [open]);
 
   useEffect(() => {
-    if (!open || !mounted) return;
+    if (!open || typeof window === "undefined") return;
     const id = window.requestAnimationFrame(() => {
       const panel = panelRef.current;
       if (!panel) return;
       panel.focus({ preventScroll: true });
     });
     return () => window.cancelAnimationFrame(id);
-  }, [open, mounted]);
+  }, [open]);
 
   const trapTab = useCallback(
     (e: KeyboardEvent) => {
@@ -105,7 +103,7 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose, trapTab]);
 
-  if (!mounted || !open) return null;
+  if (!open || typeof document === "undefined") return null;
 
   const displayPrice = getDisplayPrice(product);
   const hasSale = product.sale_price_cents != null;
