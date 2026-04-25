@@ -68,10 +68,10 @@ async function PrelaunchBanner() {
       <div className="mystic-section-shell py-4 md:py-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
           <div className="space-y-1.5">
-            <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#d6a85f]">
+            <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[var(--mystic-gold-bright)] font-semibold">
               Launching soon
             </p>
-            <p className="text-sm leading-relaxed text-[#b8ab95] md:text-[0.95rem]">
+            <p className="text-sm leading-relaxed text-[var(--mystic-text)] md:text-[0.95rem]">
               Explore the collection, learn the rituals, and get a note when your favorites
               arrive.
             </p>

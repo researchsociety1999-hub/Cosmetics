@@ -59,6 +59,7 @@ export function Navbar() {
   const isOnHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [cartCount, setCartCount] = useState<number>(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
@@ -66,6 +67,26 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    if (isMobileMenuOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,10 +146,19 @@ export function Navbar() {
             <div className="flex shrink-0 items-center gap-2">
               <CartIconLink count={cartCount} />
               <AccountIconLink />
+              <button
+                type="button"
+                aria-expanded={isMobileMenuOpen}
+                aria-label="Toggle menu"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:hidden sm:h-9 sm:w-9"
+              >
+                <HamburgerGlyph open={isMobileMenuOpen} />
+              </button>
             </div>
           </div>
           <nav
-            className="mx-auto flex w-full flex-wrap items-center justify-center gap-x-[clamp(0.5rem,2vw,2rem)] gap-y-2 text-center text-[clamp(0.5rem,1.35vw,0.64rem)] uppercase tracking-[clamp(0.22em,0.6vw,0.36em)] text-[#d4c4a8]"
+            className="mx-auto hidden w-full items-center justify-center gap-x-[clamp(0.5rem,2vw,2rem)] gap-y-2 text-center text-[clamp(0.5rem,1.35vw,0.64rem)] uppercase tracking-[clamp(0.22em,0.6vw,0.36em)] text-[#d4c4a8] md:flex"
             aria-label="Primary"
           >
             {NAV_LINKS.map(({ href, label }) => (
@@ -145,10 +175,44 @@ export function Navbar() {
 
         <div
           aria-hidden
-          className={`pointer-events-none mx-auto h-px w-[min(32rem,92vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] transition-[margin-top] duration-300 ease-out motion-reduce:transition-none ${
+          className={`pointer-events-none mx-auto h-px w-[min(32rem,92vw)] max-w-[92%] bg-[linear-gradient(90deg,transparent_0%,rgba(214,168,95,0.05)_10%,rgba(214,168,95,0.38)_50%,rgba(214,168,95,0.05)_90%,transparent_100%)] shadow-[0_0_24px_rgba(214,168,95,0.07)] transition-[margin-top] duration-300 ease-out motion-reduce:transition-none md:flex ${
             scrolled ? "mt-3" : "mt-4.5"
           }`}
         />
+      </div>
+
+      <div
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(2,3,6,0.95)] backdrop-blur-2xl transition-all duration-300 md:hidden ${
+          isMobileMenuOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+        }`}
+        aria-modal="true"
+        role="dialog"
+        aria-label="Mobile navigation menu"
+      >
+        <button
+          type="button"
+          aria-label="Close menu"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] sm:right-6 sm:top-[max(0.65rem,env(safe-area-inset-top,0px))] sm:h-9 sm:w-9"
+        >
+          <HamburgerGlyph open={true} />
+        </button>
+        <nav
+          className="flex flex-col items-center gap-8 text-center text-sm uppercase tracking-[0.3em] text-[#d4c4a8]"
+          aria-label="Mobile Primary"
+        >
+          {NAV_LINKS.map(({ href, label }) => (
+            <NavLink
+              key={href}
+              href={href}
+              label={label}
+              active={isNavActive(href, pathname)}
+              extraProps={href === "/" ? homeClickProps : undefined}
+            />
+          ))}
+        </nav>
       </div>
     </header>
   );
@@ -264,6 +328,14 @@ function CartGlyph() {
       />
       <circle cx="9.75" cy="19.25" r="1.1" fill="currentColor" fillOpacity="0.9" />
       <circle cx="17.25" cy="19.25" r="1.1" fill="currentColor" fillOpacity="0.9" />
+    </svg>
+  );
+}
+
+function HamburgerGlyph({ open }: { open: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+      <path d={open ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
     </svg>
   );
 }

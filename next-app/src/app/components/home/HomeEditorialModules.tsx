@@ -44,7 +44,7 @@ export function HomeEditorialModules() {
         </article>
 
         {/* Split: text + gradient panel */}
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+        <div className="grid items-center gap-10 lg:gap-14">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#8a8275]">Split</p>
             <h3 className="mt-3 font-literata text-2xl tracking-[0.1em] text-[#f2ebe4] md:text-3xl">
@@ -60,19 +60,13 @@ export function HomeEditorialModules() {
               Browse the shop
             </Link>
           </div>
-          <div
-            aria-hidden
-            className="mystic-card relative min-h-[14rem] overflow-hidden border border-white/[0.06] bg-[linear-gradient(165deg,rgba(24,20,16,0.9)_0%,rgba(8,9,14,0.95)_45%,rgb(4,5,10)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:min-h-[18rem]"
-          />
+          {/* Visual container temporarily hidden until assets exist */}
         </div>
 
         {/* Asymmetric: tall left, two stacked right */}
-        <div className="grid gap-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-8">
-          <div
-            aria-hidden
-            className="mystic-card relative min-h-[20rem] overflow-hidden border border-white/[0.06] bg-[linear-gradient(195deg,rgba(18,22,32,0.95)_0%,rgba(6,7,12,1)_55%,rgb(3,4,8)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:min-h-[24rem]"
-          />
-          <div className="flex flex-col gap-6">
+        <div className="grid gap-6 md:gap-8">
+          {/* Visual container temporarily hidden until assets exist */}
+          <div className="flex flex-col gap-6 md:flex-row">
             <article className="mystic-card flex flex-1 flex-col justify-center border border-[rgba(214,168,95,0.1)] p-6 md:p-8">
               <h3 className="font-literata text-xl tracking-[0.08em] text-[#f5eee3]">
                 Ingredients, translated.
