@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { AnchorHTMLAttributes, MouseEvent } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -59,6 +59,7 @@ export function Navbar() {
   const isOnHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [cartCount, setCartCount] = useState<number>(0);
+  const headerRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -67,6 +68,32 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    let raf = 0;
+
+    const measure = () => {
+      const node = headerRef.current;
+      if (!node) return;
+      const h = Math.ceil(node.getBoundingClientRect().height);
+      if (h > 0) {
+        root.style.setProperty("--mystique-header-offset", `${h}px`);
+      }
+    };
+
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+
+    schedule();
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [scrolled]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -119,10 +146,10 @@ export function Navbar() {
           window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
         },
       }
-    : {};
+    : undefined;
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
+    <header ref={headerRef} className="pointer-events-none fixed inset-x-0 top-0 z-40">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)]"
@@ -161,14 +188,12 @@ export function Navbar() {
             className="mx-auto hidden w-full items-center justify-center gap-x-[clamp(0.5rem,2vw,2rem)] gap-y-2 text-center text-[clamp(0.5rem,1.35vw,0.64rem)] uppercase tracking-[clamp(0.22em,0.6vw,0.36em)] text-[#d4c4a8] md:flex"
             aria-label="Primary"
           >
-            {NAV_LINKS.map(({ href, label }) => (
-              <NavLink
-                key={href}
-                href={href}
-                label={label}
-                active={isNavActive(href, pathname)}
-                extraProps={href === "/" ? homeClickProps : undefined}
-              />
+            {NAV_LINKS.slice(0, 2).map(({ href, label }) => (
+              <NavLink key={href} href={href} label={label} active={isNavActive(href, pathname)} />
+            ))}
+            <NavLink href="/" label="Home" active={isOnHome} extraProps={homeClickProps} />
+            {NAV_LINKS.slice(2).map(({ href, label }) => (
+              <NavLink key={href} href={href} label={label} active={isNavActive(href, pathname)} />
             ))}
           </nav>
         </div>
