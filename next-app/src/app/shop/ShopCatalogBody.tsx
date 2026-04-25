@@ -122,19 +122,33 @@ function ShopWideEmptyState({
   hasActiveFilters: boolean;
 }) {
   if (!hasSupabase) {
+    const isDev = process.env.NODE_ENV === "development";
     return (
       <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b9aa8f]">
         <p className="font-literata text-xl tracking-[0.08em] text-[#f6f0e6]">
-          The shop is temporarily unavailable.
+          {isDev ? "Developer Warning: Supabase is disconnected." : "New arrivals are on the way."}
         </p>
         <p>
-          We can&apos;t show the catalog right now. Please try again in a little while,
-          or visit another section of the site. If this keeps happening, use{" "}
-          <Link href="/contact" className="text-[#e8c56e] underline-offset-4 hover:underline">
-            Contact
-          </Link>{" "}
-          and we&apos;ll help from our side.
+          {isDev
+            ? "The shop requires Supabase environment variables. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to view the catalog."
+            : "The collection updates as new formulas arrive. In the meantime, explore routines and ingredients, or reach out for wholesale questions."}
         </p>
+        {!isDev && (
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Link
+              href="/routines"
+              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+            >
+              Routines
+            </Link>
+            <Link
+              href="/journal"
+              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+            >
+              Journal
+            </Link>
+          </div>
+        )}
       </div>
     );
   }
