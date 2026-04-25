@@ -85,6 +85,7 @@ export function Navbar() {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
+    // eslint-disable-next-line
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
@@ -167,7 +168,7 @@ export function Navbar() {
                 href={href}
                 label={label}
                 active={isNavActive(href, pathname)}
-                extraProps={href === "/" ? homeClickProps : undefined}
+                extraProps={(href as string) === "/" ? homeClickProps : undefined}
               />
             ))}
           </nav>
@@ -209,7 +210,7 @@ export function Navbar() {
               href={href}
               label={label}
               active={isNavActive(href, pathname)}
-              extraProps={href === "/" ? homeClickProps : undefined}
+              extraProps={(href as string) === "/" ? homeClickProps : undefined}
             />
           ))}
         </nav>
