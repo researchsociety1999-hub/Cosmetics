@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const path = require("path");
-
 function extraImageRemotePatterns() {
   const raw = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS || "";
   return raw

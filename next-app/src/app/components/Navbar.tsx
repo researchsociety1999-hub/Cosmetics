@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { AnchorHTMLAttributes, MouseEvent } from "react";
 import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
   { href: "/routines", label: "Routines" },
-  { href: "/", label: "Home" },
   { href: "/ingredients", label: "Ingredients" },
   { href: "/journal", label: "Journal" },
   { href: "/about", label: "About" },
@@ -23,7 +23,7 @@ const HELP_CHOOSING_LINK =
   "inline-flex max-w-full items-center justify-center whitespace-normal break-words py-1 text-center text-[clamp(0.5rem,1.2vw,0.62rem)] uppercase leading-snug tracking-[clamp(0.18em,0.6vw,0.28em)] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
 /**
- * Centered gold nav (Shop · Routines · Home · Ingredients · About) + account icon
+ * Centered gold nav (Shop · Routines · Ingredients · Journal · About) + account icon
  * on the right; hairline below — matches the editorial header reference.
  */
 function isNavActive(href: string, pathname: string): boolean {
@@ -111,7 +111,7 @@ export function Navbar() {
 
   const homeClickProps = isOnHome
     ? {
-        onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
+        onClick: (event: MouseEvent<HTMLAnchorElement>) => {
           event.preventDefault();
           const instant =
             typeof window !== "undefined" &&
@@ -247,7 +247,7 @@ function NavLink({
   href: string;
   label: string;
   active: boolean;
-  extraProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+  extraProps?: AnchorHTMLAttributes<HTMLAnchorElement>;
 }) {
   return (
     <Link
@@ -261,7 +261,6 @@ function NavLink({
     </Link>
   );
 }
-
 function AccountIconLink() {
   return (
     <div className="relative shrink-0">
@@ -269,13 +268,13 @@ function AccountIconLink() {
         href="/account"
         prefetch
         aria-label="Account"
-        className="group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 md:px-3.5"
+        className="group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 lg:px-3.5"
       >
         <span className="sr-only">Account</span>
         <span className="inline-flex h-11 w-11 items-center justify-center sm:h-9 sm:w-9">
           <AccountGlyph />
         </span>
-        <span className="hidden font-ui text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#d6c4a8] md:inline">
+        <span className="hidden font-ui text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#d6c4a8] lg:inline">
           ACCOUNT
         </span>
       </Link>

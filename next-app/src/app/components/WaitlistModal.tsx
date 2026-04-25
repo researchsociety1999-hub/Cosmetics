@@ -1,5 +1,6 @@
 "use client";
 
+import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
 type WaitlistModalProps = {
@@ -38,7 +39,7 @@ export function WaitlistModal({
   const title = productName?.trim() || "This item";
   const panelAlign = align === "left" ? "left-0" : "right-0";
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (status === "submitting") return;
 

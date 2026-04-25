@@ -1,6 +1,7 @@
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js";
+import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -76,7 +77,7 @@ export function CheckoutClient({
     return isLoading ? "Opening secure payment…" : "Continue to payment";
   }, [isLoading, stripeReady]);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!stripeReady || !stripePromise) {
