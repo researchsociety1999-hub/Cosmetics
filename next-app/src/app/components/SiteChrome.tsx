@@ -47,7 +47,8 @@ export async function SiteChrome({
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 outline-none pt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] sm:pt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:pt-[4.65rem]"
+        className="relative z-10 outline-none pt-0"
+        style={{ paddingTop: "var(--mystique-header-offset, 7rem)" }}
       >
         {/* Prelaunch banner: shows only when there are 0 purchasable products in the catalog. */}
         <PrelaunchBanner />
