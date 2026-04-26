@@ -167,7 +167,6 @@ function bindEvents() {
     const increaseBtn = e.target.closest("[data-increase]");
     const decreaseBtn = e.target.closest("[data-decrease]");
     const removeBtn = e.target.closest("[data-remove]");
-    const wishlistBtn = e.target.closest("[data-wishlist]");
 
     if (addToCartBtn) {
       const id = Number(addToCartBtn.dataset.addToCart);
@@ -187,10 +186,6 @@ function bindEvents() {
     if (removeBtn) {
       const id = Number(removeBtn.dataset.remove);
       removeFromCart(id);
-    }
-
-    if (wishlistBtn) {
-      alert("Wishlist is coming soon — thanks for your interest.");
     }
   });
 
@@ -237,7 +232,6 @@ function renderProducts(list) {
         <div class="product-media">
           <img src="${product.image}" alt="${product.name}" />
           <span class="product-tag">${product.tag || "Mystique"}</span>
-          <button class="icon-button wishlist-btn" data-wishlist="${product.id}" aria-label="Add to wishlist">♡</button>
         </div>
         <div class="product-body">
           <p class="product-category">${product.category}</p>
