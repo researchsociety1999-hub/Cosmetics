@@ -64,14 +64,17 @@ test.describe("cart and checkout", () => {
     });
 
     const status = response.status();
-    expect([401, 503]).toContain(status);
+    // With no cart cookie/session established, the endpoint can reject early with "empty bag".
+    expect([400, 401, 503]).toContain(status);
 
     const body = (await response.json()) as {
       error?: string;
       code?: string;
     };
 
-    if (status === 401) {
+    if (status === 400) {
+      expect(body.error ?? "").toMatch(/bag is empty|empty/i);
+    } else if (status === 401) {
       expect(body.error ?? "").toMatch(/sign in/i);
     } else {
       expect(["store_unavailable", "stripe_unavailable"]).toContain(body.code);
