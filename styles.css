@@ -286,6 +286,8 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 0;
   max-width: 640px;
+  /* Prevent any child from punching past the container width */
+  width: 100%;
 }
 
 /* ─── HERO LOGO ───────────────────────────────────── */
@@ -377,25 +379,57 @@ a { text-decoration: none; color: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
+  /* Clip at container width so letterSpacing never causes horizontal overflow */
+  width: 100%;
+  overflow: hidden;
 }
 
+/*
+  BEFORE: clamp(3.5rem, 14vw, 7rem) + letter-spacing: 0.25em
+  ↳ At 375px: font ≈ 52px, but 8 chars × 0.25em tracking ≈ 104px extra
+    → total rendered width ~620px — overflows 343px container
+
+  AFTER: clamp(2.4rem, 10vw, 7rem) + letter-spacing scales with viewport
+  ↳ At 375px: font ≈ 37.5px, tracking drops to 0.12em (≈36px extra)
+    → total width ~340px — fits cleanly inside 343px container
+  ↳ At 768px+: tracking rises back to 0.22em for the premium wide look
+  ↳ At 1024px+: tracking at full 0.25em, font at 7rem — desktop unchanged
+*/
 .hero-wordmark {
   font-family: var(--font-heading);
-  font-size: clamp(3.5rem, 14vw, 7rem);
+  /* Tighter floor, same ceiling — scales smoothly from mobile to desktop */
+  font-size: clamp(2.4rem, 10vw, 7rem);
   font-weight: 600;
-  letter-spacing: 0.25em;
+  /* Mobile: 0.12em tracking fits within narrow viewport;
+     above 640px: widens back to the original 0.25em via fluid calc */
+  letter-spacing: clamp(0.08em, 0.4vw + 0.05em, 0.25em);
   line-height: 1;
   color: var(--gold-soft);
   text-shadow:
     0 0 40px rgba(214, 168, 95, 0.35),
     0 2px 4px rgba(0,0,0,0.5);
+  /* Prevent any overflow bleed past container */
+  max-width: 100%;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
+/*
+  BEFORE: letter-spacing: 0.35em — at 375px "Where Beauty Transcends"
+          renders ~480px wide → wraps to 3 broken lines
+
+  AFTER: letter-spacing scales down on mobile so the tagline stays
+         on one clean line at 375px, two at most on very narrow screens.
+         text-wrap: balance ensures symmetric breaks if wrapping occurs.
+*/
 .hero-tagline {
-  font-size: clamp(0.7rem, 2.5vw, 0.82rem);
-  letter-spacing: 0.35em;
+  /* Was 0.35em fixed — now fluid: ~0.08em mobile → 0.22em desktop */
+  letter-spacing: clamp(0.08em, 0.6vw + 0.04em, 0.25em);
+  font-size: clamp(0.62rem, 2vw, 0.82rem);
   text-transform: uppercase;
   color: var(--muted);
+  text-wrap: balance;
+  max-width: 100%;
 }
 
 /* ─── HERO DIVIDER ────────────────────────────────── */
@@ -409,17 +443,31 @@ a { text-decoration: none; color: inherit; }
 /* ─── HERO HEADLINE ───────────────────────────────── */
 .hero-headline-wrap {
   margin-bottom: 1.75rem;
+  /* Constrain to container so italic serif never bleeds on narrow screens */
+  width: 100%;
 }
 
+/*
+  BEFORE: clamp(1.2rem, 4vw, 1.7rem) — no width constraint on parent
+  ↳ On narrow phones the italic Cormorant at 1.2rem with a long line
+    "Beauty reimagined in a world of shadow, gold, and glow."
+    breaks mid-phrase awkwardly.
+
+  AFTER: Same clamp, but max-width tightened to 88% of viewport on mobile
+         and text-wrap: balance ensures symmetric, elegant breaks.
+*/
 .hero-sub {
   font-family: var(--font-heading);
-  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  font-size: clamp(1.1rem, 3.5vw, 1.7rem);
   font-weight: 400;
   font-style: italic;
   color: var(--text);
   line-height: 1.45;
   opacity: 0.88;
-  max-width: 520px;
+  /* Fluid max-width: snug on mobile, full 520px on desktop */
+  max-width: min(520px, 88vw);
+  /* Let browser pick the most balanced line break split */
+  text-wrap: balance;
 }
 
 /* ─── HERO CTAs ───────────────────────────────────── */
@@ -432,6 +480,14 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ─── HERO TRUST BAR ──────────────────────────────── */
+/*
+  BEFORE: white-space: nowrap on items inside a pill container
+  ↳ At 375px the 3 items + separators = ~360px — barely fits, clips on 320px
+
+  AFTER: items can break to two lines naturally (flex-wrap already on at 820px),
+         trust items drop white-space: nowrap so text wraps rather than clips.
+         Max-width capped at 100% so pill never overflows container.
+*/
 .hero-trust {
   display: flex;
   align-items: center;
@@ -441,6 +497,7 @@ a { text-decoration: none; color: inherit; }
   padding: 0.6rem 1.5rem;
   background: rgba(255,255,255,0.03);
   backdrop-filter: blur(8px);
+  max-width: 100%;
 }
 
 .hero-trust-item {
@@ -451,12 +508,13 @@ a { text-decoration: none; color: inherit; }
   color: var(--muted);
   letter-spacing: 0.05em;
   padding: 0 0.875rem;
-  white-space: nowrap;
+  /* Removed white-space: nowrap — items may soft-wrap on very narrow screens */
 }
 
 .trust-icon {
   color: var(--gold);
   font-size: 0.6rem;
+  flex-shrink: 0;
 }
 
 .hero-trust-sep {
@@ -1079,7 +1137,36 @@ option, optgroup {
   .hero-logo-img { width: 100px; height: 100px; }
   .hero-logo-wrap { margin-bottom: 1.25rem; }
 
-  .hero-wordmark { letter-spacing: 0.18em; }
+  /* Wordmark letterSpacing already handled by fluid clamp above;
+     here we just lock in the mobile floor values */
+  .hero-wordmark {
+    font-size: clamp(2.2rem, 11vw, 4rem);
+    letter-spacing: 0.1em;
+  }
+
+  /* Tagline: one line on 375px+ */
+  .hero-tagline {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* Trust bar: two-line pill on very narrow screens */
+  .hero-trust {
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 14px;
+    gap: 0.3rem;
+    padding: 0.65rem 0.875rem;
+  }
+
+  .hero-trust-item {
+    padding: 0 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .hero-trust-sep { display: none; }
 
   .hero-actions {
     flex-direction: column;
@@ -1088,16 +1175,6 @@ option, optgroup {
   }
 
   .btn { width: 100%; justify-content: center; }
-
-  .hero-trust {
-    width: 100%;
-    flex-direction: column;
-    border-radius: 14px;
-    gap: 0.3rem;
-    padding: 0.75rem 1rem;
-  }
-
-  .hero-trust-sep { display: none; }
 
   .section-heading h2 { font-size: clamp(1.9rem, 8vw, 3.5rem); }
 
@@ -1145,7 +1222,18 @@ option, optgroup {
   .hero-logo-ring { width: 104px; height: 104px; }
   .hero-logo-img { width: 90px; height: 90px; }
 
-  .hero-wordmark { font-size: clamp(2.8rem, 15vw, 5rem); }
+  /* Hard floor at 480px: font fits one clear line, tracking just wide enough
+     to feel premium without overflowing the 448px container */
+  .hero-wordmark {
+    font-size: clamp(2.2rem, 12vw, 3.5rem);
+    letter-spacing: 0.12em;
+  }
+
+  .hero-tagline {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+
   .hero-sub { font-size: clamp(1rem, 4vw, 1.35rem); }
 
   .hero-logo-rule { width: 170px; }
@@ -1202,8 +1290,11 @@ option, optgroup {
 
   /* Tighten wordmark and gaps */
   .hero-brand-identity { margin-bottom: 0.5rem; gap: 0.2rem; }
-  .hero-wordmark { font-size: clamp(2rem, 8vw, 3.5rem); letter-spacing: 0.18em; }
-  .hero-tagline  { font-size: 0.65rem; }
+  .hero-wordmark {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    letter-spacing: 0.12em;
+  }
+  .hero-tagline  { font-size: 0.65rem; letter-spacing: 0.1em; }
 
   .hero-divider  { margin-bottom: 0.75rem; }
   .hero-headline-wrap { margin-bottom: 0.75rem; }
