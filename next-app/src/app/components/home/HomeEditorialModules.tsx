@@ -9,7 +9,7 @@ export function HomeEditorialModules() {
       aria-labelledby="editorial-modules-heading"
       className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-[#04050a]"
     >
-      <div className="mystic-section-shell space-y-16 md:space-y-20">
+      <div className="mystic-section-shell space-y-10 md:space-y-20">
         <header className="mx-auto max-w-3xl text-center md:text-left">
           <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#8a8275]">Stories &amp; commerce</p>
           <h2

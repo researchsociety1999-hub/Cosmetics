@@ -42,7 +42,7 @@ function SectionIntro({
   ctaLabel?: string;
 }) {
   return (
-    <header className="mb-12 flex flex-col gap-5 md:mb-16 md:flex-row md:items-end md:justify-between md:gap-8">
+    <header className="mb-8 flex flex-col gap-5 md:mb-16 md:flex-row md:items-end md:justify-between md:gap-8">
       <div className="relative max-w-2xl space-y-3 md:space-y-4 md:pl-1">
         <div
           aria-hidden
@@ -91,7 +91,7 @@ function SectionLoading({
         <div
           className={
             isFeatured
-              ? "mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 sm:gap-4"
+              ? "mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-5"
               : "mt-6 grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:grid-cols-3"
           }
         >
@@ -100,7 +100,7 @@ function SectionLoading({
               key={i}
               className={
                 isFeatured
-                  ? "mystic-card aspect-[3/5] w-[min(78vw,20rem)] shrink-0 snap-start animate-pulse sm:w-[min(46vw,18rem)] md:w-[min(40vw,17rem)] lg:w-[min(32vw,16rem)]"
+                  ? "mystic-card aspect-square sm:aspect-[4/5] w-full shrink-0 animate-pulse rounded-[18px]"
                   : "mystic-card min-h-[15.5rem] animate-pulse rounded-[var(--mystic-radius-card)]"
               }
             />
@@ -123,7 +123,7 @@ async function JournalHomeSection() {
   const preview = entries.slice(0, 3);
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[linear-gradient(180deg,#020308_0%,#04050a_42%,#03040a_100%)] !py-[5.25rem] md:!py-28 lg:!py-32">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-[linear-gradient(180deg,#020308_0%,#04050a_42%,#03040a_100%)] !py-14 md:!py-28 lg:!py-32">
       <div className="mystic-section-shell">
         <header className="mb-14 flex max-w-4xl flex-col gap-8 border-b border-[rgba(214,168,95,0.09)] pb-12 sm:mb-16 sm:flex-row sm:items-end sm:justify-between sm:gap-10 sm:pb-14 md:mb-20 md:max-w-none md:pb-16">
           <div className="space-y-4 md:space-y-5">
@@ -297,13 +297,10 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
           role="region"
           aria-label="Featured products"
           tabIndex={0}
-          className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-3 [-webkit-overflow-scrolling:touch] sm:gap-4 md:gap-4"
+          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-5"
         >
           {purchasable.map((product) => (
-            <div
-              key={product.id}
-              className="w-[min(78vw,20rem)] shrink-0 snap-start sm:w-[min(46vw,18rem)] md:w-[min(40vw,17rem)] lg:w-[min(32vw,16rem)]"
-            >
+            <div key={product.id}>
               <ProductCard product={product} compact showQuickView />
             </div>
           ))}
@@ -349,7 +346,7 @@ const HOME_RITUAL_RHYTHMS: {
 
 function RitualStripSection() {
   return (
-    <section className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-[#04050a] !pt-24 !pb-24 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:!pt-32 md:!pb-32">
+    <section className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-[#04050a] !pt-14 !pb-14 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:!pt-32 md:!pb-32">
       <div className="mystic-section-shell">
         <SectionIntro
           title="Our Rituals"
@@ -447,7 +444,7 @@ function IngredientSpotlightSection() {
 
 function NewsletterSection() {
   return (
-    <section className="mystic-section relative pb-20 md:pb-24">
+    <section className="mystic-section relative pb-14 md:pb-24">
       <div className="mystic-section-shell">
         <section
           aria-labelledby="home-story-heading"
@@ -478,7 +475,7 @@ function NewsletterSection() {
             <div
               data-image-slot="home-story"
               aria-hidden
-              className="relative aspect-[4/3] w-full overflow-hidden rounded-[22px] border border-white/[0.06] bg-[radial-gradient(circle_at_18%_22%,rgba(255,154,80,0.12),transparent_26%),radial-gradient(circle_at_78%_34%,rgba(214,168,95,0.1),transparent_32%),linear-gradient(190deg,rgba(18,20,28,0.55)_0%,rgba(6,7,12,0.9)_55%,rgb(4,5,10)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+              className="relative aspect-[3/2] md:aspect-[4/3] w-full overflow-hidden rounded-[22px] border border-white/[0.06] bg-[radial-gradient(circle_at_18%_22%,rgba(255,154,80,0.12),transparent_26%),radial-gradient(circle_at_78%_34%,rgba(214,168,95,0.1),transparent_32%),linear-gradient(190deg,rgba(18,20,28,0.55)_0%,rgba(6,7,12,0.9)_55%,rgb(4,5,10)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
             />
           </div>
         </section>

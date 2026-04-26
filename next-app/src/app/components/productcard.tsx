@@ -75,7 +75,7 @@ export default function ProductCard({
     : "(max-width: 640px) 50vw, (max-width: 1100px) 33vw, (max-width: 1536px) 25vw, 20vw";
 
   const mediaRadius = compact ? "rounded-[14px]" : "rounded-[17px]";
-  const mediaAspect = compact ? "aspect-[3/4]" : "aspect-[4/5]";
+  const mediaAspect = compact ? "aspect-square sm:aspect-[4/5]" : "aspect-[4/5]";
   const linkPad = compact ? "mx-2 mt-2 sm:mx-2.5 sm:mt-2.5" : "mx-3 mt-3 md:mx-3.5 md:mt-3.5";
 
   return (
@@ -148,7 +148,7 @@ export default function ProductCard({
       <div
         className={
           compact
-            ? "flex flex-1 flex-col gap-1.5 p-2.5 sm:gap-2 sm:p-3"
+            ? "flex flex-1 flex-col gap-1 p-2 sm:gap-2 sm:p-3"
             : "flex flex-1 flex-col gap-2.5 p-3.5 md:gap-3 md:p-4"
         }
       >
