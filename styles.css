@@ -32,6 +32,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
+  overflow-x: hidden;
 }
 
 body {
@@ -1165,4 +1166,74 @@ option, optgroup {
   .brand-logo-blend { width: 34px; height: 34px; }
   .section { padding: 2rem 0; }
   .newsletter-form input { min-height: 44px; }
+}
+
+/* ─── LANDSCAPE PHONE (orientation: landscape, max-height: 500px) ─── */
+/* Targets phones rotated sideways — viewport is wide but very short.  */
+/* Fix: release hero from full-screen lock, shrink logo & spacing,     */
+/* show content normally so nothing is cut off.                        */
+@media (orientation: landscape) and (max-height: 500px) {
+  .topbar { display: none; }
+
+  .nav-inner { min-height: 52px; }
+
+  /* Hero: release the 100svh lock — let content define height instead */
+  .hero {
+    min-height: unset;
+    padding: 1.5rem 0 1.25rem;
+    align-items: flex-start;
+  }
+
+  /* Condense the hero stack horizontally in landscape */
+  .hero-center {
+    max-width: min(700px, 90vw);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Smaller logo ring */
+  .hero-logo-wrap { margin-bottom: 0; gap: 0.5rem; }
+  .hero-logo-ring { width: 80px; height: 80px; }
+  .hero-logo-img  { width: 68px; height: 68px; }
+  .hero-logo-rule { width: 140px; }
+
+  /* Tighten wordmark and gaps */
+  .hero-brand-identity { margin-bottom: 0.5rem; gap: 0.2rem; }
+  .hero-wordmark { font-size: clamp(2rem, 8vw, 3.5rem); letter-spacing: 0.18em; }
+  .hero-tagline  { font-size: 0.65rem; }
+
+  .hero-divider  { margin-bottom: 0.75rem; }
+  .hero-headline-wrap { margin-bottom: 0.75rem; }
+  .hero-sub { font-size: clamp(0.9rem, 2.5vw, 1.1rem); }
+
+  /* Buttons side by side, not full-width stacked */
+  .hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 0.875rem;
+  }
+  .btn { width: auto; min-height: 44px; padding: 0.65rem 1.25rem; }
+
+  /* Trust bar: row, compact */
+  .hero-trust {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    gap: 0.25rem;
+  }
+  .hero-trust-item { font-size: 0.68rem; padding: 0 0.5rem; }
+  .hero-trust-sep { display: none; }
+
+  /* Products: 3 cols in landscape instead of 2 */
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .section { padding: 2rem 0; }
 }
