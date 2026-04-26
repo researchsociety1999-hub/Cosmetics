@@ -836,6 +836,10 @@ optgroup {
   animation: mystic-navbar-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+:root {
+  --mystique-header-offset: 7rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mystic-merged-select-list {
     animation: none;
