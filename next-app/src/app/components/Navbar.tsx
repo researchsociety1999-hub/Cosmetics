@@ -20,7 +20,7 @@ const NAV_LINK_IDLE = `${NAV_LINK_BASE} text-[#d4c4a8] hover:text-[#f0e6d4]`;
 const NAV_LINK_ACTIVE = `${NAV_LINK_BASE} text-[#f0d19a]`;
 
 const HELP_CHOOSING_LINK =
-  "inline-flex max-w-full items-center justify-center whitespace-normal break-words py-1 text-center text-[clamp(0.5rem,1.2vw,0.62rem)] uppercase leading-snug tracking-[clamp(0.18em,0.6vw,0.28em)] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+  "inline-flex max-w-full items-center justify-start whitespace-normal break-words py-1 text-left text-[0.62rem] md:text-[0.65rem] uppercase leading-snug tracking-[0.2em] text-[#9a8b72] transition-colors duration-300 [text-shadow:0_1px_12px_rgba(0,0,0,0.75)] hover:text-[#d4c4a8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
 /**
  * Centered gold nav (Shop · Routines · Ingredients · Journal · About) + account icon
@@ -179,7 +179,7 @@ export function Navbar() {
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Toggle menu"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:hidden sm:h-9 sm:w-9"
+                className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:hidden sm:h-9 sm:w-9"
               >
                 <HamburgerGlyph open={isMobileMenuOpen} />
               </button>
@@ -221,7 +221,7 @@ export function Navbar() {
           type="button"
           aria-label="Close menu"
           onClick={() => setIsMobileMenuOpen(false)}
-          className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] sm:right-6 sm:top-[max(0.65rem,env(safe-area-inset-top,0px))] sm:h-9 sm:w-9"
+          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] sm:right-6 sm:top-[max(0.65rem,env(safe-area-inset-top,0px))] sm:h-9 sm:w-9"
         >
           <HamburgerGlyph open={true} />
         </button>
@@ -251,7 +251,7 @@ function CartIconLink({ count }: { count: number }) {
       href="/cart"
       prefetch
       aria-label={showBadge ? `Cart (${count} items)` : "Cart"}
-      className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
+      className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
     >
       <span className="sr-only">Cart</span>
       <CartGlyph />
@@ -294,10 +294,10 @@ function AccountIconLink() {
         href="/account"
         prefetch
         aria-label="Account"
-        className="group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 lg:px-3.5"
+        className="group inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 lg:px-3.5"
       >
         <span className="sr-only">Account</span>
-        <span className="inline-flex h-11 w-11 items-center justify-center sm:h-9 sm:w-9">
+        <span className="inline-flex h-10 w-10 items-center justify-center sm:h-9 sm:w-9">
           <AccountGlyph />
         </span>
         <span className="hidden font-ui text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#d6c4a8] lg:inline">

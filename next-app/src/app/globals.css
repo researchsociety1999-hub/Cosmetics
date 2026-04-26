@@ -252,8 +252,8 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
 }
 
 .mystic-section {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .mystic-section-shell {

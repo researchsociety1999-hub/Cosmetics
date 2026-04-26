@@ -11,7 +11,7 @@ export function HomeGuidedDiscovery() {
     <section
       id="guided-discovery"
       aria-labelledby="guided-discovery-heading"
-      className="relative border-b border-[rgba(17,24,39,0.85)] bg-[linear-gradient(180deg,#03040a_0%,#05070d_55%,#04050a_100%)] py-12 md:py-16"
+      className="relative border-b border-[rgba(17,24,39,0.85)] bg-[linear-gradient(180deg,#03040a_0%,#05070d_55%,#04050a_100%)] py-10 md:py-16"
     >
       <div className="mystic-section-shell">
         <div className="mx-auto max-w-3xl text-center md:text-left">
