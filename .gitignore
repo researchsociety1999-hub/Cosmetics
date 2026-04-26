@@ -12,6 +12,11 @@ node_modules/
 /playwright/.auth/
 /next-app/test-results/
 
+# Next.js (app lives in next-app/)
+/next-app/.next/
+/next-app/out/
+/next-app/node_modules/
+
 # Local / tooling noise
 .openyak/
 *.log
