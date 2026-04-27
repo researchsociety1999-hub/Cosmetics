@@ -45,6 +45,11 @@ function formatAuthErrorMessage(message: string) {
   return message;
 }
 
+function isSignupDisabledOtpError(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized.includes("signups not allowed") && normalized.includes("otp");
+}
+
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
   const email = normalizeField(formData.get("email"));
   const nextPath = getSafeNextPath(
@@ -76,16 +81,18 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
     email,
     options: {
       emailRedirectTo: callbackUrl.toString(),
+      // Production-safe behavior:
+      // - login: existing accounts only (works even when signups are disabled)
+      // - signup: create new user (requires Supabase Email/OTP signups enabled)
       shouldCreateUser: mode === "signup",
     },
   });
 
   if (error) {
-    const hint =
-      error.message.toLowerCase().includes("signups not allowed") &&
-      error.message.toLowerCase().includes("otp")
-        ? "Fix: Supabase Dashboard → Authentication → Sign In / Providers → Email → enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md → Magic links & sign-up."
-        : undefined;
+    const signupDisabled = isSignupDisabledOtpError(error.message);
+    const hint = signupDisabled
+      ? "Fix: Supabase Dashboard → Authentication → Sign In / Providers → Email → enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md → Magic links & sign-up."
+      : undefined;
     console.error("Magic link request failed", {
       email,
       message: error.message,
@@ -93,6 +100,12 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
       name: error.name,
       hint,
     });
+
+    // If signups are disabled and the shopper is on the login screen,
+    // treat this as "no account found" (we don't want login to behave like login-or-signup).
+    if (mode === "login" && signupDisabled) {
+      redirect(`${statusPath}?status=no-account&email=${encodeURIComponent(email)}`);
+    }
     redirect(
       `${statusPath}?status=error&message=${encodeURIComponent(formatAuthErrorMessage(error.message))}`,
     );

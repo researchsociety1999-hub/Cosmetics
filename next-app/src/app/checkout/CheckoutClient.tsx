@@ -93,6 +93,8 @@ export function CheckoutClient({
     try {
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
+        // Be explicit: ensure guest cart cookies are always sent (some environments can be stricter).
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
