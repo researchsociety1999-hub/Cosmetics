@@ -110,6 +110,15 @@ function StatusMessage({
     );
   }
 
+  if (status === "no-account") {
+    return (
+      <p className="text-sm text-[#d6a85f]">
+        No account was found for {email || "this email address"}. If you need access,
+        please contact support.
+      </p>
+    );
+  }
+
   if (status === "confirmed") {
     return (
       <p className="text-sm text-[#d6a85f]">
