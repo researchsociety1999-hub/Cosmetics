@@ -88,7 +88,7 @@ export default async function ShopPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+      <main className="mx-auto w-full max-w-[110rem] px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <h1 className="sr-only">Shop</h1>
         <section className="mb-8 flex flex-wrap gap-3">
           <CategoryChip

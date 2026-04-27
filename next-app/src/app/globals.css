@@ -263,6 +263,28 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   padding-inline: clamp(1rem, 4vw, 2.5rem);
 }
 
+.mystic-product-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: clamp(0.75rem, 1.55vw, 2.25rem);
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .mystic-product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: clamp(1rem, 1.6vw, 2.5rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .mystic-product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(15.5rem, 100%), 1fr));
+  }
+}
+
 .mystic-kicker {
   color: var(--mystic-text-muted);
   font-size: 0.75rem;
