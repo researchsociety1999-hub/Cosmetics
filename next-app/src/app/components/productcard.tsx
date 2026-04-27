@@ -5,7 +5,6 @@ import { AddToCartForm } from "./AddToCartForm";
 import { ProductCardQuickView } from "./ProductCardQuickView";
 import { ThemedImageFrame } from "./ThemedImageFrame";
 import { WaitlistModal } from "./WaitlistModal";
-import { StarRow } from "./StarRating";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import {
   getPrimaryBenefitLine,
@@ -163,14 +162,6 @@ export default function ProductCard({
           >
             {product.name}
           </Link>
-          <div className="flex items-center gap-2">
-            <span className={compact ? "text-[0.62rem]" : "text-[0.7rem]"}>
-              <StarRow rating={5} />
-            </span>
-            <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7a7265]">
-              Coming soon
-            </span>
-          </div>
           {scanLine ? (
             <p
               className={
@@ -199,7 +190,7 @@ export default function ProductCard({
             aria-hidden
             className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
           />
-          <div className="flex items-end justify-between gap-2 sm:gap-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
             <div className="min-w-0">
               <span className="sr-only">Price</span>
               {hasSale ? (
@@ -236,7 +227,7 @@ export default function ProductCard({
               )}
             </div>
 
-            <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-end sm:gap-2">
+            <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-2">
               {showQuickView ? (
                 <ProductCardQuickView product={product} compact={compact} />
               ) : null}
@@ -250,8 +241,8 @@ export default function ProductCard({
                   formClassName="contents"
                   buttonClassName={
                     compact
-                      ? "rounded-full border border-[rgba(214,168,95,0.45)] bg-white/[0.04] px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] backdrop-blur-sm transition hover:bg-[rgba(214,168,95,0.12)] sm:px-2.5 sm:py-1.5 sm:text-[0.58rem] sm:tracking-[0.16em]"
-                      : "rounded-full border border-[rgba(214,168,95,0.45)] bg-white/[0.04] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] backdrop-blur-sm transition hover:bg-[rgba(214,168,95,0.12)]"
+                      ? "relative inline-flex min-h-[40px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-2.5 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:min-h-[44px] sm:px-3 sm:text-[0.58rem] sm:tracking-[0.16em]"
+                      : "relative inline-flex min-h-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.38)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
                   }
                 />
               ) : (
