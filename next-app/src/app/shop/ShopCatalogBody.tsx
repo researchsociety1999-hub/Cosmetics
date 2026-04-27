@@ -17,7 +17,7 @@ export function ShopCatalogFallback() {
           <div className="h-3 w-24 animate-pulse rounded bg-white/[0.06]" />
           <div className="h-9 w-48 max-w-full animate-pulse rounded bg-white/[0.08]" />
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
+        <div className="mystic-product-grid">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -101,7 +101,7 @@ export async function ShopCatalogBody({
               {section.title}
             </h2>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
+          <div className="mystic-product-grid">
             {[...section.products]
               .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))
               .map((product) => (

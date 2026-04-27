@@ -297,7 +297,7 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
           role="region"
           aria-label="Featured products"
           tabIndex={0}
-          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-5"
+          className="mystic-product-grid mx-auto max-w-6xl"
         >
           {purchasable.map((product) => (
             <div key={product.id}>
