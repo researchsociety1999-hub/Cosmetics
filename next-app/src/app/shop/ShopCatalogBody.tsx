@@ -101,7 +101,11 @@ export async function ShopCatalogBody({
               {section.title}
             </h2>
           </div>
-          <div className="mystic-product-grid">
+          <div
+            className={`mystic-product-grid${
+              section.productCount <= 2 ? " mystic-product-grid--balanced" : ""
+            }`}
+          >
             {[...section.products]
               .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))
               .map((product) => (

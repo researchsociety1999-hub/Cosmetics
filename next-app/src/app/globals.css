@@ -496,6 +496,19 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   align-items: stretch;
 }
 
+/* Shop: when a section only has 1–2 items, avoid oversized cards on wide screens. */
+.mystic-product-grid--balanced {
+  margin-inline: auto;
+  max-width: 72rem;
+}
+
+@media (min-width: 1024px) {
+  .mystic-product-grid--balanced {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+  }
+}
+
 /* Home featured quartet: slightly tighter cards + calmer spacing (keeps shop grids untouched). */
 .mystic-product-grid--featured {
   grid-template-columns: repeat(auto-fit, minmax(min(14.25rem, 100%), 1fr));
