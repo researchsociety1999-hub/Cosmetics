@@ -80,10 +80,13 @@ export default function RootLayout({
       className={`${literata.variable} ${playfair.variable} ${inter.variable} scroll-smooth`}
     >
       <body
-        className={`${inter.className} min-w-0 w-full bg-black text-[#f6f0e6] antialiased`}
+        className={`${inter.className} min-w-0 w-full bg-transparent text-[#f6f0e6] antialiased`}
       >
-        {children}
-        <CookieBanner />
+        <div className="mystique-global-wallpaper" aria-hidden="true" />
+        <div className="mystique-app-shell">
+          {children}
+          <CookieBanner />
+        </div>
       </body>
     </html>
   );

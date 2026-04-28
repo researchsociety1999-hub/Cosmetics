@@ -12,16 +12,28 @@ export function HomeHeroMotion({
   /** Reserved for homepage merchandising; kept for API compatibility. */
   quickViewProduct?: Product | null;
 }) {
+  void _quickViewProduct;
   return (
     <section
       data-hero-section="home"
-      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,oklch(0.10_0.025_55)_0%,oklch(0.05_0.01_55)_60%,oklch(0.04_0_0)_100%)] sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:-mt-[4.65rem]"
+      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-[100dvw] -translate-x-1/2 overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,oklch(0.10_0.025_55)_0%,oklch(0.05_0.01_55)_60%,oklch(0.04_0_0)_100%)] sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:-mt-[4.65rem]"
     >
       {/* —— Atmosphere (behind all content) —— */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       >
+        {/* Primary marble wallpaper presence (derived directly from attached image). */}
+        <div
+          aria-hidden
+          className="absolute inset-[-12%] opacity-[0.55] sm:opacity-[0.6] md:opacity-[0.66] bg-[image:var(--mystique-wallpaper-url)] bg-cover bg-no-repeat bg-[position:55%_42%] [filter:brightness(0.92)_contrast(1.12)_saturate(1.06)]"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.75) 62%, rgba(0,0,0,1) 100%)",
+            maskImage:
+              "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.75) 62%, rgba(0,0,0,1) 100%)",
+          }}
+        />
         {/* LCP hero <Image>: prioritized + discoverable immediately (priority, fetchPriority, eager loading, realistic sizes). */}
         <Image
           src="/about/hero.jpg"
@@ -40,6 +52,8 @@ export function HomeHeroMotion({
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-black/30 to-black/70"
       />
+      {/* Marble-vein material layer (hero only): masked away from left copy block. */}
+      <div aria-hidden className="mystique-vein-layer absolute inset-0 z-[1]" />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_18%,rgba(214,168,95,0.12),transparent_55%),radial-gradient(circle_at_90%_18%,rgba(255,154,80,0.07),transparent_38%),radial-gradient(circle_at_10%_45%,rgba(120,90,160,0.06),transparent_42%),linear-gradient(168deg,rgba(10,8,14,0.85)_0%,rgba(4,5,10,0.9)_45%,rgb(2,3,7)_100%)]"
@@ -105,7 +119,7 @@ export function HomeHeroMotion({
 
       {/* —— Foreground: 52vh mark + content block below (Phase 2A) —— */}
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-4 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] pt-[max(7.25rem,calc(6.1rem+env(safe-area-inset-top,0px)))] sm:px-6 sm:pt-[max(7.5rem,calc(6.3rem+env(safe-area-inset-top,0px)))] md:px-10 lg:pt-[max(5.25rem,calc(4.75rem+env(safe-area-inset-top,0px)))] lg:px-12 xl:px-14">
-        <div className="relative flex min-h-0 flex-1 items-center">
+        <div className="relative flex min-h-0 flex-1 items-end pb-10 sm:pb-12 lg:pb-14">
           {/* Watermark logo (cinematic, integrated): sits behind copy, centered/right. */}
           <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
             <div className="absolute left-1/2 top-[46%] h-[min(60vh,32rem)] w-[min(120vw,84rem)] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_70%_55%_at_55%_50%,rgba(2,3,7,0.40)_0%,rgba(2,3,7,0.16)_55%,rgba(2,3,7,0)_100%)] opacity-[0.55]" />

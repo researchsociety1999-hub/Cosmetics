@@ -7,7 +7,7 @@ export function HomeEditorialModules() {
   return (
     <section
       aria-labelledby="editorial-modules-heading"
-      className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-[#04050a]"
+      className="mystic-section mystique-material mystique-material--editorial relative border-b border-[rgba(214,168,95,0.08)] bg-transparent"
     >
       <div className="mystic-section-shell space-y-10 md:space-y-20">
         <header className="mx-auto max-w-3xl text-center md:text-left">
@@ -44,7 +44,7 @@ export function HomeEditorialModules() {
         </article>
 
         {/* Split: text + gradient panel */}
-        <div className="grid items-center gap-10 lg:gap-14">
+        <div className="mystique-section-surface grid items-center gap-10 px-7 py-8 md:px-10 md:py-10 lg:gap-14">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#8a8275]">Split</p>
             <h3 className="mt-3 font-literata text-2xl tracking-[0.1em] text-[#f2ebe4] md:text-3xl">

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Search the Mystique collection by name, concern, or ingredient—fast paths to the right texture.",
 };
 
-export const revalidate = 300;
+export const revalidate = 30;
 
 export default async function SearchPage({
   searchParams,

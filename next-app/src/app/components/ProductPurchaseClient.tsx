@@ -117,6 +117,10 @@ export function ProductPurchaseClient({
     if (typeof product.stock === "number" && product.stock > 5) {
       return "In stock";
     }
+    if (product.stock == null) {
+      // `stock=null` means "unknown quantity" (do not imply low stock or a guarantee).
+      return "Available";
+    }
     return "Low stock";
   })();
 

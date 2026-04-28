@@ -22,6 +22,11 @@ export interface Product {
   category_name?: string | null;
   /** Optional merchandising line from DB, e.g. `30 ml · glass dropper`. */
   volume_size_label?: string | null;
+  /**
+   * Optional lightweight variant stock snapshot when joined from Supabase.
+   * Used to keep catalog-level "purchasable" consistent with PDP variant gating.
+   */
+  variant_stocks?: Array<{ stock: number | null }> | null;
 }
 
 export interface ProductVariant {
