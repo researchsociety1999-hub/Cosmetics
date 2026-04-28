@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { AnchorHTMLAttributes, MouseEvent } from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { acquireOverlayLock, trapTabKey } from "../lib/a11yOverlay";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -61,6 +62,11 @@ export function Navbar() {
   const [cartCount, setCartCount] = useState<number>(0);
   const headerRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuCloseRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuToggleRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const overlayRef = useRef<ReturnType<typeof acquireOverlayLock> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
@@ -101,14 +107,60 @@ export function Navbar() {
     };
     if (isMobileMenuOpen) {
       window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
     }
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
     };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const main = document.getElementById("main-content");
+    const footer = document.querySelector("footer");
+    const backToTop = document.querySelector<HTMLElement>('button[aria-label="Back to top"]');
+    const cookieBanner = document.querySelector<HTMLElement>('[aria-label="Cookie consent"]');
+
+    if (isMobileMenuOpen) {
+      restoreFocusRef.current = (document.activeElement as HTMLElement | null) ?? null;
+      overlayRef.current?.release();
+      overlayRef.current = acquireOverlayLock({
+        inertTargets: [main, footer as HTMLElement | null, backToTop, cookieBanner],
+      });
+
+      const id = window.requestAnimationFrame(() => {
+        mobileMenuCloseRef.current?.focus();
+      });
+      return () => {
+        window.cancelAnimationFrame(id);
+        // Safety: if the navbar unmounts while still open, release the overlay lock.
+        overlayRef.current?.release();
+        overlayRef.current = null;
+      };
+    }
+
+    overlayRef.current?.release();
+    overlayRef.current = null;
+
+    const toFocus = restoreFocusRef.current ?? mobileMenuToggleRef.current;
+    if (toFocus) {
+      const id = window.requestAnimationFrame(() => {
+        toFocus.focus();
+      });
+      return () => window.cancelAnimationFrame(id);
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const panel = mobileMenuRef.current;
+    if (!panel) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      trapTabKey(e, panel, { initialFocus: mobileMenuCloseRef.current });
+    };
+
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
@@ -150,7 +202,7 @@ export function Navbar() {
     : undefined;
 
   return (
-    <header ref={headerRef} className="pointer-events-none fixed inset-x-0 top-0 z-40">
+    <header ref={headerRef} className="fixed inset-x-0 top-0 z-40">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[min(11rem,32vh)] bg-[linear-gradient(180deg,rgba(2,3,6,0.82)_0%,rgba(2,3,6,0.42)_42%,rgba(2,3,6,0.12)_72%,transparent_100%)] backdrop-blur-[10px] [mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(180deg,black_0%,black_55%,transparent_100%)]"
@@ -175,11 +227,12 @@ export function Navbar() {
               <CartIconLink count={cartCount} />
               <AccountIconLink />
               <button
+                ref={mobileMenuToggleRef}
                 type="button"
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Toggle menu"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:hidden sm:h-9 sm:w-9"
+                className="relative inline-flex h-10 w-10 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:hidden"
               >
                 <HamburgerGlyph open={isMobileMenuOpen} />
               </button>
@@ -207,39 +260,50 @@ export function Navbar() {
         />
       </div>
 
-      <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(2,3,6,0.95)] backdrop-blur-2xl transition-all duration-300 md:hidden ${
-          isMobileMenuOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
-        aria-modal="true"
-        role="dialog"
-        aria-label="Mobile navigation menu"
-      >
-        <button
-          type="button"
-          aria-label="Close menu"
+      {isMobileMenuOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
           onClick={() => setIsMobileMenuOpen(false)}
-          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] sm:right-6 sm:top-[max(0.65rem,env(safe-area-inset-top,0px))] sm:h-9 sm:w-9"
         >
-          <HamburgerGlyph open={true} />
-        </button>
-        <nav
-          className="flex flex-col items-center gap-8 text-center text-sm uppercase tracking-[0.3em] text-[#d4c4a8]"
-          aria-label="Mobile Primary"
-        >
-          <NavLink href="/" label="Home" active={isOnHome} extraProps={homeClickProps} />
-          {NAV_LINKS.map(({ href, label }) => (
-            <NavLink
-              key={href}
-              href={href}
-              label={label}
-              active={isNavActive(href, pathname)}
-            />
-          ))}
-        </nav>
-      </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[rgba(2,3,6,0.95)] backdrop-blur-2xl"
+          />
+          <div
+            ref={mobileMenuRef}
+            tabIndex={-1}
+            className="relative flex w-full flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              ref={mobileMenuCloseRef}
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute right-4 top-4 inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] transition duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] sm:right-6 sm:top-[max(0.65rem,env(safe-area-inset-top,0px))]"
+            >
+              <HamburgerGlyph open={true} />
+            </button>
+            <nav
+              className="flex flex-col items-center gap-8 text-center text-sm uppercase tracking-[0.3em] text-[#d4c4a8]"
+              aria-label="Mobile Primary"
+            >
+              <NavLink href="/" label="Home" active={isOnHome} extraProps={homeClickProps} />
+              {NAV_LINKS.map(({ href, label }) => (
+                <NavLink
+                  key={href}
+                  href={href}
+                  label={label}
+                  active={isNavActive(href, pathname)}
+                />
+              ))}
+            </nav>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }
@@ -251,7 +315,7 @@ function CartIconLink({ count }: { count: number }) {
       href="/cart"
       prefetch
       aria-label={showBadge ? `Cart (${count} items)` : "Cart"}
-      className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:w-9"
+      className="relative inline-flex h-10 w-10 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
       <span className="sr-only">Cart</span>
       <CartGlyph />
@@ -294,10 +358,10 @@ function AccountIconLink() {
         href="/account"
         prefetch
         aria-label="Account"
-        className="group inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:h-9 sm:px-0 lg:px-3.5"
+        className="group inline-flex h-10 min-h-[44px] items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(2,3,6,0.45)] px-0 text-[#e8dcc4] shadow-[0_4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-[border-color,background-color,transform,color] duration-200 hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(8,9,14,0.55)] active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent lg:px-3.5"
       >
         <span className="sr-only">Account</span>
-        <span className="inline-flex h-10 w-10 items-center justify-center sm:h-9 sm:w-9">
+        <span className="inline-flex h-10 w-10 items-center justify-center">
           <AccountGlyph />
         </span>
         <span className="hidden font-ui text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#d6c4a8] lg:inline">

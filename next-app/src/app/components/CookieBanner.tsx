@@ -56,8 +56,7 @@ export function CookieBanner() {
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-[9999] flex flex-wrap items-center justify-between gap-6 border-t border-[#C9A84C] bg-[#1A1A1A] px-6 py-5 md:px-10"
-      role="dialog"
-      aria-live="polite"
+      role="region"
       aria-label="Cookie consent"
     >
       <p className="max-w-2xl text-[14px] leading-relaxed text-[#F0EDE6]">

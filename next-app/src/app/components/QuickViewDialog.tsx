@@ -9,9 +9,7 @@ import { AddToCartForm } from "./AddToCartForm";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import { isProductPurchasable } from "../lib/productMerch";
 import type { Product } from "../lib/types";
-
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), textarea, input:not([type="hidden"]), select, [tabindex]:not([tabindex="-1"])';
+import { acquireOverlayLock, trapTabKey } from "../lib/a11yOverlay";
 
 function collectGalleryUrls(product: Product): string[] {
   const primary = getProductPrimaryImageUrl(product);
@@ -36,6 +34,7 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   const titleId = useId();
   const urls = collectGalleryUrls(product);
   const [activeIdx, setActiveIdx] = useState(0);
+  const overlayRef = useRef<ReturnType<typeof acquireOverlayLock> | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -46,12 +45,22 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   }, [open, product.id]);
 
   useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    if (typeof document === "undefined") return;
+    const main = document.getElementById("main-content");
+    const footer = document.querySelector("footer");
+    const backToTop = document.querySelector<HTMLElement>('button[aria-label="Back to top"]');
+    const cookieBanner = document.querySelector<HTMLElement>('[aria-label="Cookie consent"]');
+
+    if (open) {
+      overlayRef.current?.release();
+      overlayRef.current = acquireOverlayLock({
+        inertTargets: [main, footer as HTMLElement | null, backToTop, cookieBanner],
+      });
+      return () => {
+        overlayRef.current?.release();
+        overlayRef.current = null;
+      };
+    }
   }, [open]);
 
   useEffect(() => {
@@ -64,29 +73,11 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
     return () => window.cancelAnimationFrame(id);
   }, [open]);
 
-  const trapTab = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key !== "Tab" || !panelRef.current) return;
-      const panel = panelRef.current;
-      const nodes = [...panel.querySelectorAll(FOCUSABLE_SELECTOR)].filter(
-        (n): n is HTMLElement =>
-          n instanceof HTMLElement && !n.hasAttribute("disabled") && n.tabIndex !== -1,
-      );
-      if (nodes.length === 0) return;
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    },
-    [],
-  );
+  const trapTab = useCallback((e: KeyboardEvent) => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    trapTabKey(e, panel);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -98,8 +89,8 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
       }
       trapTab(e);
     }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [open, onClose, trapTab]);
 
   if (!open || typeof document === "undefined") return null;

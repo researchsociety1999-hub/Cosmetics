@@ -71,6 +71,10 @@ export function isProductPurchasable(product: Product): boolean {
   if (typeof product.stock === "number" && product.stock <= 0) {
     return false;
   }
+  const variantStocks = product.variant_stocks;
+  if (Array.isArray(variantStocks) && variantStocks.length > 0) {
+    return variantStocks.some((v) => (v?.stock ?? 0) > 0);
+  }
   return true;
 }
 

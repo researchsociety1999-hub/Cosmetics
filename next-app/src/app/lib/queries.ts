@@ -151,6 +151,7 @@ function normalizeProduct(product: Product): Product {
     category_slug?: string | null;
     category_name?: string | null;
     category_label?: string | null;
+    product_variants?: Array<{ stock: number | null }> | null;
   };
   const categoryRecord = rawProduct.category ?? rawProduct.categories ?? null;
   const categorySlug =
@@ -172,6 +173,7 @@ function normalizeProduct(product: Product): Product {
     routine_step: product.routine_step ?? null,
     category_slug: categorySlug,
     category_name: categoryName,
+    variant_stocks: Array.isArray(rawProduct.product_variants) ? rawProduct.product_variants : null,
   };
 }
 
@@ -471,7 +473,10 @@ export async function getProducts(
     options;
 
   try {
-    let query = supabase.from("products").select("*").eq("is_published", true);
+    let query = supabase
+      .from("products")
+      .select("*, product_variants(stock)")
+      .eq("is_published", true);
 
     if (categoryId != null) {
       query = query.eq("category_id", categoryId);
@@ -542,7 +547,7 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("*, product_variants(stock)")
       .in("id", ids)
       .eq("is_published", true);
 
@@ -574,7 +579,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("*, product_variants(stock)")
       .eq("is_published", true)
       .eq("slug", slug)
       .limit(1)

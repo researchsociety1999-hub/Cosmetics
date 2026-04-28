@@ -14,7 +14,7 @@ export function Footer() {
   const footerSocialProfiles = getFooterSocialProfiles();
 
   return (
-    <footer className="relative mt-24 overflow-hidden">
+    <footer className="mystique-material mystique-material--footer relative mt-24 overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.88))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_28%,rgba(255,154,80,0.1),transparent_20%),radial-gradient(circle_at_82%_72%,rgba(212,175,55,0.07),transparent_26%),linear-gradient(180deg,#000000_8%,#030204_55%,#000000_100%)]" />
       <div className="w-full px-4 pb-10 pt-14 md:px-6 md:pb-12 md:pt-20 lg:px-10 xl:px-14">

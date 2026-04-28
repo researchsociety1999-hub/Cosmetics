@@ -1,7 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type WaitlistModalProps = {
   productName?: string | null;
@@ -30,6 +30,13 @@ export function WaitlistModal({
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const panelId = useMemo(() => {
+    const ref = productSlug?.trim() || "unknown";
+    return `waitlist-panel-${ref}`;
+  }, [productSlug]);
 
   const source = useMemo(() => {
     const ref = productSlug?.trim();
@@ -38,6 +45,47 @@ export function WaitlistModal({
 
   const title = productName?.trim() || "This item";
   const panelAlign = align === "left" ? "left-0" : "right-0";
+
+  const closePopover = (opts?: { restoreFocus?: boolean }) => {
+    setOpen(false);
+    if (opts?.restoreFocus) {
+      window.requestAnimationFrame(() => triggerRef.current?.focus());
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const id = window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closePopover({ restoreFocus: true });
+      }
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      const root = rootRef.current;
+      if (!root) return;
+      if (e.target instanceof Node && !root.contains(e.target)) {
+        closePopover({ restoreFocus: true });
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("pointerdown", onPointerDown, true);
+    };
+  }, [open]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -90,8 +138,9 @@ export function WaitlistModal({
   }
 
   return (
-    <div className="relative">
+    <div ref={rootRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => {
           setOpen((v) => !v);
@@ -103,13 +152,15 @@ export function WaitlistModal({
           "rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
         }
         aria-expanded={open}
+        aria-controls={panelId}
       >
         {triggerLabel}
       </button>
 
       {open ? (
         <div
-          role="dialog"
+          id={panelId}
+          role="group"
           aria-label="Restock note signup"
           className={`absolute z-40 mt-3 w-[min(22rem,92vw)] rounded-[18px] border border-[rgba(214,168,95,0.18)] bg-[rgba(2,3,6,0.98)] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl ${panelAlign}`}
         >
@@ -127,8 +178,8 @@ export function WaitlistModal({
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-[#b8ab95] transition hover:border-[rgba(214,168,95,0.25)] hover:text-[#f5eee3]"
+              onClick={() => closePopover({ restoreFocus: true })}
+              className="inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-[#b8ab95] transition hover:border-[rgba(214,168,95,0.25)] hover:text-[#f5eee3]"
               aria-label="Close"
             >
               ×
@@ -139,6 +190,7 @@ export function WaitlistModal({
             <label className="block">
               <span className="sr-only">Email</span>
               <input
+                ref={inputRef}
                 type="email"
                 inputMode="email"
                 autoComplete="email"

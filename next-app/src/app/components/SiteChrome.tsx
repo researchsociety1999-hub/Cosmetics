@@ -31,7 +31,7 @@ export async function SiteChrome({
   showFooter?: boolean;
 }) {
   return (
-    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-black text-[#f6f0e6]">
+    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-transparent text-[#f6f0e6]">
       <SkipToContent />
       <div
         aria-hidden="true"
