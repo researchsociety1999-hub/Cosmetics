@@ -1,206 +1,101 @@
-<div align="center">
+# Mystique — Skincare Storefront
 
-# ✨ Cosmetics — K-Beauty E-Commerce Platform
+> *Where Beauty Transcends*
 
-**A modern, full-stack K-beauty shopping experience built with Next.js & Supabase**
+A production-grade skincare e-commerce storefront built with **Next.js 16**, **Supabase**, **Stripe**, and **Resend**. Deployed on Vercel.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-cosmetics--wjwz.vercel.app-pink?style=for-the-badge&logo=vercel)](https://cosmetics-wjwz.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/dashboard/projects)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.x-38BDF8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Playwright](https://img.shields.io/badge/Tested%20with-Playwright-2EAD33?style=for-the-badge&logo=playwright)](https://playwright.dev/)
-[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
-
-</div>
+🌐 **Live site:** [cosmetics-wjwz.vercel.app](https://cosmetics-wjwz.vercel.app)
 
 ---
 
-## 🌸 Overview
+## Repository Structure
 
-**Cosmetics** is a premium K-beauty e-commerce platform delivering a seamless, luxurious shopping experience. Inspired by top-tier beauty brands, it features a curated product catalog, smooth checkout flow, transactional email notifications, and a robust backend powered by Supabase.
-
-Whether you're browsing the latest skincare essentials or completing a purchase, every interaction is designed to feel effortless and elegant.
-
-> 🔗 **Live Site:** [cosmetics-wjwz.vercel.app](https://cosmetics-wjwz.vercel.app)
-
----
-
-## 🚀 Features
-
-- 🛍️ **Product Catalog** — Beautifully presented K-beauty product listings with filtering and search
-- 🛒 **Shopping Cart** — Persistent cart with real-time quantity updates
-- 💳 **Checkout Flow** — Streamlined, multi-step checkout with order confirmation
-- 📧 **Transactional Emails** — Order confirmation and notification emails via Resend
-- 🗄️ **Supabase Backend** — Fully managed PostgreSQL database with Row Level Security
-- 🎨 **Responsive Design** — Mobile-first UI built with Tailwind CSS
-- ⚡ **Performance Optimized** — Static generation and server-side rendering with Next.js App Router
-- 🧪 **End-to-End Testing** — Automated test coverage with Playwright
-- 🔄 **CI/CD** — Automated deployments via GitHub Actions & Vercel
+```
+/
+├── next-app/          ← Production Next.js app (source of truth)
+│   ├── src/           ← App source code (pages, components, lib)
+│   ├── public/        ← Static assets served by Next.js
+│   ├── scripts/       ← Utility / seed scripts
+│   ├── supabase/      ← (if present) local Supabase config
+│   └── .env.example   ← Copy to .env.local and fill in your keys
+├── supabase/          ← Supabase migrations and config
+├── tests/             ← Playwright E2E tests (run from root)
+├── scripts/           ← Root-level utility scripts
+├── legacy/            ← Original static prototype (not deployed, reference only)
+├── playwright.config.ts
+├── package.json       ← Root workspace (delegates to next-app)
+├── SUPABASE_SETUP.md  ← Supabase integration guide
+└── .github/workflows/ ← CI (Playwright E2E on push/PR to main)
+```
 
 ---
 
-## 🛠️ Tech Stack
+## Getting Started
+
+### 1. Install dependencies
+
+```bash
+npm install          # installs root (Playwright) + next-app deps
+```
+
+### 2. Set up environment variables
+
+```bash
+cp next-app/.env.example next-app/.env.local
+# Fill in your Supabase, Stripe, and Resend keys
+```
+
+See [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) for full integration details.
+
+### 3. Run in development
+
+```bash
+npm run dev          # starts Next.js dev server on http://localhost:3000
+```
+
+### 4. Run E2E tests
+
+```bash
+npm run test         # runs Playwright against localhost:3001 with mock catalog
+```
+
+---
+
+## Environment Variables
+
+Copy `next-app/.env.example` to `next-app/.env.local`. Required variables:
+
+| Variable | Required | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public anon key (safe for browser) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Prod | Server-only; required for Stripe checkout |
+| `STRIPE_SECRET_KEY` | Yes | Stripe secret key |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Yes | Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | Prod | For Stripe webhook verification |
+| `RESEND_API_KEY` | Prod | For order confirmation emails |
+| `RESEND_FROM_EMAIL` | Prod | Sender address for transactional emails |
+
+⚠️ **Never commit `.env.local` or any file containing real keys.** Use Vercel's environment variable dashboard for production secrets.
+
+---
+
+## Deployment
+
+The app auto-deploys to Vercel on every push to `main`. See [`next-app/DEPLOYMENT.md`](./next-app/DEPLOYMENT.md) for manual deployment steps and Vercel config.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| 🖥️ Frontend | Next.js 16 (App Router), React, TypeScript |
-| 🎨 Styling | Tailwind CSS v4 |
-| 🗄️ Database | Supabase (PostgreSQL) |
-| 🔐 Auth | Supabase Auth |
-| 📧 Email | Resend |
-| 🧪 Testing | Playwright |
-| 🚀 Deployment | Vercel |
-| ⚙️ CI/CD | GitHub Actions |
-
----
-
-## 📁 Project Structure
-
-```
-Cosmetics/
-├── .github/
-│   └── workflows/        # CI/CD GitHub Actions pipelines
-├── .vscode/              # Editor configuration & debug settings
-├── next-app/             # Main Next.js application
-│   ├── app/              # App Router pages & layouts
-│   ├── components/       # Reusable UI components
-│   ├── lib/              # Supabase client, utilities
-│   └── public/           # Static assets
-├── tests/                # Playwright end-to-end test suites
-├── SUPABASE_SETUP.md     # Database setup & migration guide
-├── package.json          # Workspace scripts & dependencies
-├── playwright.config.ts  # Playwright test configuration
-├── index.html            # Legacy static demo (not the Next.js app)
-├── script.js
-└── styles.css            # Styles for the legacy static demo only
-```
-
----
-
-## 🏁 Getting Started
-
-### Prerequisites
-
-- Node.js `v18+`
-- npm `v9+`
-- A [Supabase](https://supabase.com/dashboard/projects) project
-- A [Resend](https://resend.com) account for emails
-
-### 1️⃣ Clone the Repository
-
-```bash
-git clone https://github.com/researchsociety1999-hub/Cosmetics.git
-cd Cosmetics
-```
-
-### 2️⃣ Install Dependencies
-
-```bash
-npm install
-```
-
-### 3️⃣ Configure Environment Variables
-
-Create a `.env.local` file inside the `next-app/` directory:
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Resend (Email)
-RESEND_API_KEY=your_resend_api_key
-```
-
-> 📖 See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed database schema setup and migration instructions.
-
-### 4️⃣ Run the Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
-
----
-
-## 📦 Available Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start the production server |
-| `npm run lint` | Run ESLint across the project |
-| `npm run install` | Install all workspace dependencies |
-| `npm test` | Run Playwright end-to-end tests (`tests/`) |
-
----
-
-## 🧪 Running Tests
-
-This project uses [Playwright](https://playwright.dev/) for end-to-end testing.
-
-```bash
-# Run all tests (from repo root; builds next-app and serves on :3001)
-npm test
-
-# Same as above
-npx playwright test
-
-# Run one file
-npx playwright test tests/account-page.spec.ts
-
-# Run tests with UI mode
-npx playwright test --ui
-
-# View the test report
-npx playwright show-report
-```
-
----
-
-## 🌐 Deployment
-
-The app is deployed on **Vercel** with automatic deployments on every push to `main`.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/researchsociety1999-hub/Cosmetics)
-
-For manual deployment:
-
-```bash
-npm run build
-```
-
-Then deploy the `next-app/.next` output to your hosting provider of choice.
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! 💖
-
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'feat: add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-Please follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-Made with 💕 by [researchsociety1999-hub](https://github.com/researchsociety1999-hub)
-
-⭐ If you find this project helpful, please consider giving it a star!
-
-</div>
+| Framework | Next.js 16 (App Router) |
+| Styling | Tailwind CSS v4 |
+| Database | Supabase (PostgreSQL + RLS) |
+| Auth | Supabase Auth (magic links) |
+| Payments | Stripe Checkout |
+| Email | Resend |
+| Testing | Playwright E2E |
+| Deployment | Vercel |
+| Language | TypeScript |
