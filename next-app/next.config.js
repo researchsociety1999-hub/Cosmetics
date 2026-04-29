@@ -1,7 +1,3 @@
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
-
 function extraImageRemotePatterns() {
   const raw = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS || "";
   return raw
@@ -160,4 +156,7 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports =
+  process.env.ANALYZE === "true"
+    ? require("@next/bundle-analyzer")({ enabled: true })(nextConfig)
+    : nextConfig;
