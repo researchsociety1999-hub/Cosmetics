@@ -42,6 +42,29 @@ function formatAuthErrorMessage(message: string) {
     return "New accounts are turned off in authentication settings (only existing customers can use email sign-in). You can still shop as a guest, or sign in with an account that already exists.";
   }
 
+  // Resend SMTP sandbox restriction: account is in test mode and can only
+  // send to the verified owner email address.
+  // Fix: verify a custom domain at https://resend.com/domains, then update
+  // the Supabase Auth → SMTP “From” address to use that verified domain.
+  if (
+    normalized.includes("550") &&
+    normalized.includes("testing emails to your own email address")
+  ) {
+    return "We couldn't send the account link right now. The email provider is in test mode. Please contact support.";
+  }
+
+  // Resend SMTP domain-not-verified error: the “From” address uses a domain
+  // (e.g. @gmail.com) that hasn’t been added + verified in Resend.
+  // Fix: add & verify your sending domain at https://resend.com/domains and
+  // update the Supabase Auth → SMTP “From” address to match.
+  if (
+    normalized.includes("550") &&
+    (normalized.includes("domain is not verified") ||
+      normalized.includes("please, add and verify your domain"))
+  ) {
+    return "We couldn't send the account link right now. Error sending magic link email.";
+  }
+
   return message;
 }
 
@@ -91,7 +114,7 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
   if (error) {
     const signupDisabled = isSignupDisabledOtpError(error.message);
     const hint = signupDisabled
-      ? "Fix: Supabase Dashboard → Authentication → Sign In / Providers → Email → enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md → Magic links & sign-up."
+      ? "Fix: Supabase Dashboard \u2192 Authentication \u2192 Sign In / Providers \u2192 Email \u2192 enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md \u2192 Magic links & sign-up."
       : undefined;
     console.error("Magic link request failed", {
       email,
