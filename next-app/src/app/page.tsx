@@ -1,10 +1,7 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { HomeEditorialModules } from "./components/home/HomeEditorialModules";
-import { HomeGuidedDiscovery } from "./components/home/HomeGuidedDiscovery";
-import { HomeServicesModule } from "./components/home/HomeServicesModule";
-import { HomeTrustStrip } from "./components/home/HomeTrustStrip";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
 import { IngredientSpotlightThumb } from "./components/IngredientSpotlightThumb";
 import { NewsletterForm } from "./components/NewsletterForm";
@@ -16,15 +13,80 @@ import { isProductPurchasable } from "./lib/productMerch";
 import { buildPageMetadata } from "./lib/seo";
 import type { Product } from "./lib/types";
 
+// ---------------------------------------------------------------------------
+// Below-fold sections: dynamically imported so their JS is excluded from the
+// critical chunk parsed on first paint.  ssr:false keeps them out of the
+// server bundle for these interactive enhancement components; purely
+// presentational sections (HomeTrustStrip, HomeServicesModule) are also
+// deferred because they appear well below the fold.
+// ---------------------------------------------------------------------------
+const HomeEditorialModules = dynamic(
+  () =>
+    import("./components/home/HomeEditorialModules").then(
+      (m) => m.HomeEditorialModules
+    ),
+  { ssr: false, loading: () => <SectionLoading title="Editorial" /> }
+);
+
+const HomeGuidedDiscovery = dynamic(
+  () =>
+    import("./components/home/HomeGuidedDiscovery").then(
+      (m) => m.HomeGuidedDiscovery
+    ),
+  { ssr: false, loading: () => <SectionLoading title="Guided discovery" /> }
+);
+
+const HomeServicesModule = dynamic(
+  () =>
+    import("./components/home/HomeServicesModule").then(
+      (m) => m.HomeServicesModule
+    ),
+  { ssr: false, loading: () => null }
+);
+
+const HomeTrustStrip = dynamic(
+  () =>
+    import("./components/home/HomeTrustStrip").then((m) => m.HomeTrustStrip),
+  { ssr: false, loading: () => null }
+);
+
 export const metadata: Metadata = {
   ...buildPageMetadata({
     title: "Mystique | Where Beauty Transcends",
     description:
-      "Premium skincare with clear morning, night, and weekly rituals—shop formulas by concern, read ingredient notes, and build a routine you will keep.",
+      "Premium skincare with clear morning, night, and weekly rituals\u2014shop formulas by concern, read ingredient notes, and build a routine you will keep.",
     canonicalPath: "/",
   }),
   title: { absolute: "Mystique | Where Beauty Transcends" },
+  // Manual LCP preload: browser sees this before React hydrates, giving it
+  // more time to fetch the hero image even before next/image's priority hint
+  // is processed.  imageSrcSet mirrors the `sizes` on the <Image> in
+  // HomeHeroMotion so the browser can pick the right resolution.
+  other: {
+    "x-lcp-preload": "1",
+  },
 };
+
+// Next.js 14+ App Router: inject <link rel="preload"> into <head> via the
+// special metadata.alternates pattern isn't available, so we use a dedicated
+// server component that renders a plain <link> tag instead.
+// This is placed as the FIRST child inside <main> so it appears early in the
+// HTML stream before any JS has parsed.
+function LCPPreload() {
+  return (
+    // eslint-disable-next-line @next/next/no-head-element
+    <link
+      rel="preload"
+      as="image"
+      href="/about/hero.jpg"
+      // Match the `sizes` prop on the <Image> in HomeHeroMotion exactly.
+      imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 100vw, 1280px"
+      // fetchPriority on the preload link matches the <Image fetchPriority="high"> hint.
+      // @ts-expect-error — fetchpriority is valid HTML but TS types lag behind
+      fetchpriority="high"
+    />
+  );
+}
 
 export const revalidate = 30;
 
@@ -170,7 +232,7 @@ async function JournalHomeSection() {
                     <span className="text-[#b5a892]">
                       {JOURNAL_CATEGORY_PILL[entry.category] ?? entry.category}
                     </span>
-                    <span className="mx-2.5 inline-block text-[rgba(214,168,95,0.22)]">·</span>
+                    <span className="mx-2.5 inline-block text-[rgba(214,168,95,0.22)]">&middot;</span>
                     <span className="font-medium tabular-nums tracking-[0.18em]">
                       {entry.readTime}
                     </span>
@@ -193,7 +255,7 @@ async function JournalHomeSection() {
                       aria-hidden
                       className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(214,168,95,0.14)] text-[0.75rem] text-[rgba(214,168,95,0.55)] transition duration-300 group-hover:border-[rgba(214,168,95,0.28)] group-hover:text-[rgba(214,168,95,0.9)]"
                     >
-                      →
+                      &rarr;
                     </span>
                   </div>
                 </article>
@@ -213,10 +275,17 @@ export default async function HomePage() {
 
   return (
     <SiteChrome>
+      {/* LCP preload: injected as early as possible in the HTML stream so the
+          browser can fetch /about/hero.jpg before any JS executes. This
+          complements next/image priority which fires later after hydration. */}
+      <LCPPreload />
       <main className="relative isolate">
         <div className="home-premium-filmgrain" aria-hidden />
         <div className="home-premium-stack min-w-0">
+          {/* Above fold — server rendered, no dynamic() */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
+
+          {/* Below fold — dynamically imported; JS deferred out of critical path */}
           <HomeTrustStrip />
           <RitualStripSection />
           <HomeGuidedDiscovery />
@@ -321,7 +390,6 @@ const HOME_RITUAL_RHYTHMS: {
   title: string;
   href: string;
   linkLabel: string;
-  /** CSS-only wash (no photography). */
   washClassName: string;
 }[] = [
   {
@@ -369,7 +437,7 @@ function RitualStripSection() {
                 <div className="pointer-events-none absolute inset-0">
                   <div
                     aria-hidden
-                    className={`absolute inset-0 opacity-90 transition duration-700 ease-out group-hover:opacity-[0.98] ${ritual.washClassName}`}
+                    className={`absolute inset-0 opacity-90 transition-opacity duration-700 ease-out group-hover:opacity-[0.98] ${ritual.washClassName}`}
                   />
                   <div
                     aria-hidden
@@ -499,7 +567,7 @@ function NewsletterSection() {
               Notes from the studio.
             </h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#b8ab95]">
-              Join for early access to launches, restock alerts, and ritual guidance—written
+              Join for early access to launches, restock alerts, and ritual guidance&#x2014;written
               with restraint.
             </p>
           </div>
