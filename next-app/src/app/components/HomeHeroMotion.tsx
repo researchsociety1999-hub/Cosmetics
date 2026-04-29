@@ -4,12 +4,18 @@ import type { Product } from "../lib/types";
 import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
 
 /**
- * Wide lockup: wordmark + tagline + arc — `/public` asset.
- * Must be a PNG (or WebP) with a transparent background so the watermark
- * blends cleanly over the dark hero without a white/grey box artifact.
- * If only a JPG exists, re-export from Figma/Photoshop as PNG first.
+ * Wide lockup: wordmark + tagline — `/public` asset.
+ *
+ * NOTE: Despite the .jpg extension, this file contains valid PNG data
+ * (magic bytes: 89 50 4E 47) with a transparent background.
+ * Next.js Image reads the raw bytes and its optimizer (WebP/AVIF output)
+ * preserves the alpha channel correctly, so the watermark blends cleanly
+ * over the dark hero without any white box artifact.
+ *
+ * If you ever re-export this logo, save it as a proper .png and update
+ * this constant + the /public filename together.
  */
-const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.png";
+const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.jpg";
 
 export function HomeHeroMotion({
   quickViewProduct: _quickViewProduct = null,
@@ -134,8 +140,6 @@ export function HomeHeroMotion({
                 width={1600}
                 height={900}
                 priority
-                {/* aria-hidden watermark — tell the browser not to waste bandwidth
-                    picking a huge srcset variant; the image is purely decorative. */}
                 sizes="1px"
                 className="mx-auto block h-auto w-full object-contain object-center [filter:brightness(0.96)_contrast(1.04)_saturate(0.98)]"
               />
