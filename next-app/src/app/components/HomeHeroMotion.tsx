@@ -3,8 +3,13 @@ import Link from "next/link";
 import type { Product } from "../lib/types";
 import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
 
-/** Wide lockup: wordmark + tagline + arc — `/public` asset (prefer export with transparency). */
-const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.jpg";
+/**
+ * Wide lockup: wordmark + tagline + arc — `/public` asset.
+ * Must be a PNG (or WebP) with a transparent background so the watermark
+ * blends cleanly over the dark hero without a white/grey box artifact.
+ * If only a JPG exists, re-export from Figma/Photoshop as PNG first.
+ */
+const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.png";
 
 export function HomeHeroMotion({
   quickViewProduct: _quickViewProduct = null,
@@ -129,7 +134,9 @@ export function HomeHeroMotion({
                 width={1600}
                 height={900}
                 priority
-                sizes="(max-width: 768px) 110vw, (max-width: 1280px) 120vw, 1440px"
+                {/* aria-hidden watermark — tell the browser not to waste bandwidth
+                    picking a huge srcset variant; the image is purely decorative. */}
+                sizes="1px"
                 className="mx-auto block h-auto w-full object-contain object-center [filter:brightness(0.96)_contrast(1.04)_saturate(0.98)]"
               />
             </div>
@@ -139,7 +146,6 @@ export function HomeHeroMotion({
           <div
             data-hero-copy="home"
             className="relative z-10 w-full max-w-[34rem] pt-2 text-left md:max-w-[38rem] lg:max-w-[40rem]"
-            style={{ opacity: 1 }}
           >
             <h1 className="font-playfair text-[40px] leading-[1.06] font-semibold tracking-[-0.01em] text-white md:text-[64px] mystic-hero-reveal mystic-hero-reveal--title">
               Where Beauty Transcends.
