@@ -82,7 +82,6 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-w-0 w-full bg-transparent text-[#f6f0e6] antialiased`}
       >
-        <div className="mystique-global-wallpaper" aria-hidden="true" />
         <div className="mystique-app-shell">
           {children}
           <CookieBanner />

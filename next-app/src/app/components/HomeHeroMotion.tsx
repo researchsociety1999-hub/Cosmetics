@@ -23,17 +23,6 @@ export function HomeHeroMotion({
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       >
-        {/* Primary marble wallpaper presence (derived directly from attached image). */}
-        <div
-          aria-hidden
-          className="absolute inset-[-12%] opacity-[0.55] sm:opacity-[0.6] md:opacity-[0.66] bg-[image:var(--mystique-wallpaper-url)] bg-cover bg-no-repeat bg-[position:55%_42%] [filter:brightness(0.92)_contrast(1.12)_saturate(1.06)]"
-          style={{
-            WebkitMaskImage:
-              "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.75) 62%, rgba(0,0,0,1) 100%)",
-            maskImage:
-              "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.75) 62%, rgba(0,0,0,1) 100%)",
-          }}
-        />
         {/* LCP hero <Image>: prioritized + discoverable immediately (priority, fetchPriority, eager loading, realistic sizes). */}
         <Image
           src="/about/hero.jpg"
@@ -51,6 +40,15 @@ export function HomeHeroMotion({
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-black/30 to-black/70"
+      />
+      {/* Hero framing: cinematic rim + protected text bay (strong first-load luxury signal). */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_120%_70%_at_18%_26%,rgba(2,3,8,0.92)_0%,rgba(2,3,8,0.62)_46%,rgba(2,3,8,0)_74%),linear-gradient(90deg,rgba(2,3,8,0.92)_0%,rgba(2,3,8,0.62)_42%,rgba(2,3,8,0.18)_62%,rgba(2,3,8,0)_78%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[2] shadow-[inset_0_0_0_1px_rgba(214,168,95,0.08),inset_0_0_120px_rgba(0,0,0,0.55),inset_0_-84px_96px_rgba(0,0,0,0.42)]"
       />
       {/* Marble-vein material layer (hero only): masked away from left copy block. */}
       <div aria-hidden className="mystique-vein-layer absolute inset-0 z-[1]" />

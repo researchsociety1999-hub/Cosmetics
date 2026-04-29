@@ -262,7 +262,7 @@ export function Navbar() {
 
       {isMobileMenuOpen ? (
         <div
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center md:hidden"
+          className="fixed inset-0 z-[70] flex flex-col items-center justify-center md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation menu"

@@ -81,8 +81,8 @@ export default function ProductCard({
     <article
       className={
         compact
-          ? "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[18px] bg-gradient-to-b from-[rgba(16,18,26,0.52)] via-[rgba(8,10,14,0.2)] to-[rgba(4,5,9,0.06)] shadow-[0_8px_28px_rgba(0,0,0,0.26)] ring-1 ring-inset ring-white/[0.05] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 hover:from-[rgba(20,22,32,0.58)] hover:via-[rgba(10,12,18,0.32)] hover:to-[rgba(6,7,11,0.12)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_14px_40px_rgba(0,0,0,0.34)] hover:ring-[rgba(214,168,95,0.1)] focus-within:ring-[rgba(214,168,95,0.14)] motion-reduce:transition-none"
-          : "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(16,18,26,0.52)] via-[rgba(8,10,14,0.2)] to-[rgba(4,5,9,0.06)] shadow-[0_10px_36px_rgba(0,0,0,0.28)] ring-1 ring-inset ring-white/[0.05] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 hover:from-[rgba(20,22,32,0.58)] hover:via-[rgba(10,12,18,0.32)] hover:to-[rgba(6,7,11,0.12)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_18px_52px_rgba(0,0,0,0.38)] hover:ring-[rgba(214,168,95,0.12)] focus-within:ring-[rgba(214,168,95,0.16)] motion-reduce:transition-none"
+          ? "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[18px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_10px_34px_rgba(0,0,0,0.32)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] hover:ring-[rgba(214,168,95,0.14)] focus-within:ring-[rgba(214,168,95,0.18)] motion-reduce:transition-none"
+          : "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_12px_42px_rgba(0,0,0,0.34)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_20px_58px_rgba(0,0,0,0.44)] hover:ring-[rgba(214,168,95,0.16)] focus-within:ring-[rgba(214,168,95,0.2)] motion-reduce:transition-none"
       }
     >
       <Link
@@ -190,7 +190,13 @@ export default function ProductCard({
             aria-hidden
             className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
           />
-          <div className={compact ? "space-y-2.5" : "flex items-center justify-between gap-3"}>
+          <div
+            className={
+              compact
+                ? "space-y-2.5"
+                : "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+            }
+          >
             <div className={compact ? "min-w-0" : "min-w-0"}>
               <span className="sr-only">Price</span>
               {hasSale ? (
@@ -257,7 +263,7 @@ export default function ProductCard({
                 )}
               </div>
             ) : (
-              <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-2">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 {showQuickView ? (
                   <ProductCardQuickView product={product} compact={compact} />
                 ) : null}
