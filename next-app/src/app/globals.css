@@ -161,7 +161,7 @@
     mask-image: linear-gradient(90deg, transparent 0%, transparent 44%, rgba(0,0,0,0.82) 72%, black 100%);
   }
 
-  /* Small screens: reduce perceived texture density (keep mood, avoid “wallpaper”). */
+  /* Small screens: reduce perceived texture density (keep mood, avoid "wallpaper"). */
   @media (max-width: 420px) {
     .mystique-vein-layer {
       opacity: 0.18;
@@ -181,7 +181,7 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
-  /* Stable rem basis + no mobile “auto zoom” of typography */
+  /* Stable rem basis + no mobile "auto zoom" of typography */
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -314,13 +314,26 @@ body::before {
   color: var(--mystic-text);
 }
 
+/*
+ * PERF FIX: replaced `transition: all 0.25s ease` with explicit composited-only
+ * properties. `transition: all` triggers layout (reflow) on any property change —
+ * including width, height, padding, font-size — even when only color or opacity
+ * changes. Enumerating only GPU-composited or paint-only properties keeps
+ * transitions off the main thread and eliminates jank-inducing layout work.
+ */
 a,
 button,
 input,
 textarea,
 select,
 summary {
-  transition: all 0.25s ease;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 :where(
@@ -537,6 +550,9 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   background: var(--mystic-gold);
   color: #000000;
   font-weight: 700;
+  /* will-change promotes this element to a GPU layer before :active fires,
+     eliminating the compositor promotion jank on scale(0.99). */
+  will-change: transform;
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -556,6 +572,9 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   border: 1px solid var(--mystic-gold);
   color: var(--mystic-gold);
   background: transparent;
+  /* will-change promotes this element to a GPU layer before :active fires,
+     eliminating the compositor promotion jank on scale(0.99). */
+  will-change: transform;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -610,7 +629,14 @@ select.mystic-select {
     inset 0 1px 0 rgba(255, 255, 255, 0.045),
     0 0 0 1px rgba(212, 175, 55, 0.06),
     0 12px 32px rgba(0, 0, 0, 0.55);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  /*
+   * PERF FIX: was `transition: all` — now explicitly composited props only.
+   * border-color, box-shadow, background-color are paint-only (no layout).
+   */
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
 }
 
 select.mystic-select:hover {
@@ -764,13 +790,16 @@ optgroup {
   pointer-events: none;
 }
 
-/* Image treatment: photo sits above scrims (shade/vignette) so it stays legible. */
+/* Image treatment: photo sits above scrims (shade/vignette) so it stays legible.
+ * will-change: transform, opacity — GPU-promotes this element so the hover
+ * scale + opacity transitions run entirely on the compositor thread. */
 .mystique-image-frame__image {
   position: relative;
   z-index: 4;
   opacity: 0.94;
   mix-blend-mode: screen;
   filter: brightness(0.98) contrast(0.96) saturate(0.88);
+  will-change: transform, opacity;
   transition:
     transform 0.5s ease,
     opacity 0.5s ease,
