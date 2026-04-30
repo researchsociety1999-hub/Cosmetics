@@ -62,7 +62,7 @@ function formatAuthErrorMessage(message: string) {
     (normalized.includes("domain is not verified") ||
       normalized.includes("please, add and verify your domain"))
   ) {
-    return "We couldn't send the account link right now. Error sending magic link email.";
+    return "We couldn't send the sign-in link because email sending isn't fully configured (sending domain not verified). Please contact support.";
   }
 
   return message;

@@ -115,6 +115,8 @@ const nextConfig = {
   images: {
     // `next/image` requires remote hosts to be explicitly allowed (must stay in sync with
     // `isSafeImageSrc` in `src/app/lib/format.ts`). Add more via `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS`.
+    // Allow the curated LCP hero quality (88) used on the homepage.
+    qualities: [75, 88],
     remotePatterns: [
       {
         protocol: "https",
@@ -158,5 +160,6 @@ const nextConfig = {
 
 module.exports =
   process.env.ANALYZE === "true"
-    ? require("@next/bundle-analyzer")({ enabled: true })(nextConfig)
+    ? // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require("@next/bundle-analyzer")({ enabled: true })(nextConfig)
     : nextConfig;

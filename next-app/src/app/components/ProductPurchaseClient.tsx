@@ -108,7 +108,7 @@ export function ProductPurchaseClient({
       return (selectedVariant.stock ?? 0) > 0;
     }
     return true;
-  }, [product, selectedVariant, variants.length]);
+  }, [isComingSoon, product, selectedVariant, variants.length]);
 
   const stockLabel = (() => {
     if (isComingSoon) {
