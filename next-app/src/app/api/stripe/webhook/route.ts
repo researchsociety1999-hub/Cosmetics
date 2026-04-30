@@ -24,11 +24,19 @@ function paymentIntentIdFromSession(session: Stripe.Checkout.Session): string | 
 
 /**
  * checkout.session.completed: merge Stripe shipping + finalize payment in Supabase, send emails.
+ * checkout.session.async_payment_succeeded: same finalization path for async payment methods
+ *   (SEPA, ACH, Klarna, Afterpay) where funds clear after a delay.
+ *
  * Order + line items already exist (created before redirect); webhook marks paid and notifies.
+ *
+ * @param skipPaymentStatusCheck - Set true for async_payment_succeeded: Stripe only fires that
+ *   event when payment is confirmed, so re-checking payment_status is unnecessary and would
+ *   incorrectly block finalization (status may still read 'unpaid' at retrieval time).
  */
 async function handleCheckoutCompleted(
   event: Stripe.Event,
   sessionIn: Stripe.Checkout.Session,
+  skipPaymentStatusCheck = false,
 ) {
   const stripe = getStripeServerClient();
   const session = await stripe.checkout.sessions.retrieve(sessionIn.id, {
@@ -43,7 +51,11 @@ async function handleCheckoutCompleted(
     orderId: session.client_reference_id ?? session.metadata?.order_id,
   });
 
-  if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
+  if (
+    !skipPaymentStatusCheck &&
+    session.payment_status !== "paid" &&
+    session.payment_status !== "no_payment_required"
+  ) {
     console.warn("[stripe webhook] Unexpected payment_status; skipping finalize", {
       sessionId: session.id,
       payment_status: session.payment_status,
@@ -126,6 +138,19 @@ export async function POST(request: Request) {
       await handleCheckoutCompleted(
         event,
         event.data.object as Stripe.Checkout.Session,
+      );
+    } else if (event.type === "checkout.session.async_payment_succeeded") {
+      // Async payment methods (SEPA, ACH, Klarna, Afterpay) clear funds after a delay.
+      // Stripe fires this event once payment is confirmed — finalize the same way as
+      // checkout.session.completed but bypass the payment_status guard (see JSDoc above).
+      console.log("[stripe webhook] checkout.session.async_payment_succeeded", {
+        eventId: event.id,
+        sessionId: (event.data.object as Stripe.Checkout.Session).id,
+      });
+      await handleCheckoutCompleted(
+        event,
+        event.data.object as Stripe.Checkout.Session,
+        true, // skipPaymentStatusCheck
       );
     } else if (
       event.type === "checkout.session.expired" ||
