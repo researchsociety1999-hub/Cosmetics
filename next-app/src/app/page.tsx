@@ -42,7 +42,6 @@ export const metadata: Metadata = {
 // HTML stream before any JS has parsed.
 function LCPPreload() {
   return (
-    // eslint-disable-next-line @next/next/no-head-element
     <link
       rel="preload"
       as="image"

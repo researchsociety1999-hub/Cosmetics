@@ -13,11 +13,18 @@ const BackToTopButton = dynamic(
   { ssr: false, loading: () => null }
 );
 
+type WindowWithIdleCallback = Window & {
+  requestIdleCallback?: (
+    callback: IdleRequestCallback,
+    options?: IdleRequestOptions,
+  ) => number;
+  cancelIdleCallback?: (handle: number) => void;
+};
+
 function scheduleIdle(cb: () => void) {
   if (typeof window === "undefined") return;
   // requestIdleCallback is ideal for non-critical UI; fall back safely.
-  const ric = (window as unknown as { requestIdleCallback?: Function })
-    .requestIdleCallback;
+  const ric = (window as WindowWithIdleCallback).requestIdleCallback;
   if (typeof ric === "function") {
     ric(cb, { timeout: 2000 });
     return;

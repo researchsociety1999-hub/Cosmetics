@@ -24,6 +24,12 @@ function clientForCheckoutWrites() {
     return supabaseAdmin;
   }
 
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Checkout writes require SUPABASE_SERVICE_ROLE_KEY in production (server-only).",
+    );
+  }
+
   if (supabase) {
     return supabase;
   }
@@ -234,6 +240,34 @@ export async function getOrderNumberByIdForDisplay(
     .from("orders")
     .select("order_number")
     .eq("id", trimmed)
+    .maybeSingle();
+
+  if (error || !data?.order_number) {
+    return null;
+  }
+
+  return data.order_number as string;
+}
+
+/** Read-only: map Stripe session → order number for checkout success UI (no PII). */
+export async function getOrderNumberByStripeSessionIdForDisplay(
+  sessionId: string,
+): Promise<string | null> {
+  const trimmed = sessionId?.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const client = supabaseAdmin ?? supabase;
+  if (!client) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from("orders")
+    .select("order_number")
+    .eq("stripe_checkout_session_id", trimmed)
+    .limit(1)
     .maybeSingle();
 
   if (error || !data?.order_number) {

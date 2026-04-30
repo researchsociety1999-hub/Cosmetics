@@ -29,6 +29,13 @@ function getFromEmail(): string {
     throw new Error("Missing RESEND_FROM_EMAIL");
   }
 
+  const lower = resendFromEmail.toLowerCase();
+  if (lower.endsWith("@gmail.com") || lower.endsWith("@googlemail.com")) {
+    throw new Error(
+      "Invalid RESEND_FROM_EMAIL: Resend blocks @gmail.com senders. Use a verified custom domain (e.g. orders@yourdomain.com).",
+    );
+  }
+
   return resendFromEmail;
 }
 
