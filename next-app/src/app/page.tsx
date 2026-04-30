@@ -1,8 +1,13 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
+import {
+  DeferredHomeEditorialModules,
+  DeferredHomeGuidedDiscovery,
+  DeferredHomeServicesModule,
+  DeferredHomeTrustStrip,
+} from "./components/home/HomeDeferredSections";
 import { IngredientSpotlightThumb } from "./components/IngredientSpotlightThumb";
 import { NewsletterForm } from "./components/NewsletterForm";
 import ProductCard from "./components/productcard";
@@ -12,43 +17,6 @@ import { getJournalEntries, getProducts } from "./lib/queries";
 import { isProductPurchasable } from "./lib/productMerch";
 import { buildPageMetadata } from "./lib/seo";
 import type { Product } from "./lib/types";
-
-// ---------------------------------------------------------------------------
-// Below-fold sections: dynamically imported so their JS is excluded from the
-// critical chunk parsed on first paint.  ssr:false keeps them out of the
-// server bundle for these interactive enhancement components; purely
-// presentational sections (HomeTrustStrip, HomeServicesModule) are also
-// deferred because they appear well below the fold.
-// ---------------------------------------------------------------------------
-const HomeEditorialModules = dynamic(
-  () =>
-    import("./components/home/HomeEditorialModules").then(
-      (m) => m.HomeEditorialModules
-    ),
-  { ssr: false, loading: () => <SectionLoading title="Editorial" /> }
-);
-
-const HomeGuidedDiscovery = dynamic(
-  () =>
-    import("./components/home/HomeGuidedDiscovery").then(
-      (m) => m.HomeGuidedDiscovery
-    ),
-  { ssr: false, loading: () => <SectionLoading title="Guided discovery" /> }
-);
-
-const HomeServicesModule = dynamic(
-  () =>
-    import("./components/home/HomeServicesModule").then(
-      (m) => m.HomeServicesModule
-    ),
-  { ssr: false, loading: () => null }
-);
-
-const HomeTrustStrip = dynamic(
-  () =>
-    import("./components/home/HomeTrustStrip").then((m) => m.HomeTrustStrip),
-  { ssr: false, loading: () => null }
-);
 
 export const metadata: Metadata = {
   ...buildPageMetadata({
@@ -286,17 +254,17 @@ export default async function HomePage() {
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
           {/* Below fold — dynamically imported; JS deferred out of critical path */}
-          <HomeTrustStrip />
+          <DeferredHomeTrustStrip />
           <RitualStripSection />
-          <HomeGuidedDiscovery />
+          <DeferredHomeGuidedDiscovery />
           <FirstVisitGuidanceStrip />
           <FeaturedProductsSection products={featuredPurchasable} />
-          <HomeEditorialModules />
+          <DeferredHomeEditorialModules />
           <IngredientSpotlightSection />
           <Suspense fallback={<SectionLoading title="Journal" />}>
             <JournalHomeSection />
           </Suspense>
-          <HomeServicesModule />
+          <DeferredHomeServicesModule />
           <NewsletterSection />
         </div>
       </main>
