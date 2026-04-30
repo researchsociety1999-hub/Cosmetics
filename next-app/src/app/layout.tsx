@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Literata, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
-import { CookieBanner } from "./components/CookieBanner";
+import { DeferredClientBits } from "./components/DeferredClientBits";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
 
@@ -84,7 +84,7 @@ export default function RootLayout({
       >
         <div className="mystique-app-shell">
           {children}
-          <CookieBanner />
+          <DeferredClientBits />
         </div>
       </body>
     </html>

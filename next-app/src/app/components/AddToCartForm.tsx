@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useFormStatus } from "react-dom";
 
 type AddToCartFormProps = {
@@ -30,6 +30,29 @@ function SubmitButton({
 }) {
   const { pending } = useFormStatus();
   const isDisabled = disabled || pending;
+  const wasPendingRef = useRef(false);
+
+  useEffect(() => {
+    // Lightweight cart feedback for screen readers (and assistive tech users).
+    // We can't reliably know server-action failures here, so we announce intent + completion.
+    if (pending) {
+      wasPendingRef.current = true;
+      window.dispatchEvent(
+        new CustomEvent("mystique:cart-feedback", {
+          detail: { message: "Adding to bag." },
+        }),
+      );
+      return;
+    }
+    if (wasPendingRef.current) {
+      wasPendingRef.current = false;
+      window.dispatchEvent(
+        new CustomEvent("mystique:cart-feedback", {
+          detail: { message: "Added to bag." },
+        }),
+      );
+    }
+  }, [pending]);
 
   return (
     <button

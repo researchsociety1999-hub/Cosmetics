@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { BackToTopButton } from "./BackToTopButton";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 import { SkipToContent } from "./SkipToContent";
@@ -54,7 +53,6 @@ export async function SiteChrome({
         <PrelaunchBanner />
         {children}
       </div>
-      <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>
   );

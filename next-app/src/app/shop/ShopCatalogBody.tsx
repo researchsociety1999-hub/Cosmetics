@@ -49,6 +49,7 @@ export async function ShopCatalogBody({
     search: currentIngredient ? "" : currentSearch,
     ingredientId: currentIngredient || undefined,
     sortBy: sort,
+    excludeComingSoon: true,
   });
 
   const productAssignments = assignProductsToMerchGroups(

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { AnchorHTMLAttributes, MouseEvent } from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { acquireOverlayLock, trapTabKey } from "../lib/a11yOverlay";
 
 const NAV_LINKS = [
@@ -60,6 +60,7 @@ export function Navbar() {
   const isOnHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [cartCount, setCartCount] = useState<number>(0);
+  const [cartLiveMessage, setCartLiveMessage] = useState("");
   const headerRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -75,7 +76,20 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ message?: string }>).detail;
+      const msg = typeof detail?.message === "string" ? detail.message : "";
+      if (!msg) return;
+      setCartLiveMessage(msg);
+      window.setTimeout(() => setCartLiveMessage(""), 1800);
+    };
+    window.addEventListener("mystique:cart-feedback", handler as EventListener);
+    return () =>
+      window.removeEventListener("mystique:cart-feedback", handler as EventListener);
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     let raf = 0;
 
@@ -226,6 +240,9 @@ export function Navbar() {
             <div className="flex shrink-0 items-center gap-2">
               <CartIconLink count={cartCount} />
               <AccountIconLink />
+              <div className="sr-only" aria-live="polite">
+                {cartLiveMessage}
+              </div>
               <button
                 ref={mobileMenuToggleRef}
                 type="button"

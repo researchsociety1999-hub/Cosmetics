@@ -75,7 +75,7 @@ export default async function ShopPage({
   const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
   const [dbCategories, catalogForMerchCounts] = await Promise.all([
     getCategories(),
-    getProducts({ sortBy: "newest" }),
+    getProducts({ sortBy: "newest", excludeComingSoon: true }),
   ]);
   const merchCounts = countProductsByMerchGroup(catalogForMerchCounts, dbCategories);
   const visibleMerchGroups = SHOP_MERCH_GROUPS.filter(
