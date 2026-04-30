@@ -253,7 +253,9 @@ export default async function HomePage() {
           {/* Above fold — server rendered, no dynamic() */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
-          {/* Below fold — dynamically imported; JS deferred out of critical path */}
+          {/* Below fold — deferred via HomeDeferredSections client wrapper;
+              ssr:false lives there, not here, so this Server Component
+              stays valid for the App Router. */}
           <DeferredHomeTrustStrip />
           <RitualStripSection />
           <DeferredHomeGuidedDiscovery />

@@ -20,13 +20,16 @@ interface ProductCardProps {
   /** Tighter type scale and padding — e.g. homepage featured quartet. */
   compact?: boolean;
   /**
-   * Reserved for Phase 4 Quick View. When true, a control may render here later.
-   * Default false so no dead UI until wired.
+   * When true, renders the Quick View trigger above the Add to Bag button.
+   * Default false.
    */
   showQuickView?: boolean;
 }
 
-function pickSecondaryImageUrl(primary: string | null, extra: string[] | null | undefined): string | null {
+function pickSecondaryImageUrl(
+  primary: string | null,
+  extra: string[] | null | undefined,
+): string | null {
   if (!extra?.length) return null;
   const primaryNorm = primary?.trim() ?? "";
   for (const url of extra) {
@@ -75,7 +78,14 @@ export default function ProductCard({
 
   const mediaRadius = compact ? "rounded-[14px]" : "rounded-[17px]";
   const mediaAspect = compact ? "aspect-square sm:aspect-[4/5]" : "aspect-[4/5]";
-  const linkPad = compact ? "mx-2 mt-2 sm:mx-2.5 sm:mt-2.5" : "mx-3 mt-3 md:mx-3.5 md:mt-3.5";
+  const linkPad = compact
+    ? "mx-2 mt-2 sm:mx-2.5 sm:mt-2.5"
+    : "mx-3 mt-3 md:mx-3.5 md:mt-3.5";
+
+  // 2 columns only when both Quick View and Add to Bag are present.
+  // Derived from content — never from a viewport breakpoint — so narrow
+  // cards on a 4-col grid never overflow.
+  const actionCols = showQuickView && canQuickAdd ? 2 : 1;
 
   return (
     <article
@@ -85,6 +95,7 @@ export default function ProductCard({
           : "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_12px_42px_rgba(0,0,0,0.34)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_20px_58px_rgba(0,0,0,0.44)] hover:ring-[rgba(214,168,95,0.16)] focus-within:ring-[rgba(214,168,95,0.2)] motion-reduce:transition-none"
       }
     >
+      {/* ── Image link ────────────────────────────────────────────────────────────────── */}
       <Link
         href={productHref}
         className={`relative block overflow-hidden ${mediaRadius} ${linkPad} outline-none ring-offset-2 ring-offset-[#05070d] focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)]`}
@@ -121,6 +132,8 @@ export default function ProductCard({
               />
             </div>
           ) : null}
+
+          {/* Routine-step badge */}
           <div
             className={
               compact
@@ -130,6 +143,8 @@ export default function ProductCard({
           >
             {product.routine_step ?? "Ritual"}
           </div>
+
+          {/* New-arrival badge */}
           {showNewBadge ? (
             <div
               className={
@@ -144,6 +159,7 @@ export default function ProductCard({
         </div>
       </Link>
 
+      {/* ── Body: name + scan line + footer ─────────────────────────────────────────── */}
       <div
         className={
           compact
@@ -151,6 +167,7 @@ export default function ProductCard({
             : "flex flex-1 flex-col gap-2.5 p-3.5 md:gap-3 md:p-4"
         }
       >
+        {/* Product name + scan line */}
         <div className="min-w-0 space-y-1 sm:space-y-1.5">
           <Link
             href={productHref}
@@ -185,42 +202,29 @@ export default function ProductCard({
           ) : null}
         </div>
 
-        <div className={compact ? "mt-auto space-y-2 pt-0.5" : "mt-auto space-y-3 pt-1"}>
+        {/* ── Footer: divider → price row → action row ──────────────────────── */}
+        <div className={compact ? "mt-auto space-y-2 pt-0.5" : "mt-auto space-y-2.5 pt-1"}>
+
+          {/* Divider */}
           <div
             aria-hidden
             className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
           />
-          <div
-            className={
-              compact
-                ? "space-y-2.5"
-                : "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-            }
-          >
-            <div className={compact ? "min-w-0" : "min-w-0"}>
-              <span className="sr-only">Price</span>
-              {hasSale ? (
-                <div className="flex flex-col gap-0.5">
-                  <span
-                    className={
-                      compact
-                        ? "text-[0.55rem] uppercase tracking-[0.14em] text-[#8f8576] line-through"
-                        : "text-[0.65rem] uppercase tracking-[0.16em] text-[#8f8576] line-through"
-                    }
-                  >
-                    {formatMoney(product.price_cents)}
-                  </span>
-                  <span
-                    className={
-                      compact
-                        ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
-                        : "text-lg font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f]"
-                    }
-                  >
-                    {formatMoney(displayPrice)}
-                  </span>
-                </div>
-              ) : (
+
+          {/* Price — always its own full-width row, never beside buttons */}
+          <div>
+            <span className="sr-only">Price</span>
+            {hasSale ? (
+              <div className="flex flex-col gap-0.5">
+                <span
+                  className={
+                    compact
+                      ? "text-[0.55rem] uppercase tracking-[0.14em] text-[#8f8576] line-through"
+                      : "text-[0.65rem] uppercase tracking-[0.16em] text-[#8f8576] line-through"
+                  }
+                >
+                  {formatMoney(product.price_cents)}
+                </span>
                 <span
                   className={
                     compact
@@ -230,77 +234,71 @@ export default function ProductCard({
                 >
                   {formatMoney(displayPrice)}
                 </span>
-              )}
-            </div>
-
-            {compact ? (
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {showQuickView ? (
-                  <ProductCardQuickView product={product} compact={compact} />
-                ) : null}
-                {canQuickAdd ? (
-                  <AddToCartForm
-                    action={addToCartAction}
-                    productId={product.id}
-                    redirectTo=""
-                    buttonLabel="Add to bag"
-                    showQuantity={false}
-                    formClassName="contents"
-                    buttonClassName="relative inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:text-[0.58rem] sm:tracking-[0.16em]"
-                  />
-                ) : (
-                  <div className="sm:col-span-2 flex flex-col items-end gap-1 text-right">
-                    <span className="text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]">
-                      Out of stock
-                    </span>
-                    <WaitlistModal
-                      productName={product.name}
-                      productSlug={product.slug}
-                      triggerLabel="Get restock note"
-                      triggerClassName="w-full rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:text-[0.58rem]"
-                    />
-                  </div>
-                )}
               </div>
             ) : (
-              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-                {showQuickView ? (
-                  <ProductCardQuickView product={product} compact={compact} />
-                ) : null}
-                {canQuickAdd ? (
-                  <AddToCartForm
-                    action={addToCartAction}
-                    productId={product.id}
-                    redirectTo=""
-                    buttonLabel="Add to bag"
-                    showQuantity={false}
-                    formClassName="contents"
-                    buttonClassName={
-                      compact
-                        ? "relative inline-flex min-h-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-2.5 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:px-3 sm:text-[0.58rem] sm:tracking-[0.16em]"
-                        : "relative inline-flex min-h-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.38)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
-                    }
-                  />
-                ) : (
-                  <div className="flex flex-col items-end gap-1 text-right">
-                    <span className="text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]">
-                      Out of stock
-                    </span>
-                    <WaitlistModal
-                      productName={product.name}
-                      productSlug={product.slug}
-                      triggerLabel="Get restock note"
-                      triggerClassName={
-                        compact
-                          ? "rounded-full border border-[rgba(214,168,95,0.35)] px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:px-2.5 sm:py-1.5 sm:text-[0.58rem]"
-                          : "rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
-                      }
-                    />
-                  </div>
-                )}
-              </div>
+              <span
+                className={
+                  compact
+                    ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
+                    : "text-lg font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f]"
+                }
+              >
+                {formatMoney(displayPrice)}
+              </span>
             )}
           </div>
+
+          {/* Actions — always below price, never beside it.
+              Grid column count is content-derived, not breakpoint-derived:
+              2 cols when Quick View + Add to Bag are both present,
+              1 col otherwise — so narrow cards never overflow. */}
+          {canQuickAdd ? (
+            <div
+              className={
+                actionCols === 2 ? "grid grid-cols-2 gap-1.5" : "grid grid-cols-1"
+              }
+            >
+              {showQuickView ? (
+                <ProductCardQuickView product={product} compact={compact} />
+              ) : null}
+              <AddToCartForm
+                action={addToCartAction}
+                productId={product.id}
+                redirectTo=""
+                buttonLabel="Add to bag"
+                showQuantity={false}
+                formClassName="contents"
+                buttonClassName={
+                  compact
+                    ? "relative inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:text-[0.58rem] sm:tracking-[0.16em]"
+                    : "relative inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.38)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
+                }
+              />
+            </div>
+          ) : (
+            /* Out of stock — self-contained flex-col, no grid dependency */
+            <div className="flex flex-col gap-1.5">
+              <span
+                className={
+                  compact
+                    ? "text-[0.55rem] uppercase tracking-[0.18em] text-[#8f8576]"
+                    : "text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]"
+                }
+              >
+                Out of stock
+              </span>
+              <WaitlistModal
+                productName={product.name}
+                productSlug={product.slug}
+                triggerLabel="Get restock note"
+                triggerClassName={
+                  compact
+                    ? "w-full rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:text-[0.58rem]"
+                    : "w-full rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
     </article>

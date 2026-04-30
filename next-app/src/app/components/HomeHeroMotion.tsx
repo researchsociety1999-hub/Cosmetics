@@ -3,7 +3,18 @@ import Link from "next/link";
 import type { Product } from "../lib/types";
 import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
 
-/** Wide lockup: wordmark + tagline + arc — `/public` asset (prefer export with transparency). */
+/**
+ * Wide lockup: wordmark + tagline — `/public` asset.
+ *
+ * NOTE: Despite the .jpg extension, this file contains valid PNG data
+ * (magic bytes: 89 50 4E 47) with a transparent background.
+ * Next.js Image reads the raw bytes and its optimizer (WebP/AVIF output)
+ * preserves the alpha channel correctly, so the watermark blends cleanly
+ * over the dark hero without any white box artifact.
+ *
+ * If you ever re-export this logo, save it as a proper .png and update
+ * this constant + the /public filename together.
+ */
 const HERO_BRAND_MARK_SRC = "/Mystique_Logo-removebg-preview.jpg";
 
 export function HomeHeroMotion({
@@ -129,7 +140,7 @@ export function HomeHeroMotion({
                 width={1600}
                 height={900}
                 priority
-                sizes="(max-width: 768px) 110vw, (max-width: 1280px) 120vw, 1440px"
+                sizes="1px"
                 className="mx-auto block h-auto w-full object-contain object-center [filter:brightness(0.96)_contrast(1.04)_saturate(0.98)]"
               />
             </div>
@@ -139,7 +150,6 @@ export function HomeHeroMotion({
           <div
             data-hero-copy="home"
             className="relative z-10 w-full max-w-[34rem] pt-2 text-left md:max-w-[38rem] lg:max-w-[40rem]"
-            style={{ opacity: 1 }}
           >
             <h1 className="font-playfair text-[40px] leading-[1.06] font-semibold tracking-[-0.01em] text-white md:text-[64px] mystic-hero-reveal mystic-hero-reveal--title">
               Where Beauty Transcends.
