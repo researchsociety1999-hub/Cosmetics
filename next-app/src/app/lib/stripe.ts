@@ -58,11 +58,15 @@ export async function createStripeCheckoutSession({
   cart,
   origin,
   appliedPromo = null,
+  guestToken = null,
 }: {
   order: Order;
   cart: CartSummary;
   origin?: string;
   appliedPromo?: AppliedPromo | null;
+  /** Random UUID for guest orders — appended to success_url so the guest lands
+   *  on their persistent /order/[token] status page. Null for authenticated orders. */
+  guestToken?: string | null;
 }) {
   const stripe = getStripeServerClient();
   const baseUrl = (origin ?? getConfiguredSiteUrl()).replace(/\/$/, "");
@@ -87,11 +91,16 @@ export async function createStripeCheckoutSession({
         ]
       : undefined;
 
+  // Append guest_token to success_url so guests can bookmark /order/[token] later.
+  const successUrl = guestToken
+    ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&guest_token=${encodeURIComponent(guestToken)}`
+    : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+
   return stripe.checkout.sessions.create({
     mode: "payment",
     customer_email: order.email,
     client_reference_id: order.id,
-    success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: successUrl,
     cancel_url: `${baseUrl}/checkout/cancel?order_id=${encodeURIComponent(order.id)}`,
     payment_method_types: ["card"],
     currency: CHECKOUT_CURRENCY,
@@ -100,6 +109,7 @@ export async function createStripeCheckoutSession({
       order_number: order.order_number,
       user_id: order.user_id ?? "",
       promo_code: appliedPromo?.promo.code ?? "",
+      guest_token: guestToken ?? "",
     },
     discounts,
     shipping_address_collection: {
