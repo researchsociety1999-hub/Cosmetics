@@ -2,6 +2,18 @@
 
 import dynamic from "next/dynamic";
 
+// ---------------------------------------------------------------------------
+// Client-side deferred section wrappers
+//
+// `ssr: false` is only permitted inside Client Components in the Next.js
+// App Router. This file is the designated "use client" boundary for every
+// below-fold section that must be excluded from the server bundle.
+//
+// Usage in page.tsx (Server Component):
+//   import { DeferredHomeTrustStrip, ... } from
+//     "./components/home/HomeDeferredSections";
+// ---------------------------------------------------------------------------
+
 function SectionLoading({
   title,
   layout = "default",
@@ -43,25 +55,19 @@ function SectionLoading({
 
 export const DeferredHomeEditorialModules = dynamic(
   () =>
-    import("./HomeEditorialModules").then(
-      (m) => m.HomeEditorialModules
-    ),
+    import("./HomeEditorialModules").then((m) => m.HomeEditorialModules),
   { ssr: false, loading: () => <SectionLoading title="Editorial" /> }
 );
 
 export const DeferredHomeGuidedDiscovery = dynamic(
   () =>
-    import("./HomeGuidedDiscovery").then(
-      (m) => m.HomeGuidedDiscovery
-    ),
+    import("./HomeGuidedDiscovery").then((m) => m.HomeGuidedDiscovery),
   { ssr: false, loading: () => <SectionLoading title="Guided discovery" /> }
 );
 
 export const DeferredHomeServicesModule = dynamic(
   () =>
-    import("./HomeServicesModule").then(
-      (m) => m.HomeServicesModule
-    ),
+    import("./HomeServicesModule").then((m) => m.HomeServicesModule),
   { ssr: false, loading: () => null }
 );
 
