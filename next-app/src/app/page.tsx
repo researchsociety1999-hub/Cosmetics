@@ -50,8 +50,7 @@ function LCPPreload() {
       // Match the `sizes` prop on the <Image> in HomeHeroMotion exactly.
       imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 100vw, 1280px"
       // fetchPriority on the preload link matches the <Image fetchPriority="high"> hint.
-      // @ts-expect-error — fetchpriority is valid HTML but TS types lag behind
-      fetchpriority="high"
+      fetchPriority="high"
     />
   );
 }
