@@ -11,7 +11,7 @@ export function HomeGuidedDiscovery() {
     <section
       id="guided-discovery"
       aria-labelledby="guided-discovery-heading"
-      className="relative border-b border-[rgba(17,24,39,0.85)] bg-transparent py-10 md:py-16"
+      className="mystique-atmo mystique-atmo--discovery relative border-b border-[rgba(17,24,39,0.85)] bg-transparent py-10 md:py-16"
     >
       <div className="mystic-section-shell">
         <div className="mystique-section-surface px-6 py-8 md:px-10 md:py-10">

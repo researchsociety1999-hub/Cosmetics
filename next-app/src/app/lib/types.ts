@@ -4,6 +4,8 @@ export interface Product {
   description: string | null;
   price_cents: number;
   sale_price_cents: number | null;
+  /** Pre-launch / not yet shoppable. */
+  coming_soon?: boolean | null;
   image_url: string | null;
   extra_images: string[] | null;
   slug: string;

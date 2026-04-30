@@ -149,7 +149,7 @@ export function WaitlistModal({
         }}
         className={
           triggerClassName ??
-          "rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
+          "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
         }
         aria-expanded={open}
         aria-controls={panelId}

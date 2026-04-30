@@ -1,18 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const rafRef = useRef<number>(0);
+  const visibleRef = useRef(false);
 
   useEffect(() => {
     function handleScroll() {
-      setIsVisible(window.scrollY > 420);
+      const next = window.scrollY > 420;
+      if (next === visibleRef.current) return;
+      visibleRef.current = next;
+      if (rafRef.current) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = 0;
+        setIsVisible(visibleRef.current);
+      });
     }
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
@@ -23,10 +35,10 @@ export function BackToTopButton() {
         const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
       }}
-      className={`fixed right-5 bottom-6 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border text-[#f5eee3] transition-all duration-300 md:right-7 md:bottom-8 ${
+      className={`fixed bottom-6 right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border text-[#f5eee3] transition-[opacity,transform,background-color,border-color,box-shadow] duration-300 md:bottom-8 md:right-7 ${
         isVisible
-          ? "pointer-events-auto border-[rgba(214,168,95,0.42)] bg-[rgba(214,168,95,0.12)] opacity-100 shadow-[0_0_28px_rgba(214,168,95,0.22)]"
-          : "pointer-events-none border-transparent bg-transparent opacity-0"
+          ? "pointer-events-auto border-[rgba(214,168,95,0.42)] bg-[rgba(214,168,95,0.12)] opacity-100 shadow-[0_0_28px_rgba(214,168,95,0.22)] translate-y-0"
+          : "pointer-events-none border-transparent bg-transparent opacity-0 translate-y-2"
       }`}
     >
       <svg

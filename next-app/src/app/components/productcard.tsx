@@ -56,6 +56,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const displayPrice = getDisplayPrice(product);
   const hasSale = product.sale_price_cents != null;
+  const isComingSoon = product.coming_soon === true;
   const imgSrc = getProductPrimaryImageUrl(product);
   const secondarySrc = pickSecondaryImageUrl(imgSrc, product.extra_images);
   const showNewBadge = isNewArrival(product.created_at);
@@ -89,6 +90,7 @@ export default function ProductCard({
 
   return (
     <article
+      aria-label={product.name}
       className={
         compact
           ? "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[18px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_10px_34px_rgba(0,0,0,0.32)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] hover:ring-[rgba(214,168,95,0.14)] focus-within:ring-[rgba(214,168,95,0.18)] motion-reduce:transition-none"
@@ -135,6 +137,7 @@ export default function ProductCard({
 
           {/* Routine-step badge */}
           <div
+            aria-hidden="true"
             className={
               compact
                 ? "pointer-events-none absolute left-2 top-2 z-[12] rounded-full bg-[rgba(6,8,12,0.55)] px-2 py-0.5 text-[0.5rem] uppercase tracking-[0.18em] text-[#e8d4b0] shadow-[0_0_16px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-[rgba(214,168,95,0.18)] backdrop-blur-sm sm:text-[0.52rem]"
@@ -153,7 +156,8 @@ export default function ProductCard({
                   : "pointer-events-none absolute right-2.5 top-2.5 z-[12] rounded-full border border-[rgba(214,168,95,0.28)] bg-[rgba(4,5,10,0.72)] px-2.5 py-0.5 text-[0.52rem] font-semibold uppercase tracking-[0.2em] text-[#e8c56e] backdrop-blur-sm"
               }
             >
-              New
+              <span aria-hidden="true">New</span>
+              <span className="sr-only">New arrival</span>
             </div>
           ) : null}
         </div>
@@ -213,10 +217,13 @@ export default function ProductCard({
 
           {/* Price — always its own full-width row, never beside buttons */}
           <div>
-            <span className="sr-only">Price</span>
             {hasSale ? (
               <div className="flex flex-col gap-0.5">
+                <span className="sr-only">
+                  Was {formatMoney(product.price_cents)}, now {formatMoney(displayPrice)}.
+                </span>
                 <span
+                  aria-hidden="true"
                   className={
                     compact
                       ? "text-[0.55rem] uppercase tracking-[0.14em] text-[#8f8576] line-through"
@@ -226,6 +233,7 @@ export default function ProductCard({
                   {formatMoney(product.price_cents)}
                 </span>
                 <span
+                  aria-hidden="true"
                   className={
                     compact
                       ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
@@ -237,6 +245,7 @@ export default function ProductCard({
               </div>
             ) : (
               <span
+                aria-label={`Price ${formatMoney(displayPrice)}`}
                 className={
                   compact
                     ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
@@ -252,7 +261,18 @@ export default function ProductCard({
               Grid column count is content-derived, not breakpoint-derived:
               2 cols when Quick View + Add to Bag are both present,
               1 col otherwise — so narrow cards never overflow. */}
-          {canQuickAdd ? (
+          {isComingSoon ? (
+            <WaitlistModal
+              productName={product.name}
+              productSlug={product.slug}
+              triggerLabel="Notify me at launch"
+              triggerClassName={
+                compact
+                  ? "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[rgba(2,3,6,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[rgba(214,168,95,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:text-[0.58rem] sm:tracking-[0.16em]"
+                  : "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[rgba(2,3,6,0.35)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[rgba(214,168,95,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
+              }
+            />
+          ) : canQuickAdd ? (
             <div
               className={
                 actionCols === 2 ? "grid grid-cols-2 gap-1.5" : "grid grid-cols-1"
@@ -293,8 +313,8 @@ export default function ProductCard({
                 triggerLabel="Get restock note"
                 triggerClassName={
                   compact
-                    ? "w-full rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:text-[0.58rem]"
-                    : "w-full rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
+                    ? "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:text-[0.58rem]"
+                    : "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
                 }
               />
             </div>

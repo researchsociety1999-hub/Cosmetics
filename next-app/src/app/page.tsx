@@ -327,7 +327,7 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
   }
 
   return (
-    <section className="mystic-section relative border-b border-[rgba(17,24,39,0.85)] bg-transparent">
+    <section className="mystic-section mystique-atmo mystique-atmo--featured relative border-b border-[rgba(17,24,39,0.85)] bg-transparent">
       <div className="mystic-section-shell">
         <div className="mystique-section-surface mystique-commerce-surface px-6 py-8 md:px-10 md:py-10">
           <SectionIntro
@@ -389,7 +389,7 @@ const HOME_RITUAL_RHYTHMS: {
 
 function RitualStripSection() {
   return (
-    <section className="mystic-section relative border-b border-[rgba(214,168,95,0.08)] bg-transparent !pt-14 !pb-14 md:!pt-32 md:!pb-32">
+    <section className="mystic-section mystique-atmo mystique-atmo--rituals relative border-b border-[rgba(214,168,95,0.08)] bg-transparent !pt-14 !pb-14 md:!pt-32 md:!pb-32">
       <div className="mystic-section-shell">
         <div className="mystique-section-surface px-6 py-8 md:px-10 md:py-10">
           <SectionIntro

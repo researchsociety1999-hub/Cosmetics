@@ -7,7 +7,7 @@ export function HomeServicesModule() {
   return (
     <section
       aria-labelledby="services-module-heading"
-      className="relative border-b border-[rgba(17,24,39,0.88)] bg-transparent py-12 md:py-16"
+      className="mystique-atmo mystique-atmo--services relative border-b border-[rgba(17,24,39,0.88)] bg-transparent py-12 md:py-16"
     >
       <div className="mystic-section-shell">
         <div className="mystique-section-surface mx-auto max-w-4xl px-6 py-8 md:px-10 md:py-10">

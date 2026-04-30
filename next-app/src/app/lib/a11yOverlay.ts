@@ -89,7 +89,7 @@ export function acquireOverlayLock({
 
 export function collectFocusable(container: HTMLElement): HTMLElement[] {
   const selector =
-    'a[href], button:not([disabled]), textarea, input:not([type="hidden"]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    'a[href], button:not([disabled]), [role="button"]:not([disabled]), textarea, input:not([type="hidden"]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable]:not([contenteditable="false"])';
   return [...container.querySelectorAll(selector)].filter(
     (n): n is HTMLElement =>
       n instanceof HTMLElement &&

@@ -12,7 +12,7 @@ export function HomeTrustStrip() {
   return (
     <section
       aria-label="Shopping guarantees"
-      className="relative border-b border-[rgba(214,168,95,0.08)] bg-transparent py-6 md:py-7"
+      className="mystique-atmo mystique-atmo--trust relative border-b border-[rgba(214,168,95,0.08)] bg-transparent py-6 md:py-7"
     >
       <div className="mystic-section-shell">
         <ul className="flex flex-wrap items-start justify-center gap-x-8 gap-y-5 text-center sm:gap-x-12 md:gap-x-16">

@@ -31,6 +31,7 @@ type QuickViewDialogProps = {
 
 export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
   const urls = collectGalleryUrls(product);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -66,9 +67,12 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   useEffect(() => {
     if (!open || typeof window === "undefined") return;
     const id = window.requestAnimationFrame(() => {
-      const panel = panelRef.current;
-      if (!panel) return;
-      panel.focus({ preventScroll: true });
+      const btn = closeButtonRef.current;
+      if (btn) {
+        btn.focus({ preventScroll: true });
+        return;
+      }
+      panelRef.current?.focus({ preventScroll: true });
     });
     return () => window.cancelAnimationFrame(id);
   }, [open]);
@@ -76,7 +80,7 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   const trapTab = useCallback((e: KeyboardEvent) => {
     const panel = panelRef.current;
     if (!panel) return;
-    trapTabKey(e, panel);
+    trapTabKey(e, panel, { initialFocus: closeButtonRef.current });
   }, []);
 
   useEffect(() => {
@@ -132,6 +136,7 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
               {product.name}
             </h2>
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={onClose}
               className="inline-flex h-11 min-w-[44px] shrink-0 items-center justify-center rounded-full border border-white/10 text-[#b8ab95] transition hover:border-[rgba(214,168,95,0.3)] hover:text-[#f5eee3]"

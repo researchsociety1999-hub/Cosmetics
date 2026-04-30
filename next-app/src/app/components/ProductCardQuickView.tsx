@@ -1,8 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import type { Product } from "../lib/types";
-import { QuickViewDialog } from "./QuickViewDialog";
+
+const QuickViewDialog = dynamic(
+  () => import("./QuickViewDialog").then((m) => m.QuickViewDialog),
+  { ssr: false, loading: () => null }
+);
 
 export function ProductCardQuickView({
   product,
@@ -38,7 +43,9 @@ export function ProductCardQuickView({
       >
         Quick view
       </button>
-      <QuickViewDialog product={product} open={open} onClose={handleClose} />
+      {open ? (
+        <QuickViewDialog product={product} open={open} onClose={handleClose} />
+      ) : null}
     </>
   );
 }
