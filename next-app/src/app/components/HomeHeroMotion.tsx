@@ -151,23 +151,6 @@ export function HomeHeroMotion({
             data-hero-copy="home"
             className="relative z-10 w-full max-w-[34rem] pt-2 text-left md:max-w-[38rem] lg:max-w-[40rem]"
           >
-            {/* Foreground brand mark: readable, crisp, balanced above the headline. */}
-            <div className="mystic-hero-reveal mystic-hero-reveal--sub mb-5 flex items-center gap-3">
-              <div className="relative w-[min(18rem,72vw)] sm:w-[20rem] md:w-[22rem]">
-                <Image
-                  src={HERO_BRAND_MARK_SRC}
-                  alt="Mystique"
-                  width={1200}
-                  height={520}
-                  sizes="(max-width: 640px) 72vw, (max-width: 1024px) 360px, 420px"
-                  className="block h-auto w-full object-contain drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)] [filter:brightness(1.06)_contrast(1.08)_saturate(1.02)]"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 -z-10 rounded-[999px] bg-[radial-gradient(ellipse_70%_60%_at_50%_52%,rgba(214,168,95,0.14),transparent_68%)] blur-[10px] opacity-90"
-                />
-              </div>
-            </div>
             <h1 className="font-playfair text-[40px] leading-[1.06] font-semibold tracking-[-0.01em] text-white md:text-[64px] mystic-hero-reveal mystic-hero-reveal--title">
               Where Beauty Transcends.
             </h1>
