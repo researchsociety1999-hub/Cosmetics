@@ -62,7 +62,10 @@ export function HomeHeroMotion({
         className="pointer-events-none absolute inset-0 z-[2] shadow-[inset_0_0_0_1px_rgba(214,168,95,0.08),inset_0_0_120px_rgba(0,0,0,0.55),inset_0_-84px_96px_rgba(0,0,0,0.42)]"
       />
       {/* Marble-vein material layer (hero only): masked away from left copy block. */}
-      <div aria-hidden className="mystique-vein-layer absolute inset-0 z-[1]" />
+      <div
+        aria-hidden
+        className="hidden mystique-vein-layer mystique-vein-layer--hero absolute inset-0 z-[2]"
+      />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_18%,rgba(214,168,95,0.12),transparent_55%),radial-gradient(circle_at_90%_18%,rgba(255,154,80,0.07),transparent_38%),radial-gradient(circle_at_10%_45%,rgba(120,90,160,0.06),transparent_42%),linear-gradient(168deg,rgba(10,8,14,0.85)_0%,rgba(4,5,10,0.9)_45%,rgb(2,3,7)_100%)]"
