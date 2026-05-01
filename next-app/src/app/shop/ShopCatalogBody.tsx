@@ -126,34 +126,32 @@ function ShopWideEmptyState({
   hasSupabase: boolean;
   hasActiveFilters: boolean;
 }) {
+  // When Supabase is not connected, always show a clean branded message
+  // (dev-only diagnostic text must never appear in a user-facing context)
   if (!hasSupabase) {
-    const isDev = process.env.NODE_ENV === "development";
     return (
       <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b9aa8f]">
         <p className="font-literata text-xl tracking-[0.08em] text-[#f6f0e6]">
-          {isDev ? "Developer Warning: Supabase is disconnected." : "New arrivals are on the way."}
+          New arrivals are on the way.
         </p>
         <p>
-          {isDev
-            ? "The shop requires Supabase environment variables. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to view the catalog."
-            : "The collection updates as new formulas arrive. In the meantime, explore routines and ingredients, or reach out for wholesale questions."}
+          The collection updates as new formulas arrive. In the meantime,
+          explore routines and ingredients, or reach out for wholesale questions.
         </p>
-        {!isDev && (
-          <div className="flex flex-wrap gap-3 pt-2">
-            <Link
-              href="/routines"
-              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
-            >
-              Routines
-            </Link>
-            <Link
-              href="/journal"
-              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
-            >
-              Journal
-            </Link>
-          </div>
-        )}
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link
+            href="/routines"
+            className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+          >
+            Routines
+          </Link>
+          <Link
+            href="/journal"
+            className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+          >
+            Journal
+          </Link>
+        </div>
       </div>
     );
   }
@@ -167,7 +165,7 @@ function ShopWideEmptyState({
       </p>
       <p>
         {hasActiveFilters
-          ? "Try clearing search, choosing All, or another category—matching products will show here when they are available."
+          ? "Try clearing search, choosing All, or another category\u2014matching products will show here when they are available."
           : "The collection updates as new formulas arrive. In the meantime, explore routines and ingredients, or reach out for wholesale questions."}
       </p>
       <div className="flex flex-wrap gap-3 pt-2">

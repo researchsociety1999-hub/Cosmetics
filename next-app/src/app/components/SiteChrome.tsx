@@ -44,12 +44,18 @@ export async function SiteChrome({
         <span className="mystic-particle mystic-particle-sm" style={{ left: "88%", top: "36%", opacity: 0.8 }} />
       </div>
       <Navbar />
-      {/* Offset for fixed navbar (+ desktop hairline) */}
+      {/*
+        Offset for fixed navbar.
+        `--mystique-header-offset` is set by Navbar JS based on actual header height.
+        The fallback `4.5rem` (72px) is tight enough for inner pages while still
+        clearing the navbar. The homepage hero is full-bleed and manages its own
+        top-padding independently, so this only affects non-hero pages.
+      */}
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 outline-none pt-0"
-        style={{ paddingTop: "var(--mystique-header-offset, 7rem)" }}
+        className="relative z-10 outline-none"
+        style={{ paddingTop: "var(--mystique-header-offset, 4.5rem)" }}
       >
         {/* Prelaunch banner: shows only when MYSTIQUE_PRELAUNCH_BANNER=1 AND there are 0 purchasable products */}
         <PrelaunchBanner />
