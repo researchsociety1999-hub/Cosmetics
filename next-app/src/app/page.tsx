@@ -328,7 +328,7 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
   return (
     <section className="mystic-section mystique-atmo mystique-atmo--featured relative border-b border-[rgba(17,24,39,0.85)] bg-transparent">
       <div className="mystic-section-shell">
-        <div className="mystique-section-surface mystique-commerce-surface px-6 py-8 md:px-10 md:py-10">
+        <div className="mystique-section-surface mystique-commerce-surface mystique-section-ore px-6 py-8 md:px-10 md:py-10">
           <SectionIntro
             eyebrow="Featured"
             title="Textures worth returning to."
@@ -494,7 +494,7 @@ function NewsletterSection() {
       <div className="mystic-section-shell">
         <section
           aria-labelledby="home-story-heading"
-          className="mystique-material mystique-material--story mb-10 overflow-hidden rounded-[26px] border border-[rgba(214,168,95,0.12)] bg-[linear-gradient(168deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.012)_46%,rgba(0,0,0,0.16)_100%)] shadow-[0_28px_80px_rgba(0,0,0,0.45)]"
+          className="mystique-material mystique-material--story mystique-section-ore mb-10 overflow-hidden rounded-[26px] border border-[rgba(214,168,95,0.12)] bg-[linear-gradient(168deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.012)_46%,rgba(0,0,0,0.16)_100%)] shadow-[0_28px_80px_rgba(0,0,0,0.45)]"
         >
           <div className="grid gap-8 p-6 md:grid-cols-[1.05fr_0.95fr] md:items-center md:p-8">
             <div className="space-y-4">
@@ -526,7 +526,7 @@ function NewsletterSection() {
           </div>
         </section>
 
-        <div className="home-luxury-frame mystic-card mystique-material mystique-material--newsletter grid gap-8 rounded-[26px] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
+        <div className="home-luxury-frame mystic-card mystique-material mystique-material--newsletter mystique-section-ore grid gap-8 rounded-[26px] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
               Newsletter
