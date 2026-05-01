@@ -16,6 +16,7 @@ function extraImageRemotePatterns() {
 //   - Resend / email assets (images in transactional emails are served from
 //     resend CDN; only affects img-src, never script-src)
 //   - Google Fonts (font-src)
+//   - Fontshare (font-src) — used by Literata / Inter variable fonts
 // All values are origin-scoped — no 'unsafe-eval' or wildcard '*' in script-src.
 // Iterate this policy as the app evolves; use report-uri/report-to in prod.
 const securityHeaders = [
@@ -60,10 +61,10 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' https://js.stripe.com",
 
       // Styles: self + Google Fonts stylesheet + inline Tailwind utilities.
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
 
-      // Fonts: self + Google Fonts binary files.
-      "font-src 'self' https://fonts.gstatic.com data:",
+      // Fonts: self + Google Fonts binary files + Fontshare binary files.
+      "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com data:",
 
       // Images: self + all allowed Next/Image remote hosts + data URIs
       // (used by inline SVG placeholders / film grain).
