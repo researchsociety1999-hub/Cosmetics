@@ -79,8 +79,15 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${literata.variable} ${playfair.variable} ${inter.variable} scroll-smooth`}
     >
+      {/*
+        body background is set in globals.css (background: #08070a).
+        Tailwind `bg-transparent` is removed here to eliminate the hydration
+        flash where the browser briefly shows white before CSS loads.
+        The `mystique-app-shell` z-index stacking context sits above the
+        body::before (film grain, z=1) and body::after (wallpaper, z=0) layers.
+      */}
       <body
-        className={`${inter.className} min-w-0 w-full bg-transparent text-[#f6f0e6] antialiased`}
+        className={`${inter.className} min-w-0 w-full antialiased`}
       >
         <div className="mystique-app-shell">
           {children}
