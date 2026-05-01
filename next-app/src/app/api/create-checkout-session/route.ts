@@ -97,6 +97,7 @@ export async function POST(request: Request) {
     }
 
     let order;
+    let guestToken: string | null = null;
     try {
       const created = await createPendingOrderFromCart({
         userId: cart.userId,
@@ -105,6 +106,7 @@ export async function POST(request: Request) {
         appliedPromo,
       });
       order = created.order;
+      guestToken = created.guestToken;
     } catch (orderError) {
       console.error("create-checkout-session: order create failed", orderError);
       return NextResponse.json(
@@ -128,6 +130,7 @@ export async function POST(request: Request) {
         cart,
         origin,
         appliedPromo,
+        guestToken,
       });
 
       await attachStripeCheckoutSessionToOrder(order.id, session.id);
@@ -136,6 +139,7 @@ export async function POST(request: Request) {
         sessionId: session.id,
         orderId: order.id,
         orderNumber: order.order_number,
+        guestToken,
       });
     } catch (error) {
       await markOrderFailedForCheckout(order.id);
