@@ -7,7 +7,7 @@ export function AccountGuestHub({ cart }: { cart: CartSummary }) {
   const hasGuestLines = cart.lines.length > 0 && cart.source === "cookie";
 
   return (
-    <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+    <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
       <header className="max-w-2xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Account

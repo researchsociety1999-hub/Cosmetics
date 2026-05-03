@@ -100,7 +100,7 @@ function RoutineCard({
   return (
     <article
       id={id}
-      className="group mystic-card scroll-mt-28 p-6 md:p-8 lg:scroll-mt-32"
+      className="group mystic-card mystique-scroll-anchor p-6 md:p-8"
     >
       <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
         Starter sequence

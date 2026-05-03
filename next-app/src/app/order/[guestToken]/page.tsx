@@ -42,7 +42,7 @@ export default async function GuestOrderStatusPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 py-20 md:px-6 lg:px-10 xl:px-14">
+      <main className="w-full px-4 pb-20 md:px-6 lg:px-10 xl:px-14">
         <div className="mystic-card p-8 md:p-10">
           {/* Header */}
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
