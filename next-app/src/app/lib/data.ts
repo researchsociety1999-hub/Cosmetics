@@ -236,7 +236,8 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A humectant network that draws and holds water so skin reads supple, dewy, and comfortable under layers.",
     benefits: "Hydration, bounce, smoothness",
     source: "Humectant",
-    imageSrc: "/ingredients/hyaluronic-acid.svg",
+    imageSrc: "/ingredients/hyaluronic-acid.png",
+    imagePresentation: "poster",
   },
   {
     id: "centella-asiatica",
@@ -245,7 +246,8 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A calming botanical we lean on when skin needs quiet recovery—comfort-first, never harsh.",
     benefits: "Soothing, recovery, softness",
     source: "Leaf extract",
-    imageSrc: "/ingredients/centella-asiatica.svg",
+    imageSrc: "/ingredients/centella-asiatica.png",
+    imagePresentation: "poster",
   },
   {
     id: "ceramides",
@@ -254,7 +256,8 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "Skin-identical lipids that help reinforce the barrier so moisture stays in and stress stays out.",
     benefits: "Barrier comfort, moisture retention, resilience",
     source: "Skin-identical lipid",
-    imageSrc: "/ingredients/ceramides.svg",
+    imageSrc: "/ingredients/ceramides.png",
+    imagePresentation: "poster",
   },
   {
     id: "squalane",
@@ -263,7 +266,8 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A weightless emollient that seals without slipperiness—silk at the surface, breathable underneath.",
     benefits: "Silky slip, soft finish, weightless seal",
     source: "Emollient",
-    imageSrc: "/ingredients/squalane.svg",
+    imageSrc: "/ingredients/squalane.png",
+    imagePresentation: "poster",
   },
 ];
 
