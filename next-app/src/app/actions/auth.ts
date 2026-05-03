@@ -42,7 +42,35 @@ function formatAuthErrorMessage(message: string) {
     return "New accounts are turned off in authentication settings (only existing customers can use email sign-in). You can still shop as a guest, or sign in with an account that already exists.";
   }
 
+  // Resend SMTP sandbox restriction: account is in test mode and can only
+  // send to the verified owner email address.
+  // Fix: verify a custom domain at https://resend.com/domains, then update
+  // the Supabase Auth → SMTP “From” address to use that verified domain.
+  if (
+    normalized.includes("550") &&
+    normalized.includes("testing emails to your own email address")
+  ) {
+    return "We couldn't send the account link right now. The email provider is in test mode. Please contact support.";
+  }
+
+  // Resend SMTP domain-not-verified error: the “From” address uses a domain
+  // (e.g. @gmail.com) that hasn’t been added + verified in Resend.
+  // Fix: add & verify your sending domain at https://resend.com/domains and
+  // update the Supabase Auth → SMTP “From” address to match.
+  if (
+    normalized.includes("550") &&
+    (normalized.includes("domain is not verified") ||
+      normalized.includes("please, add and verify your domain"))
+  ) {
+    return "We couldn't send the sign-in link because email sending isn't fully configured (sending domain not verified). Please contact support.";
+  }
+
   return message;
+}
+
+function isSignupDisabledOtpError(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized.includes("signups not allowed") && normalized.includes("otp");
 }
 
 export async function requestMagicLinkAction(formData: FormData): Promise<void> {
@@ -76,16 +104,18 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
     email,
     options: {
       emailRedirectTo: callbackUrl.toString(),
+      // Production-safe behavior:
+      // - login: existing accounts only (works even when signups are disabled)
+      // - signup: create new user (requires Supabase Email/OTP signups enabled)
       shouldCreateUser: mode === "signup",
     },
   });
 
   if (error) {
-    const hint =
-      error.message.toLowerCase().includes("signups not allowed") &&
-      error.message.toLowerCase().includes("otp")
-        ? "Fix: Supabase Dashboard → Authentication → Sign In / Providers → Email → enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md → Magic links & sign-up."
-        : undefined;
+    const signupDisabled = isSignupDisabledOtpError(error.message);
+    const hint = signupDisabled
+      ? "Fix: Supabase Dashboard \u2192 Authentication \u2192 Sign In / Providers \u2192 Email \u2192 enable allowing new users (sign-ups). Redirect URLs must include your app origin + /auth/confirm. See SUPABASE_SETUP.md \u2192 Magic links & sign-up."
+      : undefined;
     console.error("Magic link request failed", {
       email,
       message: error.message,
@@ -93,6 +123,12 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
       name: error.name,
       hint,
     });
+
+    // If signups are disabled and the shopper is on the login screen,
+    // treat this as "no account found" (we don't want login to behave like login-or-signup).
+    if (mode === "login" && signupDisabled) {
+      redirect(`${statusPath}?status=no-account&email=${encodeURIComponent(email)}`);
+    }
     redirect(
       `${statusPath}?status=error&message=${encodeURIComponent(formatAuthErrorMessage(error.message))}`,
     );

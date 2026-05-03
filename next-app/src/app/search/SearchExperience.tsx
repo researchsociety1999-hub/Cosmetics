@@ -45,10 +45,12 @@ export function SearchExperience({
 
     setIsLoading(true);
     setLoadError(null);
+    const controller = new AbortController();
     const timeoutId = window.setTimeout(async () => {
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
           cache: "no-store",
+          signal: controller.signal,
         });
         let data: { products?: Product[]; error?: string } = {};
         try {
@@ -69,6 +71,9 @@ export function SearchExperience({
 
         setProducts(Array.isArray(data.products) ? data.products : []);
       } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
         console.error("Search request failed", error);
         setProducts([]);
         setLoadError("We could not reach the search service. Check your connection and try again.");
@@ -79,6 +84,7 @@ export function SearchExperience({
 
     return () => {
       window.clearTimeout(timeoutId);
+      controller.abort();
     };
   }, [trimmedQuery]);
 

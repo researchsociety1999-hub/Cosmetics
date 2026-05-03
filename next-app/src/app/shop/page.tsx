@@ -35,7 +35,7 @@ function firstQueryString(value: string | string[] | undefined): string {
   return String(value ?? "").trim();
 }
 
-export const revalidate = 300;
+export const revalidate = 30;
 
 export async function generateMetadata({
   searchParams,
@@ -75,7 +75,7 @@ export default async function ShopPage({
   const currentIngredient = firstQueryString(params.ingredient).toLowerCase();
   const [dbCategories, catalogForMerchCounts] = await Promise.all([
     getCategories(),
-    getProducts({ sortBy: "newest" }),
+    getProducts({ sortBy: "newest", excludeComingSoon: true }),
   ]);
   const merchCounts = countProductsByMerchGroup(catalogForMerchCounts, dbCategories);
   const visibleMerchGroups = SHOP_MERCH_GROUPS.filter(
@@ -88,7 +88,7 @@ export default async function ShopPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+      <main className="mx-auto w-full max-w-[110rem] px-4 py-14 md:px-6 lg:px-10 xl:px-14">
         <h1 className="sr-only">Shop</h1>
         <section className="mb-8 flex flex-wrap gap-3">
           <CategoryChip
@@ -190,7 +190,7 @@ function CategoryChip({
     <Link
       href={href}
       prefetch={false}
-      className={`inline-flex rounded-full border px-3.5 py-1.5 text-[0.65rem] uppercase tracking-[0.2em] backdrop-blur-sm transition md:px-4 md:py-2 md:text-xs ${
+      className={`inline-flex min-h-[44px] items-center rounded-full border px-3.5 py-2 text-[0.65rem] uppercase tracking-[0.2em] backdrop-blur-sm transition md:px-4 md:py-2 md:text-xs ${
         active
           ? "border-[#d6a85f] bg-[rgba(214,168,95,0.18)] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
           : "border-white/12 bg-white/[0.04] text-[#b8ab95] hover:border-[rgba(214,168,95,0.28)] hover:text-[#f5eee3]"

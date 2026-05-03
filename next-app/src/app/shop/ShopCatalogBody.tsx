@@ -19,7 +19,7 @@ export function ShopCatalogFallback() {
           <div className="h-3 w-24 animate-pulse rounded bg-white/[0.06]" />
           <div className="h-9 w-48 max-w-full animate-pulse rounded bg-white/[0.08]" />
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
+        <div className="mystic-product-grid">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -51,6 +51,7 @@ export async function ShopCatalogBody({
     search: currentIngredient ? "" : currentSearch,
     ingredientId: currentIngredient || undefined,
     sortBy: sort,
+    excludeComingSoon: true,
   });
 
   const productAssignments = assignProductsToMerchGroups(
@@ -116,7 +117,11 @@ export async function ShopCatalogBody({
               {section.title}
             </h2>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:gap-7 xl:grid-cols-4 xl:gap-8 2xl:gap-9">
+          <div
+            className={`mystic-product-grid${
+              section.productCount <= 2 ? " mystic-product-grid--balanced" : ""
+            }`}
+          >
             {[...section.products]
               .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))
               .map((product) => (
@@ -136,20 +141,32 @@ function ShopWideEmptyState({
   hasSupabase: boolean;
   hasActiveFilters: boolean;
 }) {
+  // When Supabase is not connected, always show a clean branded message
+  // (dev-only diagnostic text must never appear in a user-facing context)
   if (!hasSupabase) {
     return (
       <div className="mystic-card space-y-4 p-8 text-sm leading-relaxed text-[#b9aa8f]">
         <p className="font-literata text-xl tracking-[0.08em] text-[#f6f0e6]">
-          The shop is temporarily unavailable.
+          New arrivals are on the way.
         </p>
         <p>
-          We can&apos;t show the catalog right now. Please try again in a little while,
-          or visit another section of the site. If this keeps happening, use{" "}
-          <Link href="/contact" className="text-[#e8c56e] underline-offset-4 hover:underline">
-            Contact
-          </Link>{" "}
-          and we&apos;ll help from our side.
+          The collection updates as new formulas arrive. In the meantime,
+          explore routines and ingredients, or reach out for wholesale questions.
         </p>
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link
+            href="/routines"
+            className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+          >
+            Routines
+          </Link>
+          <Link
+            href="/journal"
+            className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.2em]"
+          >
+            Journal
+          </Link>
+        </div>
       </div>
     );
   }
@@ -163,7 +180,7 @@ function ShopWideEmptyState({
       </p>
       <p>
         {hasActiveFilters
-          ? "Try clearing search, choosing All, or another category—matching products will show here when they are available."
+          ? "Try clearing search, choosing All, or another category\u2014matching products will show here when they are available."
           : "The collection updates as new formulas arrive. In the meantime, explore routines and ingredients, or reach out for wholesale questions."}
       </p>
       <div className="flex flex-wrap gap-3 pt-2">

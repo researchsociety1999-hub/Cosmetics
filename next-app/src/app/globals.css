@@ -7,7 +7,7 @@
   /* Colors */
   --mystic-bg: #000000;
   --mystic-bg-alt: #060508;
-  --mystic-card-bg: rgba(255, 255, 255, 0.028);
+  --mystic-card-bg: rgba(255, 255, 255, 0.032);
   --mystic-card-border: rgba(212, 175, 55, 0.22);
   /* Metallic gold + champagne highlight (logo lettering) */
   --mystic-gold: #d4af37;
@@ -18,6 +18,25 @@
   --mystic-text: #f6f0e6;
   --mystic-text-muted: #b9aa8f;
 
+  /* Material direction (charcoal + restrained gold veining) */
+  --mystique-charcoal-1: #020308;
+  --mystique-charcoal-2: #04050a;
+  --mystique-charcoal-3: #06070d;
+  --mystique-vein-gold: rgba(214, 168, 95, 0.58);
+  --mystique-vein-gold-soft: rgba(214, 168, 95, 0.32);
+  --mystique-marble-opacity: 0.16;
+
+  /* Elevation model (stronger than shadows; avoids muddy dark-on-dark) */
+  --mystique-surface-1: rgba(6, 7, 12, 0.58); /* section */
+  --mystique-surface-2: rgba(6, 7, 12, 0.68); /* commerce */
+  --mystique-surface-3: rgba(10, 12, 18, 0.62); /* cards/controls */
+  --mystique-rim-weak: rgba(255, 255, 255, 0.045);
+  --mystique-rim-gold: rgba(214, 168, 95, 0.2);
+  --mystique-shadow-elev: 0 26px 76px rgba(0, 0, 0, 0.58);
+
+  /* Shared decorative SVG: thin metallic-gold branching veins. */
+  --mystique-vein-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 900'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f7eed8' stop-opacity='0.22'/%3E%3Cstop offset='0.42' stop-color='%23d6a85f' stop-opacity='0.62'/%3E%3Cstop offset='1' stop-color='%239c6f2f' stop-opacity='0.18'/%3E%3C/linearGradient%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='0.6'/%3E%3C/filter%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23g)' stroke-linecap='round'%3E%3Cpath d='M120 820 C 320 680, 430 560, 640 520 C 820 485, 980 360, 1320 240' stroke-width='2.2' opacity='0.7'/%3E%3Cpath d='M478 592 C 522 562, 560 540, 604 520' stroke-width='1.25' opacity='0.42'/%3E%3Cpath d='M676 510 C 720 478, 770 444, 824 414' stroke-width='1.15' opacity='0.38'/%3E%3Cpath d='M900 382 C 940 354, 990 320, 1046 288' stroke-width='1.12' opacity='0.36'/%3E%3C/g%3E%3Cg filter='url(%23b)' opacity='0.65'%3E%3Cpath d='M120 820 C 320 680, 430 560, 640 520 C 820 485, 980 360, 1320 240' stroke='%23d6a85f' stroke-width='3.1' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E");
+
   /* Radii */
   --mystic-radius-card: 22px;
   --mystic-radius-button: 9999px;
@@ -25,6 +44,8 @@
 
   /* Shadows */
   --mystic-shadow-soft: 0 22px 56px rgba(0, 0, 0, 0.72);
+  --mystic-shadow-gold: 0 0 0 1px rgba(212, 175, 55, 0.28),
+    0 0 42px rgba(212, 175, 55, 0.08), 0 22px 56px rgba(0, 0, 0, 0.75);
 
   /* --font-literata, --font-playfair, --font-inter: set on <html> by next/font */
 }
@@ -43,6 +64,262 @@
   .font-playfair {
     font-family: var(--font-playfair), ui-serif, Georgia, serif;
   }
+
+  /* Material system — marble/vein atmospheric layer (section-scoped, no global wallpaper). */
+  .mystique-material {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Opt-in clipping when a container truly needs to crop decorative layers. */
+  .mystique-material--clip {
+    overflow: hidden;
+  }
+
+  .mystique-material::before {
+    content: "";
+    position: absolute;
+    inset: -18%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: var(--mystique-marble-opacity, 0.14);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    /* Base charcoal depth + subtle metallic veins (SVG data URI). */
+    background-image:
+      radial-gradient(ellipse 120% 90% at 50% 10%, rgba(255, 255, 255, 0.02), transparent 58%),
+      radial-gradient(circle at 12% 24%, rgba(255, 154, 80, 0.06), transparent 28%),
+      radial-gradient(circle at 88% 18%, rgba(214, 168, 95, 0.05), transparent 24%),
+      linear-gradient(180deg, rgba(2, 3, 8, 0.92), rgba(4, 5, 10, 0.62) 48%, rgba(2, 3, 8, 0.92)),
+      var(--mystique-vein-svg);
+    mix-blend-mode: soft-light;
+  }
+
+  .mystique-material::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    /* Readability vignette: keeps text zones calm on dark marble. */
+    background:
+      radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0) 36%, rgba(0, 0, 0, 0.18) 62%, rgba(0, 0, 0, 0.5) 100%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05) 28%, rgba(0, 0, 0, 0.32));
+    opacity: 0.9;
+  }
+
+  .mystique-material--hero {
+    --mystique-marble-opacity: 0.22;
+  }
+
+  .mystique-material--hero::before {
+    background-position: 70% 42%;
+    /* Keep veins away from left reading block (mask reveals mostly right side). */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, rgba(0,0,0,0.8) 70%, black 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, rgba(0,0,0,0.8) 70%, black 100%);
+  }
+
+  .mystique-material--editorial {
+    --mystique-marble-opacity: 0.28;
+  }
+
+  .mystique-material--soft {
+    --mystique-marble-opacity: 0.1;
+  }
+
+  .mystique-material--story {
+    --mystique-marble-opacity: 0.3;
+  }
+
+  .mystique-material--story::before {
+    background-position: 74% 40%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 32%, black 60%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 32%, black 60%);
+  }
+
+  .mystique-material--newsletter {
+    --mystique-marble-opacity: 0.12;
+  }
+
+  .mystique-material--footer {
+    --mystique-marble-opacity: 0.24;
+  }
+
+  /* Near-black surfaces: soft-light collapses. Force normal blend for depth layers. */
+  .mystique-material--editorial::before,
+  .mystique-material--story::before,
+  .mystique-material--footer::before {
+    mix-blend-mode: normal;
+  }
+
+  /* Hero-only vein layer (separate from section wrapper for precise placement). */
+  .mystique-vein-layer {
+    display: none;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 70% 42%;
+    opacity: 0.3;
+    mix-blend-mode: soft-light;
+    background-image: var(--mystique-vein-svg), var(--mystique-vein-svg);
+    background-size: 160% 160%, 210% 210%;
+    background-position: 76% 38%, 10% 78%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 44%, rgba(0,0,0,0.82) 72%, black 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, transparent 44%, rgba(0,0,0,0.82) 72%, black 100%);
+    filter: saturate(1.12) contrast(1.06) brightness(1.02);
+  }
+
+  .mystique-vein-layer--hero {
+    display: none;
+    opacity: 0.48;
+    mix-blend-mode: screen;
+    -webkit-mask-image:
+      radial-gradient(ellipse 70% 70% at 72% 34%, black 0%, rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.35) 70%, transparent 88%),
+      linear-gradient(90deg, transparent 0%, transparent 34%, rgba(0,0,0,0.88) 62%, black 100%);
+    mask-image:
+      radial-gradient(ellipse 70% 70% at 72% 34%, black 0%, rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.35) 70%, transparent 88%),
+      linear-gradient(90deg, transparent 0%, transparent 34%, rgba(0,0,0,0.88) 62%, black 100%);
+  }
+
+  /* Opt-in “ore accent” for key panels: visible, but kept out of dense text zones. */
+  .mystique-section-ore {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .mystique-section-ore::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    background-repeat: no-repeat;
+    background-image: var(--mystique-vein-svg);
+    background-size: 190% 190%;
+    background-position: 78% 34%;
+    mix-blend-mode: screen;
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 80% 20%, black 0%, rgba(0,0,0,0.6) 50%, transparent 80%);
+    mask-image: radial-gradient(ellipse 90% 80% at 80% 20%, black 0%, rgba(0,0,0,0.6) 50%, transparent 80%);
+    filter: saturate(1.1) contrast(1.03);
+  }
+
+  .mystique-section-ore > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Small screens: reduce perceived texture density (keep mood, avoid "wallpaper"). */
+  @media (max-width: 420px) {
+    .mystique-vein-layer {
+      opacity: 0.18;
+    }
+
+    .mystique-vein-layer--hero {
+      opacity: 0.26;
+    }
+
+    .mystique-material--story,
+    .mystique-material--footer {
+      --mystique-marble-opacity: 0.1;
+    }
+  }
+
+  /* Mobile: keep ore accents present, but ~30% quieter. */
+  @media (max-width: 640px) {
+    .mystique-section-ore::before {
+      opacity: 0.19;
+    }
+  }
+
+  /* ----------------------------------------------------------------------- */
+  /* Homepage atmospheres: subtle, section-scoped pattern/texture layers.      */
+  /* Opt-in only; avoids repeating huge class strings in components.          */
+  /* ----------------------------------------------------------------------- */
+  .mystique-atmo {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .mystique-atmo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 1;
+  }
+
+  .mystique-atmo > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Trust strip: calm tonal separation + gentle top light. */
+  .mystique-atmo--trust::before {
+    background:
+      linear-gradient(180deg, rgba(214, 168, 95, 0.055) 0%, rgba(214, 168, 95, 0) 34%),
+      radial-gradient(ellipse 120% 70% at 50% 40%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.38) 88%),
+      linear-gradient(180deg, rgba(2, 3, 8, 0.62), rgba(2, 3, 8, 0.3) 55%, rgba(2, 3, 8, 0.66));
+    opacity: 0.85;
+  }
+
+  /* Guided discovery: editorial grid/paper depth (extremely low contrast). */
+  .mystique-atmo--discovery::before {
+    background:
+      radial-gradient(circle at 18% 20%, rgba(214, 168, 95, 0.06), transparent 34%),
+      radial-gradient(circle at 78% 70%, rgba(255, 154, 80, 0.045), transparent 36%),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 44px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.02) 0px,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 44px
+      ),
+      linear-gradient(180deg, rgba(4, 5, 10, 0.25), rgba(4, 5, 10, 0.62));
+    opacity: 0.45;
+    mix-blend-mode: soft-light;
+  }
+
+  /* Rituals: soft framed surface treatment (keeps "panel" from feeling empty). */
+  .mystique-atmo--rituals::before {
+    background:
+      radial-gradient(ellipse 140% 90% at 50% 0%, rgba(255, 255, 255, 0.03), transparent 56%),
+      radial-gradient(circle at 12% 30%, rgba(214, 168, 95, 0.06), transparent 34%),
+      linear-gradient(180deg, rgba(2, 3, 8, 0.28), rgba(2, 3, 8, 0.62));
+    opacity: 0.6;
+  }
+
+  /* Featured products: quiet spotlighting behind the commerce surface. */
+  .mystique-atmo--featured::before {
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 35%, rgba(214, 168, 95, 0.09), transparent 62%),
+      radial-gradient(circle at 80% 18%, rgba(255, 154, 80, 0.04), transparent 36%),
+      radial-gradient(circle at 20% 78%, rgba(120, 90, 160, 0.035), transparent 42%),
+      linear-gradient(180deg, rgba(2, 3, 8, 0.12), rgba(2, 3, 8, 0.62));
+    opacity: 0.75;
+  }
+
+  /* Services / Newsletter area: mild tonal lift + vignette for finish. */
+  .mystique-atmo--services::before {
+    background:
+      radial-gradient(ellipse 120% 90% at 50% 30%, rgba(255, 255, 255, 0.02), transparent 58%),
+      radial-gradient(circle at 14% 62%, rgba(214, 168, 95, 0.055), transparent 34%),
+      radial-gradient(circle at 86% 22%, rgba(255, 154, 80, 0.04), transparent 30%),
+      linear-gradient(180deg, rgba(2, 3, 8, 0.22), rgba(2, 3, 8, 0.66));
+    opacity: 0.7;
+  }
 }
 
 html {
@@ -52,7 +329,7 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
-  /* Stable rem basis + no mobile “auto zoom” of typography */
+  /* Stable rem basis + no mobile "auto zoom" of typography */
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -82,61 +359,54 @@ body {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  /* Crescent-side warmth + drifting gold bokeh + deep smoke falloff */
-  background:
-    /* Hairline mesh + top depth (fine grain is body::before, data-URI only). */
-    repeating-linear-gradient(
-      135deg,
-      rgba(212, 175, 55, 0.035) 0,
-      rgba(212, 175, 55, 0.035) 0.5px,
-      transparent 0.5px,
-      transparent 4px
-    ),
-    radial-gradient(
-      ellipse 130% 85% at 50% 0%,
-      rgba(255, 176, 112, 0.1) 0%,
-      rgba(32, 26, 18, 0.28) 38%,
-      transparent 62%
-    ),
-    radial-gradient(ellipse 120% 90% at 0% 0%, rgba(255, 154, 70, 0.16), transparent 46%),
-    radial-gradient(circle at 14% 42%, rgba(212, 175, 55, 0.09), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(232, 197, 110, 0.07), transparent 22%),
-    radial-gradient(circle at 72% 78%, rgba(255, 120, 48, 0.05), transparent 26%),
-    radial-gradient(circle at 50% 108%, rgba(40, 28, 14, 0.55), transparent 42%),
-    linear-gradient(180deg, #000000 0%, #030204 38%, #000000 100%);
+  background: #08070a;
   color: var(--mystic-text);
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
 }
 
-/* Gold-vein texture: sits above gradients, below grain. */
+/* Custom mineral background (NO bitmap wallpaper): charcoal depth + warm gold veining + editorial vignette. */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.16;
-  background-image: url("/backgrounds/mystique-veins.png");
-  background-size: cover;
-  background-position: center;
+  z-index: 0;
+  opacity: 1;
+  background:
+    /* Gold seam 1 — main diagonal */
+    linear-gradient(
+      128deg,
+      transparent 0%,
+      transparent 28%,
+      rgba(212, 175, 55, 0.06) 32%,
+      rgba(232, 197, 110, 0.13) 38%,
+      rgba(212, 175, 55, 0.07) 44%,
+      transparent 50%,
+      transparent 100%
+    ),
+    /* Gold seam 2 — secondary cross vein */
+    linear-gradient(
+      52deg,
+      transparent 0%,
+      transparent 55%,
+      rgba(214, 168, 95, 0.05) 60%,
+      rgba(232, 197, 110, 0.09) 65%,
+      rgba(214, 168, 95, 0.04) 70%,
+      transparent 76%,
+      transparent 100%
+    ),
+    /* Warm underglow top-right corner */
+    radial-gradient(ellipse 60% 45% at 82% 8%, rgba(212, 175, 55, 0.09), transparent 70%),
+    /* Warm underglow bottom-left corner */
+    radial-gradient(ellipse 50% 40% at 18% 92%, rgba(255, 154, 60, 0.06), transparent 70%),
+    /* Stone bed — rich near-black, not pure black */
+    linear-gradient(180deg, #07060a 0%, #09080d 50%, #07060a 100%);
   background-repeat: no-repeat;
-  mix-blend-mode: soft-light;
-  /* Fade out to preserve readability in dense content areas. */
-  -webkit-mask-image: radial-gradient(
-    ellipse 120% 85% at 50% 12%,
-    #000 0%,
-    #000 40%,
-    rgba(0, 0, 0, 0.38) 64%,
-    transparent 86%
-  );
-  mask-image: radial-gradient(
-    ellipse 120% 85% at 50% 12%,
-    #000 0%,
-    #000 40%,
-    rgba(0, 0, 0, 0.38) 64%,
-    transparent 86%
-  );
+  background-size: cover;
+  mask-image: none;
+  -webkit-mask-image: none;
+  mix-blend-mode: normal;
 }
 
 /* Film grain ~2–3%: inline SVG only (no file paths). z-index above shell fills, below main chrome (z-10). */
@@ -145,12 +415,48 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
   opacity: 0.028;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
   background-size: 256px 256px;
   background-repeat: repeat;
   mix-blend-mode: overlay;
+}
+
+/* Global app stacking context: wallpaper (z=0) → film grain (z=1) → app (z=2) → modals (project-defined). */
+.mystique-app-shell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Calm readable section surface (lets wallpaper show around it). */
+.mystique-section-surface {
+  border-radius: 28px;
+  border: 1px solid rgba(214, 168, 95, 0.14);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(214, 168, 95, 0.06), transparent 44%),
+    linear-gradient(180deg, rgba(6, 5, 10, 0.82), rgba(0, 0, 0, 0.72));
+  box-shadow:
+    inset 0 1px 0 var(--mystique-rim-weak),
+    0 28px 82px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+
+/* Stronger local surfacing for commerce grids over the wallpaper (keeps theme visible). */
+.mystique-commerce-surface {
+  border-color: rgba(214, 168, 95, 0.2);
+  background:
+    radial-gradient(circle at 16% 22%, rgba(214, 168, 95, 0.07), transparent 48%),
+    radial-gradient(circle at 86% 18%, rgba(255, 154, 80, 0.04), transparent 46%),
+    linear-gradient(180deg, rgba(6, 5, 10, 0.85), rgba(0, 0, 0, 0.78));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 34px 96px rgba(0, 0, 0, 0.52);
 }
 
 .font-literata {
@@ -162,6 +468,13 @@ body::before {
   color: var(--mystic-text);
 }
 
+/*
+ * PERF FIX: replaced `transition: all 0.25s ease` with explicit composited-only
+ * properties. `transition: all` triggers layout (reflow) on any property change —
+ * including width, height, padding, font-size — even when only color or opacity
+ * changes. Enumerating only GPU-composited or paint-only properties keeps
+ * transitions off the main thread and eliminates jank-inducing layout work.
+ */
 a,
 button,
 input,
@@ -223,11 +536,12 @@ summary {
 .mystic-card {
   border-radius: var(--mystic-radius-card);
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
-    radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 36%);
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.09), transparent 38%),
+    radial-gradient(circle at 78% 12%, rgba(255, 255, 255, 0.02), transparent 42%);
   border: 1px solid var(--mystic-card-border);
   box-shadow:
-    inset 0 1px 0 rgba(212, 175, 55, 0.08),
+    inset 0 1px 0 rgba(212, 175, 55, 0.075),
     var(--mystic-shadow-soft);
   transition:
     border-color 0.35s ease,
@@ -256,16 +570,11 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.08);
 }
 
-/* Frosted glass — shop filters, chips (merged gradient + rim + stronger blur) */
+/* Frosted glass — shop filters, chips (black glass + gold rim, matches dropdowns) */
 .mystic-glass {
   border-radius: var(--mystic-radius-card);
   border: 1px solid rgba(212, 175, 55, 0.18);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.02) 40%,
-    rgba(0, 0, 0, 0.76) 100%
-  );
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(22px) saturate(1.35);
   -webkit-backdrop-filter: blur(22px) saturate(1.35);
   box-shadow:
@@ -286,8 +595,8 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
 }
 
 .mystic-section {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .mystic-section-shell {
@@ -295,6 +604,56 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   width: 100%;
   max-width: none;
   padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.mystic-product-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: clamp(0.75rem, 1.55vw, 2.25rem);
+  align-items: stretch;
+}
+
+/* Shop: when a section only has 1–2 items, avoid oversized cards on wide screens. */
+.mystic-product-grid--balanced {
+  margin-inline: auto;
+  max-width: 72rem;
+}
+
+@media (min-width: 1024px) {
+  .mystic-product-grid--balanced {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+  }
+}
+
+/* Home featured quartet: slightly tighter cards + calmer spacing (keeps shop grids untouched). */
+.mystic-product-grid--featured {
+  grid-template-columns: repeat(auto-fit, minmax(min(14.25rem, 100%), 1fr));
+  gap: clamp(0.65rem, 1.1vw, 1.6rem);
+}
+
+@media (min-width: 768px) {
+  .mystic-product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: clamp(1rem, 1.6vw, 2.5rem);
+  }
+
+  .mystic-product-grid--featured {
+    grid-template-columns: repeat(auto-fit, minmax(min(14.75rem, 100%), 1fr));
+    gap: clamp(0.85rem, 1.2vw, 1.75rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .mystic-product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(15.5rem, 100%), 1fr));
+  }
+
+  .mystic-product-grid--featured {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .mystic-kicker {
@@ -340,6 +699,9 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   background: var(--mystic-gold);
   color: #000000;
   font-weight: 700;
+  /* will-change promotes this element to a GPU layer before :active fires,
+     eliminating the compositor promotion jank on scale(0.99). */
+  will-change: transform;
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -359,6 +721,9 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   border: 1px solid var(--mystic-gold);
   color: var(--mystic-gold);
   background: transparent;
+  /* will-change promotes this element to a GPU layer before :active fires,
+     eliminating the compositor promotion jank on scale(0.99). */
+  will-change: transform;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -386,6 +751,7 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   border: 1px solid rgba(212, 175, 55, 0.2);
   color: var(--mystic-text);
   padding: 0.75rem 1rem;
+  font-size: 16px;
 }
 
 .mystic-input:focus-visible {
@@ -401,6 +767,7 @@ select.mystic-select {
   font-family: var(--font-inter), system-ui, sans-serif;
   letter-spacing: 0.04em;
   color: var(--mystic-text);
+  font-size: 16px;
   background-color: rgba(0, 0, 0, 0.92);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23e8c56e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -411,7 +778,14 @@ select.mystic-select {
     inset 0 1px 0 rgba(255, 255, 255, 0.045),
     0 0 0 1px rgba(212, 175, 55, 0.06),
     0 12px 32px rgba(0, 0, 0, 0.55);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  /*
+   * PERF FIX: was `transition: all` — now explicitly composited props only.
+   * border-color, box-shadow, background-color are paint-only (no layout).
+   */
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
 }
 
 select.mystic-select:hover {
@@ -560,13 +934,16 @@ optgroup {
   pointer-events: none;
 }
 
-/* Image treatment: photo sits above scrims (shade/vignette) so it stays legible. */
+/* Image treatment: photo sits above scrims (shade/vignette) so it stays legible.
+ * will-change: transform, opacity — GPU-promotes this element so the hover
+ * scale + opacity transitions run entirely on the compositor thread. */
 .mystique-image-frame__image {
   position: relative;
   z-index: 4;
   opacity: 0.94;
   mix-blend-mode: screen;
   filter: brightness(0.98) contrast(0.96) saturate(0.88);
+  will-change: transform, opacity;
   transition:
     transform 0.5s ease,
     opacity 0.5s ease,
@@ -861,6 +1238,10 @@ optgroup {
 
 .mystic-nav-fade {
   animation: mystic-navbar-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+:root {
+  --mystique-header-offset: 7rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

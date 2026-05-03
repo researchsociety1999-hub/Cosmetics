@@ -24,6 +24,12 @@ function clientForCheckoutWrites() {
     return supabaseAdmin;
   }
 
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Checkout writes require SUPABASE_SERVICE_ROLE_KEY in production (server-only).",
+    );
+  }
+
   if (supabase) {
     return supabase;
   }
@@ -107,7 +113,7 @@ export async function createPendingOrderFromCart({
   shippingDetails: ShippingDetails;
   cart: CartSummary;
   appliedPromo?: AppliedPromo | null;
-}): Promise<{ order: Order; items: OrderItem[] }> {
+}): Promise<{ order: Order; items: OrderItem[]; guestToken: string | null }> {
   const client = clientForCheckoutWrites();
 
   if (!cart.lines.length) {
@@ -123,9 +129,14 @@ export async function createPendingOrderFromCart({
   const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
   const orderNumber = buildOrderNumber();
 
+  // Generate a hard-to-guess tracking token for guest (unauthenticated) orders.
+  // Authenticated orders do not need one — the user can see orders in their account.
+  const guestToken: string | null = userId === null ? crypto.randomUUID() : null;
+
   const orderPayload = {
     order_number: orderNumber,
     user_id: userId,
+    guest_token: guestToken,
     email: shippingDetails.email,
     promo_code: appliedPromo?.promo.code ?? null,
     status: "pending",
@@ -180,6 +191,7 @@ export async function createPendingOrderFromCart({
   return {
     order: order as Order,
     items: (createdItems ?? []) as OrderItem[],
+    guestToken,
   };
 }
 
@@ -241,6 +253,79 @@ export async function getOrderNumberByIdForDisplay(
   }
 
   return data.order_number as string;
+}
+
+/** Read-only: map Stripe session → order number for checkout success UI (no PII). */
+export async function getOrderNumberByStripeSessionIdForDisplay(
+  sessionId: string,
+): Promise<string | null> {
+  const trimmed = sessionId?.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const client = supabaseAdmin ?? supabase;
+  if (!client) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from("orders")
+    .select("order_number")
+    .eq("stripe_checkout_session_id", trimmed)
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data?.order_number) {
+    return null;
+  }
+
+  return data.order_number as string;
+}
+
+/**
+ * Read-only guest order lookup by token.
+ *
+ * The token is a random UUID generated at checkout for unauthenticated orders
+ * and embedded in the /checkout/success URL and the /order/[token] page.
+ * Uses service-role client so no RLS policy is needed for anon reads.
+ */
+export async function getOrderDetailsByGuestToken(token: string): Promise<{
+  order: Order;
+  items: OrderItem[];
+} | null> {
+  // Validate UUID format before hitting the DB — prevents log noise and SQL injection.
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(token?.trim() ?? "")) {
+    return null;
+  }
+
+  const client = supabaseAdmin ?? supabase;
+  if (!client) {
+    return null;
+  }
+
+  const { data: order } = await client
+    .from("orders")
+    .select("*")
+    .eq("guest_token", token.trim())
+    .limit(1)
+    .maybeSingle();
+
+  if (!order) {
+    return null;
+  }
+
+  const { data: items } = await client
+    .from("order_items")
+    .select("*")
+    .eq("order_id", order.id);
+
+  return {
+    order: order as Order,
+    items: (items ?? []) as OrderItem[],
+  };
 }
 
 /** Stripe returns `shipping_details` on completed Checkout Sessions; SDK types may lag. */
