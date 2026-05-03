@@ -7,6 +7,22 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
+/**
+ * Configurable allowed shipping countries via env var.
+ * Format: comma-separated ISO 3166-1 alpha-2 codes, e.g. "US,CA,GB"
+ * Defaults to "US" if not set.
+ */
+function getAllowedShippingCountries(): Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] {
+  const raw = process.env.NEXT_PUBLIC_STRIPE_ALLOWED_COUNTRIES?.trim();
+  if (!raw) {
+    return ["US"];
+  }
+  return raw
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean) as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[];
+}
+
 let stripeClient: Stripe | null = null;
 
 function getStripeSecretKey(): string {
@@ -102,7 +118,10 @@ export async function createStripeCheckoutSession({
     client_reference_id: order.id,
     success_url: successUrl,
     cancel_url: `${baseUrl}/checkout/cancel?order_id=${encodeURIComponent(order.id)}`,
-    payment_method_types: ["card"],
+    // payment_method_types intentionally omitted — Stripe auto-enables all methods
+    // configured in the Dashboard (Apple Pay, Google Pay, Klarna, Afterpay, etc.).
+    // The webhook already handles checkout.session.async_payment_succeeded for
+    // async methods (SEPA, ACH, Klarna, Afterpay) so those can now actually fire.
     currency: CHECKOUT_CURRENCY,
     metadata: {
       order_id: order.id,
@@ -113,7 +132,9 @@ export async function createStripeCheckoutSession({
     },
     discounts,
     shipping_address_collection: {
-      allowed_countries: ["US"],
+      // Configurable via NEXT_PUBLIC_STRIPE_ALLOWED_COUNTRIES (comma-separated ISO codes).
+      // Defaults to ["US"]. Set e.g. "US,CA,GB" in your env to enable international shipping.
+      allowed_countries: getAllowedShippingCountries(),
     },
     shipping_options: [
       {
