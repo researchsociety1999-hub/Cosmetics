@@ -45,7 +45,7 @@ export default async function JournalEntryPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-28 pt-10 md:px-6 lg:px-10 lg:pb-14 lg:pt-14 xl:px-14">
+      <main className="w-full px-4 pb-28 md:px-6 lg:px-10 lg:pb-14 xl:px-14">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"

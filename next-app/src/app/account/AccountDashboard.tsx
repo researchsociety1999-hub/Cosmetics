@@ -23,7 +23,7 @@ export function AccountDashboard({
     : null;
 
   return (
-    <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+    <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
       <header className="max-w-3xl">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           Account
@@ -41,7 +41,7 @@ export function AccountDashboard({
         <div className="space-y-8">
           <section
             id="profile"
-            className="mystic-card scroll-mt-28 p-6 md:p-8"
+            className="mystic-card mystique-scroll-anchor p-6 md:p-8"
             aria-labelledby="profile-heading"
           >
             <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
@@ -89,7 +89,7 @@ export function AccountDashboard({
 
           <section
             id="order-history"
-            className="scroll-mt-28"
+            className="mystique-scroll-anchor"
             aria-labelledby="orders-heading"
           >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -161,7 +161,7 @@ export function AccountDashboard({
 
         <aside
           id="bag"
-          className="mystic-card scroll-mt-28 p-6 md:p-8"
+          className="mystic-card mystique-scroll-anchor p-6 md:p-8"
           aria-labelledby="bag-heading"
         >
           <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">

@@ -1244,6 +1244,31 @@ optgroup {
   --mystique-header-offset: 7rem;
 }
 
+/*
+ * Header offset model (SiteChrome `#main-content`):
+ *
+ * 1) Standard pages — `#main-content` has padding-top: var(--mystique-header-offset).
+ *    Direct `<main>` must not add a second top gutter (no extra `pt-*` / `py-*` top
+ *    or `.mystic-section` padding-top on `<main>`), or you get a band under the navbar.
+ *    Enforced below for direct `main` children.
+ *
+ * 2) Hero-first / full-bleed — the first immersive block cancels that padding with
+ *    `.mystique-first-section` (same rule as legacy `.mystique-flush-under-header`).
+ */
+#main-content > main {
+  padding-top: 0;
+}
+
+.mystique-first-section,
+.mystique-flush-under-header {
+  margin-top: calc(-1 * var(--mystique-header-offset, 7rem));
+}
+
+/* In-page anchors / hash links: land clear of the fixed header */
+.mystique-scroll-anchor {
+  scroll-margin-top: calc(var(--mystique-header-offset, 7rem) + 0.75rem);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mystic-merged-select-list {
     animation: none;

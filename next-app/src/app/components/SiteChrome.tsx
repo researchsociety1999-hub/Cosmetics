@@ -47,15 +47,15 @@ export async function SiteChrome({
       {/*
         Offset for fixed navbar.
         `--mystique-header-offset` is set by Navbar JS based on actual header height.
-        The fallback `4.5rem` (72px) is tight enough for inner pages while still
-        clearing the navbar. The homepage hero is full-bleed and manages its own
-        top-padding independently, so this only affects non-hero pages.
+        The fallback `7rem` matches `:root` until the header is measured. Direct
+        `<main>` children must not add a second top gutter — see globals
+        `#main-content > main`. Full-bleed / hero-first sections use `.mystique-first-section`.
       */}
       <div
         id="main-content"
         tabIndex={-1}
         className="relative z-10 outline-none"
-        style={{ paddingTop: "var(--mystique-header-offset, 4.5rem)" }}
+        style={{ paddingTop: "var(--mystique-header-offset, 7rem)" }}
       >
         {/* Prelaunch banner: shows only when MYSTIQUE_PRELAUNCH_BANNER=1 AND there are 0 purchasable products */}
         <PrelaunchBanner />

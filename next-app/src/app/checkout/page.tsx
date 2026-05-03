@@ -33,7 +33,7 @@ export default async function CheckoutPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
         <header className="mb-10 space-y-4">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
             Checkout

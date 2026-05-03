@@ -21,7 +21,7 @@ export default async function JournalPage() {
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section !py-[5.25rem] md:!py-28">
+      <main className="mystic-section-shell mystic-section pb-[5.25rem] md:pb-28">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"

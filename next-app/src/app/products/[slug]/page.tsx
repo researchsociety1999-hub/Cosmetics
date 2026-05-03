@@ -73,7 +73,7 @@ export default async function ProductPage({
   if (!product) {
     return (
       <SiteChrome>
-        <main className="w-full px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+        <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
           <section className="mystic-panel p-8 text-center md:p-10">
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Unavailable
@@ -182,7 +182,7 @@ export default async function ProductPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumbs) }}
       />
-      <main className="w-full px-4 pb-28 pt-10 md:px-6 lg:px-10 lg:pb-14 lg:pt-14 xl:px-14">
+      <main className="w-full px-4 pb-28 md:px-6 lg:px-10 lg:pb-14 xl:px-14">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"
@@ -336,7 +336,7 @@ export default async function ProductPage({
 
         <section
           id="reviews"
-          className="mt-16 scroll-mt-[max(6rem,env(safe-area-inset-top,0px))] lg:mt-20"
+          className="mystique-scroll-anchor mt-16 lg:mt-20"
         >
           <header className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>

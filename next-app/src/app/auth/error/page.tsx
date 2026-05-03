@@ -22,7 +22,7 @@ export default async function AuthErrorPage({
 
   return (
     <SiteChrome>
-      <main className="flex min-h-[60vh] w-full items-center justify-center px-4 py-14 md:px-6 lg:px-10 xl:px-14">
+      <main className="flex min-h-[60vh] w-full items-center justify-center px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
         <div className="mystic-card max-w-lg p-8 text-center">
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             Sign-in help

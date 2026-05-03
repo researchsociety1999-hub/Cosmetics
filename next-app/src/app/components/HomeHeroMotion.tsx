@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { mystiqueLayoutClass } from "../lib/mystiqueLayoutClasses";
 import type { Product } from "../lib/types";
 import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
 
@@ -27,7 +28,7 @@ export function HomeHeroMotion({
   return (
     <section
       data-hero-section="home"
-      className="relative left-1/2 -mt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] min-h-[100svh] w-[100dvw] -translate-x-1/2 overflow-hidden bg-black sm:-mt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] lg:-mt-[4.65rem]"
+      className={`${mystiqueLayoutClass.firstSection} relative left-1/2 min-h-[100svh] w-[100dvw] -translate-x-1/2 overflow-hidden bg-black`}
     >
       {/* ══════════════════════════════════════════════════════════
           LAYER 0 — background photograph (heavily darkened + desaturated)
