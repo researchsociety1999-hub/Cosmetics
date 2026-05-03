@@ -60,6 +60,47 @@ function shouldLoadCatalogFromEmbeds(): boolean {
   return e2eMockCatalog() || !hasSupabaseEnv || !supabase;
 }
 
+/** PostgREST never responded (offline, DNS, TLS, firewall, or bad `SUPABASE_URL`). */
+function isSupabaseTransportFailure(message: string | undefined): boolean {
+  if (!message) return false;
+  const m = message.toLowerCase();
+  return (
+    m.includes("fetch failed") ||
+    m.includes("networkerror") ||
+    m.includes("failed to fetch") ||
+    m.includes("econnrefused") ||
+    m.includes("enotfound") ||
+    m.includes("etimedout") ||
+    m.includes("certificate") ||
+    m.includes("ssl")
+  );
+}
+
+function supabaseHostForDevLog(): string {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  if (!raw) return "(no SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL)";
+  try {
+    return new URL(raw).host;
+  } catch {
+    return "(invalid URL in env)";
+  }
+}
+
+function logGetProductsFailure(
+  error: { message?: string; code?: string; details?: string },
+): void {
+  const msg = error.message ?? "Unknown error";
+  const code = error.code ? ` code=${error.code}` : "";
+  const dev = process.env.NODE_ENV === "development";
+  if (dev && isSupabaseTransportFailure(msg)) {
+    console.warn(
+      `[Supabase] getProducts: ${msg}${code} — cannot reach ${supabaseHostForDevLog()}. Check URL, anon/service keys, VPN/firewall, and network. Returning empty catalog.`,
+    );
+    return;
+  }
+  console.error("[Supabase] getProducts failed:", msg + code, error.details ?? "");
+}
+
 interface GetProductsOptions {
   categoryId?: number;
   search?: string;
@@ -506,7 +547,7 @@ export async function getProducts(
 
     const { data, error } = await query;
     if (error) {
-      console.error("[Supabase] getProducts failed:", error.message, error);
+      logGetProductsFailure(error);
       return paginateProducts(sortProducts([], sortBy), page, limit);
     }
 
@@ -516,7 +557,14 @@ export async function getProducts(
     }
     return paginateProducts(sortProducts(normalizedProducts, sortBy), page, limit);
   } catch (e) {
-    console.error("[Supabase] getProducts exception:", e);
+    const msg = e instanceof Error ? e.message : String(e);
+    if (process.env.NODE_ENV === "development" && isSupabaseTransportFailure(msg)) {
+      console.warn(
+        `[Supabase] getProducts: ${msg} — cannot reach ${supabaseHostForDevLog()}. Returning empty catalog.`,
+      );
+    } else {
+      console.error("[Supabase] getProducts exception:", e);
+    }
     return paginateProducts(sortProducts([], sortBy), page, limit);
   }
 }

@@ -11,14 +11,16 @@ export function CookieBanner() {
   const [consent, setConsent] = useState<ConsentState>(null);
 
   useEffect(() => {
-    try {
-      const value = window.localStorage.getItem(STORAGE_KEY) as ConsentState;
-      if (value === "accepted" || value === "managed") {
-        setConsent(value);
+    queueMicrotask(() => {
+      try {
+        const value = window.localStorage.getItem(STORAGE_KEY) as ConsentState;
+        if (value === "accepted" || value === "managed") {
+          setConsent(value);
+        }
+      } catch {
+        // ignore storage access issues
       }
-    } catch {
-      // ignore storage access issues
-    }
+    });
   }, []);
 
   if (consent) return null;

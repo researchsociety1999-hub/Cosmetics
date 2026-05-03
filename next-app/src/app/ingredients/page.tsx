@@ -66,9 +66,12 @@ export default async function IngredientsPage() {
           </div>
         </section>
         <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {ingredients.map((ingredient) => (
+          {ingredients.map((ingredient) => {
+            const isPoster = ingredient.imagePresentation === "poster";
+            return (
             <article
               key={ingredient.id}
+              id={ingredient.id}
               className="group mystic-card relative flex flex-row items-start gap-4 overflow-hidden border border-white/[0.04] bg-gradient-to-br from-[rgba(18,20,28,0.55)] via-[rgba(8,10,16,0.35)] to-[rgba(4,5,10,0.25)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] transition duration-300 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(ellipse_90%_80%_at_0%_0%,rgba(214,168,95,0.06),transparent_55%)] before:opacity-0 before:transition-opacity hover:before:opacity-100 sm:gap-5 sm:p-6"
             >
               <IngredientSpotlightThumb
@@ -76,21 +79,39 @@ export default async function IngredientsPage() {
                 imageSrc={ingredient.imageSrc}
                 name={ingredient.name}
                 size="lg"
+                presentation={ingredient.imagePresentation ?? "thumb"}
               />
               <div className="relative z-[1] min-w-0 flex-1">
-                {ingredient.source ? (
-                  <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                    {ingredient.source}
-                  </p>
-                ) : null}
-                <h2
-                  className={`font-literata text-2xl tracking-[0.08em] text-[#f5eee3] sm:text-3xl ${
-                    ingredient.source ? "mt-2" : ""
+                {isPoster ? (
+                  <>
+                    <p className="sr-only">
+                      {[ingredient.source, ingredient.name]
+                        .filter(Boolean)
+                        .join(" — ")}
+                    </p>
+                    <h2 className="sr-only">{ingredient.name}</h2>
+                  </>
+                ) : (
+                  <>
+                    {ingredient.source ? (
+                      <p className="text-[0.7rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                        {ingredient.source}
+                      </p>
+                    ) : null}
+                    <h2
+                      className={`font-literata text-2xl tracking-[0.08em] text-[#f5eee3] sm:text-3xl ${
+                        ingredient.source ? "mt-2" : ""
+                      }`}
+                    >
+                      {ingredient.name}
+                    </h2>
+                  </>
+                )}
+                <p
+                  className={`text-sm leading-relaxed text-[#b8ab95] ${
+                    isPoster ? "mt-0" : "mt-3"
                   }`}
                 >
-                  {ingredient.name}
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-[#b8ab95]">
                   {ingredient.description}
                 </p>
                 <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[#d6a85f]">
@@ -98,7 +119,8 @@ export default async function IngredientsPage() {
                 </p>
               </div>
             </article>
-          ))}
+            );
+          })}
         </section>
 
         <section className="mt-14 flex flex-col items-start gap-4 border-t border-[rgba(214,168,95,0.12)] pt-10 md:flex-row md:items-center md:justify-between">

@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const path = require("path");
-
 function extraImageRemotePatterns() {
   const raw = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS || "";
   return raw
@@ -21,6 +18,8 @@ const nextConfig = {
   },
   outputFileTracingRoot: __dirname,
   images: {
+    // Next 16 defaults to qualities: [75]; hero uses quality={88} on local photography.
+    qualities: [75, 88],
     // `next/image` requires remote hosts to be explicitly allowed (must stay in sync with
     // `isSafeImageSrc` in `src/app/lib/format.ts`). Add more via `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS`.
     remotePatterns: [

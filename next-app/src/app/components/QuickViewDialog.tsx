@@ -2,7 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { createPortal } from "react-dom";
 import { addToCartAction } from "../actions/cart";
 import { AddToCartForm } from "./AddToCartForm";
@@ -33,19 +40,22 @@ type QuickViewDialogProps = {
 };
 
 export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const urls = collectGalleryUrls(product);
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
     if (!open) return;
-    setActiveIdx(0);
+    const id = window.requestAnimationFrame(() => {
+      setActiveIdx(0);
+    });
+    return () => window.cancelAnimationFrame(id);
   }, [open, product.id]);
 
   useEffect(() => {

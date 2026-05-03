@@ -73,7 +73,9 @@ export async function getAuthenticatedUser(): Promise<User | null> {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.warn("[auth] getUser:", error.message);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[auth] getUser:", error.message);
+      }
       return null;
     }
 

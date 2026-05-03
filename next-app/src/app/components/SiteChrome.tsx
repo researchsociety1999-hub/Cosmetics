@@ -31,11 +31,11 @@ export async function SiteChrome({
   showFooter?: boolean;
 }) {
   return (
-    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-black text-[#f6f0e6]">
+    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-transparent text-[#f6f0e6]">
       <SkipToContent />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_0%,rgba(255,154,80,0.11),transparent_48%),radial-gradient(circle_at_86%_10%,rgba(212,175,55,0.08),transparent_24%),radial-gradient(circle_at_50%_88%,rgba(255,120,48,0.05),transparent_32%),radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.018),transparent_40%),linear-gradient(180deg,rgba(0,0,0,0.5),rgba(0,0,0,0.12)_40%,rgba(0,0,0,0.55)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_0%,rgba(255,154,80,0.09),transparent_50%),radial-gradient(circle_at_86%_10%,rgba(212,175,55,0.07),transparent_26%),radial-gradient(circle_at_50%_88%,rgba(255,120,48,0.04),transparent_34%),radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.016),transparent_42%),linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.06)_40%,rgba(0,0,0,0.42)_100%)]"
       />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px]">
         <span className="mystic-particle mystic-particle-sm left-[10%] top-[14%] opacity-80" />
