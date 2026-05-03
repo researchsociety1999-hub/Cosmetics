@@ -7,6 +7,22 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
+/**
+ * Configurable allowed shipping countries via env var.
+ * Format: comma-separated ISO 3166-1 alpha-2 codes, e.g. "US,CA,GB"
+ * Defaults to "US" if not set.
+ */
+function getAllowedShippingCountries(): Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] {
+  const raw = process.env.NEXT_PUBLIC_STRIPE_ALLOWED_COUNTRIES?.trim();
+  if (!raw) {
+    return ["US"];
+  }
+  return raw
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean) as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[];
+}
+
 let stripeClient: Stripe | null = null;
 
 function getStripeSecretKey(): string {
@@ -58,11 +74,15 @@ export async function createStripeCheckoutSession({
   cart,
   origin,
   appliedPromo = null,
+  guestToken = null,
 }: {
   order: Order;
   cart: CartSummary;
   origin?: string;
   appliedPromo?: AppliedPromo | null;
+  /** Random UUID for guest orders — appended to success_url so the guest lands
+   *  on their persistent /order/[token] status page. Null for authenticated orders. */
+  guestToken?: string | null;
 }) {
   const stripe = getStripeServerClient();
   const baseUrl = (origin ?? getConfiguredSiteUrl()).replace(/\/$/, "");
@@ -87,23 +107,34 @@ export async function createStripeCheckoutSession({
         ]
       : undefined;
 
+  // Append guest_token to success_url so guests can bookmark /order/[token] later.
+  const successUrl = guestToken
+    ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&guest_token=${encodeURIComponent(guestToken)}`
+    : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+
   return stripe.checkout.sessions.create({
     mode: "payment",
     customer_email: order.email,
     client_reference_id: order.id,
-    success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: successUrl,
     cancel_url: `${baseUrl}/checkout/cancel?order_id=${encodeURIComponent(order.id)}`,
-    payment_method_types: ["card"],
+    // payment_method_types intentionally omitted — Stripe auto-enables all methods
+    // configured in the Dashboard (Apple Pay, Google Pay, Klarna, Afterpay, etc.).
+    // The webhook already handles checkout.session.async_payment_succeeded for
+    // async methods (SEPA, ACH, Klarna, Afterpay) so those can now actually fire.
     currency: CHECKOUT_CURRENCY,
     metadata: {
       order_id: order.id,
       order_number: order.order_number,
       user_id: order.user_id ?? "",
       promo_code: appliedPromo?.promo.code ?? "",
+      guest_token: guestToken ?? "",
     },
     discounts,
     shipping_address_collection: {
-      allowed_countries: ["US"],
+      // Configurable via NEXT_PUBLIC_STRIPE_ALLOWED_COUNTRIES (comma-separated ISO codes).
+      // Defaults to ["US"]. Set e.g. "US,CA,GB" in your env to enable international shipping.
+      allowed_countries: getAllowedShippingCountries(),
     },
     shipping_options: [
       {

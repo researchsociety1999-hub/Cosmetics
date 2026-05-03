@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteChrome } from "../../components/SiteChrome";
-import { getOrderWithItemsByStripeSessionId } from "../../lib/checkoutOrders";
+import { getOrderNumberByStripeSessionIdForDisplay } from "../../lib/checkoutOrders";
 import { formatMoney } from "../../lib/format";
-import { getProductsByIds } from "../../lib/queries";
-import {
-  finalizePaidOrderFromStripe,
-} from "../../lib/checkoutOrders";
 import {
   isStripeServerConfigured,
   retrieveStripeCheckoutSession,
@@ -18,7 +14,7 @@ export const metadata: Metadata = {
     "Confirm your Mystique order status, see your reference number, and find next steps after checkout.",
 };
 
-type SearchParams = Promise<{ session_id?: string }>;
+type SearchParams = Promise<{ session_id?: string; guest_token?: string }>;
 
 export default async function CheckoutSuccessPage({
   searchParams,
@@ -27,45 +23,49 @@ export default async function CheckoutSuccessPage({
 }) {
   const params = await searchParams;
   const sessionId = params.session_id ?? "";
-  let orderWithItems = sessionId
-    ? await getOrderWithItemsByStripeSessionId(sessionId)
+  const guestToken = params.guest_token ?? "";
+  const orderNumber = sessionId
+    ? await getOrderNumberByStripeSessionIdForDisplay(sessionId)
     : null;
 
   if (
     sessionId &&
-    orderWithItems &&
-    orderWithItems.order.status === "pending" &&
+    !orderNumber &&
     isStripeServerConfigured()
   ) {
     try {
-      const session = await retrieveStripeCheckoutSession(sessionId);
+      await retrieveStripeCheckoutSession(sessionId);
 
-      if (session.payment_status === "paid") {
-        await finalizePaidOrderFromStripe({
-          sessionId,
-          paymentIntentId:
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : session.payment_intent?.id ?? null,
-          amountCents: session.amount_total ?? orderWithItems.order.total_cents,
-          paymentMethod:
-            session.payment_method_types?.join(", ") ?? "card",
-          paidAt: new Date(
-            (session.created ?? Math.floor(Date.now() / 1000)) * 1000,
-          ).toISOString(),
-        });
-        orderWithItems = await getOrderWithItemsByStripeSessionId(sessionId);
-      }
+      // Read-only reconciliation: display status hints only.
+      // The Stripe webhook is the single writer responsible for finalizing orders + sending email.
     } catch (error) {
       console.error("checkout success reconciliation error", error);
     }
   }
 
-  const order = orderWithItems?.order ?? null;
-  const items = orderWithItems?.items ?? [];
-  const products = await getProductsByIds(items.map((item) => item.product_id));
-  const productsById = new Map(products.map((product) => [product.id, product]));
-  const isConfirmed = order?.status === "processing";
+  // Best-effort status hint (do not finalize here).
+  let stripeStatus: { isPaid: boolean; amountCents: number | null } = {
+    isPaid: false,
+    amountCents: null,
+  };
+  if (sessionId && isStripeServerConfigured()) {
+    try {
+      const session = await retrieveStripeCheckoutSession(sessionId);
+      stripeStatus = {
+        isPaid:
+          session.payment_status === "paid" ||
+          session.payment_status === "no_payment_required",
+        amountCents: session.amount_total ?? null,
+      };
+    } catch (error) {
+      console.error("checkout success stripe session lookup failed", error);
+    }
+  }
+  const isConfirmed = Boolean(orderNumber);
+
+  // Validate guest_token is UUID-shaped before using it in a URL.
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const safeGuestToken = uuidRegex.test(guestToken) ? guestToken : "";
 
   return (
     <SiteChrome>
@@ -82,9 +82,9 @@ export default async function CheckoutSuccessPage({
               ? "Your payment has been verified and the Mystique team has everything needed to begin preparing your order."
               : "You returned from secure checkout. If confirmation is still pending, refresh this page in a moment or check your email once the order is marked complete."}
           </p>
-          {order?.order_number ? (
+          {orderNumber ? (
             <p className="mt-6 text-sm uppercase tracking-[0.18em] text-[#f5eee3]">
-              Order reference: {order.order_number}
+              Order reference: {orderNumber}
             </p>
           ) : null}
 
@@ -94,14 +94,16 @@ export default async function CheckoutSuccessPage({
               body={
                 isConfirmed
                   ? "Payment confirmed. Your order is now processing."
-                  : "Waiting for payment confirmation."
+                  : stripeStatus.isPaid
+                    ? "Payment received. We're confirming your order."
+                    : "Waiting for payment confirmation."
               }
             />
             <InfoCard
               title="Email"
               body={
                 isConfirmed
-                  ? `Confirmation will be sent to ${order?.email ?? "your checkout email"}.`
+                  ? "A confirmation email will arrive shortly."
                   : "We'll send the order confirmation email once payment is fully verified."
               }
             />
@@ -115,42 +117,39 @@ export default async function CheckoutSuccessPage({
             />
           </div>
 
-          {order ? (
+          {stripeStatus.amountCents != null ? (
             <div className="mt-8 rounded-[18px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-5">
               <h2 className="font-literata text-3xl tracking-[0.08em] text-[#f5eee3]">
-                Order summary
+                Payment summary
               </h2>
-              <div className="mt-5 space-y-3 text-sm text-[#b8ab95]">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between gap-4">
-                    <span>
-                      {productsById.get(item.product_id)?.name ?? "Mystique ritual item"} x{" "}
-                      {item.quantity}
-                    </span>
-                    <span>{formatMoney(item.price_cents_at_time * item.quantity)}</span>
-                  </div>
-                ))}
-              </div>
               <div className="mt-6 border-t border-[rgba(214,168,95,0.12)] pt-4 text-sm text-[#b8ab95]">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>{formatMoney(order.subtotal_cents)}</span>
-                </div>
-                {order.discount_cents > 0 ? (
-                  <div className="mt-3 flex justify-between text-[#d6a85f]">
-                    <span>Promo{order.promo_code ? ` (${order.promo_code})` : ""}</span>
-                    <span>-{formatMoney(order.discount_cents)}</span>
-                  </div>
-                ) : null}
-                <div className="mt-3 flex justify-between">
-                  <span>Shipping</span>
-                  <span>{formatMoney(order.shipping_cents)}</span>
-                </div>
-                <div className="mt-3 flex justify-between">
-                  <span>Total</span>
-                  <span>{formatMoney(order.total_cents)}</span>
+                  <span>Total paid</span>
+                  <span>{formatMoney(stripeStatus.amountCents)}</span>
                 </div>
               </div>
+            </div>
+          ) : null}
+
+          {/* Guest order tracking link — only shown for unauthenticated checkouts */}
+          {safeGuestToken ? (
+            <div className="mt-8 rounded-[18px] border border-[rgba(214,168,95,0.22)] bg-[rgba(214,168,95,0.04)] p-5">
+              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                Guest order tracking
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#b8ab95]">
+                Bookmark the link below to check your order status at any time.
+                This is the only way to view your order without an account.
+              </p>
+              <Link
+                href={`/order/${safeGuestToken}`}
+                className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[rgba(214,168,95,0.3)] px-6 py-2.5 text-xs uppercase tracking-[0.2em] text-[#d6a85f] transition-colors hover:border-[rgba(214,168,95,0.6)] hover:text-[#f5eee3]"
+              >
+                View order status
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           ) : null}
 
@@ -167,14 +166,6 @@ export default async function CheckoutSuccessPage({
             >
               Contact support
             </Link>
-            {order?.id ? (
-              <Link
-                href={`/account/orders/${order.id}`}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.28)] px-8 py-3 text-xs uppercase tracking-[0.22em] text-[#f5eee3]"
-              >
-                View order details
-              </Link>
-            ) : null}
           </div>
         </div>
       </main>

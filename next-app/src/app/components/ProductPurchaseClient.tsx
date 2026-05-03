@@ -28,6 +28,7 @@ export function ProductPurchaseClient({
   const [userPickedVariantId, setUserPickedVariantId] = useState<number | null>(null);
   const [sticky, setSticky] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const isComingSoon = product.coming_soon === true;
 
   const defaultVariantId = useMemo(() => {
     if (!variants.length) return null;
@@ -93,6 +94,9 @@ export function ProductPurchaseClient({
   }, [product.category_slug]);
 
   const purchasable = useMemo(() => {
+    if (isComingSoon) {
+      return false;
+    }
     // Canonical inventory truth: product-level flags first; variants refine selection only.
     if (!isProductPurchasable(product)) {
       return false;
@@ -104,9 +108,12 @@ export function ProductPurchaseClient({
       return (selectedVariant.stock ?? 0) > 0;
     }
     return true;
-  }, [product, selectedVariant, variants.length]);
+  }, [isComingSoon, product, selectedVariant, variants.length]);
 
   const stockLabel = (() => {
+    if (isComingSoon) {
+      return "Launching soon";
+    }
     if (!purchasable) {
       return "Currently unavailable";
     }
@@ -116,6 +123,10 @@ export function ProductPurchaseClient({
     }
     if (typeof product.stock === "number" && product.stock > 5) {
       return "In stock";
+    }
+    if (product.stock == null) {
+      // `stock=null` means "unknown quantity" (do not imply low stock or a guarantee).
+      return "Available";
     }
     return "Low stock";
   })();
@@ -153,7 +164,7 @@ export function ProductPurchaseClient({
           </div>
           <span
             className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.22em] ${
-              purchasable
+              isComingSoon || purchasable
                 ? "border-[rgba(214,168,95,0.18)] text-[#f5eee3]"
                 : "border-[rgba(180,80,80,0.35)] text-[#e8a0a0]"
             }`}
@@ -161,6 +172,33 @@ export function ProductPurchaseClient({
             {stockLabel}
           </span>
         </div>
+
+        {isComingSoon ? (
+          <div className="mystic-card space-y-4 border border-[rgba(214,168,95,0.15)] bg-[rgba(214,168,95,0.03)] p-5 text-sm leading-relaxed text-[#b8ab95]">
+            <p className="font-literata text-base tracking-[0.06em] text-[#f5eee3]">
+              Coming soon
+            </p>
+            <p>
+              This formula is in pre-launch. Leave your email and we’ll send a note when it’s
+              available.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <WaitlistModal
+                productName={product.name}
+                productSlug={product.slug}
+                triggerLabel="Notify me at launch"
+                triggerClassName="mystic-button-primary inline-flex min-h-[48px] items-center justify-center px-6 py-2.5 text-center text-[0.65rem] uppercase tracking-[0.2em]"
+                align="left"
+              />
+              <Link
+                href={browseSimilarHref}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.45)] px-6 py-2.5 text-center text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#f5eee3] transition hover:bg-[rgba(214,168,95,0.12)]"
+              >
+                Browse similar
+              </Link>
+            </div>
+          </div>
+        ) : null}
 
         {!purchasable ? (
           <div className="mystic-card space-y-4 border border-[rgba(214,168,95,0.15)] bg-[rgba(214,168,95,0.04)] p-5 text-sm leading-relaxed text-[#b8ab95]">
@@ -289,7 +327,7 @@ export function ProductPurchaseClient({
               buttonLabel="Add to bag"
               showQuantity={false}
               controlledQuantity={quantity}
-              disabled={!purchasable}
+              disabled={!purchasable || isComingSoon}
               formClassName="flex flex-1 flex-col justify-end"
               buttonClassName={primaryButtonClass}
             />
@@ -301,7 +339,7 @@ export function ProductPurchaseClient({
               buttonLabel="Buy now"
               showQuantity={false}
               controlledQuantity={quantity}
-              disabled={!purchasable}
+              disabled={!purchasable || isComingSoon}
               formClassName="flex flex-1 flex-col justify-end"
               buttonClassName={secondaryButtonClass}
             />
@@ -329,18 +367,28 @@ export function ProductPurchaseClient({
               {formatMoney(unitCents)}
             </p>
           </div>
-          <AddToCartForm
-            action={addToCartAction}
-            productId={product.id}
-            variantId={variantIdForCart}
-            redirectTo=""
-            buttonLabel="Bag"
-            showQuantity={false}
-            controlledQuantity={quantity}
-            disabled={!purchasable}
-            formClassName="flex"
-            buttonClassName="mystic-button-primary inline-flex min-h-[44px] min-w-[100px] items-center justify-center px-5 py-2 text-[0.65rem] uppercase tracking-[0.2em] disabled:opacity-45"
-          />
+          {isComingSoon ? (
+            <WaitlistModal
+              productName={product.name}
+              productSlug={product.slug}
+              triggerLabel="Notify"
+              triggerClassName="mystic-button-primary inline-flex min-h-[44px] min-w-[100px] items-center justify-center px-5 py-2 text-[0.65rem] uppercase tracking-[0.2em]"
+              align="right"
+            />
+          ) : (
+            <AddToCartForm
+              action={addToCartAction}
+              productId={product.id}
+              variantId={variantIdForCart}
+              redirectTo=""
+              buttonLabel="Bag"
+              showQuantity={false}
+              controlledQuantity={quantity}
+              disabled={!purchasable}
+              formClassName="flex"
+              buttonClassName="mystic-button-primary inline-flex min-h-[44px] min-w-[100px] items-center justify-center px-5 py-2 text-[0.65rem] uppercase tracking-[0.2em] disabled:opacity-45"
+            />
+          )}
         </div>
       </div>
     </>

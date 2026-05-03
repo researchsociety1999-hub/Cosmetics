@@ -10,6 +10,14 @@ import type { NewsletterSubscriber } from "./types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * In-memory dedup cache for the Resend email fallback path.
+ * Prevents duplicate studio notification emails when the same address is submitted
+ * more than once within a server instance lifetime (no DB available on this path).
+ * This is a best-effort guard — it resets on server restart / cold start.
+ */
+const emailFallbackSeenCache = new Set<string>();
+
 export function normalizeNewsletterEmail(value: string): string {
   return value.trim().toLowerCase();
 }
@@ -89,12 +97,22 @@ async function subscribeViaDatabase(
   };
 }
 
-/** When the DB is unavailable, Resend notifies the studio. Duplicate emails are not deduped on this path. */
+/**
+ * When the DB is unavailable, Resend notifies the studio.
+ * Dedup is handled via an in-memory cache so the same address does not trigger
+ * multiple studio emails within a server instance. This is best-effort — configure
+ * SUPABASE_SERVICE_ROLE_KEY for persistent, cross-instance deduplication.
+ */
 async function subscribeViaStudioEmail(
   email: string,
   source: string,
-): Promise<{ status: "created"; subscriber: null }> {
+): Promise<{ status: "created" | "duplicate"; subscriber: null }> {
   const normalizedEmail = normalizeNewsletterEmail(email);
+
+  if (emailFallbackSeenCache.has(normalizedEmail)) {
+    return { status: "duplicate", subscriber: null };
+  }
+
   const html = renderEmailLayout({
     preview: "New Mystique newsletter signup",
     title: "Newsletter signup",
@@ -107,6 +125,9 @@ async function subscribeViaStudioEmail(
     text: `Newsletter signup\nSource: ${source}\nEmail: ${normalizedEmail}`,
     replyTo: normalizedEmail,
   });
+
+  emailFallbackSeenCache.add(normalizedEmail);
+
   return { status: "created", subscriber: null };
 }
 

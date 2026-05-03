@@ -1,9 +1,20 @@
-# Secrets — never commit (use Vercel/hosting env + next-app/.env.example as template)
+# ============================================================
+# Secrets — never commit (use Vercel env dashboard + next-app/.env.example)
+# ============================================================
 .env
 .env.*
 !.env.example
 
-# Playwright
+# ============================================================
+# Next.js (app lives in next-app/)
+# ============================================================
+/next-app/.next/
+/next-app/out/
+/next-app/node_modules/
+
+# ============================================================
+# Playwright (root workspace)
+# ============================================================
 node_modules/
 /test-results/
 /playwright-report/
@@ -11,12 +22,26 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 /next-app/test-results/
+/next-app/playwright-report/
 
-# Local / tooling noise
-.openyak/
+# ============================================================
+# Generated / build artifacts — never commit these
+# ============================================================
 *.log
+start-server.err.log
+start-server.out.log
+lint-results.txt
 
-# Generated content inventory (optional; regenerate with npm run content-inventory in next-app)
+# ============================================================
+# Content planning docs — keep in Google Drive, not Git
+# ============================================================
 /Content-Inventory.xlsx
 /Content-Inventory.docx
+
+# ============================================================
+# Local tooling / IDE
+# ============================================================
+.openyak/
 .vercel
+.DS_Store
+Thumbs.db

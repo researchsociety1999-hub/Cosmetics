@@ -12,8 +12,27 @@ export function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
+/**
+ * Returns false (instead of throwing) when RESEND_FROM_EMAIL is a Gmail address.
+ * Gmail senders are blocked by Resend — treat this the same as "not configured" so
+ * callers fall through to their graceful degradation path rather than a 500 error.
+ */
 export function isEmailConfigured(): boolean {
-  return Boolean(resendApiKey && resendFromEmail);
+  if (!resendApiKey || !resendFromEmail) {
+    return false;
+  }
+
+  const lower = resendFromEmail.toLowerCase();
+  if (lower.endsWith("@gmail.com") || lower.endsWith("@googlemail.com")) {
+    // Log once at startup so the misconfiguration is visible in server logs.
+    console.warn(
+      "[email] RESEND_FROM_EMAIL is a Gmail address — Resend blocks @gmail.com senders. "
+        + "Set a verified custom-domain address (e.g. orders@yourdomain.com). Email is disabled.",
+    );
+    return false;
+  }
+
+  return true;
 }
 
 function getResendClient(): Resend {
@@ -29,10 +48,17 @@ function getFromEmail(): string {
     throw new Error("Missing RESEND_FROM_EMAIL");
   }
 
+  const lower = resendFromEmail.toLowerCase();
+  if (lower.endsWith("@gmail.com") || lower.endsWith("@googlemail.com")) {
+    throw new Error(
+      "Invalid RESEND_FROM_EMAIL: Resend blocks @gmail.com senders. Use a verified custom domain (e.g. orders@yourdomain.com).",
+    );
+  }
+
   return resendFromEmail;
 }
 
-/** Inbound contact form “to” address — same fallbacks as order admin mail when unset. */
+/** Inbound contact form "to" address — same fallbacks as order admin mail when unset. */
 export function getContactNotificationEmail(): string {
   return (
     process.env.CONTACT_NOTIFICATION_EMAIL ??

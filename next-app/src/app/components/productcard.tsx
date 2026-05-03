@@ -5,7 +5,6 @@ import { AddToCartForm } from "./AddToCartForm";
 import { ProductCardQuickView } from "./ProductCardQuickView";
 import { ThemedImageFrame } from "./ThemedImageFrame";
 import { WaitlistModal } from "./WaitlistModal";
-import { StarRow } from "./StarRating";
 import { formatMoney, getDisplayPrice, getProductPrimaryImageUrl } from "../lib/format";
 import {
   getPrimaryBenefitLine,
@@ -21,13 +20,16 @@ interface ProductCardProps {
   /** Tighter type scale and padding — e.g. homepage featured quartet. */
   compact?: boolean;
   /**
-   * Reserved for Phase 4 Quick View. When true, a control may render here later.
-   * Default false so no dead UI until wired.
+   * When true, renders the Quick View trigger above the Add to Bag button.
+   * Default false.
    */
   showQuickView?: boolean;
 }
 
-function pickSecondaryImageUrl(primary: string | null, extra: string[] | null | undefined): string | null {
+function pickSecondaryImageUrl(
+  primary: string | null,
+  extra: string[] | null | undefined,
+): string | null {
   if (!extra?.length) return null;
   const primaryNorm = primary?.trim() ?? "";
   for (const url of extra) {
@@ -54,6 +56,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const displayPrice = getDisplayPrice(product);
   const hasSale = product.sale_price_cents != null;
+  const isComingSoon = product.coming_soon === true;
   const imgSrc = getProductPrimaryImageUrl(product);
   const secondarySrc = pickSecondaryImageUrl(imgSrc, product.extra_images);
   const showNewBadge = isNewArrival(product.created_at);
@@ -75,17 +78,26 @@ export default function ProductCard({
     : "(max-width: 640px) 50vw, (max-width: 1100px) 33vw, (max-width: 1536px) 25vw, 20vw";
 
   const mediaRadius = compact ? "rounded-[14px]" : "rounded-[17px]";
-  const mediaAspect = compact ? "aspect-[3/4]" : "aspect-[4/5]";
-  const linkPad = compact ? "mx-2 mt-2 sm:mx-2.5 sm:mt-2.5" : "mx-3 mt-3 md:mx-3.5 md:mt-3.5";
+  const mediaAspect = compact ? "aspect-square sm:aspect-[4/5]" : "aspect-[4/5]";
+  const linkPad = compact
+    ? "mx-2 mt-2 sm:mx-2.5 sm:mt-2.5"
+    : "mx-3 mt-3 md:mx-3.5 md:mt-3.5";
+
+  // 2 columns only when both Quick View and Add to Bag are present.
+  // Derived from content — never from a viewport breakpoint — so narrow
+  // cards on a 4-col grid never overflow.
+  const actionCols = showQuickView && canQuickAdd ? 2 : 1;
 
   return (
     <article
+      aria-label={product.name}
       className={
         compact
-          ? "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[18px] bg-gradient-to-b from-[rgba(16,18,26,0.52)] via-[rgba(8,10,14,0.2)] to-[rgba(4,5,9,0.06)] shadow-[0_8px_28px_rgba(0,0,0,0.26)] ring-1 ring-inset ring-white/[0.05] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 hover:from-[rgba(20,22,32,0.58)] hover:via-[rgba(10,12,18,0.32)] hover:to-[rgba(6,7,11,0.12)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_14px_40px_rgba(0,0,0,0.34)] hover:ring-[rgba(214,168,95,0.1)] focus-within:ring-[rgba(214,168,95,0.14)] motion-reduce:transition-none"
-          : "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(16,18,26,0.52)] via-[rgba(8,10,14,0.2)] to-[rgba(4,5,9,0.06)] shadow-[0_10px_36px_rgba(0,0,0,0.28)] ring-1 ring-inset ring-white/[0.05] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 hover:from-[rgba(20,22,32,0.58)] hover:via-[rgba(10,12,18,0.32)] hover:to-[rgba(6,7,11,0.12)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_18px_52px_rgba(0,0,0,0.38)] hover:ring-[rgba(214,168,95,0.12)] focus-within:ring-[rgba(214,168,95,0.16)] motion-reduce:transition-none"
+          ? "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[18px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_10px_34px_rgba(0,0,0,0.32)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] hover:ring-[rgba(214,168,95,0.14)] focus-within:ring-[rgba(214,168,95,0.18)] motion-reduce:transition-none"
+          : "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_12px_42px_rgba(0,0,0,0.34)] ring-1 ring-inset ring-white/[0.06] backdrop-blur-md transition duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 hover:from-[rgba(22,24,36,0.7)] hover:via-[rgba(12,14,20,0.34)] hover:to-[rgba(6,7,11,0.14)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_20px_58px_rgba(0,0,0,0.44)] hover:ring-[rgba(214,168,95,0.16)] focus-within:ring-[rgba(214,168,95,0.2)] motion-reduce:transition-none"
       }
     >
+      {/* ── Image link ────────────────────────────────────────────────────────────────── */}
       <Link
         href={productHref}
         className={`relative block overflow-hidden ${mediaRadius} ${linkPad} outline-none ring-offset-2 ring-offset-[#05070d] focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)]`}
@@ -122,7 +134,10 @@ export default function ProductCard({
               />
             </div>
           ) : null}
+
+          {/* Routine-step badge */}
           <div
+            aria-hidden="true"
             className={
               compact
                 ? "pointer-events-none absolute left-2 top-2 z-[12] rounded-full bg-[rgba(6,8,12,0.55)] px-2 py-0.5 text-[0.5rem] uppercase tracking-[0.18em] text-[#e8d4b0] shadow-[0_0_16px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-[rgba(214,168,95,0.18)] backdrop-blur-sm sm:text-[0.52rem]"
@@ -131,6 +146,8 @@ export default function ProductCard({
           >
             {product.routine_step ?? "Ritual"}
           </div>
+
+          {/* New-arrival badge */}
           {showNewBadge ? (
             <div
               className={
@@ -139,19 +156,22 @@ export default function ProductCard({
                   : "pointer-events-none absolute right-2.5 top-2.5 z-[12] rounded-full border border-[rgba(214,168,95,0.28)] bg-[rgba(4,5,10,0.72)] px-2.5 py-0.5 text-[0.52rem] font-semibold uppercase tracking-[0.2em] text-[#e8c56e] backdrop-blur-sm"
               }
             >
-              New
+              <span aria-hidden="true">New</span>
+              <span className="sr-only">New arrival</span>
             </div>
           ) : null}
         </div>
       </Link>
 
+      {/* ── Body: name + scan line + footer ─────────────────────────────────────────── */}
       <div
         className={
           compact
-            ? "flex flex-1 flex-col gap-1.5 p-2.5 sm:gap-2 sm:p-3"
+            ? "flex flex-1 flex-col gap-1 p-2 sm:gap-2 sm:p-3"
             : "flex flex-1 flex-col gap-2.5 p-3.5 md:gap-3 md:p-4"
         }
       >
+        {/* Product name + scan line */}
         <div className="min-w-0 space-y-1 sm:space-y-1.5">
           <Link
             href={productHref}
@@ -163,14 +183,6 @@ export default function ProductCard({
           >
             {product.name}
           </Link>
-          <div className="flex items-center gap-2">
-            <span className={compact ? "text-[0.62rem]" : "text-[0.7rem]"}>
-              <StarRow rating={5} />
-            </span>
-            <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7a7265]">
-              Coming soon
-            </span>
-          </div>
           {scanLine ? (
             <p
               className={
@@ -194,37 +206,34 @@ export default function ProductCard({
           ) : null}
         </div>
 
-        <div className={compact ? "mt-auto space-y-2 pt-0.5" : "mt-auto space-y-3 pt-1"}>
+        {/* ── Footer: divider → price row → action row ──────────────────────── */}
+        <div className={compact ? "mt-auto space-y-2 pt-0.5" : "mt-auto space-y-2.5 pt-1"}>
+
+          {/* Divider */}
           <div
             aria-hidden
             className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
           />
-          <div className="flex items-end justify-between gap-2 sm:gap-3">
-            <div className="min-w-0">
-              <span className="sr-only">Price</span>
-              {hasSale ? (
-                <div className="flex flex-col gap-0.5">
-                  <span
-                    className={
-                      compact
-                        ? "text-[0.55rem] uppercase tracking-[0.14em] text-[#8f8576] line-through"
-                        : "text-[0.65rem] uppercase tracking-[0.16em] text-[#8f8576] line-through"
-                    }
-                  >
-                    {formatMoney(product.price_cents)}
-                  </span>
-                  <span
-                    className={
-                      compact
-                        ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
-                        : "text-lg font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f]"
-                    }
-                  >
-                    {formatMoney(displayPrice)}
-                  </span>
-                </div>
-              ) : (
+
+          {/* Price — always its own full-width row, never beside buttons */}
+          <div>
+            {hasSale ? (
+              <div className="flex flex-col gap-0.5">
+                <span className="sr-only">
+                  Was {formatMoney(product.price_cents)}, now {formatMoney(displayPrice)}.
+                </span>
                 <span
+                  aria-hidden="true"
+                  className={
+                    compact
+                      ? "text-[0.55rem] uppercase tracking-[0.14em] text-[#8f8576] line-through"
+                      : "text-[0.65rem] uppercase tracking-[0.16em] text-[#8f8576] line-through"
+                  }
+                >
+                  {formatMoney(product.price_cents)}
+                </span>
+                <span
+                  aria-hidden="true"
                   className={
                     compact
                       ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
@@ -233,46 +242,83 @@ export default function ProductCard({
                 >
                   {formatMoney(displayPrice)}
                 </span>
-              )}
-            </div>
+              </div>
+            ) : (
+              <span
+                aria-label={`Price ${formatMoney(displayPrice)}`}
+                className={
+                  compact
+                    ? "text-sm font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f] sm:text-[0.9375rem]"
+                    : "text-lg font-semibold tabular-nums tracking-[0.02em] text-[#d6a85f]"
+                }
+              >
+                {formatMoney(displayPrice)}
+              </span>
+            )}
+          </div>
 
-            <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-end sm:gap-2">
+          {/* Actions — always below price, never beside it.
+              Grid column count is content-derived, not breakpoint-derived:
+              2 cols when Quick View + Add to Bag are both present,
+              1 col otherwise — so narrow cards never overflow. */}
+          {isComingSoon ? (
+            <WaitlistModal
+              productName={product.name}
+              productSlug={product.slug}
+              triggerLabel="Notify me at launch"
+              triggerClassName={
+                compact
+                  ? "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[rgba(2,3,6,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[rgba(214,168,95,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:text-[0.58rem] sm:tracking-[0.16em]"
+                  : "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[rgba(2,3,6,0.35)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[rgba(214,168,95,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
+              }
+            />
+          ) : canQuickAdd ? (
+            <div
+              className={
+                actionCols === 2 ? "grid grid-cols-2 gap-1.5" : "grid grid-cols-1"
+              }
+            >
               {showQuickView ? (
                 <ProductCardQuickView product={product} compact={compact} />
               ) : null}
-              {canQuickAdd ? (
-                <AddToCartForm
-                  action={addToCartAction}
-                  productId={product.id}
-                  redirectTo=""
-                  buttonLabel="Add to bag"
-                  showQuantity={false}
-                  formClassName="contents"
-                  buttonClassName={
-                    compact
-                      ? "rounded-full border border-[rgba(214,168,95,0.45)] bg-white/[0.04] px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] backdrop-blur-sm transition hover:bg-[rgba(214,168,95,0.12)] sm:px-2.5 sm:py-1.5 sm:text-[0.58rem] sm:tracking-[0.16em]"
-                      : "rounded-full border border-[rgba(214,168,95,0.45)] bg-white/[0.04] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] backdrop-blur-sm transition hover:bg-[rgba(214,168,95,0.12)]"
-                  }
-                />
-              ) : (
-                <div className="flex flex-col items-end gap-1 text-right">
-                  <span className="text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]">
-                    Out of stock
-                  </span>
-                  <WaitlistModal
-                    productName={product.name}
-                    productSlug={product.slug}
-                    triggerLabel="Get restock note"
-                    triggerClassName={
-                      compact
-                        ? "rounded-full border border-[rgba(214,168,95,0.35)] px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:px-2.5 sm:py-1.5 sm:text-[0.58rem]"
-                        : "rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
-                    }
-                  />
-                </div>
-              )}
+              <AddToCartForm
+                action={addToCartAction}
+                productId={product.id}
+                redirectTo=""
+                buttonLabel="Add to bag"
+                showQuantity={false}
+                formClassName="contents"
+                buttonClassName={
+                  compact
+                    ? "relative inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)] sm:text-[0.58rem] sm:tracking-[0.16em]"
+                    : "relative inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.38)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_55%,rgba(0,0,0,0)_100%)] px-3 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[#f5eee3] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition duration-300 ease-out hover:border-[rgba(214,168,95,0.52)] hover:bg-[linear-gradient(180deg,rgba(214,168,95,0.10)_0%,rgba(255,255,255,0.03)_55%,rgba(0,0,0,0)_100%)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.38)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.4)]"
+                }
+              />
             </div>
-          </div>
+          ) : (
+            /* Out of stock — self-contained flex-col, no grid dependency */
+            <div className="flex flex-col gap-1.5">
+              <span
+                className={
+                  compact
+                    ? "text-[0.55rem] uppercase tracking-[0.18em] text-[#8f8576]"
+                    : "text-[0.58rem] uppercase tracking-[0.18em] text-[#8f8576]"
+                }
+              >
+                Out of stock
+              </span>
+              <WaitlistModal
+                productName={product.name}
+                productSlug={product.slug}
+                triggerLabel="Get restock note"
+                triggerClassName={
+                  compact
+                    ? "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)] sm:text-[0.58rem]"
+                    : "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[rgba(214,168,95,0.35)] px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#f0d19a] transition hover:bg-[rgba(214,168,95,0.1)]"
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
     </article>

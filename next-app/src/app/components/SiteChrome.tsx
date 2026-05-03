@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { BackToTopButton } from "./BackToTopButton";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 import { SkipToContent } from "./SkipToContent";
@@ -12,7 +11,8 @@ function prelaunchBannerEnabled(): boolean {
     process.env.MYSTIQUE_PRELAUNCH_BANNER ??
     process.env.NEXT_PUBLIC_PRELAUNCH_BANNER ??
     "";
-  return flag.trim() !== "0";
+  // Treat empty string as "0" (disabled) — banner only shows when explicitly set to "1"
+  return flag.trim() === "1";
 }
 
 async function shouldShowPrelaunchBanner(): Promise<boolean> {
@@ -37,23 +37,30 @@ export async function SiteChrome({
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_0%,rgba(255,154,80,0.09),transparent_50%),radial-gradient(circle_at_86%_10%,rgba(212,175,55,0.07),transparent_26%),radial-gradient(circle_at_50%_88%,rgba(255,120,48,0.04),transparent_34%),radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.016),transparent_42%),linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.06)_40%,rgba(0,0,0,0.42)_100%)]"
       />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px]">
-        <span className="mystic-particle mystic-particle-sm left-[10%] top-[14%] opacity-80" />
-        <span className="mystic-particle mystic-particle-md left-[76%] top-[12%] opacity-80" />
-        <span className="mystic-particle mystic-particle-sm left-[88%] top-[36%] opacity-80" />
+      {/* Particle embers — parent must be position:relative so absolute children are anchored correctly */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px] relative">
+        <span className="mystic-particle mystic-particle-sm" style={{ left: "10%", top: "14%", opacity: 0.8 }} />
+        <span className="mystic-particle mystic-particle-md" style={{ left: "76%", top: "12%", opacity: 0.8 }} />
+        <span className="mystic-particle mystic-particle-sm" style={{ left: "88%", top: "36%", opacity: 0.8 }} />
       </div>
       <Navbar />
-      {/* Offset for fixed navbar (+ desktop hairline) */}
+      {/*
+        Offset for fixed navbar.
+        `--mystique-header-offset` is set by Navbar JS based on actual header height.
+        The fallback `4.5rem` (72px) is tight enough for inner pages while still
+        clearing the navbar. The homepage hero is full-bleed and manages its own
+        top-padding independently, so this only affects non-hero pages.
+      */}
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 outline-none pt-[max(6.75rem,calc(5.75rem+env(safe-area-inset-top,0px)))] sm:pt-[max(7rem,calc(5.9rem+env(safe-area-inset-top,0px)))] md:pt-[4.65rem]"
+        className="relative z-10 outline-none"
+        style={{ paddingTop: "var(--mystique-header-offset, 4.5rem)" }}
       >
-        {/* Prelaunch banner: shows only when there are 0 purchasable products in the catalog. */}
+        {/* Prelaunch banner: shows only when MYSTIQUE_PRELAUNCH_BANNER=1 AND there are 0 purchasable products */}
         <PrelaunchBanner />
         {children}
       </div>
-      <BackToTopButton />
       {showFooter ? <Footer /> : null}
     </div>
   );
@@ -68,21 +75,15 @@ async function PrelaunchBanner() {
       <div className="mystic-section-shell py-4 md:py-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
           <div className="space-y-1.5">
-            <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#d6a85f]">
+            <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[var(--mystic-gold-bright)] font-semibold">
               Launching soon
             </p>
-            <p className="text-sm leading-relaxed text-[#b8ab95] md:text-[0.95rem]">
+            <p className="text-sm leading-relaxed text-[var(--mystic-text)] md:text-[0.95rem]">
               Explore the collection, learn the rituals, and get a note when your favorites
               arrive.
             </p>
           </div>
           <div className="flex flex-wrap gap-2.5">
-            <Link
-              href="/routines"
-              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
-            >
-              View routines
-            </Link>
             <Link
               href="/shop"
               className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"

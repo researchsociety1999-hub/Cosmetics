@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Literata, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
-import { CookieBanner } from "./components/CookieBanner";
+import { DeferredClientBits } from "./components/DeferredClientBits";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
@@ -82,11 +82,20 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${literata.variable} ${playfair.variable} ${inter.variable} scroll-smooth`}
     >
+      {/*
+        body background is set in globals.css (background: #08070a).
+        Tailwind `bg-transparent` is removed here to eliminate the hydration
+        flash where the browser briefly shows white before CSS loads.
+        The `mystique-app-shell` z-index stacking context sits above the
+        body::before (film grain, z=1) and body::after (wallpaper, z=0) layers.
+      */}
       <body
-        className={`${inter.className} min-w-0 w-full bg-transparent text-[#f6f0e6] antialiased`}
+        className={`${inter.className} min-w-0 w-full antialiased`}
       >
-        {children}
-        <CookieBanner />
+        <div className="mystique-app-shell">
+          {children}
+          <DeferredClientBits />
+        </div>
       </body>
     </html>
   );

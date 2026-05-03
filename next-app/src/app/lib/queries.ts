@@ -109,6 +109,8 @@ interface GetProductsOptions {
   sortBy?: ProductSort;
   limit?: number;
   page?: number;
+  /** When true, hides products marked as `coming_soon` from the result set. */
+  excludeComingSoon?: boolean;
 }
 
 /** Extra tokens for matching real INCI / merchandising lines to canonical spotlight ids. */
@@ -192,6 +194,7 @@ function normalizeProduct(product: Product): Product {
     category_slug?: string | null;
     category_name?: string | null;
     category_label?: string | null;
+    product_variants?: Array<{ stock: number | null }> | null;
   };
   const categoryRecord = rawProduct.category ?? rawProduct.categories ?? null;
   const categorySlug =
@@ -213,6 +216,7 @@ function normalizeProduct(product: Product): Product {
     routine_step: product.routine_step ?? null,
     category_slug: categorySlug,
     category_name: categoryName,
+    variant_stocks: Array.isArray(rawProduct.product_variants) ? rawProduct.product_variants : null,
   };
 }
 
@@ -247,9 +251,13 @@ function filterMockProducts(
   products: Product[],
   options: GetProductsOptions = {},
 ): Product[] {
-  const { categoryId, search, ingredientId } = options;
+  const { categoryId, search, ingredientId, excludeComingSoon } = options;
 
   let filtered = [...products];
+
+  if (excludeComingSoon) {
+    filtered = filtered.filter((product) => product.coming_soon !== true);
+  }
 
   if (typeof categoryId === "number") {
     filtered = filtered.filter((product) => product.category_id === categoryId);
@@ -510,9 +518,17 @@ export async function getProducts(
 
   const { categoryId, search, ingredientId, sortBy = "newest", limit, page = 1 } =
     options;
+  const excludeComingSoon = options.excludeComingSoon === true;
 
   try {
-    let query = supabase.from("products").select("*").eq("is_published", true);
+    let query = supabase
+      .from("products")
+      .select("*, product_variants(stock)")
+      .eq("is_published", true);
+
+    if (excludeComingSoon) {
+      query = query.not("coming_soon", "eq", true);
+    }
 
     if (categoryId != null) {
       query = query.eq("category_id", categoryId);
@@ -590,7 +606,7 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("*, product_variants(stock)")
       .in("id", ids)
       .eq("is_published", true);
 
@@ -622,7 +638,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("*, product_variants(stock)")
       .eq("is_published", true)
       .eq("slug", slug)
       .limit(1)
@@ -655,7 +671,7 @@ export async function getRelatedProducts(
   product: Product,
   limit = 6,
 ): Promise<Product[]> {
-  const pool = await getProducts({ sortBy: "newest", limit: 64 });
+  const pool = await getProducts({ sortBy: "newest", limit: 64, excludeComingSoon: true });
   const others = pool.filter((item) => item.id !== product.id);
   if (!others.length) {
     return [];
@@ -716,7 +732,7 @@ export async function getRoutineCompanionProducts(
   product: Product,
   limit = 3,
 ): Promise<Product[]> {
-  const catalog = await getProducts({ sortBy: "newest", limit: 48 });
+  const catalog = await getProducts({ sortBy: "newest", limit: 48, excludeComingSoon: true });
   const others = catalog.filter((p) => p.id !== product.id);
   const sameCategory = (id: number | null) =>
     typeof id === "number" && id === product.category_id;
@@ -992,7 +1008,11 @@ export async function searchProducts(query: string): Promise<Product[]> {
     return [];
   }
 
-  const sourceProducts = await getProducts({ sortBy: "featured", limit: 200 });
+  const sourceProducts = await getProducts({
+    sortBy: "featured",
+    limit: 200,
+    excludeComingSoon: true,
+  });
 
   return filterProductsBySearch(sourceProducts, normalizedQuery, 24);
 }

@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { getFooterSocialProfiles } from "../lib/siteConfig";
 import { socialIconForId } from "./FooterSocialIcons";
+import { NewsletterForm } from "./NewsletterForm";
 
 const FOOTER_CENTER_LINK_CLASS =
-  "text-sm uppercase tracking-[0.22em] text-[#c5b79f] transition-colors duration-200 hover:text-[#f0d19a] md:text-[0.95rem]";
+  "inline-flex py-2 text-sm uppercase tracking-[0.22em] text-[#c5b79f] transition-colors duration-200 hover:text-[#f0d19a] md:text-[0.95rem]";
 
 const FOOTER_SECTION_LABEL_CLASS =
   "mb-4 text-[0.62rem] uppercase tracking-[0.26em] text-[#7a7265]";
@@ -13,7 +14,7 @@ export function Footer() {
   const footerSocialProfiles = getFooterSocialProfiles();
 
   return (
-    <footer className="relative mt-24 overflow-hidden">
+    <footer className="mystique-material mystique-material--footer mystique-section-ore relative mt-24 overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.88))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_28%,rgba(255,154,80,0.1),transparent_20%),radial-gradient(circle_at_82%_72%,rgba(212,175,55,0.07),transparent_26%),linear-gradient(180deg,#000000_8%,#030204_55%,#000000_100%)]" />
       <div className="w-full px-4 pb-10 pt-14 md:px-6 md:pb-12 md:pt-20 lg:px-10 xl:px-14">
@@ -60,6 +61,13 @@ export function Footer() {
                 </Link>
               </div>
             </nav>
+          </div>
+
+          <div className="mx-auto mt-2 max-w-3xl border-t border-[rgba(214,168,95,0.06)] pt-10">
+            <div className="flex flex-col items-center text-center md:items-start md:text-left">
+              <p className={FOOTER_SECTION_LABEL_CLASS}>Join the list</p>
+              <NewsletterForm />
+            </div>
           </div>
 
           <div className="relative mx-auto mt-10 max-w-3xl rounded-[22px] border border-[rgba(214,168,95,0.14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.012))] px-6 py-7 text-center shadow-[0_22px_56px_rgba(0,0,0,0.4)] backdrop-blur-sm md:px-8 md:py-8">
@@ -132,7 +140,7 @@ function FooterLink({
   return (
     <Link
       href={href}
-      className="text-center text-xs uppercase tracking-[0.18em] text-[#b8ab95] transition-colors duration-200 hover:text-[#f0d19a]"
+      className="inline-flex px-2 py-2 text-center text-xs uppercase tracking-[0.18em] text-[#b8ab95] transition-colors duration-200 hover:text-[#f0d19a]"
     >
       {children}
     </Link>
