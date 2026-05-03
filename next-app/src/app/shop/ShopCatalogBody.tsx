@@ -1,9 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "../components/productcard";
 import {
   resolveMerchGroupForProduct,
   virtualMerchCategories,
 } from "../lib/shopMerchGroups";
+import { MYSTIQUE_CANONICAL_INGREDIENTS } from "../lib/data";
 import { getProducts, type ProductSort } from "../lib/queries";
 import { isProductPurchasable } from "../lib/productMerch";
 import { hasSupabaseEnv } from "../lib/supabaseClient";
@@ -70,19 +72,32 @@ export async function ShopCatalogBody({
     assignments: assignmentsForSections,
   });
 
+  const ingredientBanner = currentIngredient ? (
+    <ShopIngredientFilterBanner
+      ingredientId={currentIngredient}
+      matchedMerchGroupSlug={matchedMerchGroup?.slug}
+      currentSearch={currentSearch}
+      sort={sort}
+    />
+  ) : null;
+
   if (productSections.length === 0) {
     return (
-      <ShopWideEmptyState
-        hasSupabase={hasSupabaseEnv}
-        hasActiveFilters={Boolean(
-          currentSearch || currentIngredient || matchedMerchGroup,
-        )}
-      />
+      <div className="space-y-8">
+        {ingredientBanner}
+        <ShopWideEmptyState
+          hasSupabase={hasSupabaseEnv}
+          hasActiveFilters={Boolean(
+            currentSearch || currentIngredient || matchedMerchGroup,
+          )}
+        />
+      </div>
     );
   }
 
   return (
     <div className="space-y-16 md:space-y-20">
+      {ingredientBanner}
       {productSections.map((section) => (
         <section
           key={section.key}
@@ -172,6 +187,111 @@ function ShopWideEmptyState({
         </Link>
       </div>
     </div>
+  );
+}
+
+function shopHrefClearIngredient(opts: {
+  categorySlug?: string | null;
+  search: string;
+  sort: ProductSort;
+}) {
+  const params = new URLSearchParams();
+  if (opts.categorySlug) params.set("category", opts.categorySlug);
+  const s = opts.search.trim();
+  if (s) params.set("search", s);
+  if (opts.sort && opts.sort !== "newest") params.set("sort", opts.sort);
+  const query = params.toString();
+  return query ? `/shop?${query}` : "/shop";
+}
+
+function ShopIngredientFilterBanner({
+  ingredientId,
+  matchedMerchGroupSlug,
+  currentSearch,
+  sort,
+}: {
+  ingredientId: string;
+  matchedMerchGroupSlug?: string | null;
+  currentSearch: string;
+  sort: ProductSort;
+}) {
+  const row = MYSTIQUE_CANONICAL_INGREDIENTS.find(
+    (r) => r.id === ingredientId.trim().toLowerCase(),
+  );
+  if (!row?.imageSrc) return null;
+
+  const clearHref = shopHrefClearIngredient({
+    categorySlug: matchedMerchGroupSlug,
+    search: currentSearch,
+    sort,
+  });
+  const poster = row.imagePresentation === "poster";
+
+  return (
+    <section
+      aria-labelledby={`shop-ingredient-${row.id}-heading`}
+      className="mb-2 overflow-hidden rounded-[22px] border border-white/[0.06] bg-gradient-to-br from-[rgba(18,20,28,0.55)] via-[rgba(8,10,16,0.35)] to-[rgba(4,5,10,0.25)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] sm:p-6 md:mb-4"
+    >
+      <div className="flex flex-col items-stretch gap-6 sm:flex-row sm:items-center md:gap-8">
+        <div
+          className={`relative mx-auto shrink-0 overflow-hidden rounded-[1.125rem] border border-white/[0.08] bg-[#07080e] shadow-[0_12px_36px_rgba(0,0,0,0.45)] ${
+            poster
+              ? "aspect-[3/5] w-full max-w-[10.5rem]"
+              : "aspect-square w-full max-w-[7.5rem]"
+          }`}
+        >
+          <Image
+            src={row.imageSrc}
+            alt=""
+            fill
+            sizes={
+              poster
+                ? "(max-width:640px) 90vw, 10.5rem"
+                : "(max-width:640px) 90vw, 7.5rem"
+            }
+            className={
+              poster
+                ? "object-cover object-[50%_42%]"
+                : "object-cover object-center"
+            }
+          />
+        </div>
+        <div className="min-w-0 flex-1 space-y-3">
+          <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#b8ab95]">
+            Filtered by active
+          </p>
+          <h2
+            id={`shop-ingredient-${row.id}-heading`}
+            className={
+              poster
+                ? "sr-only"
+                : "font-literata text-2xl tracking-[0.08em] text-[#f5eee3] sm:text-3xl"
+            }
+          >
+            {row.name}
+          </h2>
+          {row.description ? (
+            <p className="text-sm leading-relaxed text-[#b8ab95]">
+              {row.description}
+            </p>
+          ) : null}
+          <div className="flex flex-wrap gap-x-5 gap-y-2 pt-1 text-[0.65rem] uppercase tracking-[0.2em]">
+            <Link
+              href={`/ingredients#${row.id}`}
+              className="text-[#d6a85f] underline-offset-4 hover:underline"
+            >
+              Full ingredient note
+            </Link>
+            <Link
+              href={clearHref}
+              className="text-[#a99e8e] underline-offset-4 transition hover:text-[#d6a85f] hover:underline"
+            >
+              Show all products
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

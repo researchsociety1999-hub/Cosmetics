@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Literata, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import { CookieBanner } from "./components/CookieBanner";
+import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
 
@@ -52,12 +53,14 @@ export const metadata: Metadata = {
       "Premium skincare with disciplined layering—calm radiance, refined textures, and routines built for daily use.",
     siteName: "Mystique",
     type: "website",
+    images: mystiqueDefaultOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: "Mystique | Where Beauty Transcends",
     description:
       "Premium skincare with disciplined layering—calm radiance, refined textures, and routines built for daily use.",
+    images: mystiqueDefaultOpenGraphImages().map((img) => img.url),
   },
 };
 
@@ -80,7 +83,7 @@ export default function RootLayout({
       className={`${literata.variable} ${playfair.variable} ${inter.variable} scroll-smooth`}
     >
       <body
-        className={`${inter.className} min-w-0 w-full bg-black text-[#f6f0e6] antialiased`}
+        className={`${inter.className} min-w-0 w-full bg-transparent text-[#f6f0e6] antialiased`}
       >
         {children}
         <CookieBanner />

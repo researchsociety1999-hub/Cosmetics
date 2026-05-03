@@ -148,7 +148,9 @@ async function getDatabaseCartSummary(userId: string): Promise<CartSummary> {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    console.warn("[cart] database cart skipped — Supabase public client not configured.");
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[cart] database cart skipped — Supabase public client not configured.");
+    }
     return emptyDatabaseCartSummary(userId);
   }
 

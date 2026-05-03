@@ -5,7 +5,12 @@ type BuildPageMetadataInput = {
   description?: string;
   canonicalPath: string;
   openGraphType?: "website" | "article";
-  images?: Array<{ url: string; alt?: string }>;
+  images?: Array<{
+    url: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+  }>;
 };
 
 export function buildPageMetadata({

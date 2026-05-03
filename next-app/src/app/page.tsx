@@ -15,6 +15,7 @@ import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
 import { getJournalEntries, getProducts } from "./lib/queries";
 import { isProductPurchasable } from "./lib/productMerch";
 import { buildPageMetadata } from "./lib/seo";
+import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import type { Product } from "./lib/types";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
     description:
       "Premium skincare with clear morning, night, and weekly rituals—shop formulas by concern, read ingredient notes, and build a routine you will keep.",
     canonicalPath: "/",
+    images: mystiqueDefaultOpenGraphImages(),
   }),
   title: { absolute: "Mystique | Where Beauty Transcends" },
 };
@@ -415,7 +417,9 @@ function IngredientSpotlightSection() {
           ctaLabel="How we choose ingredients"
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {ingredients.map((ingredient) => (
+          {ingredients.map((ingredient) => {
+            const isPoster = ingredient.imagePresentation === "poster";
+            return (
             <article
               key={ingredient.id}
               className="group mystic-card relative flex flex-row items-start gap-4 overflow-hidden border border-white/[0.04] bg-gradient-to-br from-[rgba(18,20,28,0.55)] via-[rgba(8,10,16,0.35)] to-[rgba(4,5,10,0.25)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] transition duration-300 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(ellipse_90%_80%_at_0%_0%,rgba(214,168,95,0.06),transparent_55%)] before:opacity-0 before:transition-opacity hover:before:opacity-100 sm:gap-5 sm:p-6"
@@ -424,14 +428,33 @@ function IngredientSpotlightSection() {
                 id={ingredient.id}
                 imageSrc={ingredient.imageSrc}
                 name={ingredient.name}
+                presentation={ingredient.imagePresentation ?? "thumb"}
               />
               <div className="relative z-[1] min-w-0 flex-1">
-                <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
-                  {ingredient.source ?? "Active"}
-                </p>
-                <h3 className="mt-2 font-literata text-2xl tracking-[0.08em] sm:text-3xl">
-                  {ingredient.name}
-                </h3>
+                {isPoster ? (
+                  <>
+                    <p className="sr-only">
+                      {[ingredient.source, ingredient.name]
+                        .filter(Boolean)
+                        .join(" — ")}
+                    </p>
+                    <h3 className="sr-only">{ingredient.name}</h3>
+                    {ingredient.description ? (
+                      <p className="text-sm leading-relaxed text-[#b8ab95] line-clamp-5">
+                        {ingredient.description}
+                      </p>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[#d6a85f]">
+                      {ingredient.source ?? "Active"}
+                    </p>
+                    <h3 className="mt-2 font-literata text-2xl tracking-[0.08em] sm:text-3xl">
+                      {ingredient.name}
+                    </h3>
+                  </>
+                )}
                 <Link
                   href={`/shop?ingredient=${ingredient.id}`}
                   className="mt-4 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
@@ -440,7 +463,8 @@ function IngredientSpotlightSection() {
                 </Link>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

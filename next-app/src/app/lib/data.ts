@@ -226,7 +226,8 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A multi-tasking vitamin we use for clarity, refined texture, and barrier-friendly polish in daily rituals.",
     benefits: "Brightness, clarity, barrier support",
     source: "Vitamin B3",
-    imageSrc: "/ingredients/niacinamide.svg",
+    imageSrc: "/ingredients/niacinamide.png",
+    imagePresentation: "poster",
   },
   {
     id: "hyaluronic-acid",
@@ -283,6 +284,8 @@ export function mergeMystiqueCanonicalIngredients(
     return {
       ...fromDbRow,
       imageSrc: fromDbRow.imageSrc ?? canonical.imageSrc ?? null,
+      imagePresentation:
+        canonical.imagePresentation ?? fromDbRow.imagePresentation,
     };
   });
   if (options?.includeNonCanonicalRows === false) {

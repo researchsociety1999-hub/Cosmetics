@@ -35,19 +35,15 @@ async function handleCheckoutCompleted(
     expand: ["payment_intent", "line_items"],
   });
 
-  console.log("[stripe webhook] checkout.session.completed", {
-    eventId: event.id,
-    sessionId: session.id,
-    paymentStatus: session.payment_status,
-    amountTotal: session.amount_total,
-    orderId: session.client_reference_id ?? session.metadata?.order_id,
-  });
-
   if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
-    console.warn("[stripe webhook] Unexpected payment_status; skipping finalize", {
-      sessionId: session.id,
-      payment_status: session.payment_status,
-    });
+    // TODO: route through structured logger (event id + type only) when observability is wired.
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[stripe webhook] unexpected payment_status; skipping finalize", {
+        eventId: event.id,
+        sessionId: session.id,
+        payment_status: session.payment_status,
+      });
+    }
     return;
   }
 
@@ -81,11 +77,13 @@ async function handleCheckoutCompleted(
 }
 
 async function handleCheckoutFailed(session: Stripe.Checkout.Session, event: Stripe.Event) {
-  console.log("[stripe webhook] session failed/expired", {
-    eventId: event.id,
-    type: event.type,
-    sessionId: session.id,
-  });
+  if (process.env.NODE_ENV === "development") {
+    console.warn("[stripe webhook] session failed/expired", {
+      eventId: event.id,
+      type: event.type,
+      sessionId: session.id,
+    });
+  }
   const order = await getOrderWithItemsByStripeSessionId(session.id);
 
   if (order?.order.id) {
@@ -105,7 +103,9 @@ export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature");
 
   if (!signature) {
-    console.warn("[stripe webhook] Missing stripe-signature header");
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[stripe webhook] missing stripe-signature header");
+    }
     return NextResponse.json(
       { success: false, error: "Missing Stripe signature header." },
       { status: 400 },
@@ -135,8 +135,8 @@ export async function POST(request: Request) {
         event.data.object as Stripe.Checkout.Session,
         event,
       );
-    } else {
-      console.log("[stripe webhook] Ignored event type", event.type);
+    } else if (process.env.NODE_ENV === "development") {
+      console.warn("[stripe webhook] ignored event type", event.type);
     }
 
     return NextResponse.json({ received: true });

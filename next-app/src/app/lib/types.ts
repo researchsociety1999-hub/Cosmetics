@@ -283,6 +283,11 @@ export interface Ingredient {
   source: string | null;
   /** Card thumbnail: `/public` path or allowed remote URL (see `next.config.js`). */
   imageSrc?: string | null;
+  /**
+   * `poster` = tall campaign art (often with baked-in type); uses a portrait frame and lighter
+   * grading so on-image typography stays legible.
+   */
+  imagePresentation?: "thumb" | "poster";
 }
 
 export interface PromoCampaign {

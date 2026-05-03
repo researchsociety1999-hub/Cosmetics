@@ -48,9 +48,11 @@ export async function sendOrderPaidEmails({
   items: OrderItem[];
 }): Promise<void> {
   if (!isEmailConfigured()) {
-    console.warn(
-      "[order email] Resend not configured; skipping order confirmation emails.",
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        "[order email] Resend not configured; skipping order confirmation emails.",
+      );
+    }
     return;
   }
 
