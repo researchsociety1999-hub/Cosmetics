@@ -250,23 +250,34 @@ export default async function HomePage() {
       <main className="relative isolate">
         <div className="home-premium-filmgrain" aria-hidden />
         <div className="home-premium-stack min-w-0">
-          {/* Above fold — server rendered, no dynamic() */}
+          {/* 1. Hero — above fold, server rendered */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
-          {/* Below fold — deferred via HomeDeferredSections client wrapper;
-              ssr:false lives there, not here, so this Server Component
-              stays valid for the App Router. */}
+          {/* 2. Trust strip */}
           <DeferredHomeTrustStrip />
+
+          {/* 3. Featured Products */}
+          <FeaturedProductsSection products={featuredPurchasable} />
+
+          {/* 4. Our Rituals */}
           <RitualStripSection />
+
+          {/* 5. Choose by What Matters (guided discovery + first-visit strip) */}
           <DeferredHomeGuidedDiscovery />
           <FirstVisitGuidanceStrip />
-          <FeaturedProductsSection products={featuredPurchasable} />
-          <DeferredHomeEditorialModules />
+
+          {/* 6. Ingredients / Actives */}
           <IngredientSpotlightSection />
+
+          {/* 7. Journal */}
           <Suspense fallback={<SectionLoading title="Journal" />}>
             <JournalHomeSection />
           </Suspense>
+
+          {/* 8. Gifting */}
           <DeferredHomeServicesModule />
+
+          {/* 9. Brand Story + Newsletter */}
           <NewsletterSection />
         </div>
       </main>
