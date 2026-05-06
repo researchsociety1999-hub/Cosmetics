@@ -1,0 +1,38 @@
+## Vercel Speed Insights Installation
+
+Successfully installed and configured Vercel Speed Insights for this Next.js App Router project.
+
+### Changes Made:
+
+1. **Package Installation**
+   - Installed `@vercel/speed-insights` v2.0.0 using pnpm
+   - Updated `package.json` to include the new dependency
+   - Generated `pnpm-lock.yaml` with updated dependencies
+
+2. **Code Integration**
+   - Modified `src/app/layout.tsx` to import and include the SpeedInsights component
+   - Added `import { SpeedInsights } from "@vercel/speed-insights/next";`
+   - Placed `<SpeedInsights />` component at the end of the `<body>` tag, after the existing content
+
+### Implementation Details:
+
+Following the official Vercel documentation (https://vercel.com/docs/speed-insights/quickstart), I implemented the recommended setup for Next.js App Router (v13.5+):
+
+- The SpeedInsights component was added to the root layout file as per Next.js App Router best practices
+- The component is placed at the end of the body to ensure it doesn't interfere with initial page rendering
+- The import uses the framework-specific path `@vercel/speed-insights/next` for optimal integration
+
+### Verification:
+
+- ✅ Build completed successfully with no errors
+- ✅ TypeScript compilation passed
+- ✅ No linting errors introduced in layout.tsx
+- ✅ All existing functionality preserved
+
+### Files Modified:
+
+- `package.json` - Added @vercel/speed-insights dependency
+- `src/app/layout.tsx` - Integrated SpeedInsights component
+- `pnpm-lock.yaml` - Updated lockfile with new dependencies
+
+The Speed Insights feature is now active and will automatically track Core Web Vitals and performance metrics when the application is deployed to Vercel.
