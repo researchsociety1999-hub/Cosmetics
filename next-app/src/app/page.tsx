@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { HomeHeroMotion } from "./components/HomeHeroMotion";
 import {
-  DeferredHomeEditorialModules,
   DeferredHomeGuidedDiscovery,
   DeferredHomeServicesModule,
   DeferredHomeTrustStrip,
@@ -28,29 +27,18 @@ export const metadata: Metadata = {
     images: mystiqueDefaultOpenGraphImages(),
   }),
   title: { absolute: "Mystique | Where Beauty Transcends" },
-  // Manual LCP preload: browser sees this before React hydrates, giving it
-  // more time to fetch the hero image even before next/image's priority hint
-  // is processed.  imageSrcSet mirrors the `sizes` on the <Image> in
-  // HomeHeroMotion so the browser can pick the right resolution.
   other: {
     "x-lcp-preload": "1",
   },
 };
 
-// Next.js 14+ App Router: inject <link rel="preload"> into <head> via the
-// special metadata.alternates pattern isn't available, so we use a dedicated
-// server component that renders a plain <link> tag instead.
-// This is placed as the FIRST child inside <main> so it appears early in the
-// HTML stream before any JS has parsed.
 function LCPPreload() {
   return (
     <link
       rel="preload"
       as="image"
       href="/about/hero.jpg"
-      // Match the `sizes` prop on the <Image> in HomeHeroMotion exactly.
       imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 100vw, 1280px"
-      // fetchPriority on the preload link matches the <Image fetchPriority="high"> hint.
       fetchPriority="high"
     />
   );
@@ -58,6 +46,9 @@ function LCPPreload() {
 
 export const revalidate = 30;
 
+// ---------------------------------------------------------------------------
+// SectionIntro
+// ---------------------------------------------------------------------------
 function SectionIntro({
   eyebrow,
   title,
@@ -104,6 +95,9 @@ function SectionIntro({
   );
 }
 
+// ---------------------------------------------------------------------------
+// SectionLoading
+// ---------------------------------------------------------------------------
 function SectionLoading({
   title,
   layout = "default",
@@ -143,6 +137,9 @@ function SectionLoading({
   );
 }
 
+// ---------------------------------------------------------------------------
+// JournalHomeSection
+// ---------------------------------------------------------------------------
 const JOURNAL_CATEGORY_PILL: Record<string, string> = {
   Ritual: "Ritual",
   Science: "Science",
@@ -155,7 +152,7 @@ async function JournalHomeSection() {
   const preview = entries.slice(0, 3);
 
   return (
-    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-transparent !py-14 md:!py-28 lg:!py-32">
+    <section className="mystic-section border-b border-[rgba(17,24,39,0.9)] bg-transparent py-14 md:py-28 lg:py-32">
       <div className="mystic-section-shell">
         <header className="mb-14 flex max-w-4xl flex-col gap-8 border-b border-[rgba(214,168,95,0.09)] pb-12 sm:mb-16 sm:flex-row sm:items-end sm:justify-between sm:gap-10 sm:pb-14 md:mb-20 md:max-w-none md:pb-16">
           <div className="space-y-4 md:space-y-5">
@@ -236,6 +233,9 @@ async function JournalHomeSection() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// HomePage (root)
+// ---------------------------------------------------------------------------
 export default async function HomePage() {
   const catalog = await getProducts({ sortBy: "featured", limit: 12 });
   const featuredPurchasable = catalog.filter(isProductPurchasable);
@@ -243,30 +243,26 @@ export default async function HomePage() {
 
   return (
     <SiteChrome>
-      {/* LCP preload: injected as early as possible in the HTML stream so the
-          browser can fetch /about/hero.jpg before any JS executes. This
-          complements next/image priority which fires later after hydration. */}
       <LCPPreload />
       <main className="relative isolate">
         <div className="home-premium-filmgrain" aria-hidden />
         <div className="home-premium-stack min-w-0">
-          {/* 1. Hero — above fold, server rendered */}
+          {/* 1. Hero */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
           {/* 2. Trust strip */}
           <DeferredHomeTrustStrip />
 
-          {/* 3. Featured Products */}
+          {/* 3. Featured Products — hero card + 3-up supporting grid */}
           <FeaturedProductsSection products={featuredPurchasable} />
 
-          {/* 4. Our Rituals */}
+          {/* 4. Rituals */}
           <RitualStripSection />
 
-          {/* 5. Choose by What Matters (guided discovery + first-visit strip) */}
+          {/* 5. Guided discovery (includes first-visit concerns) */}
           <DeferredHomeGuidedDiscovery />
-          <FirstVisitGuidanceStrip />
 
-          {/* 6. Ingredients / Actives */}
+          {/* 6. Ingredients */}
           <IngredientSpotlightSection />
 
           {/* 7. Journal */}
@@ -274,7 +270,7 @@ export default async function HomePage() {
             <JournalHomeSection />
           </Suspense>
 
-          {/* 8. Gifting */}
+          {/* 8. Services / Gifting */}
           <DeferredHomeServicesModule />
 
           {/* 9. Brand Story + Newsletter */}
@@ -285,58 +281,16 @@ export default async function HomePage() {
   );
 }
 
-const FIRST_VISIT_CONCERNS: { label: string; href: string }[] = [
-  { label: "Dryness", href: "/shop?search=dryness" },
-  { label: "Dullness", href: "/shop?search=dullness" },
-  { label: "Sensitivity", href: "/shop?search=sensitivity" },
-  { label: "Glow & Even tone", href: "/shop?search=glow-even-tone" },
-];
-
-function FirstVisitGuidanceStrip() {
-  return (
-    <section
-      aria-labelledby="first-visit-heading"
-      className="relative border-b border-[rgba(214,168,95,0.12)] bg-transparent"
-    >
-      <div className="mystic-section-shell py-9 md:py-10">
-        <div className="mystique-section-surface px-6 py-8 md:px-10 md:py-10">
-          <div className="flex max-w-3xl flex-col gap-2">
-            <p
-              id="first-visit-heading"
-              className="text-[0.72rem] uppercase tracking-[0.28em] text-[#b8ab95]"
-            >
-              First visit
-            </p>
-            <p className="font-literata text-2xl tracking-[0.12em] text-[#f5eee3] md:text-3xl">
-              Start with what your skin needs most.
-            </p>
-          </div>
-          <ul className="mt-6 flex flex-wrap gap-2.5 md:gap-3">
-            {FIRST_VISIT_CONCERNS.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="group inline-flex items-center justify-center rounded-full border border-[rgba(214,168,95,0.2)] bg-[rgba(255,255,255,0.03)] px-5 py-2.5 transition hover:border-[rgba(214,168,95,0.45)] hover:bg-[rgba(214,168,95,0.08)] md:px-6 md:py-3"
-                >
-                  <span className="text-[0.62rem] uppercase tracking-[0.22em] text-[#f5eee3]">
-                    {item.label}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
+// ---------------------------------------------------------------------------
+// FeaturedProductsSection
+// Hero product gets a prominent solo card; remaining 3 go into a sub-grid.
+// ---------------------------------------------------------------------------
 function FeaturedProductsSection({ products }: { products: Product[] }) {
-  const purchasable = products.slice(0, 4);
+  const [hero, ...rest] = products.slice(0, 4);
 
-  if (purchasable.length === 0) {
-    return null;
-  }
+  if (!hero) return null;
+
+  const supporting = rest.slice(0, 3);
 
   return (
     <section className="mystic-section mystique-atmo mystique-atmo--featured relative border-b border-[rgba(17,24,39,0.85)] bg-transparent">
@@ -348,24 +302,35 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
             ctaHref="/shop?sort=featured"
             ctaLabel="Browse featured"
           />
-          <div
-            role="region"
-            aria-label="Featured products"
-            tabIndex={0}
-            className="mystic-product-grid mystic-product-grid--featured mx-auto max-w-5xl"
-          >
-            {purchasable.map((product) => (
-              <div key={product.id}>
-                <ProductCard product={product} compact showQuickView />
-              </div>
-            ))}
+
+          {/* Hero product — full-width prominence */}
+          <div className="mb-6 md:mb-8">
+            <ProductCard product={hero} showQuickView />
           </div>
+
+          {/* Supporting products — 3-column grid */}
+          {supporting.length > 0 && (
+            <div
+              role="region"
+              aria-label="More featured products"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {supporting.map((product) => (
+                <div key={product.id}>
+                  <ProductCard product={product} compact showQuickView />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
 }
 
+// ---------------------------------------------------------------------------
+// RitualStripSection — spacing uses clean utility classes (no !important)
+// ---------------------------------------------------------------------------
 const HOME_RITUAL_RHYTHMS: {
   label: string;
   title: string;
@@ -401,7 +366,7 @@ const HOME_RITUAL_RHYTHMS: {
 
 function RitualStripSection() {
   return (
-    <section className="mystic-section mystique-atmo mystique-atmo--rituals relative border-b border-[rgba(214,168,95,0.08)] bg-transparent !pt-14 !pb-14 md:!pt-32 md:!pb-32">
+    <section className="mystic-section mystique-atmo mystique-atmo--rituals relative border-b border-[rgba(214,168,95,0.08)] bg-transparent py-16 md:py-28">
       <div className="mystic-section-shell">
         <div className="mystique-section-surface px-6 py-8 md:px-10 md:py-10">
           <SectionIntro
@@ -438,9 +403,10 @@ function RitualStripSection() {
                       {ritual.title}
                     </h3>
                   </div>
+                  {/* Touch target: min-h-[44px] ensures mobile tap compliance */}
                   <Link
                     href={ritual.href}
-                    className="inline-flex w-fit text-[0.6rem] uppercase tracking-[0.2em] text-[#e8c56e] underline-offset-4 transition hover:text-[#f5e6c8] hover:underline"
+                    className="inline-flex min-h-[44px] w-fit items-center text-[0.6rem] uppercase tracking-[0.2em] text-[#e8c56e] underline-offset-4 transition hover:text-[#f5e6c8] hover:underline"
                   >
                     {ritual.linkLabel}
                   </Link>
@@ -454,6 +420,10 @@ function RitualStripSection() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// IngredientSpotlightSection
+// Fix: ingredient shop link now reads "Shop formulas →" — no string concat.
+// ---------------------------------------------------------------------------
 function IngredientSpotlightSection() {
   const ingredients = MYSTIQUE_CANONICAL_INGREDIENTS;
 
@@ -506,11 +476,17 @@ function IngredientSpotlightSection() {
                         </h3>
                       </>
                     )}
+                    {/*
+                      FIX: Previously "Shop {ingredient.name} formulas" rendered as
+                      a run-together string (e.g. "ShopNiacinamide formulas").
+                      Now uses a clean, readable static label + aria-label for context.
+                    */}
                     <Link
                       href={`/shop?ingredient=${ingredient.id}`}
-                      className="mt-4 inline-flex text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
+                      aria-label={`Shop ${ingredient.name} formulas`}
+                      className="mt-4 inline-flex min-h-[44px] items-center text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 transition hover:text-[#e8c56e] hover:underline"
                     >
-                      Shop {ingredient.name} formulas
+                      Shop formulas &rarr;
                     </Link>
                   </div>
                 </article>
@@ -523,16 +499,22 @@ function IngredientSpotlightSection() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// NewsletterSection
+// Fix: removed empty data-image-slot placeholder div; replaced with an
+// atmospheric gradient panel. Duplicate brand story block removed.
+// ---------------------------------------------------------------------------
 function NewsletterSection() {
   return (
     <section className="mystic-section relative pb-14 md:pb-24">
       <div className="mystic-section-shell">
+        {/* Brand story — single instance only */}
         <section
           aria-labelledby="home-story-heading"
           className="mystique-material mystique-material--story mystique-section-ore mb-10 overflow-hidden rounded-[26px] border border-[rgba(214,168,95,0.12)] bg-[linear-gradient(168deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.012)_46%,rgba(0,0,0,0.16)_100%)] shadow-[0_28px_80px_rgba(0,0,0,0.45)]"
         >
           <div className="grid gap-8 p-6 md:grid-cols-[1.05fr_0.95fr] md:items-center md:p-8">
-            <div className="space-y-4">
+            <div className="space-y-5">
               <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
                 The story
               </p>
@@ -553,14 +535,30 @@ function NewsletterSection() {
                 Read the story
               </Link>
             </div>
+
+            {/*
+              FIX: The original data-image-slot="home-story" rendered as a
+              completely empty styled box — visually broken. Replaced with an
+              atmospheric gradient panel that communicates brand tone without
+              requiring a real image asset. When /about/hero.jpg or a
+              dedicated story image is ready, swap this div for next/image.
+            */}
             <div
-              data-image-slot="home-story"
               aria-hidden
-              className="relative aspect-[3/2] md:aspect-[4/3] w-full overflow-hidden rounded-[22px] border border-white/[0.06] bg-[radial-gradient(circle_at_18%_22%,rgba(255,154,80,0.12),transparent_26%),radial-gradient(circle_at_78%_34%,rgba(214,168,95,0.1),transparent_32%),linear-gradient(190deg,rgba(18,20,28,0.55)_0%,rgba(6,7,12,0.9)_55%,rgb(4,5,10)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-            />
+              className="relative aspect-[3/2] w-full overflow-hidden rounded-[22px] border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_20%_30%,rgba(255,154,80,0.18),transparent_55%),radial-gradient(circle_at_75%_25%,rgba(214,168,95,0.14),transparent_40%),radial-gradient(ellipse_80%_70%_at_60%_80%,rgba(120,100,160,0.1),transparent_50%),linear-gradient(175deg,rgba(20,18,28,0.7)_0%,rgba(6,7,12,0.95)_55%,rgb(4,5,10)_100%)]" />
+              <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-7">
+                <p className="text-[0.6rem] uppercase tracking-[0.3em] text-[#8a7a62]">Est. Ritual</p>
+                <p className="mt-1 font-literata text-lg tracking-[0.1em] text-[#e8d9c4] opacity-70">
+                  Built for repetition.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
+        {/* Newsletter capture */}
         <div className="home-luxury-frame mystic-card mystique-material mystique-material--newsletter mystique-section-ore grid gap-8 rounded-[26px] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-8">
           <div>
             <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
