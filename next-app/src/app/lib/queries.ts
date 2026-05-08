@@ -498,6 +498,13 @@ export async function getProducts(
 ): Promise<Product[]> {
   if (shouldLoadCatalogFromEmbeds()) {
     if (!allowMockCatalog()) {
+      console.warn(
+        "[Mystique] getProducts: Supabase env not initialised. " +
+          "hasSupabaseEnv=" + String(hasSupabaseEnv) +
+          " supabase=" + (supabase ? "ok" : "null") +
+          ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
+          "to Vercel → Settings → Environment Variables and redeploy."
+      );
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
@@ -524,7 +531,8 @@ export async function getProducts(
     let query = supabase
       .from("products")
       .select("*, product_variants(stock)")
-      .eq("is_published", true);
+      .eq("is_published", true)
+      .not("is_published", "is", null);
 
     if (excludeComingSoon) {
       query = query.not("coming_soon", "eq", true);
