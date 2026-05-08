@@ -99,7 +99,7 @@ export function HomeHeroMotion({
       {/* ══════════════════════════════════════════════════════════
           FOREGROUND — logo centerpiece + copy block
          ══════════════════════════════════════════════════════════ */}
-      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-4 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] pt-[max(7rem,calc(6rem+env(safe-area-inset-top,0px)))] sm:px-6 sm:pt-[max(7.5rem,calc(6.3rem+env(safe-area-inset-top,0px)))] md:px-10 lg:pt-[max(5rem,calc(4.6rem+env(safe-area-inset-top,0px)))] lg:px-12 xl:px-14">
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-4 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] pt-[max(1rem,env(safe-area-inset-top,0px))] sm:px-6 md:px-10 lg:px-12 xl:px-14">
 
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
         <div

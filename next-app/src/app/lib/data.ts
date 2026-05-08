@@ -226,7 +226,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A multi-tasking vitamin we use for clarity, refined texture, and barrier-friendly polish in daily rituals.",
     benefits: "Brightness, clarity, barrier support",
     source: "Vitamin B3",
-    imageSrc: "/ingredients/niacinamide.png",
+    imageSrc: "/ingredients/niacinamide.svg",
     imagePresentation: "poster",
   },
   {
@@ -236,7 +236,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A humectant network that draws and holds water so skin reads supple, dewy, and comfortable under layers.",
     benefits: "Hydration, bounce, smoothness",
     source: "Humectant",
-    imageSrc: "/ingredients/hyaluronic-acid.png",
+    imageSrc: "/ingredients/hyaluronic-acid.svg",
     imagePresentation: "poster",
   },
   {
@@ -246,7 +246,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A calming botanical we lean on when skin needs quiet recovery—comfort-first, never harsh.",
     benefits: "Soothing, recovery, softness",
     source: "Leaf extract",
-    imageSrc: "/ingredients/centella-asiatica.png",
+    imageSrc: "/ingredients/centella-asiatica.svg",
     imagePresentation: "poster",
   },
   {
@@ -256,7 +256,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "Skin-identical lipids that help reinforce the barrier so moisture stays in and stress stays out.",
     benefits: "Barrier comfort, moisture retention, resilience",
     source: "Skin-identical lipid",
-    imageSrc: "/ingredients/ceramides.png",
+    imageSrc: "/ingredients/ceramides.svg",
     imagePresentation: "poster",
   },
   {
@@ -266,7 +266,7 @@ export const MYSTIQUE_CANONICAL_INGREDIENTS: Ingredient[] = [
       "A weightless emollient that seals without slipperiness—silk at the surface, breathable underneath.",
     benefits: "Silky slip, soft finish, weightless seal",
     source: "Emollient",
-    imageSrc: "/ingredients/squalane.png",
+    imageSrc: "/ingredients/squalane.svg",
     imagePresentation: "poster",
   },
 ];
@@ -278,6 +278,24 @@ export function mergeMystiqueCanonicalIngredients(
   fromDb: Ingredient[],
   options?: { includeNonCanonicalRows?: boolean },
 ): Ingredient[] {
+  const normalizeIngredientImageSrc = (
+    ingredientId: string,
+    src: string | null | undefined,
+  ): string | null => {
+    if (!src) return null;
+    const trimmed = src.trim();
+    if (!trimmed) return null;
+
+    // If the DB still has legacy `.png` paths but we ship `.svg` placeholders in `public/ingredients`,
+    // normalize so the UI doesn't 404.
+    const legacyPng = `/ingredients/${ingredientId}.png`;
+    if (trimmed === legacyPng) {
+      return `/ingredients/${ingredientId}.svg`;
+    }
+
+    return trimmed;
+  };
+
   const canonicalIds = new Set(
     MYSTIQUE_CANONICAL_INGREDIENTS.map((row) => row.id),
   );
@@ -285,9 +303,13 @@ export function mergeMystiqueCanonicalIngredients(
   const ordered = MYSTIQUE_CANONICAL_INGREDIENTS.map((canonical) => {
     const fromDbRow = byId.get(canonical.id);
     if (!fromDbRow) return canonical;
+    const mergedImageSrc =
+      normalizeIngredientImageSrc(canonical.id, fromDbRow.imageSrc) ??
+      canonical.imageSrc ??
+      null;
     return {
       ...fromDbRow,
-      imageSrc: fromDbRow.imageSrc ?? canonical.imageSrc ?? null,
+      imageSrc: mergedImageSrc,
       imagePresentation:
         canonical.imagePresentation ?? fromDbRow.imagePresentation,
     };
