@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter, Literata, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import { DeferredClientBits } from "./components/DeferredClientBits";
