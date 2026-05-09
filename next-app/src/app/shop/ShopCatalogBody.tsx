@@ -47,12 +47,23 @@ export async function ShopCatalogBody({
   matchedMerchGroup,
   dbCategories,
 }: ShopCatalogBodyProps) {
-  const filteredProducts = await getProducts({
+  let filteredProducts = await getProducts({
     search: currentIngredient ? "" : currentSearch,
     ingredientId: currentIngredient || undefined,
     sortBy: sort,
     excludeComingSoon: true,
   });
+
+  // If the store is in pre-launch mode (all published products are coming soon),
+  // don't render an empty Shop — show the catalog with waitlist CTAs instead.
+  if (filteredProducts.length === 0) {
+    filteredProducts = await getProducts({
+      search: currentIngredient ? "" : currentSearch,
+      ingredientId: currentIngredient || undefined,
+      sortBy: sort,
+      excludeComingSoon: false,
+    });
+  }
 
   const productAssignments = assignProductsToMerchGroups(
     filteredProducts,
