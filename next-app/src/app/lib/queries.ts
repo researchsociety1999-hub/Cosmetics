@@ -496,8 +496,27 @@ function filterProductsBySearch(
 export async function getProducts(
   options: GetProductsOptions = {},
 ): Promise<Product[]> {
-  if (shouldLoadCatalogFromEmbeds()) {
-    if (!allowMockCatalog()) {
+  const loadFromEmbeds = shouldLoadCatalogFromEmbeds();
+  const mockCatalogAllowed = allowMockCatalog();
+
+  console.warn("[Mystique][getProducts][DEBUG] entry", {
+    hasSupabaseEnv,
+    supabaseIsNull: supabase === null,
+    shouldLoadCatalogFromEmbeds: loadFromEmbeds,
+    allowMockCatalog: mockCatalogAllowed,
+    options: {
+      sortBy: options.sortBy,
+      limit: options.limit,
+      page: options.page,
+      categoryId: options.categoryId,
+      hasSearch: Boolean(options.search?.trim()),
+      ingredientId: options.ingredientId ?? null,
+      excludeComingSoon: options.excludeComingSoon === true,
+    },
+  });
+
+  if (loadFromEmbeds) {
+    if (!mockCatalogAllowed) {
       console.warn(
         "[Mystique] getProducts: Supabase env not initialised. " +
           "hasSupabaseEnv=" + String(hasSupabaseEnv) +
@@ -505,9 +524,16 @@ export async function getProducts(
           ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
           "to Vercel → Settings → Environment Variables and redeploy."
       );
+      console.warn(
+        "[Mystique][getProducts][DEBUG] returning [] (embed path, mock catalog disabled); supabaseQueryRan=false",
+      );
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
+    console.warn("[Mystique][getProducts][DEBUG] embed/mock catalog path", {
+      supabaseQueryRan: false,
+      rowCountAfterMockFilter: filteredProducts.length,
+    });
     return paginateProducts(
       sortProducts(filteredProducts, options.sortBy),
       options.page,
@@ -516,6 +542,9 @@ export async function getProducts(
   }
 
   if (!supabase) {
+    console.warn(
+      "[Mystique][getProducts][DEBUG] returning [] (supabase client null after embed check); supabaseQueryRan=false",
+    );
     return paginateProducts(
       sortProducts([], options.sortBy ?? "newest"),
       options.page,
@@ -569,9 +598,30 @@ export async function getProducts(
       query = query.range(from, from + limit - 1);
     }
 
+    console.warn("[Mystique][getProducts][DEBUG] executing Supabase query", {
+      supabaseQueryRan: true,
+    });
+
     const { data, error } = await query;
+
+    console.warn("[Mystique][getProducts][DEBUG] Supabase response", {
+      supabaseQueryRan: true,
+      rowCountRaw: Array.isArray(data) ? data.length : null,
+      error: error
+        ? {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+            hint: error.hint,
+          }
+        : null,
+    });
+
     if (error) {
       logGetProductsFailure(error);
+      console.warn(
+        "[Mystique][getProducts][DEBUG] returning [] after Supabase error",
+      );
       return paginateProducts(sortProducts([], sortBy), page, limit);
     }
 
@@ -579,7 +629,16 @@ export async function getProducts(
     if (ing) {
       normalizedProducts = filterProductsByIngredientId(normalizedProducts, ing);
     }
-    return paginateProducts(sortProducts(normalizedProducts, sortBy), page, limit);
+    const finalSlice = paginateProducts(
+      sortProducts(normalizedProducts, sortBy),
+      page,
+      limit,
+    );
+    console.warn("[Mystique][getProducts][DEBUG] returning products", {
+      rowCountAfterIngredientFilter: normalizedProducts.length,
+      rowCountReturned: finalSlice.length,
+    });
+    return finalSlice;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (process.env.NODE_ENV === "development" && isSupabaseTransportFailure(msg)) {
@@ -589,6 +648,10 @@ export async function getProducts(
     } else {
       console.error("[Supabase] getProducts exception:", e);
     }
+    console.warn(
+      "[Mystique][getProducts][DEBUG] returning [] after exception",
+      e instanceof Error ? { message: e.message, name: e.name } : { thrown: String(e) },
+    );
     return paginateProducts(sortProducts([], sortBy), page, limit);
   }
 }

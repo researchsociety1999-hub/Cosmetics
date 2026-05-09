@@ -78,6 +78,67 @@ export function isProductPurchasable(product: Product): boolean {
   return true;
 }
 
+/** TEMPORARY: diagnostics only — mirrors `isProductPurchasable` and lists exclusion reasons. */
+export interface ProductPurchasabilityExplanation {
+  id: number;
+  slug: string;
+  name: string;
+  purchasable: boolean;
+  reasons: string[];
+  fields: {
+    in_stock: boolean | null;
+    stock: number | null;
+    variant_stocks: Array<{ stock: number | null }> | null | undefined;
+    /** Not used by `isProductPurchasable`; included for log correlation. */
+    coming_soon: boolean | null;
+    /** Not used by `isProductPurchasable`; included for log correlation. */
+    price_cents: number;
+    sale_price_cents: number | null;
+  };
+}
+
+export function explainProductPurchasability(
+  product: Product,
+): ProductPurchasabilityExplanation {
+  const reasons: string[] = [];
+
+  if (product.in_stock === false) {
+    reasons.push("in_stock === false");
+  }
+
+  if (typeof product.stock === "number" && product.stock <= 0) {
+    reasons.push(`typeof stock === 'number' && stock <= 0 (stock=${product.stock})`);
+  }
+
+  const variantStocks = product.variant_stocks;
+  if (Array.isArray(variantStocks) && variantStocks.length > 0) {
+    const anyPositive = variantStocks.some((v) => (v?.stock ?? 0) > 0);
+    if (!anyPositive) {
+      reasons.push(
+        `variant_stocks.length=${variantStocks.length} but no variant has stock > 0 (snapshot: ${JSON.stringify(variantStocks.map((v) => v?.stock ?? null))})`,
+      );
+    }
+  }
+
+  const purchasable = isProductPurchasable(product);
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    purchasable,
+    reasons: purchasable ? [] : reasons,
+    fields: {
+      in_stock: product.in_stock ?? null,
+      stock: product.stock ?? null,
+      variant_stocks: product.variant_stocks,
+      coming_soon: product.coming_soon ?? null,
+      price_cents: product.price_cents,
+      sale_price_cents: product.sale_price_cents ?? null,
+    },
+  };
+}
+
 export function getRestockContactHref(product: Pick<Product, "slug" | "name">): string {
   const ref = product.slug?.trim() || "";
   const q = new URLSearchParams();

@@ -12,6 +12,8 @@ import { getCategories, getProducts, type ProductSort } from "../lib/queries";
 import { buildPageMetadata } from "../lib/seo";
 import { ShopCatalogBody, ShopCatalogFallback } from "./ShopCatalogBody";
 
+export const dynamic = 'force-dynamic';
+
 type SearchParams = Promise<{
   category?: string;
   search?: string;

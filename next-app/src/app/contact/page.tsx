@@ -5,6 +5,8 @@ import { SiteChrome } from "../components/SiteChrome";
 import { getPublicStudioEmail } from "../lib/siteConfig";
 import { getProductBySlug } from "../lib/queries";
 
+export const dynamic = 'force-dynamic';
+
 type SearchParams = Promise<{ status?: string; topic?: string; ref?: string }>;
 
 export const metadata: Metadata = {

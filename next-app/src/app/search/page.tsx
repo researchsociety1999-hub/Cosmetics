@@ -3,6 +3,8 @@ import { SearchExperience } from "./SearchExperience";
 import { SiteChrome } from "../components/SiteChrome";
 import { searchProducts } from "../lib/queries";
 
+export const dynamic = 'force-dynamic';
+
 type SearchParams = Promise<{ q?: string }>;
 
 export const metadata: Metadata = {

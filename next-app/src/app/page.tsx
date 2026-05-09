@@ -13,10 +13,15 @@ import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
 import { MYSTIQUE_CANONICAL_INGREDIENTS } from "./lib/data";
 import { getJournalEntries, getProducts } from "./lib/queries";
-import { isProductPurchasable } from "./lib/productMerch";
+import {
+  explainProductPurchasability,
+  isProductPurchasable,
+} from "./lib/productMerch";
 import { buildPageMetadata } from "./lib/seo";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import type { Product } from "./lib/types";
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   ...buildPageMetadata({
@@ -238,7 +243,36 @@ async function JournalHomeSection() {
 // ---------------------------------------------------------------------------
 export default async function HomePage() {
   const catalog = await getProducts({ sortBy: "featured", limit: 12 });
+  const rawCatalogCount = catalog.length;
+  const rawCatalogPreview = catalog.slice(0, 12).map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+  }));
+
+  console.warn("[Mystique][HomePage][DEBUG] featured pipeline — raw catalog", {
+    rawCatalogCount,
+    rawCatalogPreview,
+  });
+
+  const purchasabilityRows = catalog.map(explainProductPurchasability);
   const featuredPurchasable = catalog.filter(isProductPurchasable);
+  const purchasableCatalogCount = featuredPurchasable.length;
+
+  console.warn("[Mystique][HomePage][DEBUG] featured pipeline — purchasable", {
+    purchasableCatalogCount,
+    excludedCount: rawCatalogCount - purchasableCatalogCount,
+  });
+
+  for (const row of purchasabilityRows) {
+    if (!row.purchasable) {
+      console.warn(
+        "[Mystique][HomePage][DEBUG] featured pipeline — excluded (not purchasable)",
+        row,
+      );
+    }
+  }
+
   const heroQuickViewProduct = featuredPurchasable[0] ?? null;
 
   return (
