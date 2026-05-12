@@ -1,0 +1,6 @@
+# Repo root (app ignores live in Cosmetics/.gitignore)
+.DS_Store
+Thumbs.db
+
+# Accidental nested duplicate project — never track
+Cosmetics/Cosmetics/

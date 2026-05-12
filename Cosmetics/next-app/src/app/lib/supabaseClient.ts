@@ -1,0 +1,46 @@
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+function isValidHttpUrl(value: string | undefined): value is string {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+const rawSupabaseUrl =
+  process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey =
+  process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+/** Anon key: public (browser) or server-only alias for SSR / scripts without NEXT_PUBLIC_. */
+const rawSupabasePublicKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  process.env.SUPABASE_ANON_KEY;
+const hasSecretInPublicKeySlot = rawSupabasePublicKey?.startsWith("sb_secret_") ?? false;
+const supabaseAnonKey = hasSecretInPublicKeySlot ? null : rawSupabasePublicKey;
+const supabaseUrl = isValidHttpUrl(rawSupabaseUrl) ? rawSupabaseUrl : null;
+/** Prefer anon so catalog / health checks match real RLS; service only if anon unset. */
+const supabaseKey = supabaseAnonKey ?? supabaseServiceKey;
+
+export const hasSupabaseEnv = Boolean(supabaseUrl && supabaseKey);
+export const hasSupabaseServiceEnv = Boolean(supabaseUrl && supabaseServiceKey);
+export const hasSupabasePublicEnv = Boolean(supabaseUrl && supabaseAnonKey);
+export const hasInvalidSupabaseUrl = Boolean(rawSupabaseUrl && !supabaseUrl);
+export const hasInvalidSupabasePublicKey = Boolean(
+  rawSupabasePublicKey && hasSecretInPublicKeySlot,
+);
+export const resolvedSupabaseUrl = supabaseUrl;
+
+export const supabase: SupabaseClient | null = hasSupabaseEnv
+  ? createClient(supabaseUrl!, supabaseKey!)
+  : null;
+
+export const supabaseAdmin: SupabaseClient | null = hasSupabaseServiceEnv
+  ? createClient(supabaseUrl!, supabaseServiceKey!)
+  : null;
