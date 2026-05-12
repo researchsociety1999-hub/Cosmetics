@@ -1,0 +1,327 @@
+export interface Product {
+  id: number;
+  name: string;
+  description: string | null;
+  price_cents: number;
+  sale_price_cents: number | null;
+  /** Pre-launch / not yet shoppable. */
+  coming_soon?: boolean | null;
+  image_url: string | null;
+  extra_images: string[] | null;
+  slug: string;
+  category_id: number | null;
+  sku: string | null;
+  stock: number | null;
+  in_stock: boolean | null;
+  is_published: boolean | null;
+  created_at: string;
+  updated_at: string | null;
+  key_ingredients?: string[] | null;
+  benefits?: string[] | null;
+  routine_step?: string | null;
+  skin_types?: string[] | null;
+  category_slug?: string | null;
+  category_name?: string | null;
+  /** Optional merchandising line from DB, e.g. `30 ml · glass dropper`. */
+  volume_size_label?: string | null;
+  /**
+   * Optional lightweight variant stock snapshot when joined from Supabase.
+   * Used to keep catalog-level "purchasable" consistent with PDP variant gating.
+   */
+  variant_stocks?: Array<{ stock: number | null }> | null;
+}
+
+export interface ProductVariant {
+  id: number;
+  product_id: number;
+  variant_name: string;
+  price_cents: number | null;
+  price: number | null;
+  stock: number | null;
+  sku: string | null;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  image_url: string | null;
+}
+
+export interface CartItem {
+  id: string;
+  user_id: string;
+  product_id: number;
+  variant_id: number | null;
+  quantity: number;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface CartCookieItem {
+  productId: number;
+  quantity: number;
+  variantId?: number | null;
+}
+
+export interface CartSummaryItem {
+  id?: string;
+  productId: number;
+  quantity: number;
+  variantId?: number | null;
+}
+
+export interface CartLine {
+  cartItemId?: string;
+  product: Product;
+  variant?: ProductVariant | null;
+  quantity: number;
+  variantId: number | null;
+  unitPriceCents: number;
+  lineTotalCents: number;
+}
+
+export interface CartSummary {
+  items: CartSummaryItem[];
+  lines: CartLine[];
+  itemCount: number;
+  subtotalCents: number;
+  source: "cookie" | "database";
+  userId: string | null;
+}
+
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "failed"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "refunded";
+
+export interface Order {
+  id: string;
+  order_number: string;
+  user_id: string | null;
+  email: string;
+  promo_code: string | null;
+  status: OrderStatus;
+  currency: string;
+  subtotal_cents: number;
+  shipping_cents: number;
+  discount_cents: number;
+  total_cents: number;
+  subtotal_amount: number;
+  shipping_amount: number;
+  tax_amount: number;
+  total_amount: number;
+  full_name: string;
+  address_line1: string;
+  address_line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  shipping_address_id: number | null;
+  billing_address_id: number | null;
+  payment_intent_id: string | null;
+  stripe_checkout_session_id: string | null;
+  stripe_payment_intent_id: string | null;
+  tracking_number: string | null;
+  estimated_delivery: string | null;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: number;
+  variant_id: number | null;
+  quantity: number;
+  price_cents_at_time: number;
+  created_at?: string;
+}
+
+export interface OrderWithItems extends Order {
+  items: OrderItem[];
+}
+
+export interface ShippingDetails {
+  fullName: string;
+  email: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface OrderTotals {
+  subtotalAmount: number;
+  discountAmount: number;
+  shippingAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+}
+
+export interface Address {
+  id: number;
+  user_id: string;
+  type: string | null;
+  full_name: string;
+  address_line1: string;
+  address_line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  phone: string | null;
+  is_default: boolean | null;
+}
+
+export interface Payment {
+  id: string;
+  order_id: string;
+  stripe_payment_id: string | null;
+  amount_cents: number;
+  status: string;
+  payment_method: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+}
+
+export type ProfileRole = "customer" | "admin";
+
+export interface Profile {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: ProfileRole;
+  phone: string | null;
+}
+
+export interface Review {
+  id: string;
+  product_id: number;
+  user_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export interface WishlistItem {
+  id: string;
+  user_id: string;
+  product_id: number;
+}
+
+export type CouponDiscountType = "percentage" | "fixed";
+
+export type PromoDiscountType = "percent" | "fixed";
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_type: CouponDiscountType;
+  discount_value: number;
+  min_order_cents: number | null;
+  max_uses: number | null;
+  uses_count: number | null;
+  expires_at: string | null;
+  is_active: boolean | null;
+}
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  discount_type: PromoDiscountType;
+  discount_value: number;
+  is_active: boolean | null;
+  starts_at: string | null;
+  expires_at: string | null;
+  minimum_subtotal: number | null;
+  created_at: string;
+}
+
+export interface AppliedPromo {
+  promo: PromoCode;
+  discountCents: number;
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  source: string | null;
+  created_at: string;
+}
+
+export interface PaymentSummary {
+  latestPayment: Payment | null;
+  paymentStatus: string;
+}
+
+export type LoyaltyTier = "Bronze" | "Silver" | "Gold";
+
+export interface LoyaltyProgram {
+  user_id: string;
+  points: number;
+  tier: LoyaltyTier;
+}
+
+export interface PressMention {
+  id: string;
+  title: string;
+  source: string;
+  quote: string | null;
+  link: string | null;
+  published_at: string | null;
+}
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  description: string | null;
+  benefits: string | null;
+  source: string | null;
+  /** Card thumbnail: `/public` path or allowed remote URL (see `next.config.js`). */
+  imageSrc?: string | null;
+  /**
+   * `poster` = tall campaign art (often with baked-in type); uses a portrait frame and lighter
+   * grading so on-image typography stays legible.
+   */
+  imagePresentation?: "thumb" | "poster";
+}
+
+export interface PromoCampaign {
+  id: string;
+  name: string;
+  description: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  discount_percentage: number | null;
+}
+
+export interface AnalyticsEvent {
+  id: string;
+  user_id: string | null;
+  event_type: string;
+  event_data: unknown | null;
+  occurred_at: string;
+}
+
+export interface JournalEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  readTime: string;
+  content?: Array<{
+    heading: string;
+    paragraphs: string[];
+  }>;
+}
