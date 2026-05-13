@@ -12,11 +12,17 @@ import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
  * with a warm ember bloom behind the crescent mark and the copy block
  * anchored to the bottom-left.
  *
- * NOTE: /Mystique_Logo-removebg-preview.jpg contains valid PNG data
- * (magic bytes 89 50 4E 47) with a transparent background. Next.js Image
- * optimizer preserves the alpha channel correctly despite the .jpg ext.
+ * Fix log:
+ *  - Switched HERO_LOGO_SRC from the misnamed .jpg (PNG data) to
+ *    /mystique-hero-logo.png — a proper PNG with real transparency.
+ *  - Added `priority` prop to the logo Image so Next.js emits
+ *    fetchPriority="high" + loading="eager", fixing the delayed LCP.
+ *  - Removed `aria-hidden` from the logo container — the brand mark
+ *    should be accessible to screen readers.
+ *  - Corrected intrinsic dimensions to 800×800 to match the actual
+ *    square canvas; object-contain handles the wide lockup within it.
  */
-const HERO_LOGO_SRC = "/Mystique_Logo-removebg-preview.jpg";
+const HERO_LOGO_SRC = "/mystique-hero-logo.png";
 const HERO_BG_SRC = "/about/hero.jpg";
 
 export function HomeHeroMotion({
@@ -102,21 +108,21 @@ export function HomeHeroMotion({
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-5 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 md:px-12 lg:px-14 xl:px-16">
 
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
+        {/* aria-hidden removed: the brand lockup is meaningful content */}
         <div
-          aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[56vh] items-center justify-center"
         >
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />
           <div className="absolute h-[min(50vh,28rem)] w-[min(82vw,48rem)] rounded-full bg-[radial-gradient(ellipse_62%_56%_at_50%_50%,rgba(201,168,76,0.11),transparent_66%)] blur-[44px] opacity-62" />
-          {/* Logo image */}
+          {/* Logo image — proper PNG with transparency, priority-loaded as LCP element */}
           <div className="relative w-[min(74vw,36rem)] sm:w-[min(62vw,38rem)] md:w-[min(50vw,40rem)] lg:w-[min(42vw,42rem)] xl:w-[min(36vw,44rem)]">
             <Image
               src={HERO_LOGO_SRC}
               alt="Mystique — Where Beauty Transcends"
-              width={1080}
-              height={1080}
-              loading="lazy"
+              width={800}
+              height={800}
+              priority
               sizes="(max-width: 640px) 74vw, (max-width: 1024px) 50vw, 42vw"
               className="block h-auto w-full object-contain [filter:brightness(1.02)_contrast(1.04)_saturate(1.03)] drop-shadow-[0_0_40px_rgba(214,168,95,0.14)]"
             />
