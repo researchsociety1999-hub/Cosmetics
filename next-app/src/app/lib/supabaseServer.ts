@@ -67,6 +67,16 @@ export async function getAuthenticatedUser(): Promise<User | null> {
       return null;
     }
 
+    // Check session first to avoid the Supabase SDK logging
+    // "Auth session missing!" on every unauthenticated request.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return null;
+    }
+
     const {
       data: { user },
       error,

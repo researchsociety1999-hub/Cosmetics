@@ -259,7 +259,12 @@ export default async function HomePage() {
           <div className="home-page-ambient__wash" />
         </div>
         <div className="home-premium-filmgrain" aria-hidden />
-        <div className="home-premium-stack min-w-0">
+        {/*
+          mystique-first-section cancels the header-offset padding-top applied by
+          SiteChrome so the hero sits flush under the transparent navbar.
+          Must remain outside the overflow-x-clip boundary (see comment below).
+        */}
+        <div className="mystique-first-section home-premium-stack min-w-0">
           {/* 1. Hero */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 

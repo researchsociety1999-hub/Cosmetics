@@ -114,8 +114,8 @@ const nextConfig = {
   },
   outputFileTracingRoot: __dirname,
   images: {
-    // Next 16 defaults to qualities: [75]; hero uses quality={88} on local photography.
-    qualities: [75, 88],
+    // Next 16 defaults to qualities: [75]; hero uses quality={88} and story image uses quality={90}.
+    qualities: [75, 88, 90],
     // `next/image` requires remote hosts to be explicitly allowed (must stay in sync with
     // `isSafeImageSrc` in `src/app/lib/format.ts`). Add more via `NEXT_PUBLIC_IMAGE_REMOTE_HOSTS`.
     remotePatterns: [

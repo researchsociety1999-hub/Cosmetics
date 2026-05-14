@@ -12,10 +12,11 @@ import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
  * with a warm ember bloom behind the crescent mark and the copy block
  * anchored to the bottom-left.
  *
- * Logo asset: VTracer-exported SVG (`Mystique_Logo-removebg-preview.svg`, 2048×2048).
- * `next.config.js` sets `images.dangerouslyAllowSVG` for `next/image` SVG support.
+ * Logo: Supabase Storage CDN (production LCP; avoids missing local asset).
+ * `next.config.js` sets `images.dangerouslyAllowSVG` for other brand SVGs.
  */
-const HERO_LOGO_SRC = "/Mystique_Logo-removebg-preview.svg";
+const HERO_LOGO_SRC =
+  "https://piqwtmnbxyiesxcxdwod.supabase.co/storage/v1/object/public/Logo/Brand%20Logo.png";
 const HERO_BG_SRC = "/about/hero.jpg";
 
 export function HomeHeroMotion({
@@ -101,21 +102,21 @@ export function HomeHeroMotion({
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-stretch px-5 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-[max(1.25rem,env(safe-area-inset-top,0px))] sm:px-8 md:px-12 lg:px-14 xl:px-16">
 
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
+        {/* aria-hidden removed: the brand lockup is meaningful content */}
         <div
-          aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[56vh] items-end justify-center"
         >
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />
           <div className="absolute h-[min(50vh,28rem)] w-[min(82vw,48rem)] rounded-full bg-[radial-gradient(ellipse_62%_56%_at_50%_50%,rgba(201,168,76,0.11),transparent_66%)] blur-[44px] opacity-62" />
-          {/* Logo image */}
+          {/* Logo image — served from Supabase Storage CDN, priority-loaded as LCP element */}
           <div className="relative w-[min(74vw,36rem)] sm:w-[min(62vw,38rem)] md:w-[min(50vw,40rem)] lg:w-[min(42vw,42rem)] xl:w-[min(36vw,44rem)]">
             <Image
               src={HERO_LOGO_SRC}
               alt="Mystique — Where Beauty Transcends"
-              width={1080}
-              height={1080}
-              loading="lazy"
+              width={800}
+              height={800}
+              priority
               sizes="(max-width: 640px) 74vw, (max-width: 1024px) 50vw, 42vw"
               className="block h-auto w-full object-contain [filter:brightness(1.02)_contrast(1.04)_saturate(1.03)] drop-shadow-[0_0_40px_rgba(214,168,95,0.14)]"
             />
@@ -173,7 +174,7 @@ export function HomeHeroMotion({
             {/* Scroll cue */}
             <div className="mt-12 hidden items-center gap-3.5 sm:flex" aria-hidden>
               <div className="h-px w-10 bg-gradient-to-r from-[rgba(214,168,95,0.28)] to-transparent" />
-              <span className="font-ui text-[0.56rem] uppercase tracking-[0.34em] text-[#6e665c]">
+              <span className="font-ui text-[0.56rem] uppercase tracking-[0.32em] text-[#6e665c]">
                 Scroll to explore
               </span>
             </div>
