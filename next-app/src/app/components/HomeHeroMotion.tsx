@@ -12,11 +12,10 @@ import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
  * with a warm ember bloom behind the crescent mark and the copy block
  * anchored to the bottom-left.
  *
- * NOTE: /Mystique_Logo-removebg-preview.jpg contains valid PNG data
- * (magic bytes 89 50 4E 47) with a transparent background. Next.js Image
- * optimizer preserves the alpha channel correctly despite the .jpg ext.
+ * Logo asset: VTracer-exported SVG (`Mystique_Logo-removebg-preview.svg`, 2048×2048).
+ * `next.config.js` sets `images.dangerouslyAllowSVG` for `next/image` SVG support.
  */
-const HERO_LOGO_SRC = "/Mystique_Logo-removebg-preview.jpg";
+const HERO_LOGO_SRC = "/Mystique_Logo-removebg-preview.svg";
 const HERO_BG_SRC = "/about/hero.jpg";
 
 export function HomeHeroMotion({
@@ -104,7 +103,7 @@ export function HomeHeroMotion({
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[56vh] items-center justify-center"
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[56vh] items-end justify-center"
         >
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />
