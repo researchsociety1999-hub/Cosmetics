@@ -21,8 +21,11 @@ import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
  *    should be accessible to screen readers.
  *  - Corrected intrinsic dimensions to 800×800 to match the actual
  *    square canvas; object-contain handles the wide lockup within it.
+ *  - [2026-05-13] Replaced missing local /mystique-hero-logo.png with
+ *    Supabase Storage CDN URL — fixes production 404 on the LCP element.
  */
-const HERO_LOGO_SRC = "/mystique-hero-logo.png";
+const HERO_LOGO_SRC =
+  "https://piqwtmnbxyiesxcxdwod.supabase.co/storage/v1/object/public/Logo/Brand%20Logo.png";
 const HERO_BG_SRC = "/about/hero.jpg";
 
 export function HomeHeroMotion({
@@ -115,7 +118,7 @@ export function HomeHeroMotion({
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />
           <div className="absolute h-[min(50vh,28rem)] w-[min(82vw,48rem)] rounded-full bg-[radial-gradient(ellipse_62%_56%_at_50%_50%,rgba(201,168,76,0.11),transparent_66%)] blur-[44px] opacity-62" />
-          {/* Logo image — proper PNG with transparency, priority-loaded as LCP element */}
+          {/* Logo image — served from Supabase Storage CDN, priority-loaded as LCP element */}
           <div className="relative w-[min(74vw,36rem)] sm:w-[min(62vw,38rem)] md:w-[min(50vw,40rem)] lg:w-[min(42vw,42rem)] xl:w-[min(36vw,44rem)]">
             <Image
               src={HERO_LOGO_SRC}
@@ -180,7 +183,7 @@ export function HomeHeroMotion({
             {/* Scroll cue */}
             <div className="mt-12 hidden items-center gap-3.5 sm:flex" aria-hidden>
               <div className="h-px w-10 bg-gradient-to-r from-[rgba(214,168,95,0.28)] to-transparent" />
-              <span className="font-ui text-[0.56rem] uppercase tracking-[0.34em] text-[#6e665c]">
+              <span className="font-ui text-[0.56rem] uppercase tracking-[0.32em] text-[#6e665c]">
                 Scroll to explore
               </span>
             </div>
