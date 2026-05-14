@@ -57,6 +57,7 @@ export default async function SignupPage({
               <input
                 type="email"
                 name="email"
+                data-testid="signup-email-input"
                 defaultValue={email}
                 required
                 className="mystic-input w-full text-sm"

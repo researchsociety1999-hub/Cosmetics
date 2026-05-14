@@ -58,6 +58,7 @@ export default async function LoginPage({
               <input
                 type="email"
                 name="email"
+                data-testid="login-email-input"
                 defaultValue={email}
                 required
                 className="mystic-input w-full text-sm"
