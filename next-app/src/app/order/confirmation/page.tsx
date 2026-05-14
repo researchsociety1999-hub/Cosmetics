@@ -48,6 +48,7 @@ export default async function OrderConfirmationPage({
             <h1 className="font-literata text-3xl tracking-[0.1em] text-[#f5eee3]">
               Session missing
             </h1>
+            {/* Text must satisfy test regex: /invalid|no order|session.*missing|something went wrong/i */}
             <p className="mt-4 text-sm leading-relaxed text-[#b8ab95]">
               No order session was found. If you completed a purchase, check your
               email for a confirmation, or{" "}
@@ -116,6 +117,7 @@ export default async function OrderConfirmationPage({
             <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
               Order confirmed
             </h1>
+            {/* Text must satisfy test regex: /could not verify|order details unavailable|something went wrong/i */}
             <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
               Could not verify order details at this time. If you completed a
               purchase, check your email for a confirmation or contact support.
