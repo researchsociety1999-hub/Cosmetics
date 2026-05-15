@@ -68,7 +68,9 @@ function getStripeSecretKey(): string {
 
 export function getStripeServerClient() {
   if (!stripeClient) {
-    stripeClient = new Stripe(getStripeSecretKey());
+    stripeClient = new Stripe(getStripeSecretKey(), {
+      apiVersion: "2025-04-30.basil",
+    });
   }
 
   return stripeClient;
