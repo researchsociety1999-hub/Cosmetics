@@ -3,45 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3000",
     "build": "next build",
-    "build:analyze": "cross-env ANALYZE=true next build",
-    "build:analyze:webpack": "cross-env ANALYZE=true next build --webpack",
     "start": "next start",
-    "lint": "npx eslint .",
-    "content-inventory": "node scripts/build-content-inventory.mjs",
-    "test:integrations": "node scripts/test-integrations.mjs"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^7.8.0",
-    "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.99.1",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.103.0",
+    "@tailwindcss/postcss": "^4.2.2",
     "@vercel/speed-insights": "^2.0.0",
-    "framer-motion": "^12.38.0",
-    "geist": "^1.7.0",
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "resend": "^6.9.4",
+    "next": "^16.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^4.0.0",
     "stripe": "^18.3.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.1.6",
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "19.2.14",
+    "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cross-env": "^7.0.3",
-    "docx": "^9.6.1",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
-    "typescript": "5.9.3",
-    "xlsx": "^0.18.5"
-  },
-  "browserslist": [
-    "defaults and > 0.5%",
-    "not dead",
-    "not IE 11"
-  ]
+    "eslint-config-next": "^16.2.0",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5"
+  }
 }

@@ -2,25 +2,18 @@
   "name": "cosmetics-workspace",
   "private": true,
   "scripts": {
-    "dev": "npm --prefix next-app run dev",
-    "build": "npm --prefix next-app run build",
-    "start": "npm --prefix next-app run start",
-    "lint": "npm --prefix next-app run lint",
-    "install": "npm --prefix next-app install",
+    "dev": "npm run dev --workspace=next-app",
+    "build": "npm run build --workspace=next-app",
+    "start": "npm run start --workspace=next-app",
     "test": "playwright test",
-    "test:e2e": "playwright test",
-    "test:integrations": "npm --prefix next-app run test:integrations"
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
   },
+  "workspaces": [
+    "next-app"
+  ],
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@types/node": "^25.5.0"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "2.103.0",
-    "@tailwindcss/postcss": "^4.2.2",
-    "@vercel/speed-insights": "^2.0.0",
-    "next": "^16.2.0",
-    "resend": "^6.9.4",
-    "stripe": "22.0.1"
+    "@types/node": "^20"
   }
 }

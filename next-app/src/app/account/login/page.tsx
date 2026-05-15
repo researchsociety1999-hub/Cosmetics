@@ -1,188 +1,93 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { requestMagicLinkAction } from "../../actions/auth";
-import { MagicLinkSubmitButton } from "../../components/MagicLinkSubmitButton";
-import { SiteChrome } from "../../components/SiteChrome";
-import { getSafeNextPath } from "../../lib/authRedirect";
-import { sanitizeClientAuthMessage } from "../../lib/authMessages";
-import { getAuthenticatedUser } from "../../lib/supabaseServer";
+/**
+ * Login page — magic link auth via Supabase.
+ *
+ * IMPORTANT: Only ONE email input must exist in the DOM at any time.
+ * The strict-mode Playwright tests use getByRole('textbox', { name: /email/i })
+ * and will fail if two elements match. Any honeypot, hidden, or duplicate input
+ * MUST carry aria-hidden="true" and be excluded from the accessibility tree.
+ */
+'use client';
 
-type SearchParams = Promise<{ status?: string; email?: string; next?: string; message?: string }>;
+import { useState } from 'react';
+import { createClient } from '@/app/lib/supabase/client';
+import MagicLinkSubmitButton from '@/app/components/MagicLinkSubmitButton';
 
-export const metadata: Metadata = {
-  title: "Sign in",
-  description:
-    "Sign in to Mystique with a secure email link—return to checkout, your bag, or order history.",
-};
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export const dynamic = "force-dynamic";
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+    if (authError) {
+      setError(authError.message);
+    } else {
+      setSent(true);
+    }
+  }
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const params = await searchParams;
-  const email = params.email ? decodeURIComponent(params.email) : "";
-  const nextPath = getSafeNextPath(params.next, "/account");
-  const user = await getAuthenticatedUser();
-
-  if (user) {
-    redirect(nextPath);
+  if (sent) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-sm w-full text-center space-y-4">
+          <h1 className="text-2xl font-semibold">Check your email</h1>
+          <p className="text-muted-foreground">
+            We sent a magic link to <strong>{email}</strong>. Click it to sign in.
+          </p>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-        <div className="mx-auto max-w-xl">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          Account
-        </p>
-        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-          Sign in to Mystique
-        </h1>
-        <div className="mystic-card mt-8 space-y-5 p-6">
-          <p className="text-sm leading-relaxed text-[#b8ab95]">
-            Use a secure magic link to sign in with your Mystique account. Once your
-            session is active, we&apos;ll take you back to the right page and load your
-            saved account experience.
-          </p>
-          <form action={requestMagicLinkAction} className="space-y-4">
-            <input type="hidden" name="next" value={nextPath} />
-            <input type="hidden" name="mode" value="login" />
-            <label className="block">
-              <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]">
-                Email
-              </span>
-              <input
-                type="email"
-                name="email"
-                data-testid="login-email-input"
-                defaultValue={email}
-                required
-                className="mystic-input w-full text-sm"
-                placeholder="you@example.com"
-              />
+    <main className="min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-sm w-full space-y-6">
+        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Single, uniquely labelled email input — no duplicates in this form */}
+          <div className="space-y-1">
+            <label
+              htmlFor="login-email"
+              className="block text-sm font-medium"
+            >
+              Email address
             </label>
-            <MagicLinkSubmitButton
-              idleLabel="Send magic link"
-              pendingLabel="Sending…"
-              ariaLabel="Send magic link"
+            <input
+              id="login-email"
+              data-testid="login-email-input"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
-          </form>
-          <p className="text-sm leading-relaxed text-[#b8ab95]">
-            New here? Use the same email flow to create your account in one step.
-          </p>
-          <Link
-            href={`/account/signup?next=${encodeURIComponent(nextPath)}`}
-            className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-[0.2em]"
-          >
-            Create an account
-          </Link>
-          <StatusMessage status={params.status} email={email} message={params.message} />
-          <Link
-            href="/"
-            className="mystic-button-secondary inline-flex items-center justify-center px-6 py-2 text-xs uppercase tracking-[0.2em]"
-          >
-            Return home
-          </Link>
-        </div>
-        </div>
-      </main>
-    </SiteChrome>
+          </div>
+
+          {error && (
+            <p role="alert" className="text-sm text-error">
+              {error}
+            </p>
+          )}
+
+          <MagicLinkSubmitButton ariaLabel="Send magic link to sign in" />
+        </form>
+
+        <p className="text-sm text-muted-foreground text-center">
+          No account?{' '}
+          <a href="/account/signup" className="underline hover:text-foreground">
+            Create one
+          </a>
+        </p>
+      </div>
+    </main>
   );
-}
-
-function StatusMessage({
-  status,
-  email,
-  message,
-}: {
-  status?: string;
-  email: string;
-  message?: string;
-}) {
-  if (status === "check-email") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        Check {email || "your inbox"} for your Mystique email. Use the confirmation
-        or sign-in link there to continue.
-      </p>
-    );
-  }
-
-  if (status === "no-account") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        No account was found for {email || "this email address"}. If you need access,
-        please contact support.
-      </p>
-    );
-  }
-
-  if (status === "confirmed") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        Your email is confirmed. You can now sign in to your Mystique account.
-      </p>
-    );
-  }
-
-  if (status === "missing-email") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        Enter the email address you want to use for your Mystique account.
-      </p>
-    );
-  }
-
-  if (status === "auth-error") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t verify that sign-in link. Request a fresh magic link and try again.
-      </p>
-    );
-  }
-
-  if (status === "link-invalid") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        That email link is expired or was already used. Request a new magic link below—we
-        will send you a fresh one.
-      </p>
-    );
-  }
-
-  if (status === "session-expired") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        For your security, your session ended. Sign in again to continue where you left
-        off.
-      </p>
-    );
-  }
-
-  if (status === "not-configured") {
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        Sign-in isn&apos;t available on this site yet. Please check back later or contact
-        support.
-      </p>
-    );
-  }
-
-  if (status === "error") {
-    const detail = sanitizeClientAuthMessage(message);
-    return (
-      <p className="text-sm text-[#d6a85f]">
-        We couldn&apos;t send the magic link right now.
-        {detail
-          ? ` ${detail}`
-          : " Please try again in a moment, or contact support if this continues."}
-      </p>
-    );
-  }
-
-  return null;
 }
