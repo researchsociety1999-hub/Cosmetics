@@ -33,6 +33,8 @@ function BrandedImagePlaceholder({
     <div
       role="img"
       aria-label={label}
+      // data-testid targets consumed by image-fallback.spec.ts
+      data-testid="product-image-fallback"
       data-image-slot="product-placeholder"
       className={`pointer-events-none absolute inset-0 z-[6] flex flex-col items-center justify-center bg-[linear-gradient(165deg,rgba(26,28,36,0.98),rgba(8,9,12,1))] px-3 text-center ${
         compact ? "py-2" : "py-6"
@@ -95,7 +97,11 @@ export function ThemedImageFrame({
 
   return (
     <div
-      data-image-slot={src ? undefined : `product:${(displayTitle ?? "unknown").toLowerCase().replace(/\s+/g, "-")}`}
+      data-image-slot={
+        src
+          ? undefined
+          : `product:${(displayTitle ?? "unknown").toLowerCase().replace(/\s+/g, "-")}`
+      }
       className={`mystique-image-frame mystique-image-frame--${variant} relative ${className}`}
     >
       <span aria-hidden="true" className="mystique-image-frame__aura" />
@@ -121,6 +127,8 @@ export function ThemedImageFrame({
             quality={quality}
             loading={priority ? undefined : "lazy"}
             onError={handleError}
+            // data-testid consumed by image-fallback.spec.ts ("product-image" selector)
+            data-testid="product-image"
             className={`mystique-image-frame__image ${imageClassName}`}
           />
         ) : null}
