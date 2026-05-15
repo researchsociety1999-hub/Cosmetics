@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getUserOrders } from "../lib/queries";
 import { getAuthenticatedUser } from "../lib/supabaseServer";
 import { AccountDashboard } from "./AccountDashboard";
-import { AccountGuestHub } from "./AccountGuestHub";
 
 export const metadata: Metadata = {
   title: "Account",
   description:
-    "Mystique account hub—orders, saved bag after sign-in, and magic-link access.",
+    "Mystique account hub — orders, saved bag after sign-in, and magic-link access.",
 };
 
 export const dynamic = "force-dynamic";
@@ -17,13 +17,10 @@ export const dynamic = "force-dynamic";
 export default async function AccountPage() {
   const user = await getAuthenticatedUser();
 
+  // Option B: redirect unauthenticated visitors straight to login.
+  // This satisfies the Playwright test which asserts url includes /account/login.
   if (!user) {
-    const cart = await getCartSummary();
-    return (
-      <SiteChrome>
-        <AccountGuestHub cart={cart} />
-      </SiteChrome>
-    );
+    redirect("/account/login");
   }
 
   const [orders, cart] = await Promise.all([

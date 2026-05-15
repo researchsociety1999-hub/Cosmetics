@@ -2,15 +2,15 @@
  * Login page — magic link auth via Supabase.
  *
  * IMPORTANT: Only ONE email input must exist in the DOM at any time.
- * The strict-mode Playwright tests use getByRole('textbox', { name: /email/i })
- * and will fail if two elements match. Any honeypot, hidden, or duplicate input
- * MUST carry aria-hidden="true" and be excluded from the accessibility tree.
+ * The strict-mode Playwright tests use data-testid="login-email-input".
+ * The footer NewsletterForm renders a second email input on every page —
+ * using data-testid keeps selectors unambiguous.
  */
 'use client';
 
 import { useState } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
-import MagicLinkSubmitButton from '@/app/components/MagicLinkSubmitButton';
+import { MagicLinkSubmitButton } from '@/app/components/MagicLinkSubmitButton';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -48,7 +48,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-sm w-full space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Sign in to Mystique</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {/* Single, uniquely labelled email input — no duplicates in this form */}
@@ -78,7 +78,11 @@ export default function LoginPage() {
             </p>
           )}
 
-          <MagicLinkSubmitButton ariaLabel="Send magic link to sign in" />
+          <MagicLinkSubmitButton
+            idleLabel="Send magic link"
+            pendingLabel="Sending…"
+            ariaLabel="Send magic link to sign in"
+          />
         </form>
 
         <p className="text-sm text-muted-foreground text-center">
