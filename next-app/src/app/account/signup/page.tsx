@@ -67,6 +67,7 @@ export default async function SignupPage({
             <MagicLinkSubmitButton
               idleLabel="Create account"
               pendingLabel="Sending…"
+              ariaLabel="Create account"
             />
           </form>
           <SignupStatusMessage

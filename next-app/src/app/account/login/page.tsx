@@ -68,6 +68,7 @@ export default async function LoginPage({
             <MagicLinkSubmitButton
               idleLabel="Send magic link"
               pendingLabel="Sending…"
+              ariaLabel="Send magic link"
             />
           </form>
           <p className="text-sm leading-relaxed text-[#b8ab95]">
