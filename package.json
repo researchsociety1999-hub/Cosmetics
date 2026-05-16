@@ -5,6 +5,7 @@
     "dev": "npm run dev --workspace=next-app",
     "build": "npm run build --workspace=next-app",
     "start": "npm run start --workspace=next-app",
+    "lint": "npm run lint --workspace=next-app",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report"

@@ -53,9 +53,7 @@ test.describe("order confirmation", () => {
       .catch(() => false);
 
     if (hasSuccessHeading) {
-      await expect(
-        page.getByRole("link", { name: /continue shopping|shop|back to home/i }),
-      ).toBeVisible();
+      await expect(page.getByTestId("order-confirmation-continue-shopping")).toBeVisible();
     }
   });
 

@@ -31,14 +31,14 @@ export async function SiteChrome({
   showFooter?: boolean;
 }) {
   return (
-    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-transparent text-[#f6f0e6]">
+    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip overflow-y-visible bg-transparent text-[#f6f0e6]">
       <SkipToContent />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_0%,rgba(255,154,80,0.09),transparent_50%),radial-gradient(circle_at_86%_10%,rgba(212,175,55,0.07),transparent_26%),radial-gradient(circle_at_50%_88%,rgba(255,120,48,0.04),transparent_34%),radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.016),transparent_42%),linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.06)_40%,rgba(0,0,0,0.42)_100%)]"
       />
-      {/* Particle embers — parent must be position:relative so absolute children are anchored correctly */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px] relative">
+      {/* Particle embers — anchored to SiteChrome (position:relative); must stay out of document flow */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[520px]">
         <span className="mystic-particle mystic-particle-sm" style={{ left: "10%", top: "14%", opacity: 0.8 }} />
         <span className="mystic-particle mystic-particle-md" style={{ left: "76%", top: "12%", opacity: 0.8 }} />
         <span className="mystic-particle mystic-particle-sm" style={{ left: "88%", top: "36%", opacity: 0.8 }} />

@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 interface PageProps {
@@ -9,9 +8,25 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
   const params = await searchParams;
   const sessionId = params.session_id;
 
-  // No session_id — redirect home immediately
   if (!sessionId) {
-    redirect('/');
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
+        <div className="max-w-md w-full space-y-4 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">Order confirmation</h1>
+          <p className="text-muted-foreground" role="alert">
+            Invalid or missing checkout session. We could not verify your order — something went
+            wrong.
+          </p>
+          <Link
+            href="/shop"
+            data-testid="order-confirmation-continue-shopping"
+            className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
+          >
+            Continue shopping
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   // Mock / test session — render success UI so E2E tests pass without hitting Stripe
@@ -31,6 +46,7 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
           </p>
           <Link
             href="/shop"
+            data-testid="order-confirmation-continue-shopping"
             className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
           >
             Continue shopping
@@ -55,6 +71,7 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
         </p>
         <Link
           href="/shop"
+          data-testid="order-confirmation-continue-shopping"
           className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
         >
           Continue shopping

@@ -1382,6 +1382,15 @@ optgroup {
   margin-top: calc(-1 * var(--mystique-header-offset, 7rem));
 }
 
+/* Hero-first pages: cancel #main-content padding so flush pull isn't clipped by overflow-x */
+#main-content:has(.mystique-first-section) {
+  padding-top: 0;
+}
+
+#main-content:has(.mystique-first-section) .mystique-first-section {
+  margin-top: 0;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Homepage-only navbar tightening (removes "dead air" band above hero)        */
 /* -------------------------------------------------------------------------- */

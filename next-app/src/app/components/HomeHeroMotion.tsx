@@ -104,7 +104,7 @@ export function HomeHeroMotion({
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
         {/* aria-hidden removed: the brand lockup is meaningful content */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[56vh] items-end justify-center"
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[min(52vh,calc(100svh-14rem))] items-center justify-center pt-[var(--mystique-header-offset,7rem)]"
         >
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />

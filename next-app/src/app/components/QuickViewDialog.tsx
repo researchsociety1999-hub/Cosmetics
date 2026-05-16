@@ -48,7 +48,11 @@ export function QuickViewDialog({ product, open, onClose }: QuickViewDialogProps
   const [isPresenting, setIsPresenting] = useState(false);
 
   useEffect(() => {
-    if (open) setIsPresenting(true);
+    if (!open) return;
+    const id = window.requestAnimationFrame(() => {
+      setIsPresenting(true);
+    });
+    return () => window.cancelAnimationFrame(id);
   }, [open]);
 
   useEffect(() => {

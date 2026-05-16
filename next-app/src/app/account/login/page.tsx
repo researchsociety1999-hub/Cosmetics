@@ -13,7 +13,7 @@ type SearchParams = Promise<{ status?: string; email?: string; next?: string; me
 export const metadata: Metadata = {
   title: "Sign in",
   description:
-    "Sign in to Mystique with a secure email link—return to checkout, your bag, or order history.",
+    "Sign in to Mystique with a secure email link�??return to checkout, your bag, or order history.",
 };
 
 export const dynamic = "force-dynamic";
@@ -67,7 +67,8 @@ export default async function LoginPage({
             </label>
             <MagicLinkSubmitButton
               idleLabel="Send magic link"
-              pendingLabel="Sending…"
+              pendingLabel="Sending?"
+              ariaLabel="Send magic link to sign in"
             />
           </form>
           <p className="text-sm leading-relaxed text-[#b8ab95]">
@@ -147,7 +148,7 @@ function StatusMessage({
   if (status === "link-invalid") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        That email link is expired or was already used. Request a new magic link below—we
+        That email link is expired or was already used. Request a new magic link below�??we
         will send you a fresh one.
       </p>
     );

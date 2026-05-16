@@ -69,7 +69,8 @@ function getStripeSecretKey(): string {
 export function getStripeServerClient() {
   if (!stripeClient) {
     stripeClient = new Stripe(getStripeSecretKey(), {
-      apiVersion: "2025-04-30.basil",
+      // Pinned for production; SDK types may trail the pinned basil release.
+      apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion,
     });
   }
 
