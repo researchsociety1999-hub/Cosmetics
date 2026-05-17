@@ -31,7 +31,7 @@ export async function SiteChrome({
   showFooter?: boolean;
 }) {
   return (
-    <div className="relative min-h-screen w-full min-w-0 overflow-x-clip overflow-y-visible bg-transparent text-[#f6f0e6]">
+    <div className="relative flex min-h-screen w-full min-w-0 flex-col overflow-x-clip overflow-y-visible bg-transparent text-[#f6f0e6]">
       <SkipToContent />
       <div
         aria-hidden="true"
@@ -54,14 +54,13 @@ export async function SiteChrome({
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 outline-none"
-        style={{ paddingTop: "var(--mystique-header-offset, 7rem)" }}
+        className="mystique-main-content relative z-10 flex min-w-0 flex-1 flex-col outline-none"
       >
         {/* Prelaunch banner: shows only when MYSTIQUE_PRELAUNCH_BANNER=1 AND there are 0 purchasable products */}
         <PrelaunchBanner />
         {children}
+        {showFooter ? <Footer /> : null}
       </div>
-      {showFooter ? <Footer /> : null}
     </div>
   );
 }

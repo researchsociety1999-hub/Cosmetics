@@ -15,13 +15,15 @@ test.describe("account hub", () => {
 
   test("unauthenticated /account shows sign-in heading or redirects", async ({ page }) => {
     await gotoAndWait(page, "/account");
-    const url = page.url();
-    const onAuthPage =
-      url.includes("/account/login") || url.includes("/account/signup");
-    const hasHeading = await page
-      .getByRole("heading", { name: /sign in|create.*account/i })
-      .isVisible()
+    const authHeading = page.getByRole("heading", {
+      name: /sign in|create.*account/i,
+    });
+    const redirectedToAuth = await page
+      .waitForURL(/\/account\/(login|signup)/, { timeout: 15_000 })
+      .then(() => true)
       .catch(() => false);
-    expect(onAuthPage || hasHeading).toBe(true);
+    if (!redirectedToAuth) {
+      await expect(authHeading).toBeVisible({ timeout: 15_000 });
+    }
   });
 });

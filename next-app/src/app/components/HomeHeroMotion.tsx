@@ -28,7 +28,7 @@ export function HomeHeroMotion({
   return (
     <section
       data-hero-section="home"
-      className={`${mystiqueLayoutClass.firstSection} relative left-1/2 min-h-[100svh] w-[100dvw] -translate-x-1/2 overflow-hidden bg-black`}
+      className={`${mystiqueLayoutClass.firstSection} relative w-full min-h-[100svh] overflow-hidden bg-black`}
     >
       {/* ══════════════════════════════════════════════════════════
           LAYER 0 — background photograph (heavily darkened + desaturated)
@@ -104,7 +104,7 @@ export function HomeHeroMotion({
         {/* ── Centered logo — cinematic focal point (upper ~52 vh) ── */}
         {/* aria-hidden removed: the brand lockup is meaningful content */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 flex h-[min(52vh,calc(100svh-14rem))] items-center justify-center pt-[var(--mystique-header-offset,7rem)]"
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] flex h-[min(52vh,calc(100svh-14rem))] items-center justify-center pt-[var(--mystique-header-offset,7rem)]"
         >
           {/* Ember bloom — warm orange-gold glow behind the crescent */}
           <div className="absolute h-[min(54vh,30rem)] w-[min(92vw,54rem)] rounded-full bg-[radial-gradient(ellipse_72%_62%_at_50%_50%,rgba(255,100,20,0.14),rgba(214,168,95,0.075)_44%,transparent_74%)] blur-[56px] opacity-70" />
@@ -124,10 +124,10 @@ export function HomeHeroMotion({
         </div>
 
         {/* ── Copy block — anchored bottom-left ── */}
-        <div className="relative flex min-h-0 flex-1 items-end pb-12 sm:pb-14 lg:pb-[4.5rem]">
+        <div className="relative z-[2] flex min-h-0 flex-1 items-end pb-12 sm:pb-14 lg:pb-[4.5rem]">
           <div
             data-hero-copy="home"
-            className="relative z-10 w-full max-w-[32rem] pt-4 text-left md:max-w-[36rem] lg:max-w-[38rem]"
+            className="relative w-full max-w-[32rem] pt-4 text-left md:max-w-[36rem] lg:max-w-[38rem]"
           >
             {/* Eyebrow pill */}
             <div className="mystic-hero-reveal-pill mb-6 inline-flex items-center gap-2.5 rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(0,0,0,0.35)] px-4 py-2 backdrop-blur-sm">

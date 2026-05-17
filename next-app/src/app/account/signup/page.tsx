@@ -13,7 +13,7 @@ type SearchParams = Promise<{ status?: string; email?: string; next?: string; me
 export const metadata: Metadata = {
   title: "Create account",
   description:
-    "Create a Mystique account with your email—one magic link completes signup and sign-in.",
+    "Create a Mystique account with your email?one magic link completes signup and sign-in.",
 };
 
 export const dynamic = "force-dynamic";
@@ -66,7 +66,8 @@ export default async function SignupPage({
             </label>
             <MagicLinkSubmitButton
               idleLabel="Create account"
-              pendingLabel="Sending…"
+              pendingLabel="Sending?"
+              ariaLabel="Send magic link to create account"
             />
           </form>
           <SignupStatusMessage
@@ -119,7 +120,7 @@ function SignupStatusMessage({
   if (status === "auth-error" || status === "link-invalid") {
     return (
       <p className="text-sm text-[#d6a85f]">
-        That email link is expired or was already used. Request a new magic link below—we
+        That email link is expired or was already used. Request a new magic link below?we
         will send you a fresh one.
       </p>
     );

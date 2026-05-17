@@ -1362,6 +1362,11 @@ optgroup {
   --mystique-header-offset: 7rem;
 }
 
+/* Standard pages: reserve space for fixed navbar (hero-first pages override below). */
+.mystique-main-content {
+  padding-top: var(--mystique-header-offset, 7rem);
+}
+
 /*
  * Header offset model (SiteChrome `#main-content`):
  *
@@ -1382,13 +1387,23 @@ optgroup {
   margin-top: calc(-1 * var(--mystique-header-offset, 7rem));
 }
 
-/* Hero-first pages: cancel #main-content padding so flush pull isn't clipped by overflow-x */
+/* Hero-first pages: flush under navbar (no padding band; no negative-margin pull). */
 #main-content:has(.mystique-first-section) {
   padding-top: 0;
 }
 
 #main-content:has(.mystique-first-section) .mystique-first-section {
   margin-top: 0;
+}
+
+/* Home ends with NewsletterSection — avoid a second newsletter block + extra air before footer. */
+#main-content:has([data-hero-section="home"]) footer .mystique-footer-newsletter {
+  display: none;
+}
+
+#main-content:has([data-hero-section="home"]) footer.mystique-material--footer {
+  margin-top: 0;
+  border-top: 1px solid rgba(214, 168, 95, 0.08);
 }
 
 /* -------------------------------------------------------------------------- */

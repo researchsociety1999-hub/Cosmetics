@@ -245,7 +245,7 @@ export default async function HomePage() {
   return (
     <SiteChrome>
       <LCPPreload />
-      <main className="relative isolate min-w-0">
+      <main className="relative isolate min-w-0 w-full">
         {/*
           Homepage-only ambient: kintsugi / gold-vein reference (very low opacity) +
           procedural vein SVGs + vignette. Sits under film grain + sections; card
@@ -263,7 +263,7 @@ export default async function HomePage() {
           Hero uses `.mystique-first-section` on HomeHeroMotion (cancels #main-content
           padding via globals.css). Keep this stack outside overflow-x-clip (see below).
         */}
-        <div className="home-premium-stack min-w-0">
+        <div className="home-premium-stack w-full min-w-0">
           {/* 1. Hero */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 

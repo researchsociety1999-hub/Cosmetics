@@ -63,7 +63,7 @@ export function Footer() {
             </nav>
           </div>
 
-          <div className="mx-auto mt-2 max-w-3xl border-t border-[rgba(214,168,95,0.06)] pt-10">
+          <div className="mystique-footer-newsletter mx-auto mt-2 max-w-3xl border-t border-[rgba(214,168,95,0.06)] pt-10">
             <div className="flex flex-col items-center text-center md:items-start md:text-left">
               <p className={FOOTER_SECTION_LABEL_CLASS}>Join the list</p>
               <NewsletterForm />
