@@ -13,6 +13,11 @@ const BackToTopButton = dynamic(
   { ssr: false, loading: () => null }
 );
 
+const ChatWidget = dynamic(
+  () => import("./ChatWidget").then((m) => m.ChatWidget),
+  { ssr: false, loading: () => null }
+);
+
 type WindowWithIdleCallback = Window & {
   requestIdleCallback?: (
     callback: IdleRequestCallback,
@@ -50,6 +55,7 @@ export function DeferredClientBits() {
     <>
       <CookieBanner />
       <BackToTopButton />
+      <ChatWidget />
     </>
   );
 }

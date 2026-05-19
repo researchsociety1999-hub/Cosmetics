@@ -3,6 +3,14 @@ import { CHECKOUT_CURRENCY, getShippingAmountCents } from "./checkout";
 import { getConfiguredSiteUrl } from "./siteUrl";
 import type { AppliedPromo, CartSummary, Order } from "./types";
 
+/** Stripe v22: Checkout param types live on the sessions.create signature, not Stripe.Checkout. */
+type CheckoutSessionCreateParams = NonNullable<
+  Parameters<Stripe["checkout"]["sessions"]["create"]>[0]
+>;
+type CheckoutAllowedCountry = NonNullable<
+  NonNullable<CheckoutSessionCreateParams["shipping_address_collection"]>["allowed_countries"]
+>[number];
+
 const stripeCurrency = CHECKOUT_CURRENCY.toLowerCase();
 
 /**
@@ -45,7 +53,7 @@ const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
  * Format: comma-separated ISO 3166-1 alpha-2 codes, e.g. "US,CA,GB"
  * Defaults to "US" if not set.
  */
-function getAllowedShippingCountries(): Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] {
+function getAllowedShippingCountries(): CheckoutAllowedCountry[] {
   const raw = process.env.NEXT_PUBLIC_STRIPE_ALLOWED_COUNTRIES?.trim();
   if (!raw) {
     return ["US"];
@@ -53,7 +61,7 @@ function getAllowedShippingCountries(): Stripe.Checkout.SessionCreateParams.Ship
   return raw
     .split(",")
     .map((c) => c.trim().toUpperCase())
-    .filter(Boolean) as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[];
+    .filter(Boolean) as CheckoutAllowedCountry[];
 }
 
 let stripeClient: Stripe | null = null;
@@ -69,9 +77,9 @@ function getStripeSecretKey(): string {
 export function getStripeServerClient() {
   if (!stripeClient) {
     stripeClient = new Stripe(getStripeSecretKey(), {
-      // Pinned for production; SDK types may trail the pinned basil release.
-      apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion,
-    });
+      // Pinned for production; SDK types target dahlia while the account uses basil.
+      apiVersion: "2025-04-30.basil",
+    } as unknown as NonNullable<ConstructorParameters<typeof Stripe>[1]>);
   }
 
   return stripeClient;
@@ -125,7 +133,7 @@ export async function createStripeCheckoutSession({
   const netSubtotal = Math.max(0, cart.subtotalCents - (order.discount_cents ?? 0));
   const shippingAmountCents =
     order.shipping_cents ?? getShippingAmountCents(netSubtotal);
-  let discounts: Stripe.Checkout.SessionCreateParams["discounts"];
+  let discounts: CheckoutSessionCreateParams["discounts"];
   if (appliedPromo && order.discount_cents > 0) {
     try {
       const coupon = await stripe.coupons.create({
@@ -153,7 +161,7 @@ export async function createStripeCheckoutSession({
     ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&guest_token=${encodeURIComponent(guestToken)}`
     : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
 
-  const sessionParams: Stripe.Checkout.SessionCreateParams = {
+  const sessionParams: CheckoutSessionCreateParams = {
     mode: "payment",
     customer_email: order.email,
     client_reference_id: order.id,

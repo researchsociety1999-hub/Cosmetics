@@ -86,6 +86,7 @@ export default function RootLayout({
       >
         <div className="mystique-app-shell">
           {children}
+          {/* Cookie banner, back-to-top, ritual companion chat */}
           <DeferredClientBits />
         </div>
       </body>

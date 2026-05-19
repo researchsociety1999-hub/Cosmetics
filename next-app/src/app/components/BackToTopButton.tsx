@@ -35,7 +35,7 @@ export function BackToTopButton() {
         const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
       }}
-      className={`fixed bottom-6 right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border text-[#f5eee3] transition-[opacity,transform,background-color,border-color,box-shadow] duration-300 md:bottom-8 md:right-7 ${
+      className={`fixed bottom-[6.75rem] right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border text-[#f5eee3] transition-[opacity,transform,background-color,border-color,box-shadow] duration-300 md:bottom-[7.25rem] md:right-7 ${
         isVisible
           ? "pointer-events-auto border-[rgba(214,168,95,0.42)] bg-[rgba(214,168,95,0.12)] opacity-100 shadow-[0_0_28px_rgba(214,168,95,0.22)] translate-y-0"
           : "pointer-events-none border-transparent bg-transparent opacity-0 translate-y-2"

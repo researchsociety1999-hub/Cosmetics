@@ -1,3 +1,5 @@
+const path = require("path");
+
 function extraImageRemotePatterns() {
   const raw = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS || "";
   return raw
@@ -17,8 +19,18 @@ function extraImageRemotePatterns() {
 //     resend CDN; only affects img-src, never script-src)
 //   - Google Fonts (font-src)
 //   - Fontshare (font-src) — used by Literata / Inter variable fonts
-// All values are origin-scoped — no 'unsafe-eval' or wildcard '*' in script-src.
+// All values are origin-scoped — no wildcard '*' in script-src.
+// 'unsafe-eval' is dev-only: React/Next use eval() for RSC debugging (never in prod).
 // Iterate this policy as the app evolves; use report-uri/report-to in prod.
+const isDev = process.env.NODE_ENV === "development";
+const scriptSrc = [
+  "script-src",
+  "'self'",
+  "'unsafe-inline'",
+  ...(isDev ? ["'unsafe-eval'"] : []),
+  "https://js.stripe.com",
+].join(" ");
+
 const securityHeaders = [
   {
     key: "X-Frame-Options",
@@ -58,7 +70,7 @@ const securityHeaders = [
       // Scripts: self + Next.js inline runtime chunks (hash/nonce preferred in
       // future; 'unsafe-inline' is needed only for some Stripe SDKs).
       // Stripe requires js.stripe.com for its JS bundle.
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      scriptSrc,
 
       // Styles: self + Google Fonts stylesheet + inline Tailwind utilities.
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
@@ -108,11 +120,10 @@ const nextConfig = {
   /** Hides the floating Next.js dev indicator (N badge) in development; no effect on production builds. */
   devIndicators: false,
   turbopack: {
-    // This repo is a workspace. Pin the Turbopack root so it doesn't incorrectly infer `src/app`
-    // as the workspace root when commands are launched from tooling (e.g. Playwright webServer).
-    root: __dirname,
+    // npm workspaces hoist `next` to the repo root — point Turbopack at that root.
+    root: path.join(__dirname, ".."),
   },
-  outputFileTracingRoot: __dirname,
+  outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
     // Next 16 defaults to qualities: [75]; hero uses quality={88} and story image uses quality={90}.
     qualities: [75, 88, 90],
