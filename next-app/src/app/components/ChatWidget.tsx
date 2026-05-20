@@ -26,7 +26,7 @@ const GREETING_BUBBLE =
   "Hi ✨ I can help you build a ritual, pick products, and answer ingredient questions.";
 
 const STARTER_MESSAGE =
-  "Welcome—I’m your Mystique ritual companion. I can help you shape a morning or evening routine, suggest formulas that fit your goals, and explain ingredients in plain language. What would you like to explore?";
+  "Welcome—I'm your Mystique ritual companion. I can help you shape a morning or evening routine, suggest formulas that fit your goals, and explain ingredients in plain language. What would you like to explore?";
 
 const QUICK_SUGGESTIONS = [
   "Build my routine",
@@ -36,6 +36,11 @@ const QUICK_SUGGESTIONS = [
 
 const MASCOT_SRC = "/mystique-chat-mascot.png";
 
+// Height of the circular launcher button (matches h-[4.75rem] / h-[5.25rem]).
+// Written to --chat-launcher-h so BackToTopButton can stack above it.
+const LAUNCHER_H_MOBILE = 76; // 4.75rem @ 16px base
+const LAUNCHER_H_MD = 84;    // 5.25rem @ 16px base
+
 function createId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -43,6 +48,24 @@ function createId(): string {
 function extractProductSlug(pathname: string): string | undefined {
   const match = /^\/products\/([^/?#]+)/.exec(pathname);
   return match?.[1];
+}
+
+/** Keep --chat-launcher-h in sync with the actual breakpoint so
+ *  BackToTopButton always stacks cleanly above the chat button. */
+function useChatLauncherHeight() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const mq = window.matchMedia("(min-width: 768px)");
+
+    const write = () => {
+      const h = mq.matches ? LAUNCHER_H_MD : LAUNCHER_H_MOBILE;
+      root.style.setProperty("--chat-launcher-h", `${h}px`);
+    };
+
+    write();
+    mq.addEventListener("change", write);
+    return () => mq.removeEventListener("change", write);
+  }, []);
 }
 
 export function ChatWidget() {
@@ -58,6 +81,8 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+
+  useChatLauncherHeight();
 
   const hasUserMessage = messages.some((m) => m.role === "user");
 
@@ -218,10 +243,15 @@ export function ChatWidget() {
     }
   };
 
+  // Derived bottom position: sit above cookie bar + safe area + 16px gap.
+  // All vars are seeded in globals.css :root so the expression never NaNs.
+  const launcherBottom = "calc(var(--cookie-bar-h, 0px) + var(--safe-bottom, 0px) + 16px)";
+
   return (
     <>
       <div
-        className="pointer-events-none fixed bottom-[5.75rem] right-4 z-[60] flex flex-col items-end md:bottom-[6.25rem] md:right-6"
+        className="pointer-events-none fixed right-4 z-[60] flex flex-col items-end md:right-6"
+        style={{ bottom: launcherBottom }}
         aria-live="polite"
       >
         {showGreetingBubble && phase === "greeting" && (
@@ -269,8 +299,11 @@ export function ChatWidget() {
           role="dialog"
           aria-modal="false"
           aria-labelledby={`${panelTitleId}-title`}
-          className="fixed bottom-[5.75rem] right-4 z-[59] flex w-[min(100vw-2rem,24.5rem)] flex-col overflow-hidden rounded-[1.35rem] border border-[rgba(214,168,95,0.24)] bg-[rgba(6,7,12,0.92)] shadow-[0_28px_80px_rgba(0,0,0,0.72),0_0_48px_rgba(255,154,60,0.08)] backdrop-blur-xl mystique-chat-panel-in md:bottom-[6.25rem] md:right-6"
-          style={{ maxHeight: "min(72vh, 640px)" }}
+          className="fixed right-4 z-[59] flex w-[min(100vw-2rem,24.5rem)] flex-col overflow-hidden rounded-[1.35rem] border border-[rgba(214,168,95,0.24)] bg-[rgba(6,7,12,0.92)] shadow-[0_28px_80px_rgba(0,0,0,0.72),0_0_48px_rgba(255,154,60,0.08)] backdrop-blur-xl mystique-chat-panel-in md:right-6"
+          style={{
+            bottom: `calc(${launcherBottom} + var(--chat-launcher-h, 76px) + 8px)`,
+            maxHeight: "min(72vh, 640px)",
+          }}
         >
           <header className="flex items-start gap-3 border-b border-[rgba(214,168,95,0.16)] px-4 py-3.5">
             <div className="relative mt-0.5 h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[rgba(255,255,255,0.03)] ring-1 ring-[rgba(214,168,95,0.22)]">
