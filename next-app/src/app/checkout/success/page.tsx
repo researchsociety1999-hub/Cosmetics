@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteChrome } from "../../components/SiteChrome";
+import { PurchaseEvent } from "../../components/PurchaseEvent";
 import { getOrderNumberByStripeSessionIdForDisplay } from "../../lib/checkoutOrders";
 import { formatMoney } from "../../lib/format";
 import {
@@ -75,7 +76,7 @@ export default async function CheckoutSuccessPage({
             {isConfirmed ? "Payment complete" : "Payment confirmation"}
           </p>
           <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            {isConfirmed ? "Your order is confirmed." : "We're confirming your payment."}
+            {isConfirmed ? "Your order is confirmed." : "We\u2019re confirming your payment."}
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
             {isConfirmed
@@ -95,7 +96,7 @@ export default async function CheckoutSuccessPage({
                 isConfirmed
                   ? "Payment confirmed. Your order is now processing."
                   : stripeStatus.isPaid
-                    ? "Payment received. We're confirming your order."
+                    ? "Payment received. We\u2019re confirming your order."
                     : "Waiting for payment confirmation."
               }
             />
@@ -104,7 +105,7 @@ export default async function CheckoutSuccessPage({
               body={
                 isConfirmed
                   ? "A confirmation email will arrive shortly."
-                  : "We'll send the order confirmation email once payment is fully verified."
+                  : "We\u2019ll send the order confirmation email once payment is fully verified."
               }
             />
             <InfoCard
@@ -169,6 +170,18 @@ export default async function CheckoutSuccessPage({
           </div>
         </div>
       </main>
+
+      {/*
+        GA4 purchase event — fires once on mount when:
+          1. orderNumber exists (payment confirmed by webhook)
+          2. Cookie consent === "accepted"
+        Guarded by sessionStorage so page refreshes don't double-count.
+      */}
+      <PurchaseEvent
+        transactionId={orderNumber}
+        valueCents={stripeStatus.amountCents}
+        currency="USD"
+      />
     </SiteChrome>
   );
 }
