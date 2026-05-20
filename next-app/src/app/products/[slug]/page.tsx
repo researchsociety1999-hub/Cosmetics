@@ -323,7 +323,7 @@ export default async function ProductPage({
                 place in your routine.
               </p>
             </header>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:gap-4">
+            <div className="mystic-product-grid mystic-product-grid--catalog">
               {routinePurchasable.map((item, index) => (
                 <div key={item.id} className="relative">
                   <span className="absolute left-3 top-3 z-10 rounded-full border border-[rgba(214,168,95,0.35)] bg-[rgba(6,8,12,0.85)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#f0d19a]">
@@ -411,7 +411,7 @@ export default async function ProductPage({
                 Pairs well with
               </h2>
             </header>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-4">
+            <div className="mystic-product-grid mystic-product-grid--catalog">
               {relatedPurchasable.map((item) => (
                 <ProductCard key={item.id} product={item} showQuickView />
               ))}

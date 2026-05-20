@@ -145,7 +145,9 @@ export default function ProductCard({
         className={`relative block shrink-0 overflow-hidden ${mediaRadius} ${linkPad} outline-none ring-offset-2 ring-offset-[#05070d] focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.45)] ${
           featuredHero
             ? "w-full max-w-[min(20.5rem,92vw)] mx-auto md:mx-0 md:w-[min(42%,20.5rem)] md:max-w-none md:self-center"
-            : ""
+            : isShopCard
+              ? "mx-auto w-full max-w-[20rem]"
+              : ""
         }`}
       >
         <div
@@ -241,7 +243,7 @@ export default function ProductCard({
             compact
               ? "min-w-0 space-y-1 sm:space-y-1.5"
               : isShopCard
-                ? "min-w-0 space-y-1.5 sm:space-y-2 min-h-[4.25rem]"
+                ? "min-w-0 space-y-1.5 sm:space-y-2"
                 : "min-w-0 space-y-1 sm:space-y-1.5"
           }
         >
@@ -275,7 +277,7 @@ export default function ProductCard({
                 compact
                   ? "line-clamp-2 text-[0.62rem] leading-relaxed text-[#a89e8c] sm:text-[0.65rem]"
                   : isShopCard
-                    ? "line-clamp-2 text-[0.8125rem] leading-[1.55] text-[#8f867a] md:text-[0.84rem]"
+                    ? "line-clamp-2 text-[0.65rem] leading-[1.55] text-[#928a7e] md:text-[0.68rem]"
                     : "line-clamp-2 text-xs leading-relaxed text-[#a89e8c] md:text-[0.8125rem]"
               }
             >

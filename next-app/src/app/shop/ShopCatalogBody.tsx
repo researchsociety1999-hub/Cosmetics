@@ -135,7 +135,7 @@ export async function ShopCatalogBody({
           <div
             className={`mystic-product-grid${
               section.productCount <= 2 ? " mystic-product-grid--balanced" : ""
-            }`}
+            }${section.productCount === 1 ? " mystic-product-grid--single" : ""}`}
           >
             {[...section.products]
               .sort((a, b) => Number(isProductPurchasable(b)) - Number(isProductPurchasable(a)))

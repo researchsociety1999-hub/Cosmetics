@@ -39,7 +39,7 @@ export function BackToTopButton() {
         // Sits above the chat launcher (76px tall) + gap, above cookie bar,
         // above safe-area. All three vars are seeded in globals.css :root.
         bottom:
-          "calc(var(--cookie-bar-h, 0px) + var(--safe-bottom, 0px) + var(--chat-launcher-h, 76px) + 12px)",
+          "calc(var(--cookie-bar-h, 0px) + var(--safe-bottom, 0px) + var(--chat-launcher-h, 58px) + 12px)",
       }}
       className={`fixed right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border text-[#f5eee3] transition-[opacity,transform,background-color,border-color,box-shadow] duration-300 md:right-7 ${
         isVisible

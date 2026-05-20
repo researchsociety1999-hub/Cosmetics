@@ -134,7 +134,7 @@ export function SearchExperience({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-4">
+        <div className="mystic-product-grid mystic-product-grid--catalog">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} showQuickView />
           ))}

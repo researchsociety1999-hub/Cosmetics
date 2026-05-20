@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { RitualCompanionAvatar } from "./RitualCompanionAvatar";
 import {
   useCallback,
   useEffect,
@@ -34,12 +34,10 @@ const QUICK_SUGGESTIONS = [
   "Ingredient question",
 ] as const;
 
-const MASCOT_SRC = "/mystique-chat-mascot.png";
-
-// Height of the circular launcher button (matches h-[4.75rem] / h-[5.25rem]).
+// Height of the circular launcher button (matches h-[3.65rem] / md:h-[3.9rem]).
 // Written to --chat-launcher-h so BackToTopButton can stack above it.
-const LAUNCHER_H_MOBILE = 76; // 4.75rem @ 16px base
-const LAUNCHER_H_MD = 84;    // 5.25rem @ 16px base
+const LAUNCHER_H_MOBILE = 58; // 3.65rem @ 16px base
+const LAUNCHER_H_MD = 62; // 3.9rem @ 16px base
 
 function createId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -270,9 +268,9 @@ export function ChatWidget() {
           aria-expanded={phase === "open"}
           aria-controls={panelTitleId}
           onClick={handleLauncherClick}
-          className={`pointer-events-auto group relative flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full transition-[transform,box-shadow,filter] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e8c56e] md:h-[5.25rem] md:w-[5.25rem] ${
+          className={`pointer-events-auto group relative flex h-[3.65rem] w-[3.65rem] items-center justify-center rounded-full transition-[transform,box-shadow,filter] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e8c56e] md:h-[3.9rem] md:w-[3.9rem] ${
             isWaving ? "mystique-chat-mascot-wave" : "mystique-chat-mascot-idle"
-          } hover:-translate-y-1 hover:shadow-[0_0_36px_rgba(255,154,60,0.28),0_22px_56px_rgba(0,0,0,0.65)] active:scale-[0.97]`}
+          } hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(255,154,60,0.22),0_18px_44px_rgba(0,0,0,0.58)] active:scale-[0.97]`}
           style={{
             boxShadow:
               "0 0 0 1px rgba(214,168,95,0.22), 0 0 28px rgba(255,154,60,0.16), 0 18px 48px rgba(0,0,0,0.58)",
@@ -282,13 +280,10 @@ export function ChatWidget() {
             aria-hidden="true"
             className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_72%,rgba(255,154,60,0.18),transparent_62%)] opacity-80 transition-opacity group-hover:opacity-100"
           />
-          <Image
-            src={MASCOT_SRC}
-            alt=""
-            width={112}
-            height={112}
-            priority={false}
-            className="relative h-[4.25rem] w-[4.25rem] object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.45)] md:h-[4.75rem] md:w-[4.75rem]"
+          <RitualCompanionAvatar
+            isWaving={isWaving}
+            variant="launcher"
+            className="relative"
           />
         </button>
       </div>
@@ -301,19 +296,13 @@ export function ChatWidget() {
           aria-labelledby={`${panelTitleId}-title`}
           className="fixed right-4 z-[59] flex w-[min(100vw-2rem,24.5rem)] flex-col overflow-hidden rounded-[1.35rem] border border-[rgba(214,168,95,0.24)] bg-[rgba(6,7,12,0.92)] shadow-[0_28px_80px_rgba(0,0,0,0.72),0_0_48px_rgba(255,154,60,0.08)] backdrop-blur-xl mystique-chat-panel-in md:right-6"
           style={{
-            bottom: `calc(${launcherBottom} + var(--chat-launcher-h, 76px) + 8px)`,
+            bottom: `calc(${launcherBottom} + var(--chat-launcher-h, 58px) + 8px)`,
             maxHeight: "min(72vh, 640px)",
           }}
         >
           <header className="flex items-start gap-3 border-b border-[rgba(214,168,95,0.16)] px-4 py-3.5">
-            <div className="relative mt-0.5 h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[rgba(255,255,255,0.03)] ring-1 ring-[rgba(214,168,95,0.22)]">
-              <Image
-                src={MASCOT_SRC}
-                alt=""
-                width={44}
-                height={44}
-                className="h-full w-full object-contain"
-              />
+            <div className="relative mt-0.5 flex h-9 w-9 shrink-0 items-end justify-center overflow-hidden rounded-full bg-[rgba(255,255,255,0.03)] ring-1 ring-[rgba(214,168,95,0.22)]">
+              <RitualCompanionAvatar variant="header" />
             </div>
             <div className="min-w-0 flex-1">
               <h2
