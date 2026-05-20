@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Literata } from "next/font/google";
 import type { ReactNode } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DeferredClientBits } from "./components/DeferredClientBits";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
@@ -96,6 +97,8 @@ export default function RootLayout({
         {process.env.NODE_ENV === "production" && gaMeasurementId && (
           <GoogleAnalytics gaId={gaMeasurementId} />
         )}
+        {/* Vercel Speed Insights — no env var needed; active on all Vercel deploys */}
+        <SpeedInsights />
       </body>
     </html>
   );
