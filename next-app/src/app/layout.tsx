@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Literata } from "next/font/google";
 import type { ReactNode } from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { DeferredClientBits } from "./components/DeferredClientBits";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
@@ -68,6 +69,8 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html
       lang="en"
@@ -89,6 +92,10 @@ export default function RootLayout({
           {/* Cookie banner, back-to-top, ritual companion chat */}
           <DeferredClientBits />
         </div>
+        {/* Google Analytics 4 — production only; no-op if env var is unset */}
+        {process.env.NODE_ENV === "production" && gaMeasurementId && (
+          <GoogleAnalytics gaId={gaMeasurementId} />
+        )}
       </body>
     </html>
   );
