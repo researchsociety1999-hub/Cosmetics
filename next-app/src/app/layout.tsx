@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Literata } from "next/font/google";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DeferredClientBits } from "./components/DeferredClientBits";
+import { GoogleAnalyticsTracker } from "./components/GoogleAnalytics";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import { getConfiguredSiteUrl } from "./lib/siteUrl";
 import "./globals.css";
@@ -93,10 +95,22 @@ export default function RootLayout({
           {/* Cookie banner, back-to-top, ritual companion chat */}
           <DeferredClientBits />
         </div>
-        {/* Google Analytics 4 — production only; no-op if env var is unset */}
+
+        {/* Google Analytics 4 — production only; no-op if env var is unset.
+            GoogleAnalytics loads gtag.js + fires the initial page_view.
+            GoogleAnalyticsTracker handles consent gate + SPA route-change
+            page_views (App Router does not fire these automatically).
+            Suspense boundary is required because GoogleAnalyticsTracker
+            uses useSearchParams(). */}
         {process.env.NODE_ENV === "production" && gaMeasurementId && (
-          <GoogleAnalytics gaId={gaMeasurementId} />
+          <>
+            <GoogleAnalytics gaId={gaMeasurementId} />
+            <Suspense fallback={null}>
+              <GoogleAnalyticsTracker measurementId={gaMeasurementId} />
+            </Suspense>
+          </>
         )}
+
         {/* Vercel Speed Insights — no env var needed; active on all Vercel deploys */}
         <SpeedInsights />
       </body>
