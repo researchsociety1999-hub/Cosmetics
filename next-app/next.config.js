@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("path");
 
 function extraImageRemotePatterns() {
@@ -12,16 +13,9 @@ function extraImageRemotePatterns() {
 // ---------------------------------------------------------------------------
 // Security headers
 // ---------------------------------------------------------------------------
-// CSP is intentionally permissive where third-party services require it:
-//   - Supabase (storage + auth callbacks)
-//   - Stripe (JS + iframe for payment elements)
-//   - Resend / email assets (images in transactional emails are served from
-//     resend CDN; only affects img-src, never script-src)
-//   - Google Fonts (font-src)
-//   - Fontshare (font-src) — used by Literata / Inter variable fonts
-// All values are origin-scoped — no wildcard '*' in script-src.
-// 'unsafe-eval' is dev-only: React/Next use eval() for RSC debugging (never in prod).
-// Iterate this policy as the app evolves; use report-uri/report-to in prod.
+// CSP allows third-party services required by the storefront (Supabase, Stripe,
+// optional GA4, OpenRouter chat, Vercel Speed Insights). 'unsafe-inline' is
+// required for Next.js inline bootstrap scripts; nonce-based CSP is not wired yet.
 const isDev = process.env.NODE_ENV === "development";
 const scriptSrc = [
   "script-src",
@@ -29,12 +23,15 @@ const scriptSrc = [
   "'unsafe-inline'",
   ...(isDev ? ["'unsafe-eval'"] : []),
   "https://js.stripe.com",
+  ...(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    ? ["https://www.googletagmanager.com"]
+    : []),
 ].join(" ");
 
 const securityHeaders = [
   {
     key: "X-Frame-Options",
-    value: "SAMEORIGIN",
+    value: "DENY",
   },
   {
     key: "X-Content-Type-Options",
@@ -46,71 +43,40 @@ const securityHeaders = [
   },
   {
     key: "Permissions-Policy",
-    // Lock down powerful features we don't use on this storefront.
-    value: "camera=(), microphone=(), geolocation=(), payment=(self)",
-  },
-  {
-    key: "Cross-Origin-Opener-Policy",
-    // Required for SharedArrayBuffer; keeps the browsing context group isolated.
-    value: "same-origin-allow-popups",
-  },
-  {
-    key: "Cross-Origin-Embedder-Policy",
-    // "unsafe-none" is the safe default for storefronts embedding Stripe iframes
-    // and Supabase auth pop-ups.  Switch to "require-corp" only after all
-    // cross-origin resources ship CORP headers.
-    value: "unsafe-none",
+    value: "camera=(), microphone=(), geolocation=()",
   },
   {
     key: "Content-Security-Policy",
     value: [
-      // Default: same-origin only.
       "default-src 'self'",
-
-      // Scripts: self + Next.js inline runtime chunks (hash/nonce preferred in
-      // future; 'unsafe-inline' is needed only for some Stripe SDKs).
-      // Stripe requires js.stripe.com for its JS bundle.
       scriptSrc,
-
-      // Styles: self + Google Fonts stylesheet + inline Tailwind utilities.
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
-
-      // Fonts: self + Google Fonts binary files + Fontshare binary files.
-      "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com data:",
-
-      // Images: self + all allowed Next/Image remote hosts + data URIs
-      // (used by inline SVG placeholders / film grain).
+      "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com",
+      "font-src 'self' https://api.fontshare.com https://fonts.gstatic.com data:",
       [
         "img-src",
         "'self'",
         "data:",
         "blob:",
+        "https://*.supabase.co",
+        "https://vercel.com",
         "https://placehold.co",
         "https://images.unsplash.com",
-        "https://via.placeholder.com",
-        "https://*.supabase.co",
-        "https://*.supabase.in",
       ].join(" "),
-
-      // Connections: self + Supabase API + Stripe API.
-      "connect-src 'self' https://*.supabase.co https://*.supabase.in https://api.stripe.com",
-
-      // Frames: Stripe Payment Element renders inside a cross-origin iframe.
+      [
+        "connect-src",
+        "'self'",
+        "https://*.supabase.co",
+        "https://api.stripe.com",
+        "https://openrouter.ai",
+        "https://vitals.vercel-insights.com",
+        ...(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+          ? ["https://www.google-analytics.com", "https://www.googletagmanager.com"]
+          : []),
+      ].join(" "),
       "frame-src https://js.stripe.com https://hooks.stripe.com",
-
-      // Workers: none beyond self (no SW for now).
-      "worker-src 'self' blob:",
-
-      // Media: self only.
-      "media-src 'self'",
-
-      // Manifests, objects, base-uri.
-      "manifest-src 'self'",
+      "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",
-
-      // Upgrade all insecure requests in production.
-      "upgrade-insecure-requests",
     ].join("; "),
   },
 ];

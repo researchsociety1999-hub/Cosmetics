@@ -1,7 +1,11 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  isAdminLoginLockedOut,
+  recordAdminLoginFailure,
+} from "../lib/adminLoginAttempts";
 import {
   getAdminCookieName,
   isAdminConfigured,
@@ -9,12 +13,20 @@ import {
   verifyAdminSessionToken,
 } from "../lib/adminSession";
 import { getSafeNextPath } from "../lib/authRedirect";
+import { getClientIpFromHeaders } from "../lib/rateLimit";
 
-const MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
+const MAX_AGE_SECONDS = 60 * 60 * 24; // 24 hours
 
 export async function loginAdminAction(formData: FormData): Promise<void> {
   if (!isAdminConfigured()) {
     redirect("/admin/login?error=config");
+  }
+
+  const headerStore = await headers();
+  const clientIp = getClientIpFromHeaders(headerStore);
+
+  if (isAdminLoginLockedOut(clientIp)) {
+    redirect("/admin/login?error=locked");
   }
 
   const password = String(formData.get("password") ?? "").trim();
@@ -25,6 +37,7 @@ export async function loginAdminAction(formData: FormData): Promise<void> {
   );
 
   if (!password || password !== expected) {
+    recordAdminLoginFailure(clientIp);
     redirect("/admin/login?error=1");
   }
 
@@ -37,7 +50,7 @@ export async function loginAdminAction(formData: FormData): Promise<void> {
   cookieStore.set(getAdminCookieName(), token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     maxAge: MAX_AGE_SECONDS,
   });

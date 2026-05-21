@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSafeNextPath } from "../lib/authRedirect";
+import { checkRateLimit, getClientIpFromHeaders } from "../lib/rateLimit";
 import { getConfiguredSiteUrl } from "../lib/siteUrl";
 import { createSupabaseServerClient } from "../lib/supabaseServer";
 
@@ -86,13 +87,19 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
     redirect(`${statusPath}?status=missing-email`);
   }
 
+  const headerStore = await headers();
+  const clientIp = getClientIpFromHeaders(headerStore);
+  const rateLimitResult = await checkRateLimit(`auth-magic-link:${clientIp}`);
+  if (!rateLimitResult.success) {
+    redirect(`${statusPath}?status=rate-limited`);
+  }
+
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
     redirect(`${statusPath}?status=not-configured`);
   }
 
-  const headerStore = await headers();
   const origin = buildOrigin(
     headerStore.get("origin"),
     headerStore.get("host"),

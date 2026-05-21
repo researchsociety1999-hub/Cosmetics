@@ -56,6 +56,11 @@ export default async function AdminLoginPage({
               That password didn&apos;t match. Try again.
             </p>
           ) : null}
+          {params.error === "locked" ? (
+            <p className="text-sm text-[#d6a85f]" role="alert">
+              Too many login attempts. Try again in 1 hour.
+            </p>
+          ) : null}
           {params.error === "config" ? (
             <p className="text-sm text-[#d6a85f]" role="alert">
               Server configuration is incomplete. Check environment variables.

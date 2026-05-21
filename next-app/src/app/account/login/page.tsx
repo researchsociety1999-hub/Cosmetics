@@ -172,6 +172,14 @@ function StatusMessage({
     );
   }
 
+  if (status === "rate-limited") {
+    return (
+      <p className="text-sm text-[#d6a85f]">
+        Too many requests. Please wait 10 minutes before trying again.
+      </p>
+    );
+  }
+
   if (status === "error") {
     const detail = sanitizeClientAuthMessage(message);
     return (
