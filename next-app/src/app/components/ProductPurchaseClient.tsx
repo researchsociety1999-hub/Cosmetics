@@ -11,6 +11,7 @@ import { FREE_SHIPPING_THRESHOLD_CENTS } from "../lib/checkout";
 import { isProductPurchasable } from "../lib/productMerch";
 import type { Product, ProductVariant } from "../lib/types";
 import { WaitlistModal } from "./WaitlistModal";
+import { ProductVolumeSizeLabel } from "./ProductVolumeSizeLabel";
 
 type ProductPurchaseClientProps = {
   product: Product;
@@ -97,7 +98,6 @@ export function ProductPurchaseClient({
     if (isComingSoon) {
       return false;
     }
-    // Canonical inventory truth: product-level flags first; variants refine selection only.
     if (!isProductPurchasable(product)) {
       return false;
     }
@@ -125,7 +125,6 @@ export function ProductPurchaseClient({
       return "In stock";
     }
     if (product.stock == null) {
-      // `stock=null` means "unknown quantity" (do not imply low stock or a guarantee).
       return "Available";
     }
     return "Low stock";
@@ -142,6 +141,9 @@ export function ProductPurchaseClient({
   return (
     <>
       <div ref={anchorRef} id="product-purchase-block" className="space-y-6">
+        {/* ── Volume / size label ── */}
+        <ProductVolumeSizeLabel label={(product as Product & { volume_size_label?: string }).volume_size_label} />
+
         <div className="mystic-card flex flex-wrap items-end justify-between gap-4 p-5">
           <div className="flex flex-col gap-1">
             {showStrike ? (
@@ -179,7 +181,7 @@ export function ProductPurchaseClient({
               Coming soon
             </p>
             <p>
-              This formula is in pre-launch. Leave your email and we’ll send a note when it’s
+              This formula is in pre-launch. Leave your email and we'll send a note when it's
               available.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">

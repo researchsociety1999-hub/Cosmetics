@@ -50,6 +50,9 @@ export const revalidate = 30;
 
 // ---------------------------------------------------------------------------
 // SectionIntro
+// CTA audit: secondary section CTAs use ghost/understated style so the
+// hero (in HomeHeroMotion) remains the single dominant primary action.
+// All CTA links meet the 44px min-height touch target.
 // ---------------------------------------------------------------------------
 function SectionIntro({
   eyebrow,
@@ -86,9 +89,15 @@ function SectionIntro({
         ) : null}
       </div>
       {ctaHref && ctaLabel ? (
+        /*
+         * CTA hierarchy audit:
+         * Section-level CTAs are intentionally ghost / understated so they
+         * don't compete with the hero's primary "Shop the collection" button.
+         * min-h-[44px] ensures WCAG 2.5.5 touch target compliance.
+         */
         <Link
           href={ctaHref}
-          className="mystic-button-secondary inline-flex items-center justify-center px-6 py-3 text-[0.66rem] uppercase tracking-[0.26em] transition-[color,border-color,background-color] duration-500 ease-out motion-reduce:transition-none"
+          className="inline-flex min-h-[44px] items-center justify-center self-start border border-[rgba(214,168,95,0.2)] bg-transparent px-6 py-2.5 text-[0.64rem] uppercase tracking-[0.26em] text-[#b5a896] backdrop-blur-sm transition-[border-color,color,background-color] duration-500 ease-out hover:border-[rgba(214,168,95,0.32)] hover:bg-[rgba(214,168,95,0.06)] hover:text-[#e8dfd2] motion-reduce:transition-none md:self-auto"
         >
           {ctaLabel}
         </Link>
@@ -165,9 +174,10 @@ async function JournalHomeSection() {
               Skincare reads, written with care.
             </h2>
           </div>
+          {/* Ghost CTA — subordinate to hero primary action */}
           <Link
             href="/journal"
-            className="shrink-0 self-start border border-[rgba(214,168,95,0.14)] bg-[rgba(2,3,6,0.28)] px-6 py-3 text-[0.62rem] uppercase tracking-[0.28em] text-[#b5a896] backdrop-blur-sm transition-[border-color,color,background-color] duration-500 ease-out hover:border-[rgba(214,168,95,0.24)] hover:bg-[rgba(2,3,6,0.38)] hover:text-[#e8dfd2] sm:self-auto"
+            className="inline-flex min-h-[44px] shrink-0 self-start items-center border border-[rgba(214,168,95,0.14)] bg-[rgba(2,3,6,0.28)] px-6 py-2.5 text-[0.62rem] uppercase tracking-[0.28em] text-[#b5a896] backdrop-blur-sm transition-[border-color,color,background-color] duration-500 ease-out hover:border-[rgba(214,168,95,0.24)] hover:bg-[rgba(2,3,6,0.38)] hover:text-[#e8dfd2] sm:self-auto motion-reduce:transition-none"
           >
             View all
           </Link>
@@ -246,12 +256,6 @@ export default async function HomePage() {
     <SiteChrome>
       <LCPPreload />
       <main className="relative isolate min-w-0 w-full">
-        {/*
-          Homepage-only ambient: kintsugi / gold-vein reference (very low opacity) +
-          procedural vein SVGs + vignette. Sits under film grain + sections; card
-          components and layouts are unchanged — theme reads in the margins and through
-          transparent section backgrounds.
-        */}
         <div className="home-page-ambient" aria-hidden>
           <div className="home-page-ambient__photo" />
           <div className="home-page-ambient__veins" />
@@ -259,26 +263,21 @@ export default async function HomePage() {
           <div className="home-page-ambient__wash" />
         </div>
         <div className="home-premium-filmgrain" aria-hidden />
-        {/*
-          Hero uses `.mystique-first-section` on HomeHeroMotion (cancels #main-content
-          padding via globals.css). Keep this stack outside overflow-x-clip (see below).
-        */}
         <div className="home-premium-stack w-full min-w-0">
-          {/* 1. Hero */}
+          {/* 1. Hero — PRIMARY CTA lives here (Shop the collection) */}
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
-          {/* `overflow-x-clip` only below hero — on `<main>` it clipped `.mystique-first-section` negative margin (CSS overflow pairing). */}
           <div className="min-w-0 overflow-x-clip">
             {/* 2. Trust strip */}
             <DeferredHomeTrustStrip />
 
-            {/* 3. Featured Products — hero card + 3-up supporting grid */}
+            {/* 3. Featured Products */}
             <FeaturedProductsSection products={catalog} />
 
             {/* 4. Rituals */}
             <RitualStripSection />
 
-            {/* 5. Guided discovery (includes first-visit concerns) */}
+            {/* 5. Guided discovery */}
             <DeferredHomeGuidedDiscovery />
 
             {/* 6. Ingredients */}
@@ -303,7 +302,6 @@ export default async function HomePage() {
 
 // ---------------------------------------------------------------------------
 // FeaturedProductsSection
-// Hero product gets a prominent solo card; remaining 3 go into a sub-grid.
 // ---------------------------------------------------------------------------
 function FeaturedProductsSection({ products }: { products: Product[] }) {
   const [hero, ...rest] = products.slice(0, 4);
@@ -313,6 +311,10 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
     <section className="mystic-section mystique-atmo mystique-atmo--featured relative border-b border-[rgba(17,24,39,0.85)] bg-transparent py-16 md:py-24 lg:py-28">
       <div className="mystic-section-shell">
         <div className="mystique-section-surface mystique-commerce-surface mystique-section-ore px-6 py-10 md:px-11 md:py-12">
+          {/*
+           * CTA audit: "Browse featured" is ghost-level — the product cards
+           * themselves are the primary action in this section.
+           */}
           <SectionIntro
             eyebrow="Featured"
             title="Textures worth returning to."
@@ -375,7 +377,7 @@ function FeaturedProductsSection({ products }: { products: Product[] }) {
 }
 
 // ---------------------------------------------------------------------------
-// RitualStripSection — spacing uses clean utility classes (no !important)
+// RitualStripSection
 // ---------------------------------------------------------------------------
 const HOME_RITUAL_RHYTHMS: {
   label: string;
@@ -449,7 +451,6 @@ function RitualStripSection() {
                       {ritual.title}
                     </h3>
                   </div>
-                  {/* Touch target: min-h-[44px] ensures mobile tap compliance */}
                   <Link
                     href={ritual.href}
                     className="inline-flex min-h-[44px] w-fit items-center text-[0.58rem] uppercase tracking-[0.24em] text-[#b5a078] underline-offset-[6px] transition-[color] duration-500 ease-out hover:text-[#d4c4a4] hover:underline"
@@ -468,7 +469,6 @@ function RitualStripSection() {
 
 // ---------------------------------------------------------------------------
 // IngredientSpotlightSection
-// Fix: ingredient shop link now reads "Shop formulas →" — no string concat.
 // ---------------------------------------------------------------------------
 function IngredientSpotlightSection() {
   const ingredients = MYSTIQUE_CANONICAL_INGREDIENTS;
@@ -529,11 +529,6 @@ function IngredientSpotlightSection() {
                         </h3>
                       </>
                     )}
-                    {/*
-                      FIX: Previously "Shop {ingredient.name} formulas" rendered as
-                      a run-together string (e.g. "ShopNiacinamide formulas").
-                      Now uses a clean, readable static label + aria-label for context.
-                    */}
                     <Link
                       href={`/shop?ingredient=${ingredient.id}`}
                       aria-label={`Shop ${ingredient.name} formulas`}
@@ -559,7 +554,6 @@ function NewsletterSection() {
   return (
     <section className="mystic-section relative py-16 pb-20 md:py-24 md:pb-28">
       <div className="mystic-section-shell">
-        {/* Brand story — single instance only */}
         <section
           aria-labelledby="home-story-heading"
           className="mystique-material mystique-material--story mystique-section-ore mb-14 overflow-hidden rounded-[26px] border border-[rgba(214,168,95,0.1)] bg-[linear-gradient(168deg,rgba(255,255,255,0.026)_0%,rgba(255,255,255,0.01)_46%,rgba(0,0,0,0.15)_100%)] shadow-[0_24px_72px_rgba(0,0,0,0.4)]"
@@ -579,6 +573,7 @@ function NewsletterSection() {
                 Mystique is designed for the routines you repeat: plush textures, clear steps,
                 and finishes that look calm in real light.
               </p>
+              {/* Ghost CTA — subordinate to hero; no competing weight */}
               <Link
                 href="/about"
                 className="inline-flex min-h-[44px] items-center text-[0.6rem] uppercase tracking-[0.26em] text-[#9a8a72] underline-offset-[5px] transition-[color] duration-500 ease-out hover:text-[#c4b49a] hover:underline"
@@ -596,7 +591,6 @@ function NewsletterSection() {
                 className="object-cover object-[52%_42%] transition-[transform,filter] duration-[1.35s] ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 quality={90}
               />
-              {/* Readability + luxury depth */}
               <div
                 aria-hidden
                 className="absolute inset-0 bg-gradient-to-t from-[#03050a] via-[#05070d]/55 to-[#0a0c14]/25"
@@ -629,7 +623,6 @@ function NewsletterSection() {
           </div>
         </section>
 
-        {/* Newsletter capture */}
         <div className="home-luxury-frame mystic-card mystique-material mystique-material--newsletter mystique-section-ore grid gap-10 rounded-[26px] px-7 py-10 md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:px-10 md:py-11">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.32em] text-[#8f8475]">
