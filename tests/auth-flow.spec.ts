@@ -72,15 +72,16 @@ test.describe("auth flow", () => {
   // ── Guest /account access ─────────────────────────────────────────────────
 
   test("unauthenticated /account redirects to login", async ({ page }) => {
-    await page.goto("/account", { waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("load");
-    // Should either redirect to /account/login or render the login page inline
-    const url = page.url();
-    const onLoginPage = url.includes("/account/login") || url.includes("/account/signup");
-    const hasLoginHeading = await page
-      .getByRole("heading", { name: /sign in|create.*account/i })
-      .isVisible()
+    await gotoAndWait(page, "/account");
+    const authHeading = page.getByRole("heading", {
+      name: /sign in|create.*account/i,
+    });
+    const redirectedToAuth = await page
+      .waitForURL(/\/account\/(login|signup)/, { timeout: 15_000 })
+      .then(() => true)
       .catch(() => false);
-    expect(onLoginPage || hasLoginHeading).toBe(true);
+    if (!redirectedToAuth) {
+      await expect(authHeading).toBeVisible({ timeout: 15_000 });
+    }
   });
 });
