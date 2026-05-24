@@ -73,7 +73,10 @@ export default defineConfig({
   webServer: {
     command: "npm --prefix next-app run build && npm --prefix next-app run start",
     url: "http://localhost:3001",
-    reuseExistingServer: false,
+    // CI: always start a fresh server so tests are hermetic.
+    // Local dev: reuse whatever is already on :3001 (e.g. a server started by
+    // the master runner or a previous test run) to avoid port conflicts.
+    reuseExistingServer: !process.env.CI,
     timeout: 300_000,
     env: {
       ...process.env,

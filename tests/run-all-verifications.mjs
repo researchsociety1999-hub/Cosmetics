@@ -5,8 +5,10 @@
  *
  * Steps:
  *   1. Health-check  — confirm the Next.js server is up on localhost:3001
- *   2. Playwright    — run M5, M6, M9 specs (playwright manages its own
- *                      webServer when reuseExistingServer is false)
+ *   2. Playwright    — run M5, M6, M9 specs
+ *                      (playwright.config.ts has reuseExistingServer: !CI so
+ *                       it reuses whatever is already on :3001 locally, and
+ *                       starts a fresh server in CI)
  *   3. Rate-limit    — run the M7a/b/c Node script (server must be on 3001)
  *   4. Summary table — print final status for every milestone
  *
@@ -14,16 +16,10 @@
  *   0  — all automated checks passed
  *   1  — one or more checks failed
  *
- * Known config tension:
- *   playwright.config.ts has reuseExistingServer: false.  If a server is
- *   already running on 3001 when this runner calls `npx playwright test`,
- *   Playwright will refuse to start its own webServer and the Playwright step
- *   will fail.  Two clean fixes (pick one):
- *     (a) Set reuseExistingServer: true in playwright.config.ts
- *     (b) Do NOT pre-start the server before running this runner and let
- *         Playwright handle it (the healthcheck in step 1 will fail, but
- *         steps 2 & 3 can still succeed if step 1 is treated as optional).
- *   This file follows the spec literally and leaves the choice to you.
+ * Local dev workflow:
+ *   npm run test:runtime            (runner manages everything)
+ *   npm run test:playwright:runtime (Playwright only, no rate-limit)
+ *   npm run test:ratelimit           (rate-limit only, server must be up)
  */
 
 import { execSync, spawnSync } from "node:child_process";
@@ -44,6 +40,7 @@ try {
   console.log(`  ${ serverUp ? "✓" : "✗" } server responded ${res.status}`);
 } catch (e) {
   console.log(`  ✗ server not reachable: ${e.message}`);
+  console.log("  ℹ️  Playwright will start its own server (reuseExistingServer: !CI).");
 }
 
 // ─── Step 2: Playwright ──────────────────────────────────────────────────────

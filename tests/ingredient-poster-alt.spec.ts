@@ -7,22 +7,25 @@ import { gotoAndWait } from "./helpers";
  * Checks that every <img> inside an ingredient-filter section (or the hero
  * poster) has a non-empty alt attribute.
  *
- * The ShopIngredientFilterBanner only renders when ?ingredient=<id> is set,
- * and in E2E_MOCK_CATALOG=1 mode the cards render without <img> elements inside
- * <section> blocks.  Per the spec, if no matching images are found the test
- * calls test.skip() with a diagnostic message instead of failing hard.
+ * The ShopIngredientFilterBanner renders when ?ingredient=<id> is set in the
+ * URL.  We navigate to /shop?ingredient=hyaluronic-acid so the banner and its
+ * <Image> element are present in the DOM.
  *
- * To make this test run for real, either:
- *   (a) navigate to /shop?ingredient=hyaluronic-acid (or a valid slug), or
- *   (b) add data-testid="ingredient-poster" to the <Image> in
- *       ShopIngredientFilterBanner so the selector below can find it.
+ * Fallback: if that slug produces no <img> elements (e.g. the slug is not in
+ * the mock catalog), the test still calls test.skip() with a diagnostic message
+ * instead of failing hard — so CI never red-bars on missing test data.
+ *
+ * To permanently enable this test without the fallback:
+ *   Add data-testid="ingredient-poster" to the <Image> in
+ *   ShopIngredientFilterBanner and adjust the primary selector below.
  */
 
 test.describe("M6 — ingredient / poster image alt text", () => {
   test("M6: ingredient/poster images have non-empty alt attributes", async ({
     page,
   }) => {
-    await gotoAndWait(page, "/shop");
+    // Navigate with an ingredient slug so ShopIngredientFilterBanner renders.
+    await gotoAndWait(page, "/shop?ingredient=hyaluronic-acid");
 
     // Candidate selectors — ordered from most specific to most general.
     const candidates = [
@@ -48,10 +51,10 @@ test.describe("M6 — ingredient / poster image alt text", () => {
     if (images.length === 0) {
       test.skip(
         true,
-        "M6 skip: no ingredient/poster/hero <img> elements found on /shop with " +
-          "E2E_MOCK_CATALOG=1.  Add data-testid='ingredient-poster' to the " +
-          "ShopIngredientFilterBanner <Image> or navigate to " +
-          "/shop?ingredient=<slug> to enable this test.",
+        "M6 skip: no ingredient/poster/hero <img> elements found on " +
+          "/shop?ingredient=hyaluronic-acid with E2E_MOCK_CATALOG=1. " +
+          "Add data-testid='ingredient-poster' to ShopIngredientFilterBanner " +
+          "<Image> or use a slug that exists in the mock catalog.",
       );
       return;
     }
