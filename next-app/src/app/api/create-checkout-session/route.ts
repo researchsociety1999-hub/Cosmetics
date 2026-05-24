@@ -8,6 +8,10 @@ import {
   markOrderFailedForCheckout,
 } from "../../lib/checkoutOrders";
 import { clearStoredPromoCode, getAppliedPromoFromStoredCode } from "../../lib/promo";
+import {
+  checkCheckoutRateLimit,
+  getClientIpFromHeaders,
+} from "../../lib/rateLimit";
 import { getConfiguredSiteUrl } from "../../lib/siteUrl";
 import { hasSupabasePublicEnv } from "../../lib/supabaseClient";
 import Stripe from "stripe";
@@ -39,21 +43,21 @@ function orderCreateErrorCode(error: unknown): string | null {
 }
 
 function orderCreateFailureResponse(orderError: unknown) {
+  // Log full detail server-side; never return Supabase / Postgres internals to the browser.
   const errorMessage =
     orderError instanceof Error ? orderError.message : String(orderError);
   const errorCode = orderCreateErrorCode(orderError);
-  const detail = [errorMessage, errorCode && `code: ${errorCode}`]
-    .filter(Boolean)
-    .join(" | ");
+  console.error(
+    "[checkout] order create failed",
+    errorCode ? `code=${errorCode}` : "",
+    errorMessage,
+  );
 
   return NextResponse.json(
     {
       error:
         "We couldn't prepare your order for payment. Please refresh and try again.",
       code: "order_create_failed",
-      detail,
-      errorMessage,
-      errorCode,
     },
     { status: 500 },
   );
@@ -77,8 +81,24 @@ function buildOrigin(forwardedOrigin: string | null, host: string | null) {
 }
 
 export async function POST(request: Request) {
-  console.error("[checkout] route hit");
   try {
+    const headerStore = await headers();
+    const clientIp = getClientIpFromHeaders(headerStore);
+    const rateLimitResult = await checkCheckoutRateLimit(`checkout:${clientIp}`);
+    if (!rateLimitResult.success) {
+      const responseHeaders: HeadersInit | undefined = rateLimitResult.retryAfter
+        ? { "Retry-After": String(rateLimitResult.retryAfter) }
+        : undefined;
+      return NextResponse.json(
+        {
+          error:
+            "You're trying that too quickly. Wait a moment and try again.",
+          code: "rate_limited",
+        },
+        { status: 429, headers: responseHeaders },
+      );
+    }
+
     if (!hasSupabasePublicEnv) {
       return NextResponse.json(
         {
@@ -192,13 +212,12 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       await markOrderFailedForCheckout(order.id);
-      console.error(error);
+      console.error("[checkout] stripe session create failed:", errorDetail(error));
       return NextResponse.json(
         {
           error:
             "We couldn't open the secure payment window. Your bag is unchanged—please try again shortly.",
           code: "stripe_session_failed",
-          detail: errorDetail(error),
         },
         { status: 500 },
       );

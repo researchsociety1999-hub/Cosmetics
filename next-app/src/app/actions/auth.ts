@@ -66,7 +66,9 @@ function formatAuthErrorMessage(message: string) {
     return "We couldn't send the sign-in link because email sending isn't fully configured (sending domain not verified). Please contact support.";
   }
 
-  return message;
+  // Unknown / unmapped error: never echo raw Supabase or SMTP detail back to the shopper
+  // (it can land in the URL via encodeURIComponent). Full detail is still logged server-side.
+  return "Something went wrong while signing you in. Please try again in a moment.";
 }
 
 function isSignupDisabledOtpError(message: string): boolean {

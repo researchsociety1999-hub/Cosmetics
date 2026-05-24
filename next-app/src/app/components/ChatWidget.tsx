@@ -319,7 +319,7 @@ export function ChatWidget() {
               type="button"
               onClick={closePanel}
               aria-label="Close chat"
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.18)] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(214,168,95,0.08)]"
+              className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full border border-[rgba(214,168,95,0.18)] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(214,168,95,0.08)]"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" aria-hidden="true">
                 <path d="M6 6l12 12M18 6L6 18" strokeWidth="1.6" strokeLinecap="round" />
@@ -399,7 +399,7 @@ export function ChatWidget() {
                   type="submit"
                   disabled={isSending || !input.trim()}
                   aria-label="Send message"
-                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgba(214,168,95,0.28)] bg-[rgba(214,168,95,0.12)] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.42)] hover:bg-[rgba(214,168,95,0.18)] disabled:cursor-not-allowed disabled:opacity-45"
+                  className="inline-flex h-10 w-10 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-xl border border-[rgba(214,168,95,0.28)] bg-[rgba(214,168,95,0.12)] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.42)] hover:bg-[rgba(214,168,95,0.18)] disabled:cursor-not-allowed disabled:opacity-45"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" aria-hidden="true">
                     <path d="M5 12h12" strokeWidth="1.8" strokeLinecap="round" />

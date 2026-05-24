@@ -392,6 +392,16 @@ function buildSupabaseProductSearchOr(synonyms: readonly string[]): string {
     .join(",");
 }
 
+/**
+ * PostgREST `.or()` uses `,` to separate filters and `()` to group them.
+ * User-controlled search values must have those stripped — otherwise a value like
+ * `foo,is_published.eq.false` can inject additional OR clauses and bypass filters.
+ * `%` and `*` are also stripped so users can't expand the wildcard accidentally.
+ */
+function sanitizeUserSearchForIlike(value: string): string {
+  return value.replace(/[,()%*]/g, "").trim();
+}
+
 function expandSearchTerms(query: string): string[] {
   const normalizedQuery = normalizeSearchText(query);
   const terms = new Set(
@@ -526,23 +536,6 @@ export async function getProducts(
   const mockCatalogAllowed = allowMockCatalog();
   const excludeOutOfStock = options.excludeOutOfStock !== false; // default true
 
-  console.warn("[Mystique][getProducts][DEBUG] entry", {
-    hasSupabaseEnv,
-    supabaseIsNull: supabase === null,
-    shouldLoadCatalogFromEmbeds: loadFromEmbeds,
-    allowMockCatalog: mockCatalogAllowed,
-    options: {
-      sortBy: options.sortBy,
-      limit: options.limit,
-      page: options.page,
-      categoryId: options.categoryId,
-      hasSearch: Boolean(options.search?.trim()),
-      ingredientId: options.ingredientId ?? null,
-      excludeComingSoon: options.excludeComingSoon === true,
-      excludeOutOfStock,
-    },
-  });
-
   if (loadFromEmbeds) {
     if (!mockCatalogAllowed) {
       console.warn(
@@ -552,16 +545,9 @@ export async function getProducts(
           ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
           "to Vercel → Settings → Environment Variables and redeploy."
       );
-      console.warn(
-        "[Mystique][getProducts][DEBUG] returning [] (embed path, mock catalog disabled); supabaseQueryRan=false",
-      );
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
-    console.warn("[Mystique][getProducts][DEBUG] embed/mock catalog path", {
-      supabaseQueryRan: false,
-      rowCountAfterMockFilter: filteredProducts.length,
-    });
     return paginateProducts(
       sortProducts(filteredProducts, options.sortBy),
       options.page,
@@ -570,9 +556,6 @@ export async function getProducts(
   }
 
   if (!supabase) {
-    console.warn(
-      "[Mystique][getProducts][DEBUG] returning [] (supabase client null after embed check); supabaseQueryRan=false",
-    );
     return paginateProducts(
       sortProducts([], options.sortBy ?? "newest"),
       options.page,
@@ -608,8 +591,11 @@ export async function getProducts(
       if (concernSyns && concernSyns.length > 0) {
         query = query.or(buildSupabaseProductSearchOr(concernSyns));
       } else {
-        const term = `%${search.trim()}%`;
-        query = query.or(`name.ilike.${term},description.ilike.${term},slug.ilike.${term}`);
+        const sanitized = sanitizeUserSearchForIlike(search.trim());
+        if (sanitized) {
+          const term = `%${sanitized}%`;
+          query = query.or(`name.ilike.${term},description.ilike.${term},slug.ilike.${term}`);
+        }
       }
     }
 
@@ -637,31 +623,11 @@ export async function getProducts(
       query = query.range(0, fetchLimit - 1);
     }
 
-    console.warn("[Mystique][getProducts][DEBUG] executing Supabase query", {
-      supabaseQueryRan: true,
-    });
-
     const { data, error } = await query;
-
-    console.warn("[Mystique][getProducts][DEBUG] Supabase response", {
-      supabaseQueryRan: true,
-      rowCountRaw: Array.isArray(data) ? data.length : null,
-      error: error
-        ? {
-            message: error.message,
-            code: error.code,
-            details: error.details,
-            hint: error.hint,
-          }
-        : null,
-    });
 
     if (error) {
       console.error("[Supabase] getProducts full error object:", error);
       logGetProductsFailure(error);
-      console.warn(
-        "[Mystique][getProducts][DEBUG] returning [] after Supabase error",
-      );
       return paginateProducts(sortProducts([], sortBy), page, limit);
     }
 
@@ -670,29 +636,17 @@ export async function getProducts(
     // Filter out products where every variant is out of stock (stock = 0 or null).
     // Products with no variants at all are treated as in-stock.
     if (excludeOutOfStock) {
-      const before = normalizedProducts.length;
       normalizedProducts = normalizedProducts.filter(productIsInStock);
-      const after = normalizedProducts.length;
-      if (before !== after) {
-        console.warn(
-          `[Mystique][getProducts][DEBUG] stock filter removed ${before - after} out-of-stock product(s)`,
-        );
-      }
     }
 
     if (ing) {
       normalizedProducts = filterProductsByIngredientId(normalizedProducts, ing);
     }
-    const finalSlice = paginateProducts(
+    return paginateProducts(
       sortProducts(normalizedProducts, sortBy),
       page,
       limit,
     );
-    console.warn("[Mystique][getProducts][DEBUG] returning products", {
-      rowCountAfterIngredientFilter: normalizedProducts.length,
-      rowCountReturned: finalSlice.length,
-    });
-    return finalSlice;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (process.env.NODE_ENV === "development" && isSupabaseTransportFailure(msg)) {
@@ -702,10 +656,6 @@ export async function getProducts(
     } else {
       console.error("[Supabase] getProducts exception:", e);
     }
-    console.warn(
-      "[Mystique][getProducts][DEBUG] returning [] after exception",
-      e instanceof Error ? { message: e.message, name: e.name } : { thrown: String(e) },
-    );
     return paginateProducts(sortProducts([], sortBy), page, limit);
   }
 }

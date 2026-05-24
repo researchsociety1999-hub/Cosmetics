@@ -441,7 +441,7 @@ function AccountIconLink() {
         href="/account"
         prefetch
         aria-label="Account"
-        className="group inline-flex h-10 min-h-[44px] items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(2,3,6,0.35)] px-0 text-[#cfc3b0] shadow-[0_2px_14px_rgba(0,0,0,0.28)] backdrop-blur-sm transition-[border-color,background-color,color] duration-500 ease-out hover:border-[rgba(214,168,95,0.26)] hover:bg-[rgba(8,9,14,0.42)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent lg:px-3.5"
+        className="group inline-flex h-10 min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-full border border-[rgba(214,168,95,0.14)] bg-[rgba(2,3,6,0.35)] px-0 text-[#cfc3b0] shadow-[0_2px_14px_rgba(0,0,0,0.28)] backdrop-blur-sm transition-[border-color,background-color,color] duration-500 ease-out hover:border-[rgba(214,168,95,0.26)] hover:bg-[rgba(8,9,14,0.42)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent lg:px-3.5"
       >
         <span className="sr-only">Account</span>
         <span className="inline-flex h-10 w-10 items-center justify-center">

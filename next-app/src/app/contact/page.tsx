@@ -76,6 +76,12 @@ export default async function ContactPage({
                   Please complete every field so we can respond with the right detail.
                 </p>
               ) : null}
+              {params.status === "rate-limited" ? (
+                <p className="text-sm text-[#d6a85f]" role="status">
+                  We've received a lot of messages from your network just now. Please wait a few
+                  minutes and try again.
+                </p>
+              ) : null}
               {params.status === "email-error" ? (
                 <p className="text-sm text-[#d6a85f]" role="alert">
                   We could not send your message just now. Please try again shortly

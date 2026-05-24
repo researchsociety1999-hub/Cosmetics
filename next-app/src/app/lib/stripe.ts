@@ -136,12 +136,17 @@ export async function createStripeCheckoutSession({
   let discounts: CheckoutSessionCreateParams["discounts"];
   if (appliedPromo && order.discount_cents > 0) {
     try {
-      const coupon = await stripe.coupons.create({
-        duration: "once",
-        amount_off: order.discount_cents,
-        currency: stripeCurrency,
-        name: appliedPromo.promo.code,
-      });
+      const coupon = await stripe.coupons.create(
+        {
+          duration: "once",
+          amount_off: order.discount_cents,
+          currency: stripeCurrency,
+          name: appliedPromo.promo.code,
+        },
+        {
+          idempotencyKey: `coupon-${order.id}-${appliedPromo.promo.code}`,
+        },
+      );
       discounts = [{ coupon: coupon.id }];
     } catch (err) {
       console.error(err);

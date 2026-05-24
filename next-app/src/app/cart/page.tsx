@@ -161,11 +161,15 @@ export default async function CartPage({
                   <span>{formatMoney(totals.totalAmount)}</span>
                 </div>
               </div>
-              <label className="mt-6 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]">
+              <label
+                htmlFor="cart-promo-code"
+                className="mt-6 block text-xs uppercase tracking-[0.2em] text-[#b8ab95]"
+              >
                 Promo code
               </label>
               <form action={applyPromoCodeAction} className="mt-2 space-y-3">
                 <input
+                  id="cart-promo-code"
                   name="promoCode"
                   placeholder="MYSTIQUE10"
                   defaultValue={appliedPromo?.promo.code ?? params["promo-code"] ?? ""}

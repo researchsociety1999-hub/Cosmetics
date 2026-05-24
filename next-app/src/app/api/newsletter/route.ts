@@ -1,14 +1,38 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   normalizeNewsletterEmail,
   subscribeToNewsletter,
   validateNewsletterEmail,
 } from "../../lib/newsletter";
+import {
+  checkNewsletterRateLimit,
+  getClientIpFromHeaders,
+} from "../../lib/rateLimit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const headerStore = await headers();
+    const clientIp = getClientIpFromHeaders(headerStore);
+    const rateLimitResult = await checkNewsletterRateLimit(
+      `newsletter:${clientIp}`,
+    );
+    if (!rateLimitResult.success) {
+      const responseHeaders: HeadersInit | undefined = rateLimitResult.retryAfter
+        ? { "Retry-After": String(rateLimitResult.retryAfter) }
+        : undefined;
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Too many signup attempts from this network. Please try again in a few minutes.",
+        },
+        { status: 429, headers: responseHeaders },
+      );
+    }
+
     const body = (await request.json()) as { email?: string; source?: string };
     const email = normalizeNewsletterEmail(body.email ?? "");
     const validationError = validateNewsletterEmail(email);
