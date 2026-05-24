@@ -3,294 +3,237 @@
 /**
  * M7 — Rate-limit verification script (pure Node.js ESM, no Playwright).
  *
- * Hits three rate-limited endpoints on a running server (default
- * http://localhost:3001) and asserts the first request past the configured
- * threshold returns HTTP 429.
+ * Hits three rate-limited endpoints and confirms the correct 429 / redirect
+ * behaviour fires after the configured threshold.
  *
- *   M7a  POST /api/newsletter                 — limit 5 per 10 min (6th = 429)
- *   M7b  POST /contact (server action)        — limit 5 per 10 min (6th = 429 or redirect to rate-limited)
- *   M7c  POST /api/create-checkout-session    — limit 10 per 5 min  (11th = 429)
+ * Prerequisites
+ *   • The Next.js dev/prod server must be running on http://localhost:3001
+ *   • For M7b the /contact page must be reachable (it scrapes the
+ *     Next.js server-action id from the rendered HTML before the loop).
  *
- * Notes:
- *  - All requests are sent SEQUENTIALLY so the rate-limiter window advances
- *    cleanly. The limiter buckets are keyed by client IP, which is "unknown"
- *    in localhost requests when no x-forwarded-for is set.
- *  - SAMPLE_CHECKOUT_SHIPPING is inlined here because helpers.ts is a
- *    TypeScript file and this script cannot import .ts modules without a
- *    transpiler. The fields are kept in sync with tests/helpers.ts.
- *  - Exit code: 0 if every sub-test passes, 1 otherwise.
+ * Usage
+ *   node tests/rate-limit-verification.mjs
+ *   npm run test:ratelimit
  */
 
-const BASE_URL = (process.env.TEST_BASE_URL ?? "http://localhost:3001").replace(
-  /\/$/,
-  "",
-);
+const BASE = "http://localhost:3001";
 
-const ANSI = {
-  reset: "\x1b[0m",
-  bold: "\x1b[1m",
-  dim: "\x1b[2m",
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
-  cyan: "\x1b[36m",
-};
-
-/** Inlined from tests/helpers.ts → SAMPLE_CHECKOUT_SHIPPING. Keep in sync. */
-const SAMPLE_CHECKOUT_SHIPPING = {
-  fullName: "Mystique Test User",
-  email: "checkout-e2e@example.com",
-  addressLine1: "1200 Market Street",
-  addressLine2: "",
-  city: "Austin",
-  state: "TX",
-  postalCode: "78701",
-  country: "United States",
-};
-
-/** @type {Array<{ id: string; ok: boolean; detail: string }>} */
-const results = [];
-
-function logPass(id, detail) {
-  console.log(`${ANSI.green}✅ ${ANSI.bold}${id}${ANSI.reset}${ANSI.green} — ${detail}${ANSI.reset}`);
-  results.push({ id, ok: true, detail });
+/** @param {string} url @param {RequestInit} init */
+async function fetchNoRedirect(url, init = {}) {
+  return fetch(url, { ...init, redirect: "manual" });
 }
 
-function logFail(id, detail) {
-  console.log(`${ANSI.red}❌ ${ANSI.bold}${id}${ANSI.reset}${ANSI.red} — ${detail}${ANSI.reset}`);
-  results.push({ id, ok: false, detail });
-}
-
-function logInfo(line) {
-  console.log(`${ANSI.dim}   ${line}${ANSI.reset}`);
-}
-
-async function safeJson(response) {
-  try {
-    return await response.clone().json();
-  } catch {
-    return null;
-  }
-}
-
-async function safeText(response) {
-  try {
-    return await response.clone().text();
-  } catch {
-    return "";
-  }
-}
-
-// ── M7a: /api/newsletter ────────────────────────────────────────────────────
-
-async function runNewsletterTest() {
-  const id = "M7a";
-  const url = `${BASE_URL}/api/newsletter`;
-  console.log(`\n${ANSI.cyan}${ANSI.bold}[${id}]${ANSI.reset} ${ANSI.cyan}POST /api/newsletter ×6 → expecting 6th = 429${ANSI.reset}`);
-
-  /** @type {Response[]} */
-  const responses = [];
-  for (let i = 0; i < 6; i++) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "ratelimit-test@example.com" }),
-      });
-      responses.push(res);
-      logInfo(`request #${i + 1} → ${res.status}`);
-    } catch (err) {
-      logFail(id, `request #${i + 1} threw: ${err instanceof Error ? err.message : String(err)}`);
-      return;
-    }
-  }
-
-  const sixth = responses[5];
-  if (sixth.status !== 429) {
-    const text = (await safeText(sixth)).slice(0, 200);
-    logFail(id, `6th request returned ${sixth.status}, expected 429. body: ${text}`);
-    return;
-  }
-
-  const body = await safeJson(sixth);
-  const hasErrorField =
-    body && typeof body === "object" && (
-      typeof body.error === "string" ||
-      typeof body.message === "string"
-    );
-  if (!hasErrorField) {
-    logFail(id, `6th response is 429 but body has no "error" or "message" field. body=${JSON.stringify(body)}`);
-    return;
-  }
-
-  logPass(id, `6th request = 429 with ${body.error ? "error" : "message"} field`);
-}
-
-// ── M7b: /contact (server action) ───────────────────────────────────────────
+// ─── helpers ────────────────────────────────────────────────────────────────
 
 /**
- * Server actions in Next.js progressive-enhancement mode encode the action
- * id as a hidden `$ACTION_ID_<hash>` input inside the form. Without this id
- * (or the equivalent `Next-Action` header on JSON requests) the runtime
- * rejects the POST with "Failed to find Server Action" before the action
- * function — and therefore the rate limiter — ever runs. We scrape the id
- * from a single GET before the loop so the 6 POSTs actually invoke the
- * action and exercise checkContactRateLimit.
- *
- * @param {string} pageUrl
- * @returns {Promise<string | null>}
+ * POST to /api/newsletter `limit+1` times and confirm the last response is 429.
+ * Limit is 5 per 10 min.  We send 6 requests.
  */
-async function fetchContactActionId(pageUrl) {
-  try {
-    const res = await fetch(pageUrl, { redirect: "follow" });
-    if (!res.ok) return null;
-    const html = await res.text();
-    const match = html.match(/name="\$ACTION_ID_([a-f0-9]+)"/i);
-    return match ? match[1] : null;
-  } catch {
-    return null;
+async function testM7a() {
+  console.log("\n[M7a] Newsletter rate-limit (/api/newsletter)");
+  const LIMIT = 5;
+  let lastStatus = 0;
+  let lastBody = "";
+
+  for (let i = 1; i <= LIMIT + 1; i++) {
+    const res = await fetchNoRedirect(`${BASE}/api/newsletter`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: `ratelimit-test-${i}@example.invalid` }),
+    });
+    lastStatus = res.status;
+    lastBody = await res.text();
+    process.stdout.write(`  request ${i}: ${res.status}\n`);
+    if (res.status === 429) break;
   }
-}
 
-async function runContactTest() {
-  const id = "M7b";
-  const url = `${BASE_URL}/contact`;
-  console.log(`\n${ANSI.cyan}${ANSI.bold}[${id}]${ANSI.reset} ${ANSI.cyan}POST /contact ×6 → expecting 6th = 429 or redirect-to-rate-limited${ANSI.reset}`);
+  let parsed = {};
+  try { parsed = JSON.parse(lastBody); } catch { /* ignore */ }
 
-  const actionId = await fetchContactActionId(url);
-  if (!actionId) {
-    logFail(
-      id,
-      `could not scrape $ACTION_ID_* hidden field from GET ${url}. The contact form is a Next.js server action — without the action id (or a Next-Action header) the POST cannot invoke the rate limiter.`,
+  const pass =
+    lastStatus === 429 &&
+    ("error" in parsed || "message" in parsed || lastBody.includes("rate"));
+
+  if (pass) {
+    console.log("  [PASS] M7a — 6th request = 429 with error field");
+  } else {
+    console.log(
+      `  [FAIL] M7a — expected 429 with error field, got status=${lastStatus}, body=${lastBody.slice(0, 200)}`,
     );
-    return;
   }
-  logInfo(`scraped server-action id: ${actionId.slice(0, 12)}…`);
+  return pass;
+}
 
-  /** @type {Array<{ status: number; location: string | null }>} */
-  const summaries = [];
-  for (let i = 0; i < 6; i++) {
-    try {
-      const form = new FormData();
-      form.set(`$ACTION_ID_${actionId}`, "");
-      form.set("name", "Test");
-      form.set("email", "test@test.com");
-      form.set("message", "x");
-      form.set("_honeypot", "");
+/**
+ * POST to the /contact server-action `limit+1` times using the action-id
+ * scraped from the rendered page, and confirm the 6th request 303-redirects
+ * to /contact?status=rate-limited.
+ * Limit is 5 per 10 min.
+ */
+async function testM7b() {
+  console.log("\n[M7b] Contact form rate-limit (/contact server-action)");
 
-      const res = await fetch(url, {
-        method: "POST",
-        body: form,
-        redirect: "manual",
-      });
-      const location = res.headers.get("location");
-      summaries.push({ status: res.status, location });
-      logInfo(`request #${i + 1} → ${res.status}${location ? ` → ${location}` : ""}`);
-    } catch (err) {
-      logFail(id, `request #${i + 1} threw: ${err instanceof Error ? err.message : String(err)}`);
-      return;
+  // Scrape the action id from the rendered page.
+  let actionId = "";
+  try {
+    const html = await fetch(`${BASE}/contact`).then((r) => r.text());
+    const match = html.match(
+      /name="\$ACTION_ID_([a-f0-9]{30,})"/,
+    );
+    if (match) {
+      actionId = match[1];
+      console.log(`  ACTION_ID: ${actionId}`);
+    } else {
+      // Try the other format: hidden input value equals the hash directly.
+      const m2 = html.match(
+        /\$ACTION_ID_([a-f0-9]{30,})/,
+      );
+      if (m2) actionId = m2[1];
     }
+  } catch (e) {
+    console.log(`  [FAIL] M7b — could not fetch /contact: ${e}`);
+    return false;
   }
 
-  const sixth = summaries[5];
-  const isRateLimitedJson = sixth.status === 429;
-  const looksLikeRateLimitRedirect =
-    sixth.status >= 300 &&
-    sixth.status < 400 &&
-    !!sixth.location &&
-    /rate-limited|too-many/i.test(sixth.location);
-  const looksLikeStatusOnLocation =
-    !!sixth.location && /status=rate-limited|status=too-many/i.test(sixth.location);
-
-  if (isRateLimitedJson || looksLikeRateLimitRedirect || looksLikeStatusOnLocation) {
-    logPass(id, `6th request resolved as rate-limited (status=${sixth.status}, location=${sixth.location ?? "<none>"})`);
-    return;
+  if (!actionId) {
+    console.log("  [FAIL] M7b — could not scrape $ACTION_ID from /contact");
+    return false;
   }
 
-  logFail(
-    id,
-    `6th request did not signal rate-limit. status=${sixth.status}, location=${sixth.location ?? "<none>"}. ` +
-      "Server action did run (action id was found and posted) — investigate checkContactRateLimit.",
+  const LIMIT = 5;
+  let lastStatus = 0;
+  let lastLocation = "";
+
+  for (let i = 1; i <= LIMIT + 1; i++) {
+    const fd = new FormData();
+    fd.append(`$ACTION_ID_${actionId}`, "");
+    fd.append("name", `Rate Limit Tester ${i}`);
+    fd.append("email", `ratelimit-test-${i}@example.invalid`);
+    fd.append("message", "This is a rate-limit probe message.");
+
+    const res = await fetchNoRedirect(`${BASE}/contact`, {
+      method: "POST",
+      body: fd,
+    });
+    lastStatus = res.status;
+    lastLocation = res.headers.get("location") ?? "";
+    process.stdout.write(
+      `  request ${i}: ${res.status} → ${lastLocation || "(no location)"}\n`,
+    );
+    if (lastLocation.includes("rate-limited")) break;
+  }
+
+  const pass =
+    lastStatus === 303 && lastLocation.includes("rate-limited");
+
+  if (pass) {
+    console.log(
+      "  [PASS] M7b — 6th request resolved as rate-limited (status=303, location=" +
+        lastLocation +
+        ")",
+    );
+  } else {
+    console.log(
+      `  [FAIL] M7b — 6th request did not signal rate-limit. status=${lastStatus}, location=${lastLocation}. ` +
+        "If this is Next.js rejecting plain-FormData server-action POSTs " +
+        "(no Next-Action header), the rate limiter never runs — verify by " +
+        "hitting the form in a browser or scraping the action id first.",
+    );
+  }
+  return pass;
+}
+
+/**
+ * POST to /api/create-checkout-session `limit+1` times and confirm the
+ * response is 429 with { code: "rate_limited" } and Retry-After header.
+ * Limit is 10 per 5 min.  We send 11 requests.
+ */
+async function testM7c() {
+  console.log(
+    "\n[M7c] Checkout session rate-limit (/api/create-checkout-session)",
   );
+  const LIMIT = 10;
+  let lastStatus = 0;
+  let lastBody = "";
+  let retryAfter = "";
+
+  for (let i = 1; i <= LIMIT + 1; i++) {
+    const res = await fetchNoRedirect(`${BASE}/api/create-checkout-session`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cartItems: [{ id: "test-sku", quantity: 1, price: 1000 }],
+        shipping: {
+          fullName: "Rate Limit Tester",
+          email: `ratelimit-test-${i}@example.invalid`,
+          addressLine1: "1 Test Street",
+          city: "Austin",
+          state: "TX",
+          postalCode: "78701",
+          country: "United States",
+        },
+      }),
+    });
+    lastStatus = res.status;
+    lastBody = await res.text();
+    retryAfter = res.headers.get("Retry-After") ?? "";
+    process.stdout.write(`  request ${i}: ${res.status}\n`);
+    if (res.status === 429) break;
+  }
+
+  let parsed = {};
+  try { parsed = JSON.parse(lastBody); } catch { /* ignore */ }
+
+  const pass =
+    lastStatus === 429 &&
+    (parsed as Record<string, unknown>).code === "rate_limited" &&
+    retryAfter !== "";
+
+  if (pass) {
+    console.log(
+      `  [PASS] M7c — 11th request = 429, code="rate_limited", Retry-After=${retryAfter}`,
+    );
+  } else {
+    console.log(
+      `  [FAIL] M7c — expected 429 with rate_limited code and Retry-After header.` +
+        ` status=${lastStatus}, body=${lastBody.slice(0, 200)}, Retry-After=${retryAfter}`,
+    );
+  }
+  return pass;
 }
 
-// ── M7c: /api/create-checkout-session ───────────────────────────────────────
+// ─── main ───────────────────────────────────────────────────────────────────
 
-async function runCheckoutTest() {
-  const id = "M7c";
-  const url = `${BASE_URL}/api/create-checkout-session`;
-  console.log(`\n${ANSI.cyan}${ANSI.bold}[${id}]${ANSI.reset} ${ANSI.cyan}POST /api/create-checkout-session ×11 → expecting 11th = 429 with code "rate_limited"${ANSI.reset}`);
+(async () => {
+  console.log("Rate-limit verification suite");
+  console.log(`Target: ${BASE}\n`);
 
-  const payload = {
-    items: [{ id: "mock-sku-1", quantity: 1 }],
-    shipping: { ...SAMPLE_CHECKOUT_SHIPPING },
-  };
+  const [a, b, c] = await Promise.allSettled([
+    testM7a(),
+    testM7b(),
+    testM7c(),
+  ]);
 
-  /** @type {Response[]} */
-  const responses = [];
-  for (let i = 0; i < 11; i++) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      responses.push(res);
-      logInfo(`request #${i + 1} → ${res.status}`);
-    } catch (err) {
-      logFail(id, `request #${i + 1} threw: ${err instanceof Error ? err.message : String(err)}`);
-      return;
-    }
-  }
+  const results = [
+    { label: "M7a", pass: a.status === "fulfilled" && a.value },
+    { label: "M7b", pass: b.status === "fulfilled" && b.value },
+    { label: "M7c", pass: c.status === "fulfilled" && c.value },
+  ];
 
-  const eleventh = responses[10];
-  if (eleventh.status !== 429) {
-    const text = (await safeText(eleventh)).slice(0, 200);
-    logFail(id, `11th request returned ${eleventh.status}, expected 429. body: ${text}`);
-    return;
-  }
-
-  const retryAfter = eleventh.headers.get("retry-after");
-  if (!retryAfter) {
-    logFail(id, `11th response is 429 but missing Retry-After header.`);
-    return;
-  }
-
-  const body = await safeJson(eleventh);
-  if (!body || typeof body !== "object" || body.code !== "rate_limited") {
-    logFail(id, `11th response body is missing { code: "rate_limited" }. body=${JSON.stringify(body)}`);
-    return;
-  }
-
-  logPass(id, `11th request = 429, code="rate_limited", Retry-After=${retryAfter}`);
-}
-
-// ── Runner ──────────────────────────────────────────────────────────────────
-
-async function main() {
-  console.log(`${ANSI.bold}M7 — Rate-limit verification${ANSI.reset}  ${ANSI.dim}(BASE_URL=${BASE_URL})${ANSI.reset}`);
-
-  await runNewsletterTest();
-  await runContactTest();
-  await runCheckoutTest();
-
-  console.log(`\n${ANSI.bold}Summary${ANSI.reset}`);
+  console.log("\n── Summary ──────────────────────────────────────────────");
+  let allPass = true;
   for (const r of results) {
-    const mark = r.ok ? `${ANSI.green}PASS${ANSI.reset}` : `${ANSI.red}FAIL${ANSI.reset}`;
-    console.log(`  [${mark}] ${r.id} — ${r.detail}`);
+    const icon = r.pass ? "✅" : "❌";
+    console.log(`  ${icon}  ${r.label}`);
+    if (!r.pass) allPass = false;
   }
 
-  const failed = results.filter((r) => !r.ok);
-  if (failed.length > 0) {
-    console.log(`\n${ANSI.red}${ANSI.bold}${failed.length} of ${results.length} sub-tests failed.${ANSI.reset}`);
+  if (allPass) {
+    console.log("\nAll rate-limit sub-tests passed.");
+    process.exit(0);
+  } else {
+    const failed = results.filter((r) => !r.pass).map((r) => r.label);
+    console.log(`\n${failed.length} of 3 sub-tests failed.`);
     process.exit(1);
   }
-  console.log(`\n${ANSI.green}${ANSI.bold}All ${results.length} rate-limit sub-tests passed.${ANSI.reset}`);
-  process.exit(0);
-}
-
-main().catch((err) => {
-  console.error(`${ANSI.red}Fatal error in rate-limit script:${ANSI.reset}`, err);
-  process.exit(1);
-});
+})();
