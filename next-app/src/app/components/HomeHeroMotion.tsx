@@ -16,7 +16,7 @@ import HomeHeroMotionEnhancer from "./HomeHeroMotionEnhancer";
  * `next.config.js` sets `images.dangerouslyAllowSVG` for other brand SVGs.
  */
 const HERO_LOGO_SRC =
-  "https://piqwtmnbxyiesxcxdwod.supabase.co/storage/v1/object/public/Logo/Brand%20Logo.png";
+  "https://piqwtmnbxyiesxcxdwod.supabase.co/storage/v1/object/public/Logo/666BCBBD-677B-493E-8A40-7BDB1C34EAB6.PNG";
 const HERO_BG_SRC = "/about/hero.jpg";
 
 export function HomeHeroMotion({
