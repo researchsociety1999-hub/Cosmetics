@@ -144,7 +144,7 @@ export async function createStripeCheckoutSession({
           name: appliedPromo.promo.code,
         },
         {
-          idempotencyKey: `coupon-${order.id}-${appliedPromo.promo.code}`,
+          idempotencyKey: `coupon-${appliedPromo.promo.code}-${order.discount_cents}-${stripeCurrency}-once`,
         },
       );
       discounts = [{ coupon: coupon.id }];

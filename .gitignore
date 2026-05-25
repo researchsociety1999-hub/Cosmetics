@@ -23,6 +23,8 @@ node_modules/
 /playwright/.auth/
 /next-app/test-results/
 /next-app/playwright-report/
+playwright-report/
+test-results/
 
 # ============================================================
 # Generated / build artifacts — never commit these
