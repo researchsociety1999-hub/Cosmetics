@@ -285,7 +285,11 @@ function ShopIngredientFilterBanner({
         >
           <Image
             src={row.imageSrc}
-            alt=""
+            // In poster layout the heading is sr-only, so the image is the
+            // only visual identifier — give it the ingredient name. In the
+            // standard layout the visible heading provides the name, so the
+            // image stays decorative to avoid double-announcement.
+            alt={poster ? row.name : ""}
             fill
             sizes={
               poster

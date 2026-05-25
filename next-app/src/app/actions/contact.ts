@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   escapeHtml,
@@ -8,11 +9,22 @@ import {
   renderEmailLayout,
   sendEmail,
 } from "../lib/email";
+import {
+  checkContactRateLimit,
+  getClientIpFromHeaders,
+} from "../lib/rateLimit";
 
 export async function submitContactAction(formData: FormData): Promise<void> {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
+
+  const headerStore = await headers();
+  const clientIp = getClientIpFromHeaders(headerStore);
+  const rateLimitResult = await checkContactRateLimit(`contact:${clientIp}`);
+  if (!rateLimitResult.success) {
+    redirect("/contact?status=rate-limited");
+  }
 
   if (!name || !email || !message) {
     redirect("/contact?status=missing");

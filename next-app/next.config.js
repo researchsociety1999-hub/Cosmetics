@@ -85,6 +85,9 @@ const securityHeaders = [
 const nextConfig = {
   /** Hides the floating Next.js dev indicator (N badge) in development; no effect on production builds. */
   devIndicators: false,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-icons", "date-fns"],
+  },
   turbopack: {
     // npm workspaces hoist `next` to the repo root — point Turbopack at that root.
     root: path.join(__dirname, ".."),

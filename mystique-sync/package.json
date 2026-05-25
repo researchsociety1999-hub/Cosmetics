@@ -1,0 +1,44 @@
+{
+  "name": "mystique-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sync pipeline for Mystique Skincare — bridges Supabase (DB), Notion (Brand HQ), and Google Drive (assets).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "mystique-sync": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "health": "tsx src/index.ts health",
+    "sync:all": "tsx src/index.ts all",
+    "sync:all:dry": "tsx src/index.ts all --dry-run",
+    "supabase:hero": "tsx src/index.ts supabase:hero-update",
+    "supabase:scan": "tsx src/index.ts supabase:scan-images",
+    "supabase:protocol": "tsx src/index.ts supabase:protocol",
+    "notion:sync": "tsx src/index.ts notion:sync",
+    "drive:move": "tsx src/index.ts drive:move-files",
+    "drive:images": "tsx src/index.ts drive:find-images",
+    "sql:print": "tsx src/index.ts sql:print",
+    "report": "tsx src/index.ts report"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "@supabase/supabase-js": "^2.45.4",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
+    "p-limit": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

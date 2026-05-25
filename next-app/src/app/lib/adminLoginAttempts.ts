@@ -3,8 +3,8 @@ type AttemptRecord = {
   resetAt: number;
 };
 
-const WINDOW_MS = 60 * 60 * 1000;
-const MAX_FAILURES = 10;
+const WINDOW_MS = 15 * 60 * 1000;
+const MAX_FAILURES = 5;
 
 const failuresByIp = new Map<string, AttemptRecord>();
 

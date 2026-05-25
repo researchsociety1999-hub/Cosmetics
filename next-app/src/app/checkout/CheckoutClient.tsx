@@ -37,6 +37,13 @@ function mapCheckoutStartError(status: number, body: CheckoutApiBody): string {
     return body.error;
   }
 
+  if (status === 429 || body.code === "rate_limited") {
+    return (
+      body.error ??
+      "You're trying that too quickly. Wait a moment and try again."
+    );
+  }
+
   if (status === 503) {
     if (body.code === "stripe_unavailable") {
       return "Secure payment is not enabled on this storefront yet. Please try again later.";

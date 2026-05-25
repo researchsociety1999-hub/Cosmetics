@@ -8,7 +8,10 @@
     "lint": "npm run lint --workspace=next-app",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "test:runtime": "node tests/run-all-verifications.mjs",
+    "test:ratelimit": "node tests/rate-limit-verification.mjs",
+    "test:playwright:runtime": "playwright test tests/promo-accessibility.spec.ts tests/ingredient-poster-alt.spec.ts tests/search-sanitisation.spec.ts --reporter=list"
   },
   "workspaces": [
     "next-app"

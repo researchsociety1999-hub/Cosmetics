@@ -142,7 +142,9 @@ export function ProductPurchaseClient({
     <>
       <div ref={anchorRef} id="product-purchase-block" className="space-y-6">
         {/* ── Volume / size label ── */}
-        <ProductVolumeSizeLabel label={(product as Product & { volume_size_label?: string }).volume_size_label} />
+        {product.volume_size_label && (
+          <ProductVolumeSizeLabel label={product.volume_size_label} />
+        )}
 
         <div className="mystic-card flex flex-wrap items-end justify-between gap-4 p-5">
           <div className="flex flex-col gap-1">

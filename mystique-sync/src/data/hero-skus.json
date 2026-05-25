@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "locked_at": "2026-05-24T22:00:00.000Z",
+  "products": [
+    {
+      "id": 1,
+      "name": "Soft Reset Cleansing Gel",
+      "slug": "soft-reset-cleansing-gel",
+      "ritual_order": 1,
+      "category": "cleanser",
+      "description": "Gentle gel cleanser that removes impurities without stripping the skin barrier",
+      "price": 28.00,
+      "is_published": true,
+      "image_url": null,
+      "old_slugs": ["face-cleanser", "cleanser"]
+    },
+    {
+      "id": 2,
+      "name": "Calm Layer Toning Essence",
+      "slug": "calm-layer-toning-essence",
+      "ritual_order": 2,
+      "category": "essence",
+      "description": "Soothing toning essence that balances pH and preps skin for hydration",
+      "price": 32.00,
+      "is_published": true,
+      "image_url": null,
+      "old_slugs": ["toner", "essence"]
+    },
+    {
+      "id": 3,
+      "name": "Hydrating Serum",
+      "slug": "hydrating-serum",
+      "ritual_order": 3,
+      "category": "serum",
+      "description": "Deep hydration serum with hyaluronic acid for plump, dewy skin",
+      "price": 38.00,
+      "is_published": true,
+      "image_url": null,
+      "old_slugs": ["serum", "hydrating"]
+    },
+    {
+      "id": 4,
+      "name": "Barrier Replenish Cream",
+      "slug": "barrier-replenish-cream",
+      "ritual_order": 4,
+      "category": "cream",
+      "description": "Rich moisturizing cream that restores the skin barrier and locks in hydration",
+      "price": 42.00,
+      "is_published": true,
+      "image_url": null,
+      "old_slugs": ["moisturizer", "cream", "replenish"]
+    },
+    {
+      "id": 5,
+      "name": "Light Veil SPF 50 Fluid",
+      "slug": "light-veil-spf-50-fluid",
+      "ritual_order": 5,
+      "category": "sunscreen",
+      "description": "Lightweight fluid sunscreen with SPF 50 that provides invisible protection",
+      "price": 36.00,
+      "is_published": true,
+      "image_url": null,
+      "old_slugs": ["spf", "sunscreen", "light-veil"]
+    }
+  ]
+}
