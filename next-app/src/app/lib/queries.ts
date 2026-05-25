@@ -93,7 +93,7 @@ function logGetProductsFailure(
   const code = error.code ? ` code=${error.code}` : "";
   const dev = process.env.NODE_ENV === "development";
   if (dev && isSupabaseTransportFailure(msg)) {
-    console.warn(
+    console.error(
       `[Supabase] getProducts: ${msg}${code} — cannot reach ${supabaseHostForDevLog()}. Check URL, anon/service keys, VPN/firewall, and network. Returning empty catalog.`,
     );
     return;
@@ -538,15 +538,6 @@ export async function getProducts(
 
   if (loadFromEmbeds) {
     if (!mockCatalogAllowed) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn(
-          "[Mystique] getProducts: Supabase env not initialised. " +
-            "hasSupabaseEnv=" + String(hasSupabaseEnv) +
-            " supabase=" + (supabase ? "ok" : "null") +
-            ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
-            "to Vercel → Settings → Environment Variables and redeploy."
-        );
-      }
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
@@ -652,7 +643,7 @@ export async function getProducts(
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (process.env.NODE_ENV === "development" && isSupabaseTransportFailure(msg)) {
-      console.warn(
+      console.error(
         `[Supabase] getProducts: ${msg} — cannot reach ${supabaseHostForDevLog()}. Returning empty catalog.`,
       );
     } else {
