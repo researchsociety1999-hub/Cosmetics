@@ -538,13 +538,15 @@ export async function getProducts(
 
   if (loadFromEmbeds) {
     if (!mockCatalogAllowed) {
-      console.warn(
-        "[Mystique] getProducts: Supabase env not initialised. " +
-          "hasSupabaseEnv=" + String(hasSupabaseEnv) +
-          " supabase=" + (supabase ? "ok" : "null") +
-          ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
-          "to Vercel → Settings → Environment Variables and redeploy."
-      );
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "[Mystique] getProducts: Supabase env not initialised. " +
+            "hasSupabaseEnv=" + String(hasSupabaseEnv) +
+            " supabase=" + (supabase ? "ok" : "null") +
+            ". Add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY " +
+            "to Vercel → Settings → Environment Variables and redeploy."
+        );
+      }
       return [];
     }
     const filteredProducts = filterMockProducts(getMockProducts(), options);
