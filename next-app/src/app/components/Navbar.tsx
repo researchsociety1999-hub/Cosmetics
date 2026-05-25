@@ -16,14 +16,18 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
 ] as const;
 
+// Tap-target audit: mobile gets min-h-[44px] (WCAG 2.5.5); desktop reverts to
+// the original compact editorial spacing via `md:min-h-0` so the header layout
+// is unchanged at md+ breakpoints (mobile menu uses these classes; desktop nav
+// is `hidden md:flex` so the mobile constraint is invisible there).
 const NAV_LINK_BASE =
-  "inline-flex shrink-0 items-center whitespace-nowrap py-1 transition-[color,opacity] duration-500 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent motion-reduce:transition-none";
+  "inline-flex shrink-0 items-center whitespace-nowrap min-h-[44px] md:min-h-0 py-1 transition-[color,opacity] duration-500 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent motion-reduce:transition-none";
 
 const NAV_LINK_IDLE = `${NAV_LINK_BASE} text-[#a69884] hover:text-[#e4d9c8]`;
 const NAV_LINK_ACTIVE = `${NAV_LINK_BASE} text-[#d4c4a8]`;
 
 const HELP_CHOOSING_LINK =
-  "inline-flex max-w-full items-center justify-start whitespace-normal break-words py-1 text-left text-[0.6rem] md:text-[0.62rem] uppercase leading-snug tracking-[0.24em] text-[#7d7366] transition-colors duration-500 ease-out hover:text-[#b5a896] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+  "inline-flex max-w-full items-center justify-start whitespace-normal break-words min-h-[44px] md:min-h-0 py-1 text-left text-[0.6rem] md:text-[0.62rem] uppercase leading-snug tracking-[0.24em] text-[#7d7366] transition-colors duration-500 ease-out hover:text-[#b5a896] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(212,175,55,0.35)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
 /**
  * Centered gold nav (Shop · Routines · Ingredients · Journal · About) + account icon

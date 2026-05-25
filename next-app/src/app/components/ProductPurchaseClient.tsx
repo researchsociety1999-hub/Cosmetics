@@ -246,7 +246,7 @@ export function ProductPurchaseClient({
                     type="button"
                     disabled={oos}
                     onClick={() => setUserPickedVariantId(v.id)}
-                    className={`rounded-full border px-4 py-2 text-left text-[0.72rem] uppercase tracking-[0.14em] transition ${
+                    className={`inline-flex min-h-[44px] items-center rounded-full border px-4 py-2 text-left text-[0.72rem] uppercase tracking-[0.14em] transition ${
                       active
                         ? "border-[rgba(214,168,95,0.65)] bg-[rgba(214,168,95,0.12)] text-[#f5eee3]"
                         : oos

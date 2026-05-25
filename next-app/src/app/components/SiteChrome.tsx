@@ -85,7 +85,7 @@ async function PrelaunchBanner() {
           <div className="flex flex-wrap gap-2.5">
             <Link
               href="/shop"
-              className="mystic-button-secondary inline-flex items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
+              className="mystic-button-secondary inline-flex min-h-[44px] items-center justify-center px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.22em]"
             >
               Shop the collection
             </Link>
