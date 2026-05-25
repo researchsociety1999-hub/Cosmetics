@@ -22,25 +22,100 @@
  *   npm run test:ratelimit           (rate-limit only, server must be up)
  */
 
-import { execSync, spawnSync } from "node:child_process";
+import { execSync, spawn, spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(__dirname, "..");
 const BASE = "http://localhost:3001";
 
-// ─── Step 1: Health check ────────────────────────────────────────────────────
+/** @param {number} ms */
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function probeServer() {
+  try {
+    const res = await fetch(BASE, { signal: AbortSignal.timeout(2_500) });
+    return res.ok || res.status < 500;
+  } catch {
+    return false;
+  }
+}
+
+/** Track whether we own the server so we know to tear it down at the end. */
+/** @type {import("node:child_process").ChildProcess | null} */
+let ownedServer = null;
+
+async function startServerInBackground() {
+  // playwright.config.ts's webServer block runs the same command with the
+  // same env. Reuse it here so the dev-time mock catalog is wired up and
+  // guest cookies work over plain HTTP.
+  const env = {
+    ...process.env,
+    PORT: "3001",
+    ALLOW_MOCK_CATALOG: "1",
+    E2E_MOCK_CATALOG: "1",
+    E2E_ALLOW_HTTP_COOKIES: "1",
+  };
+  const child = spawn(
+    "npm",
+    ["--prefix", "next-app", "run", "start"],
+    {
+      cwd: REPO_ROOT,
+      env,
+      stdio: "ignore",
+      detached: false,
+      // On Windows, npm is npm.cmd — shell shim resolves both.
+      shell: process.platform === "win32",
+    },
+  );
+  ownedServer = child;
+  // Poll until ready or timeout (build is already cached in .next).
+  const deadlineMs = Date.now() + 60_000;
+  while (Date.now() < deadlineMs) {
+    if (await probeServer()) return true;
+    await sleep(750);
+  }
+  return false;
+}
+
+function stopOwnedServer() {
+  if (!ownedServer) return;
+  try {
+    if (process.platform === "win32" && ownedServer.pid) {
+      // npm spawns a child `next start`; killing the npm shim leaves a stray
+      // server. taskkill /T tears down the whole tree on Windows.
+      spawnSync("taskkill", ["/PID", String(ownedServer.pid), "/F", "/T"], {
+        stdio: "ignore",
+      });
+    } else {
+      ownedServer.kill();
+    }
+  } catch {
+    /* best-effort */
+  }
+}
+process.on("exit", stopOwnedServer);
+
+// ─── Step 1: Health check / start a server if needed ─────────────────────────
 
 console.log("\n══ Step 1: Health check ═══════════════════════════════════════");
-let serverUp = false;
-try {
-  const res = await fetch(BASE, { signal: AbortSignal.timeout(5_000) });
-  serverUp = res.ok || res.status < 500;
-  console.log(`  ${ serverUp ? "✓" : "✗" } server responded ${res.status}`);
-} catch (e) {
-  console.log(`  ✗ server not reachable: ${e.message}`);
-  console.log("  ℹ️  Playwright will start its own server (reuseExistingServer: !CI).");
+let serverUp = await probeServer();
+if (serverUp) {
+  console.log("  ✓ server already up on :3001");
+  console.log("  ℹ️  Playwright will reuse it (reuseExistingServer: !CI).");
+} else {
+  console.log("  ✗ server not reachable on :3001 — starting one in background…");
+  serverUp = await startServerInBackground();
+  if (serverUp) {
+    console.log("  ✓ background server is ready");
+  } else {
+    console.log(
+      "  ✗ failed to start server. Playwright will still attempt its own webServer; " +
+        "rate-limit step (M7a/b/c) will likely fail.",
+    );
+  }
 }
 
 // ─── Step 2: Playwright ──────────────────────────────────────────────────────
@@ -59,9 +134,15 @@ try {
       "tests/search-sanitisation.spec.ts",
       "--reporter=list",
     ],
-    { encoding: "utf8", cwd: resolve(__dirname, "..") },
+    {
+      encoding: "utf8",
+      cwd: resolve(__dirname, ".."),
+      // Windows: `npx` resolves to `npx.cmd` which spawn() cannot launch
+      // directly without a shell. Use shell on win32 so the .cmd shim runs.
+      shell: process.platform === "win32",
+    },
   );
-  playwrightOutput = result.stdout + result.stderr;
+  playwrightOutput = (result.stdout ?? "") + (result.stderr ?? "");
   playwrightPassed = result.status === 0;
   console.log(playwrightOutput);
 } catch (e) {
@@ -78,7 +159,7 @@ try {
     [resolve(__dirname, "rate-limit-verification.mjs")],
     { encoding: "utf8" },
   );
-  console.log(result.stdout + result.stderr);
+  console.log((result.stdout ?? "") + (result.stderr ?? ""));
   rateLimitPassed = result.status === 0;
 } catch (e) {
   console.log(`  Error running rate-limit script: ${e.message}`);

@@ -186,7 +186,9 @@ async function testM7c() {
 
   const pass =
     lastStatus === 429 &&
-    (parsed as Record<string, unknown>).code === "rate_limited" &&
+    parsed &&
+    typeof parsed === "object" &&
+    /** @type {{ code?: string }} */ (parsed).code === "rate_limited" &&
     retryAfter !== "";
 
   if (pass) {
