@@ -37,6 +37,17 @@ import type {
 export type ProductSort = "price_asc" | "price_desc" | "newest" | "featured";
 
 /**
+ * Suppresses Supabase error logging in production to keep server logs clean.
+ * In dev/preview/test we still surface the full error so failures are debuggable.
+ * Error return paths and thrown exceptions are unchanged — only console output is gated.
+ */
+function logSupabaseError(...args: Parameters<typeof console.error>): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.error(...args);
+  }
+}
+
+/**
  * Default: catalog comes **only from Supabase** (empty if env missing).
  * Set `ALLOW_MOCK_CATALOG=1` for local Playwright E2E without a database.
  */
@@ -98,7 +109,7 @@ function logGetProductsFailure(
     );
     return;
   }
-  console.error("[Supabase] getProducts failed:", msg + code, error.details ?? "");
+  logSupabaseError("[Supabase] getProducts failed:", msg + code, error.details ?? "");
 }
 
 interface GetProductsOptions {
@@ -619,7 +630,7 @@ export async function getProducts(
     const { data, error } = await query;
 
     if (error) {
-      console.error("[Supabase] getProducts full error object:", error);
+      logSupabaseError("[Supabase] getProducts full error object:", error);
       logGetProductsFailure(error);
       return paginateProducts(sortProducts([], sortBy), page, limit);
     }
@@ -647,7 +658,7 @@ export async function getProducts(
         `[Supabase] getProducts: ${msg} — cannot reach ${supabaseHostForDevLog()}. Returning empty catalog.`,
       );
     } else {
-      console.error("[Supabase] getProducts exception:", e);
+      logSupabaseError("[Supabase] getProducts exception:", e);
     }
     return paginateProducts(sortProducts([], sortBy), page, limit);
   }
@@ -679,14 +690,14 @@ export async function getProductsByIds(ids: number[]): Promise<Product[]> {
       .eq("is_published", true);
 
     if (error) {
-      console.error("[Supabase] getProductsByIds failed:", error.message, error);
+      logSupabaseError("[Supabase] getProductsByIds failed:", error.message, error);
       return [];
     }
 
     const normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
     return normalizedProducts.filter((product) => requestedIds.has(product.id));
   } catch (e) {
-    console.error("[Supabase] getProductsByIds exception:", e);
+    logSupabaseError("[Supabase] getProductsByIds exception:", e);
     return [];
   }
 }
@@ -713,7 +724,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .maybeSingle();
 
     if (error) {
-      console.error("[Supabase] getProductBySlug failed:", error.message, error);
+      logSupabaseError("[Supabase] getProductBySlug failed:", error.message, error);
       return null;
     }
 
@@ -728,7 +739,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
     return null;
   } catch (e) {
-    console.error("[Supabase] getProductBySlug exception:", e);
+    logSupabaseError("[Supabase] getProductBySlug exception:", e);
     return null;
   }
 }
@@ -891,13 +902,13 @@ export async function getCategories(): Promise<Category[]> {
       .order("name", { ascending: true });
 
     if (error) {
-      console.error("[Supabase] getCategories failed:", error.message, error);
+      logSupabaseError("[Supabase] getCategories failed:", error.message, error);
       return [];
     }
 
     return (data ?? []) as Category[];
   } catch (e) {
-    console.error("[Supabase] getCategories exception:", e);
+    logSupabaseError("[Supabase] getCategories exception:", e);
     return [];
   }
 }
@@ -978,13 +989,13 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("[Supabase] getProductReviews failed:", error.message, error);
+      logSupabaseError("[Supabase] getProductReviews failed:", error.message, error);
       return [];
     }
 
     return (data ?? []) as Review[];
   } catch (e) {
-    console.error("[Supabase] getProductReviews exception:", e);
+    logSupabaseError("[Supabase] getProductReviews exception:", e);
     return [];
   }
 }

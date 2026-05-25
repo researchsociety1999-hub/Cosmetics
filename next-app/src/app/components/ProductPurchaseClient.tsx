@@ -183,7 +183,7 @@ export function ProductPurchaseClient({
               Coming soon
             </p>
             <p>
-              This formula is in pre-launch. Leave your email and we'll send a note when it's
+              This formula is in pre-launch. Leave your email and we&apos;ll send a note when it&apos;s
               available.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">

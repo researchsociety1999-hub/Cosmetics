@@ -78,7 +78,7 @@ export default async function ContactPage({
               ) : null}
               {params.status === "rate-limited" ? (
                 <p className="text-sm text-[#d6a85f]" role="status">
-                  We've received a lot of messages from your network just now. Please wait a few
+                  We&apos;ve received a lot of messages from your network just now. Please wait a few
                   minutes and try again.
                 </p>
               ) : null}
