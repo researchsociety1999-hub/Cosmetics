@@ -12,6 +12,9 @@ import {
   type KeyboardEvent,
 } from "react";
 
+import styles from "./ChatWidget.module.css";
+void styles;
+
 type ChatRole = "user" | "assistant";
 
 interface ChatMessage {

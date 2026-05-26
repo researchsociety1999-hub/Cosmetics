@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
+import styles from "./ThemedImageFrame.module.css";
+void styles;
+
 type ThemedImageFrameProps = {
   /** Remote or absolute `/public` path. `null` shows the branded placeholder only. */
   src: string | null;
