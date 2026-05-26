@@ -2,8 +2,7 @@
 
 import { useId } from "react";
 
-import styles from "./RitualCompanionAvatar.module.css";
-void styles;
+import "./RitualCompanionAvatar.css";
 
 type RitualCompanionAvatarProps = {
   className?: string;

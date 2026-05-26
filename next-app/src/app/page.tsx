@@ -17,11 +17,11 @@ import { buildPageMetadata } from "./lib/seo";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
 import type { Product } from "./lib/types";
 
-// Homepage-only styles are loaded via this CSS module rather than globals.css
-// so they don't add bytes to every other route's render-blocking stylesheet.
-// `:global { ... }` inside page.module.css preserves the existing class names.
-import pageStyles from "./page.module.css";
-void pageStyles;
+// Homepage-only styles are split into ./page.css so they don't add bytes to
+// every other route's render-blocking stylesheet. Next.js App Router code-
+// splits route-scoped CSS imports automatically, so the bytes ship only with
+// this page's chunk.
+import "./page.css";
 
 export const dynamic = "force-dynamic";
 

@@ -687,9 +687,8 @@ optgroup { background-color: #000000; color: var(--mystic-text); }
 .mystic-particle-md { height: 7px; width: 7px; animation-duration: 9.2s; }
 .mystic-particle-lg { height: 10px; width: 10px; animation-duration: 10.8s; }
 
-/* ThemedImageFrame styles moved to components/ThemedImageFrame.module.css. */
-/* RitualCompanionAvatar styles moved to components/RitualCompanionAvatar.module.css. */
-/* ChatWidget animations moved to components/ChatWidget.module.css. */
+/* ThemedImageFrame / RitualCompanionAvatar / ChatWidget styles moved to */
+/* sibling .css files next to each component (route-scoped, code-split). */
 
 @media (min-width: 768px) {
   .mystic-section {
