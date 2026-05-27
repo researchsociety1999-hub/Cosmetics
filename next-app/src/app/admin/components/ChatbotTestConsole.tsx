@@ -1,15 +1,28 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { detectOutcome, type ChatOutcome } from "../lib/chatLog";
+import { classifyChatTheme, CHAT_THEME_LABELS, type ChatTheme } from "../lib/chatThemes";
 
 interface ChatMessage {
   role: "user" | "assistant" | "error";
   content: string;
   /** Round-trip latency in ms for assistant turns (purely diagnostic). */
   latencyMs?: number;
+  /** Classified outcome for assistant/error rows (server-mirrored on the client). */
+  outcome?: ChatOutcome;
+  /** Theme classification for user turns. */
+  theme?: ChatTheme;
 }
 
 const MAX_INPUT_LENGTH = 1200;
+
+const OUTCOME_BADGE: Record<ChatOutcome, { label: string; cls: string }> = {
+  success: { label: "Success", cls: "bg-emerald-500/15 text-emerald-300" },
+  fallback: { label: "Fallback", cls: "bg-amber-500/15 text-amber-200" },
+  blocked: { label: "Blocked", cls: "bg-indigo-500/15 text-indigo-300" },
+  error: { label: "Error", cls: "bg-rose-500/15 text-rose-300" },
+};
 
 interface ChatbotTestConsoleProps {
   /** True when both OPENROUTER_API_KEY and OPENROUTER_MODEL are present. */
@@ -39,9 +52,10 @@ export function ChatbotTestConsole({ chatConfigured }: ChatbotTestConsoleProps) 
     }
     setError(null);
 
+    const userTheme = classifyChatTheme(trimmed);
     const nextHistory: ChatMessage[] = [
       ...history,
-      { role: "user", content: trimmed },
+      { role: "user", content: trimmed, theme: userTheme },
     ];
     setHistory(nextHistory);
     setInput("");
@@ -74,25 +88,33 @@ export function ChatbotTestConsole({ chatConfigured }: ChatbotTestConsoleProps) 
       }
 
       if (!response.ok) {
+        const errorContent =
+          body.message ??
+          `Request failed with HTTP ${response.status}. ${body.error ?? ""}`.trim();
         setHistory((prev) => [
           ...prev,
           {
             role: "error",
-            content:
-              body.message ??
-              `Request failed with HTTP ${response.status}. ${body.error ?? ""}`.trim(),
+            content: errorContent,
             latencyMs,
+            outcome: detectOutcome(response.status, body.message ?? null, body.error ?? null),
           },
         ]);
         return;
       }
 
+      const assistantContent = body.message ?? "(empty response)";
       setHistory((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: body.message ?? "(empty response)",
+          content: assistantContent,
           latencyMs,
+          outcome: detectOutcome(
+            response.status,
+            assistantContent,
+            body.error ?? null,
+          ),
         },
       ]);
     } catch (err) {
@@ -160,15 +182,31 @@ export function ChatbotTestConsole({ chatConfigured }: ChatbotTestConsoleProps) 
                 : m.role === "assistant"
                   ? "bg-[rgba(255,255,255,0.04)] text-[#d8c6aa] ring-1 ring-[rgba(255,255,255,0.06)]"
                   : "bg-rose-500/10 text-rose-200 ring-1 ring-rose-500/30";
+            const outcomeBadge = m.outcome ? OUTCOME_BADGE[m.outcome] : null;
+            const themeLabel = m.theme ? CHAT_THEME_LABELS[m.theme] : null;
             return (
               <div
                 key={`${m.role}-${idx}`}
                 className={`${alignment} max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${toneCls}`}
               >
-                <p className="text-[0.6rem] uppercase tracking-[0.2em] text-[#7a7265]">
-                  {m.role === "error" ? "Error" : m.role}
-                  {m.latencyMs != null ? ` · ${m.latencyMs}ms` : ""}
-                </p>
+                <div className="flex flex-wrap items-center gap-2 text-[0.6rem] uppercase tracking-[0.2em] text-[#7a7265]">
+                  <span>
+                    {m.role === "error" ? "Error" : m.role}
+                    {m.latencyMs != null ? ` · ${m.latencyMs}ms` : ""}
+                  </span>
+                  {themeLabel ? (
+                    <span className="rounded-full bg-[rgba(214,168,95,0.08)] px-1.5 py-0.5 normal-case tracking-[0.16em] text-[#d6a85f]">
+                      {themeLabel}
+                    </span>
+                  ) : null}
+                  {outcomeBadge ? (
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 normal-case tracking-[0.16em] ${outcomeBadge.cls}`}
+                    >
+                      {outcomeBadge.label}
+                    </span>
+                  ) : null}
+                </div>
                 <p className="mt-1 whitespace-pre-wrap">{m.content}</p>
               </div>
             );

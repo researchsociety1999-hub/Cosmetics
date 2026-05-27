@@ -1,5 +1,9 @@
 import { supabaseAdmin } from "../../lib/supabaseClient";
 import { getOrdersForAdmin, type AdminOrderRow } from "../../lib/adminOrders";
+import {
+  getInventoryStatsForOverview,
+  type ProductInventoryStats,
+} from "./productsQuery";
 
 export interface AdminKpis {
   totalOrders: number;
@@ -13,6 +17,7 @@ export interface AdminKpis {
 export interface AdminOverviewData {
   kpis: AdminKpis;
   recentOrders: AdminOrderRow[];
+  inventory: ProductInventoryStats;
 }
 
 const EMPTY_KPIS: AdminKpis = {
@@ -21,6 +26,16 @@ const EMPTY_KPIS: AdminKpis = {
   ordersToday: 0,
   revenueTodayCents: 0,
   averageOrderValueCents: 0,
+};
+
+const EMPTY_INVENTORY: ProductInventoryStats = {
+  totalProducts: 0,
+  activeProducts: 0,
+  draftProducts: 0,
+  comingSoonProducts: 0,
+  lowStockActive: 0,
+  outOfStockActive: 0,
+  recentlyUpdated: 0,
 };
 
 const RECENT_ORDERS_LIMIT = 5;
@@ -57,7 +72,7 @@ function sumTotals(
  */
 export async function getAdminOverview(): Promise<AdminOverviewData> {
   if (!supabaseAdmin) {
-    return { kpis: EMPTY_KPIS, recentOrders: [] };
+    return { kpis: EMPTY_KPIS, recentOrders: [], inventory: EMPTY_INVENTORY };
   }
 
   const todayIso = startOfTodayIso();
@@ -68,6 +83,7 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
     ordersTodayResult,
     revenueTodayResult,
     recentOrders,
+    inventory,
   ] = await Promise.all([
     supabaseAdmin
       .from("orders")
@@ -82,6 +98,7 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
       .select("total_cents")
       .gte("created_at", todayIso),
     getOrdersForAdmin(RECENT_ORDERS_LIMIT),
+    getInventoryStatsForOverview(),
   ]);
 
   const totalOrders = totalOrdersResult.count ?? 0;
@@ -104,5 +121,6 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
       averageOrderValueCents,
     },
     recentOrders,
+    inventory,
   };
 }

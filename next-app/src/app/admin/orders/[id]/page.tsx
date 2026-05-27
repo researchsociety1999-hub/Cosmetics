@@ -2,12 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminShell } from "../../components/AdminShell";
+import { AttentionChip } from "../../components/AttentionChip";
 import { CopyableId } from "../../components/CopyableId";
+import { OrderActionsPanel } from "../../components/OrderActionsPanel";
 import { StatusChip } from "../../components/StatusChip";
 import {
   getOrderForAdminById,
   sumLineItemQuantities,
 } from "../../lib/ordersQuery";
+import {
+  FULFILLMENT_BUCKET_LABELS,
+  getAttentionReasons,
+  getFulfillmentBucket,
+} from "../../lib/fulfillmentStatus";
 import { requireAdminSession } from "../../lib/session";
 import { formatMoney } from "../../../lib/format";
 
@@ -62,6 +69,9 @@ export default async function AdminOrderDetailPage({
 
   const items = order.order_items ?? [];
   const lineCount = sumLineItemQuantities(items);
+  const bucket = getFulfillmentBucket(order);
+  const attentionReasons = getAttentionReasons(order);
+  const isRefunded = order.status === "refunded";
 
   return (
     <AdminShell pageEyebrow={`Order ${order.order_number}`} pageTitle="Order detail">
@@ -74,10 +84,74 @@ export default async function AdminOrderDetailPage({
         </Link>
         <span className="text-[#7a7265]">·</span>
         <StatusChip status={order.status} />
+        <span className="text-[0.6rem] uppercase tracking-[0.18em] text-[#9a8f7a]">
+          {FULFILLMENT_BUCKET_LABELS[bucket]}
+        </span>
+        {attentionReasons.length > 0 ? (
+          <AttentionChip reasons={attentionReasons} size="compact" />
+        ) : null}
         <span className="ml-auto text-xs text-[#7a7265]">
           Created {formatDateTime(order.created_at)}
         </span>
       </div>
+
+      <OrderActionsPanel orderId={order.id} currentStatus={order.status} />
+
+      {attentionReasons.length > 0 || isRefunded ? (
+        <section
+          aria-label="Fulfillment triage"
+          className="mb-6 rounded-[16px] border border-[rgba(214,168,95,0.12)] bg-[rgba(255,255,255,0.02)] p-5"
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="text-[0.7rem] uppercase tracking-[0.24em] text-[#b8ab95]">
+              {isRefunded ? "Refund summary" : "Needs attention"}
+            </h2>
+            <Link
+              href="/admin/fulfillment"
+              className="text-[0.65rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
+            >
+              Open fulfillment queue →
+            </Link>
+          </div>
+          {attentionReasons.length > 0 ? (
+            <ul className="mt-4 space-y-2 text-sm">
+              {attentionReasons.map((reason) => (
+                <li
+                  key={reason.id}
+                  className="flex gap-2 leading-relaxed text-[#d8c6aa]"
+                >
+                  <span aria-hidden className="text-rose-300">
+                    ⚠
+                  </span>
+                  <span>
+                    <span className="font-medium text-[#f5eee3]">
+                      {reason.label}
+                    </span>
+                    <span className="text-[#9a8f7a]"> — {reason.explanation}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {isRefunded ? (
+            <p className="mt-4 rounded-[10px] border border-[rgba(214,168,95,0.1)] bg-[rgba(214,168,95,0.04)] px-3 py-2 text-xs leading-relaxed text-[#b8ab95]">
+              Order is marked refunded. The order table doesn&apos;t carry a
+              refund reason or partial-refund amount —{" "}
+              {order.stripe_payment_intent_id ? (
+                <>
+                  reconcile in Stripe using PI{" "}
+                  <span className="font-mono text-[#d8c6aa]">
+                    {order.stripe_payment_intent_id}
+                  </span>
+                  .
+                </>
+              ) : (
+                "no Stripe payment intent is on file — verify the refund link manually."
+              )}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
         {/* ── Customer + shipping ───────────────────────────── */}

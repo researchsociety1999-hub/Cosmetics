@@ -7,6 +7,11 @@ import {
   type ChatPageContext,
   type SafeProductContext,
 } from "../../lib/getChatContext";
+import {
+  detectSourceFromPathname,
+  recordChatExchange,
+  type ChatOutcome,
+} from "../../admin/lib/chatLog";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -232,11 +237,36 @@ export async function POST(request: Request) {
   }
 
   const lastUserMessage = messages[messages.length - 1]!.content;
+  const pageContext = sanitizePageContext(body.pageContext);
+  const startedAt = Date.now();
+
+  /**
+   * Fire-and-forget log writer used by the admin diagnostics workspace.
+   * Internally swallows errors so a logging bug can't break the chat path.
+   */
+  function logExchange(
+    outcome: ChatOutcome,
+    status: number,
+    assistantMessage: string | null,
+    errorCode: string | null = null,
+  ): void {
+    recordChatExchange({
+      source: detectSourceFromPathname(pageContext.pathname),
+      pathname: pageContext.pathname,
+      userMessage: lastUserMessage,
+      assistantMessage,
+      latencyMs: Date.now() - startedAt,
+      outcome,
+      status,
+      errorCode,
+    });
+  }
+
   if (containsInjectionAttempt(lastUserMessage)) {
+    logExchange("blocked", 200, INJECTION_REFUSAL);
     return NextResponse.json({ message: INJECTION_REFUSAL });
   }
 
-  const pageContext = sanitizePageContext(body.pageContext);
   const productContext = sanitizeClientProductContext(body.productContext);
 
   const contextBundle = await getChatContext(pageContext, productContext);
@@ -245,12 +275,11 @@ export async function POST(request: Request) {
   const model = process.env.OPENROUTER_MODEL;
   if (!model) {
     console.error("[chat] OPENROUTER_MODEL is not configured");
+    const message =
+      "The ritual companion is resting for a moment. Please try again shortly.";
+    logExchange("error", 503, message, "misconfigured");
     return NextResponse.json(
-      {
-        message:
-          "The ritual companion is resting for a moment. Please try again shortly.",
-        error: "misconfigured",
-      },
+      { message, error: "misconfigured" },
       { status: 503 },
     );
   }
@@ -258,12 +287,11 @@ export async function POST(request: Request) {
   const client = getOpenRouterClient();
   if (!client) {
     console.error("[chat] OPENROUTER_API_KEY is not configured");
+    const message =
+      "The ritual companion is resting for a moment. Please try again shortly.";
+    logExchange("error", 503, message, "misconfigured");
     return NextResponse.json(
-      {
-        message:
-          "The ritual companion is resting for a moment. Please try again shortly.",
-        error: "misconfigured",
-      },
+      { message, error: "misconfigured" },
       { status: 503 },
     );
   }
@@ -286,16 +314,16 @@ export async function POST(request: Request) {
     const assistantMessage = completion.choices[0]?.message?.content?.trim();
 
     if (!assistantMessage) {
+      const message =
+        "I couldn’t quite gather that—could you rephrase your skincare question?";
+      logExchange("fallback", 502, message, "empty_response");
       return NextResponse.json(
-        {
-          message:
-            "I couldn’t quite gather that—could you rephrase your skincare question?",
-          error: "empty_response",
-        },
+        { message, error: "empty_response" },
         { status: 502 },
       );
     }
 
+    logExchange("success", 200, assistantMessage);
     return NextResponse.json({ message: assistantMessage });
   } catch (error) {
     console.error("[chat] OpenRouter request failed");
@@ -303,12 +331,11 @@ export async function POST(request: Request) {
       console.error(error.message);
     }
 
+    const message =
+      "Something interrupted our connection. Please try again in a moment.";
+    logExchange("error", 502, message, "upstream_error");
     return NextResponse.json(
-      {
-        message:
-          "Something interrupted our connection. Please try again in a moment.",
-        error: "upstream_error",
-      },
+      { message, error: "upstream_error" },
       { status: 502 },
     );
   }
