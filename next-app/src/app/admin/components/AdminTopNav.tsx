@@ -6,8 +6,8 @@ import { logoutAdminAction } from "../../actions/adminAuth";
 function getActiveSectionLabel(pathname: string | null): string {
   if (!pathname) return "Overview";
   if (pathname.startsWith("/admin/orders")) return "Orders";
-  if (pathname.startsWith("/admin/products")) return "Products";
   if (pathname.startsWith("/admin/customers")) return "Customers";
+  if (pathname.startsWith("/admin/chatbot")) return "Chatbot";
   if (pathname.startsWith("/admin/settings")) return "Settings";
   return "Overview";
 }

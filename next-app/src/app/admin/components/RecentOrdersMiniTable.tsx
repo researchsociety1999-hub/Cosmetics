@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatMoney } from "../../lib/format";
 import type { AdminOrderRow } from "../../lib/adminOrders";
+import { StatusChip } from "./StatusChip";
 
 interface RecentOrdersMiniTableProps {
   rows: AdminOrderRow[];
@@ -66,8 +67,8 @@ export function RecentOrdersMiniTable({ rows }: RecentOrdersMiniTableProps) {
               <td className="whitespace-nowrap px-4 py-3 align-top text-right text-[#f5eee3]">
                 {formatMoney(row.total_amount)}
               </td>
-              <td className="whitespace-nowrap px-4 py-3 align-top text-xs uppercase tracking-[0.18em] text-[#d6a85f]">
-                {row.status}
+              <td className="whitespace-nowrap px-4 py-3 align-top">
+                <StatusChip status={row.status} size="compact" />
               </td>
               <td className="whitespace-nowrap px-4 py-3 align-top text-[#b8ab95]">
                 {formatDateTime(row.paid_at ?? row.created_at)}

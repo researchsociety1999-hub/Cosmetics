@@ -13,8 +13,8 @@ interface NavItem {
 const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "Overview", href: "/admin", matchPrefix: "/admin" },
   { label: "Orders", href: "/admin/orders", matchPrefix: "/admin/orders" },
-  { label: "Products", href: "/admin/products", matchPrefix: "/admin/products" },
   { label: "Customers", href: "/admin/customers", matchPrefix: "/admin/customers" },
+  { label: "Chatbot", href: "/admin/chatbot", matchPrefix: "/admin/chatbot" },
   { label: "Settings", href: "/admin/settings", matchPrefix: "/admin/settings" },
 ];
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AdminShell } from "./components/AdminShell";
 import { KpiCard } from "./components/KpiCard";
 import { RecentOrdersMiniTable } from "./components/RecentOrdersMiniTable";
@@ -21,28 +22,32 @@ export default async function AdminOverviewPage() {
     <AdminShell pageEyebrow="Mystique admin" pageTitle="Overview">
       <section
         aria-label="Key performance indicators"
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5"
       >
+        <KpiCard
+          label="Total orders"
+          value={kpis.totalOrders.toLocaleString("en-US")}
+          hint="Lifetime"
+        />
+        <KpiCard
+          label="Total revenue"
+          value={formatMoney(kpis.totalRevenueCents)}
+          hint="Lifetime gross"
+        />
         <KpiCard
           label="Orders today"
           value={kpis.ordersToday.toLocaleString("en-US")}
-          hint="Since 00:00 local time"
+          hint="Since 00:00 local"
         />
         <KpiCard
           label="Revenue today"
           value={formatMoney(kpis.revenueTodayCents)}
-          hint="Sum of order totals (cents)"
+          hint="Since 00:00 local"
         />
         <KpiCard
-          label="Products published"
-          value={kpis.productsPublished.toLocaleString("en-US")}
-          hint="is_published = true"
-        />
-        <KpiCard
-          label="Low-stock alerts"
-          value={kpis.lowStockAlerts.toLocaleString("en-US")}
-          hint="stock < 5 and in_stock"
-          emphasis={kpis.lowStockAlerts > 0 ? "alert" : "default"}
+          label="Avg order value"
+          value={formatMoney(kpis.averageOrderValueCents)}
+          hint="Lifetime mean"
         />
       </section>
 
@@ -54,12 +59,12 @@ export default async function AdminOverviewPage() {
           >
             Recent orders
           </h2>
-          <a
+          <Link
             href="/admin/orders"
             className="text-[0.7rem] uppercase tracking-[0.2em] text-[#d6a85f] underline-offset-4 hover:underline"
           >
             View all
-          </a>
+          </Link>
         </div>
         <RecentOrdersMiniTable rows={recentOrders} />
       </section>

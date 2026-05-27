@@ -2,10 +2,12 @@ import { supabaseAdmin } from "../../lib/supabaseClient";
 import { getOrdersForAdmin, type AdminOrderRow } from "../../lib/adminOrders";
 
 export interface AdminKpis {
+  totalOrders: number;
+  totalRevenueCents: number;
   ordersToday: number;
   revenueTodayCents: number;
-  productsPublished: number;
-  lowStockAlerts: number;
+  /** Lifetime average order value, in cents. Zero when no orders exist. */
+  averageOrderValueCents: number;
 }
 
 export interface AdminOverviewData {
@@ -14,13 +16,13 @@ export interface AdminOverviewData {
 }
 
 const EMPTY_KPIS: AdminKpis = {
+  totalOrders: 0,
+  totalRevenueCents: 0,
   ordersToday: 0,
   revenueTodayCents: 0,
-  productsPublished: 0,
-  lowStockAlerts: 0,
+  averageOrderValueCents: 0,
 };
 
-const LOW_STOCK_THRESHOLD = 5;
 const RECENT_ORDERS_LIMIT = 5;
 
 function startOfTodayIso(): string {
@@ -29,12 +31,29 @@ function startOfTodayIso(): string {
   return start.toISOString();
 }
 
+function sumTotals(
+  rows: ReadonlyArray<{ total_cents: number | null }> | null | undefined,
+): number {
+  if (!rows?.length) return 0;
+  return rows.reduce((sum, row) => {
+    const value = row.total_cents;
+    return sum + (typeof value === "number" ? value : 0);
+  }, 0);
+}
+
 /**
  * One-shot fetch for the admin overview page.
  *
- * All five queries run in parallel against the Supabase service-role client.
- * Returns empty values when service credentials are missing rather than throwing,
- * matching the existing `getOrdersForAdmin` contract.
+ * Five parallel queries against the Supabase service-role client:
+ *   - lifetime order count (head + count)
+ *   - lifetime revenue sample (sum reduced client-side; Supabase JS doesn't
+ *     expose a typed SQL aggregate without an RPC, which we don't want to add)
+ *   - today's order count
+ *   - today's revenue
+ *   - recent orders list (via the existing frozen helper)
+ *
+ * Returns empty values (no throw) when service env is missing — same contract
+ * as the rest of the admin data layer.
  */
 export async function getAdminOverview(): Promise<AdminOverviewData> {
   if (!supabaseAdmin) {
@@ -44,12 +63,16 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
   const todayIso = startOfTodayIso();
 
   const [
+    totalOrdersResult,
+    lifetimeRevenueResult,
     ordersTodayResult,
     revenueTodayResult,
-    productsPublishedResult,
-    lowStockResult,
     recentOrders,
   ] = await Promise.all([
+    supabaseAdmin
+      .from("orders")
+      .select("id", { count: "exact", head: true }),
+    supabaseAdmin.from("orders").select("total_cents"),
     supabaseAdmin
       .from("orders")
       .select("id", { count: "exact", head: true })
@@ -58,32 +81,27 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
       .from("orders")
       .select("total_cents")
       .gte("created_at", todayIso),
-    supabaseAdmin
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .eq("is_published", true),
-    supabaseAdmin
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .lt("stock", LOW_STOCK_THRESHOLD)
-      .eq("in_stock", true),
     getOrdersForAdmin(RECENT_ORDERS_LIMIT),
   ]);
 
-  const revenueRows =
-    (revenueTodayResult.data as Array<{ total_cents: number | null }> | null) ??
-    [];
-  const revenueTodayCents = revenueRows.reduce((sum, row) => {
-    const value = row.total_cents;
-    return sum + (typeof value === "number" ? value : 0);
-  }, 0);
+  const totalOrders = totalOrdersResult.count ?? 0;
+  const totalRevenueCents = sumTotals(
+    lifetimeRevenueResult.data as Array<{ total_cents: number | null }> | null,
+  );
+  const ordersToday = ordersTodayResult.count ?? 0;
+  const revenueTodayCents = sumTotals(
+    revenueTodayResult.data as Array<{ total_cents: number | null }> | null,
+  );
+  const averageOrderValueCents =
+    totalOrders > 0 ? Math.round(totalRevenueCents / totalOrders) : 0;
 
   return {
     kpis: {
-      ordersToday: ordersTodayResult.count ?? 0,
+      totalOrders,
+      totalRevenueCents,
+      ordersToday,
       revenueTodayCents,
-      productsPublished: productsPublishedResult.count ?? 0,
-      lowStockAlerts: lowStockResult.count ?? 0,
+      averageOrderValueCents,
     },
     recentOrders,
   };
