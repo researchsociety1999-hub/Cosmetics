@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { PageContainer } from "../../../components/PageContainer";
 import { SiteChrome } from "../../../components/SiteChrome";
 import { formatMoney } from "../../../lib/format";
 import {
@@ -46,10 +47,10 @@ export default async function OrderDetailPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
+      <PageContainer as="main" variant="wide">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+            <p className="mystic-kicker">
               Order details
             </p>
             <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
@@ -169,7 +170,7 @@ export default async function OrderDetailPage({
             </div>
           </aside>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requestMagicLinkAction } from "../../actions/auth";
 import { MagicLinkSubmitButton } from "../../components/MagicLinkSubmitButton";
+import { PageContainer } from "../../components/PageContainer";
+import { PageHeader } from "../../components/PageHeader";
 import { SiteChrome } from "../../components/SiteChrome";
 import { getSafeNextPath } from "../../lib/authRedirect";
 import { sanitizeClientAuthMessage } from "../../lib/authMessages";
@@ -34,19 +36,15 @@ export default async function SignupPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-        <div className="mx-auto max-w-xl">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          Account
-        </p>
-        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3]">
-          Create your Mystique account
-        </h1>
-        <div className="mystic-card mt-8 space-y-5 p-6">
-          <p className="text-sm leading-relaxed text-[#b8ab95]">
-            Enter your email and we&apos;ll send you a secure magic link. If this is your
-            first time, we&apos;ll create your Mystique account when you use the link.
-          </p>
+      <PageContainer as="main" variant="narrow">
+        <div className="flex min-h-[55vh] flex-col items-center justify-center">
+          <PageHeader
+            align="center"
+            eyebrow="Account"
+            title="Create your Mystique account"
+            subtitle="Enter your email and we'll send you a secure magic link. If this is your first time, we'll create your Mystique account when you use the link."
+          />
+          <div className="mystic-card mt-8 w-full max-w-xl space-y-5 p-6">
           <form action={requestMagicLinkAction} className="space-y-4">
             <input type="hidden" name="next" value={nextPath} />
             <input type="hidden" name="mode" value="signup" />
@@ -84,9 +82,9 @@ export default async function SignupPage({
           >
             Go to sign in
           </Link>
+          </div>
         </div>
-        </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

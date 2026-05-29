@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../../components/PageContainer";
 import { SiteChrome } from "../../components/SiteChrome";
 import { PurchaseEvent } from "../../components/PurchaseEvent";
 import { getOrderNumberByStripeSessionIdForDisplay } from "../../lib/checkoutOrders";
@@ -70,7 +71,7 @@ export default async function CheckoutSuccessPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-20 md:px-6 lg:px-10 xl:px-14">
+      <PageContainer as="main" variant="wide">
         <div className="mystic-card p-8 md:p-10">
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
             {isConfirmed ? "Payment complete" : "Payment confirmation"}
@@ -169,7 +170,7 @@ export default async function CheckoutSuccessPage({
             </Link>
           </div>
         </div>
-      </main>
+      </PageContainer>
 
       {/*
         GA4 purchase event — fires once on mount when:

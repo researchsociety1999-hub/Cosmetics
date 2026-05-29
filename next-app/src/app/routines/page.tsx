@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
 import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function RoutinesPage() {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
+      <PageContainer as="main" variant="default">
         <header className="relative min-h-[14rem] overflow-hidden rounded-[var(--mystic-radius-card)] border border-[rgba(214,168,95,0.14)] md:min-h-[16rem]">
           <div
             aria-hidden
@@ -22,7 +23,7 @@ export default function RoutinesPage() {
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(4,5,10,0.88)_0%,rgba(4,5,10,0.72)_42%,rgba(4,5,10,0.5)_100%)]"
           />
           <div className="relative z-10 max-w-3xl space-y-4 px-6 py-10 md:px-10 md:py-12">
-            <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#d8c8aa]">
+            <p className="mystic-kicker">
               Routines
             </p>
             <h1 className="font-literata text-4xl tracking-[0.12em] text-[#f5eee3] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)] md:text-5xl">
@@ -79,7 +80,7 @@ export default function RoutinesPage() {
             Need help choosing?
           </Link>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

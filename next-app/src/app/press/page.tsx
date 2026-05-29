@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { getPressMentions } from "../lib/queries";
 import type { PressMention } from "../lib/types";
@@ -17,24 +19,17 @@ export default async function PressPage() {
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
-        <header className="mb-10 max-w-3xl space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Press
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Press &amp; media
-          </h1>
-          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Each listing links to the live article. For hi-res assets, fact checks, or
-            wholesale, use{" "}
-            <Link href="/contact" className="text-[#f0d19a] underline-offset-4 hover:underline">
-              Contact
-            </Link>
-            .
-          </p>
-        </header>
-        <div className="mb-8 flex items-center gap-3">
+      <PageContainer as="main" variant="default">
+        <PageHeader eyebrow="Press" title="Press & media" />
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#b8ab95] md:text-base">
+          Each listing links to the live article. For hi-res assets, fact checks, or
+          wholesale, use{" "}
+          <Link href="/contact" className="text-[#f0d19a] underline-offset-4 hover:underline">
+            Contact
+          </Link>
+          .
+        </p>
+        <div className="mb-8 mt-10 flex items-center gap-3">
           <span className="mystic-pill">Credits</span>
           <div className="h-px flex-1 bg-[rgba(214,168,95,0.12)]" />
         </div>
@@ -67,7 +62,7 @@ export default async function PressPage() {
             ))}
           </section>
         )}
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { applyPromoCodeAction, removePromoCodeAction } from "../actions/promo";
 import { removeFromCartAction } from "../actions/cart";
 import { CartQuantityUpdateForm } from "./CartQuantityUpdateForm";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
 import { getOrderTotals } from "../lib/checkout";
@@ -40,15 +42,8 @@ export default async function CartPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-        <header className="mb-10 space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Bag
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Your ritual bag
-          </h1>
-        </header>
+      <PageContainer as="main" variant="wide">
+        <PageHeader className="mb-10" eyebrow="Bag" title="Your ritual bag" />
 
         {cart.lines.length === 0 ? (
           <div className="mystic-panel p-8 md:p-10">
@@ -207,7 +202,7 @@ export default async function CartPage({
             </aside>
           </div>
         )}
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }
