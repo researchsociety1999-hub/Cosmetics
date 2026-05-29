@@ -8,8 +8,8 @@ import {
   DeferredHomeNewsletter,
   DeferredHomeRitualStrip,
   DeferredHomeServicesModule,
-  DeferredHomeTrustStrip,
 } from "./components/home/HomeDeferredSections";
+import { HomeTrustStrip } from "./components/home/HomeTrustStrip";
 import ProductCard from "./components/productcard";
 import { SiteChrome } from "./components/SiteChrome";
 import { getJournalEntries, getProducts } from "./lib/queries";
@@ -34,22 +34,7 @@ export const metadata: Metadata = {
     images: mystiqueDefaultOpenGraphImages(),
   }),
   title: { absolute: "Mystique | Where Beauty Transcends" },
-  other: {
-    "x-lcp-preload": "1",
-  },
 };
-
-function LCPPreload() {
-  return (
-    <link
-      rel="preload"
-      as="image"
-      href="/about/hero.jpg"
-      imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 100vw, 1280px"
-      fetchPriority="high"
-    />
-  );
-}
 
 export const revalidate = 30;
 
@@ -77,7 +62,6 @@ export default async function HomePage() {
 
   return (
     <SiteChrome>
-      <LCPPreload />
       <main className="relative isolate min-w-0 w-full">
         <div className="home-page-ambient" aria-hidden>
           <div className="home-page-ambient__photo" />
@@ -91,8 +75,9 @@ export default async function HomePage() {
           <HomeHeroMotion quickViewProduct={heroQuickViewProduct} />
 
           <div className="min-w-0 overflow-x-clip">
-            {/* 2. Trust strip — already lazy. */}
-            <DeferredHomeTrustStrip />
+            {/* 2. Trust strip — static markup, rendered server-side so it is in
+                the initial HTML (no client pop-in → eliminates near-fold CLS). */}
+            <HomeTrustStrip />
 
             {/* 3. Featured Products — immediate (LCP-adjacent first grid). */}
             <FeaturedProductsSection products={catalog} />

@@ -66,15 +66,23 @@ export const DeferredHomeGuidedDiscovery = dynamic(
   { ssr: false, loading: () => <SectionLoading title="Guided discovery" /> }
 );
 
+/**
+ * Reserves vertical space for an `ssr: false` section while its chunk loads,
+ * so content below it does not jump when it mounts (CLS guard).
+ */
+function ReservedSpace({ minHeight }: { minHeight: string }) {
+  return <div aria-hidden style={{ minHeight }} />;
+}
+
 export const DeferredHomeServicesModule = dynamic(
   () =>
     import("./HomeServicesModule").then((m) => m.HomeServicesModule),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => <ReservedSpace minHeight="28rem" /> }
 );
 
 export const DeferredHomeTrustStrip = dynamic(
   () => import("./HomeTrustStrip").then((m) => m.HomeTrustStrip),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => <ReservedSpace minHeight="9rem" /> }
 );
 
 export const DeferredHomeRitualStrip = dynamic(
@@ -103,5 +111,5 @@ export function DeferredHomeJournal({ entries }: { entries: JournalEntry[] }) {
 
 export const DeferredHomeNewsletter = dynamic(
   () => import("./HomeNewsletter").then((m) => m.HomeNewsletter),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => <ReservedSpace minHeight="22rem" /> }
 );

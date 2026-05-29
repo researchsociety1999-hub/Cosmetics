@@ -1,8 +1,19 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { SiteChrome } from "../components/SiteChrome";
+import { ThemedImageFrame } from "../components/ThemedImageFrame";
+import { isSafeImageSrc } from "../lib/format";
 import { buildPageMetadata } from "../lib/seo";
+
+/**
+ * About hero photo. Optional — set NEXT_PUBLIC_ABOUT_HERO_IMAGE to a real photo
+ * (e.g. a Supabase Storage URL). When unset or unreachable, the page renders an
+ * elegant branded placeholder instead of a broken-image / alt-text fallback.
+ */
+const ABOUT_HERO_SRC = (() => {
+  const raw = process.env.NEXT_PUBLIC_ABOUT_HERO_IMAGE?.trim();
+  return raw && isSafeImageSrc(raw) ? raw : null;
+})();
 
 export const metadata: Metadata = {
   ...buildPageMetadata({
@@ -54,17 +65,20 @@ export default function AboutPage() {
             </header>
 
             <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] overflow-hidden rounded-[32px] border border-[rgba(214,168,95,0.2)] shadow-[inset_0_0_72px_rgba(0,0,0,0.22)]">
-              <Image
-                src="/about/hero.jpg"
+              <ThemedImageFrame
+                src={ABOUT_HERO_SRC}
                 alt="Mystique skincare ritual—calm light on skin and texture"
+                displayTitle="Mystique skincare ritual"
+                variant="brand"
                 fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 560px"
                 priority
+                sizes="(max-width: 768px) 100vw, 560px"
+                className="absolute inset-0 h-full w-full"
+                imageClassName="object-cover"
               />
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(6,7,12,0.55)] via-transparent to-[rgba(6,7,12,0.15)]"
+                className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-[rgba(6,7,12,0.55)] via-transparent to-[rgba(6,7,12,0.15)]"
               />
             </div>
           </div>

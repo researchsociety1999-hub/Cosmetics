@@ -22,6 +22,12 @@ const MAX_BODY_BYTES = 32_000;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX = 24;
 
+/** Per-attempt upstream timeout. OpenRouter calls that exceed this are aborted. */
+const OPENROUTER_TIMEOUT_MS = 10_000;
+/** Total attempts (1 initial + 2 retries) with exponential backoff between them. */
+const OPENROUTER_MAX_RETRIES = 2;
+const OPENROUTER_BACKOFF_BASE_MS = 400;
+
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -174,11 +180,93 @@ function getOpenRouterClient(): OpenAI | null {
   return new OpenAI({
     apiKey,
     baseURL: "https://openrouter.ai/api/v1",
+    // Per-request timeout + SDK-level retry budget. The SDK applies its own
+    // exponential backoff on retryable status codes (429/5xx) and network
+    // errors; our wrapper below adds backoff for the empty-completion case.
+    timeout: OPENROUTER_TIMEOUT_MS,
+    maxRetries: OPENROUTER_MAX_RETRIES,
     defaultHeaders: {
       "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL ?? "https://mystique.city",
       "X-Title": "Mystique Ritual Companion",
     },
   });
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** True for transient upstream failures worth a backoff retry. */
+function isRetryableUpstreamError(error: unknown): boolean {
+  if (error instanceof OpenAI.APIError) {
+    const status = error.status;
+    return status === undefined || status === 408 || status === 409 || status === 429 || status >= 500;
+  }
+  // Network-level failures (fetch abort/timeout, DNS, reset) surface as plain Errors.
+  return error instanceof Error;
+}
+
+interface OpenRouterResult {
+  message: string | null;
+  /** Set when all attempts failed; used for logging/diagnostics. */
+  errorCode?: string;
+}
+
+/**
+ * Calls OpenRouter with bounded retries and exponential backoff. Never throws —
+ * always resolves to a result the route can turn into a graceful response.
+ */
+async function requestCompletionWithRetry(
+  client: OpenAI,
+  model: string,
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+): Promise<OpenRouterResult> {
+  let lastErrorCode = "upstream_error";
+
+  for (let attempt = 0; attempt <= OPENROUTER_MAX_RETRIES; attempt++) {
+    try {
+      const completion = await client.chat.completions.create({
+        model,
+        temperature: 0.55,
+        max_tokens: 500,
+        messages,
+      });
+
+      const assistantMessage = completion.choices[0]?.message?.content?.trim();
+      if (assistantMessage) {
+        return { message: assistantMessage };
+      }
+
+      lastErrorCode = "empty_response";
+    } catch (error) {
+      lastErrorCode =
+        error instanceof OpenAI.APIError && error.status === 408
+          ? "timeout"
+          : "upstream_error";
+
+      console.error(
+        `[chat] OpenRouter request failed (attempt ${attempt + 1}/${OPENROUTER_MAX_RETRIES + 1})`,
+        error instanceof OpenAI.APIError
+          ? `status=${error.status ?? "n/a"} code=${error.code ?? "n/a"}`
+          : error instanceof Error
+            ? error.message
+            : "unknown error",
+      );
+
+      if (!isRetryableUpstreamError(error) || attempt === OPENROUTER_MAX_RETRIES) {
+        return { message: null, errorCode: lastErrorCode };
+      }
+    }
+
+    if (attempt < OPENROUTER_MAX_RETRIES) {
+      // Exponential backoff with jitter: 400ms, 800ms, …
+      const backoff =
+        OPENROUTER_BACKOFF_BASE_MS * 2 ** attempt + Math.floor(Math.random() * 150);
+      await sleep(backoff);
+    }
+  }
+
+  return { message: null, errorCode: lastErrorCode };
 }
 
 export async function POST(request: Request) {
@@ -296,47 +384,38 @@ export async function POST(request: Request) {
     );
   }
 
-  try {
-    const completion = await client.chat.completions.create({
-      model,
-      temperature: 0.55,
-      max_tokens: 500,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "system",
-          content: `Approved context (public, read-only):\n\n${contextBlock}`,
-        },
-        ...messages.map((m) => ({ role: m.role, content: m.content })),
-      ],
-    });
+  const result = await requestCompletionWithRetry(client, model, [
+    { role: "system", content: SYSTEM_PROMPT },
+    {
+      role: "system",
+      content: `Approved context (public, read-only):\n\n${contextBlock}`,
+    },
+    ...messages.map((m) => ({ role: m.role, content: m.content })),
+  ]);
 
-    const assistantMessage = completion.choices[0]?.message?.content?.trim();
-
-    if (!assistantMessage) {
-      const message =
-        "I couldn’t quite gather that—could you rephrase your skincare question?";
-      logExchange("fallback", 502, message, "empty_response");
-      return NextResponse.json(
-        { message, error: "empty_response" },
-        { status: 502 },
-      );
-    }
-
-    logExchange("success", 200, assistantMessage);
-    return NextResponse.json({ message: assistantMessage });
-  } catch (error) {
-    console.error("[chat] OpenRouter request failed");
-    if (process.env.NODE_ENV === "development" && error instanceof Error) {
-      console.error(error.message);
-    }
-
-    const message =
-      "Something interrupted our connection. Please try again in a moment.";
-    logExchange("error", 502, message, "upstream_error");
-    return NextResponse.json(
-      { message, error: "upstream_error" },
-      { status: 502 },
-    );
+  if (result.message) {
+    logExchange("success", 200, result.message);
+    return NextResponse.json({ message: result.message });
   }
+
+  if (result.errorCode === "empty_response") {
+    const message =
+      "I couldn’t quite gather that—could you rephrase your skincare question?";
+    logExchange("fallback", 200, message, "empty_response");
+    // 200 with a friendly fallback: the request itself succeeded, the model
+    // just returned nothing useful. Avoids surfacing a 5xx to the client.
+    return NextResponse.json({ message });
+  }
+
+  // All upstream attempts failed (timeout / network / 5xx). Return a graceful
+  // 503 so the client shows a calm retry message instead of a crash/502.
+  const message =
+    result.errorCode === "timeout"
+      ? "That took longer than expected. Please try your question again in a moment."
+      : "Something interrupted our connection. Please try again in a moment.";
+  logExchange("error", 503, message, result.errorCode ?? "upstream_error");
+  return NextResponse.json(
+    { message, error: result.errorCode ?? "upstream_error" },
+    { status: 503 },
+  );
 }

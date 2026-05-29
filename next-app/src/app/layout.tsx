@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { DeferredClientBits } from "./components/DeferredClientBits";
 import { GoogleAnalyticsTracker } from "./components/GoogleAnalytics";
 import { mystiqueDefaultOpenGraphImages } from "./lib/socialMetadata";
@@ -58,6 +59,11 @@ export const metadata: Metadata = {
       "Premium skincare with disciplined layering—calm radiance, refined textures, and routines built for daily use.",
     images: mystiqueDefaultOpenGraphImages().map((img) => img.url),
   },
+  verification: {
+    other: {
+      "msvalidate.01": "0E5D689E6202B5F2",
+    },
+  },
 };
 
 export const viewport: Viewport = {
@@ -67,12 +73,29 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+/**
+ * Origin of the Supabase project (catalog API + product image CDN), derived
+ * from env. Used for an early `preconnect` so the TLS/DNS handshake overlaps
+ * with HTML parsing — cuts TTFB-to-image and API latency on first paint.
+ */
+function getSupabaseOrigin(): string | null {
+  const raw =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  if (!raw) return null;
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return null;
+  }
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
   const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const supabaseOrigin = getSupabaseOrigin();
 
   return (
     <html
@@ -80,6 +103,14 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${literata.variable} ${inter.variable} scroll-smooth`}
     >
+      <head>
+        {supabaseOrigin ? (
+          <>
+            <link rel="preconnect" href={supabaseOrigin} crossOrigin="" />
+            <link rel="dns-prefetch" href={supabaseOrigin} />
+          </>
+        ) : null}
+      </head>
       {/*
         body background is set in globals.css (background: #08070a).
         Tailwind `bg-transparent` is removed here to eliminate the hydration
@@ -113,6 +144,8 @@ export default function RootLayout({
 
         {/* Vercel Speed Insights — no env var needed; active on all Vercel deploys */}
         <SpeedInsights />
+        {/* Vercel Web Analytics — page views, route performance, audience data */}
+        <Analytics />
       </body>
     </html>
   );

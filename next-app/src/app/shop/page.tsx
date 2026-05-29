@@ -172,6 +172,10 @@ export default async function ShopPage({
             currentIngredient={currentIngredient}
             matchedMerchGroup={matchedMerchGroup}
             dbCategories={dbCategories}
+            // Reuse the catalog already fetched for merch-group counts when the
+            // default unfiltered/newest view is requested — avoids a second
+            // full-catalog round trip to Supabase (lower TTFB on /shop).
+            prefetchedNewestCatalog={catalogForMerchCounts}
           />
         </Suspense>
       </main>
