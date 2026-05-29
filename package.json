@@ -7,6 +7,7 @@
     "start": "npm run start --workspace=next-app",
     "lint": "npm run lint --workspace=next-app",
     "test": "playwright test",
+    "test:unit": "vitest run tests/unit",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
     "test:runtime": "node tests/run-all-verifications.mjs",
@@ -18,6 +19,8 @@
   ],
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@types/node": "^20"
+    "@types/node": "^20",
+    "@vitejs/plugin-react": "^6.0.2",
+    "vitest": "^4.1.7"
   }
 }

@@ -13,6 +13,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: "./tests",
+  /* Vitest owns tests/unit/**; keep Playwright from trying to run those specs. */
+  testIgnore: ["**/unit/**"],
   /** CI runners are slower; shop streams RSC + cart POST/redirect polling needs headroom. */
   timeout: process.env.CI ? 120_000 : 45_000,
   expect: {

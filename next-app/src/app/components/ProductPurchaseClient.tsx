@@ -140,7 +140,7 @@ export function ProductPurchaseClient({
 
   return (
     <>
-      <div ref={anchorRef} id="product-purchase-block" className="space-y-6">
+      <div ref={anchorRef} id="product-purchase-block" className="mystique-scroll-anchor space-y-6">
         {/* ── Volume / size label ── */}
         {product.volume_size_label && (
           <ProductVolumeSizeLabel label={product.volume_size_label} />

@@ -106,29 +106,31 @@ export function Navbar() {
 
   useEffect(() => {
     const root = document.documentElement;
-    let raf = 0;
+    const node = headerRef.current;
+    if (!node) return;
 
     const measure = () => {
-      const node = headerRef.current;
-      if (!node) return;
       const h = Math.ceil(node.getBoundingClientRect().height);
       if (h > 0) {
         root.style.setProperty("--mystique-header-offset", `${h}px`);
       }
     };
 
-    const schedule = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(measure);
-    };
+    // A ResizeObserver fires on *every* height change — including each frame of
+    // the `transition-[padding]` scrolled/unscrolled animation and post-font-swap
+    // reflow — so `--mystique-header-offset` always reflects the navbar's true
+    // current height. This replaces the previous rAF + window-resize approach,
+    // which measured once mid-transition and could leave the offset stale (too
+    // small) when scrolling back to the top, letting the heading slip under the nav.
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(node);
 
-    schedule();
-    window.addEventListener("resize", schedule, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [scrolled]);
+    // Initial synchronous measure so the offset is correct before the first
+    // observer callback (covers no-mutation first paint).
+    measure();
+
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

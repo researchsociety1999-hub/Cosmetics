@@ -41,7 +41,10 @@
   --mystic-shadow-gold: 0 0 0 1px rgba(212, 175, 55, 0.28),
     0 0 42px rgba(212, 175, 55, 0.08), 0 22px 56px rgba(0, 0, 0, 0.75);
 
-  --mystique-header-offset: 7rem;
+  /* Pre-hydration / no-JS fallback. Sized to clear the tallest known navbar
+     state (desktop, unscrolled, rows 1+2 + safe-area). Once the navbar's
+     ResizeObserver runs it overwrites this with the measured pixel height. */
+  --mystique-header-offset: 8rem;
 }
 
 @theme inline {
@@ -236,21 +239,20 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: max(6.75rem, calc(5.75rem + env(safe-area-inset-top, 0px)));
+  /* Hash/anchor landing offset. Tracks the live measured navbar height so it
+     stays correct at every breakpoint and scroll state (replaces the three
+     fragmented per-breakpoint values, one of which — the ≥768px 4.65rem — was
+     smaller than the real desktop navbar and let anchors land under it). */
+  scroll-padding-top: max(
+    var(--mystique-header-offset, 8rem),
+    env(safe-area-inset-top, 0px)
+  );
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-}
-
-@media (min-width: 640px) {
-  html { scroll-padding-top: max(7rem, calc(5.9rem + env(safe-area-inset-top, 0px))); }
-}
-
-@media (min-width: 768px) {
-  html { scroll-padding-top: max(4.65rem, env(safe-area-inset-top, 0px)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -727,14 +729,17 @@ optgroup { background-color: #000000; color: var(--mystic-text); }
 
 /*
  * Header offset model (SiteChrome `#main-content`):
- * 1) Standard pages — `#main-content` has padding-top: var(--mystique-header-offset).
- *    Direct `<main>` must not add a second top gutter.
+ * 1) Standard pages — `#main-content` supplies the fixed-header clearance via
+ *    padding-top: var(--mystique-header-offset). Pages then add their own
+ *    vertical rhythm (e.g. `PageContainer`'s py-*) on top of that offset as a
+ *    breathing-room buffer. (Historically a `#main-content > main { padding-top: 0 }`
+ *    rule lived here to prevent a "double gutter", but it was unlayered and
+ *    silently overrode PageContainer's top padding, leaving the heading with no
+ *    buffer beneath the navbar — removed.)
  * 2) Hero-first / full-bleed — first immersive block cancels padding via
  *    `.mystique-first-section` (deprecated alias: `.mystique-flush-under-header`).
  */
 .mystique-main-content { padding-top: var(--mystique-header-offset, 7rem); }
-
-#main-content > main { padding-top: 0; }
 
 .mystique-first-section,
 .mystique-flush-under-header {
