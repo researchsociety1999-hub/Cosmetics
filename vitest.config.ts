@@ -9,7 +9,8 @@ import { defineConfig } from "vitest/config";
  *   and `vi.mock(...)` can reference lib modules with the same specifiers the
  *   app uses (e.g. `@/app/lib/promo`, `@/app/lib/supabaseClient`).
  * - `environment: "node"` — these are pure logic tests; no DOM is required.
- * - Only `tests/unit/**` is collected here; Playwright owns the rest of tests/.
+ * - `tests/unit/**` and `tests/integration/**` are collected here; Playwright
+ *   owns the remaining E2E specs in tests/.
  */
 export default defineConfig({
   plugins: [react()],
@@ -21,7 +22,7 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
-    include: ["tests/unit/**/*.test.ts"],
+    include: ["tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"],
     clearMocks: true,
     restoreMocks: true,
   },

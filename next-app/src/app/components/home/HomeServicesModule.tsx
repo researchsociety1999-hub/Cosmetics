@@ -22,31 +22,34 @@ export function HomeServicesModule() {
               alt=""
               fill
               sizes="(max-width: 768px) 100vw, 56rem"
-              className="object-cover object-[50%_48%] scale-[1.02] brightness-[1.04] contrast-[0.97] saturate-[0.92] motion-reduce:scale-100"
+              className="object-cover object-[50%_46%] scale-[1.03] brightness-[1.05] contrast-[1.02] saturate-[0.96] motion-reduce:scale-100"
               quality={90}
             />
           </div>
-          {/* Open, welcoming top; gentle depth toward the bottom for reading comfort */}
+          {/* Tonal depth — open at the top, a refined fall-off toward the bottom for legibility */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#0a0c12]/10 via-[#060812]/18 to-[#03050a]/58]"
+            className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(to_bottom,rgba(8,10,18,0.06)_0%,rgba(6,8,16,0.16)_42%,rgba(4,6,12,0.5)_78%,rgba(3,5,10,0.66)_100%)]"
           />
+          {/* Soft luminous halo from above — gives the glass a lit, gallery feel */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_120%_70%_at_50%_8%,rgba(255,248,236,0.08),transparent_52%)]"
+            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_120%_72%_at_50%_6%,rgba(255,248,236,0.12),transparent_54%)]"
           />
+          {/* Warm gold pool anchored low — premium, candle-lit undertone */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(214,168,95,0.07),transparent_50%)] mix-blend-soft-light opacity-70"
+            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_88%_58%_at_50%_104%,rgba(214,168,95,0.12),transparent_52%)] mix-blend-soft-light opacity-80"
           />
-          {/* Light glass veil — lets colour and light from the bottles show through */}
+          {/* Light glass veil — subtle blur lets the bottles' colour and light read through */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[2] bg-[rgba(14,16,26,0.2)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)] supports-[backdrop-filter]:bg-[rgba(14,16,26,0.14)]"
+            className="pointer-events-none absolute inset-0 z-[2] bg-[rgba(12,14,24,0.16)] backdrop-blur-[4px] backdrop-saturate-[1.18] [-webkit-backdrop-filter:blur(4px)_saturate(1.18)] supports-[backdrop-filter]:bg-[rgba(12,14,24,0.1)]"
           />
+          {/* Edge framing — crisp inner hairline + soft inner vignette for a polished, framed look */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[2] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
+            className="pointer-events-none absolute inset-0 z-[2] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),inset_0_0_0_1px_rgba(255,255,255,0.05),inset_0_-40px_80px_rgba(3,5,10,0.4)]"
           />
 
           <div className="relative z-[3] px-6 py-10 md:px-11 md:py-12">

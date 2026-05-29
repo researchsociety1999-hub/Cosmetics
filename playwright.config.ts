@@ -13,8 +13,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: "./tests",
-  /* Vitest owns tests/unit/**; keep Playwright from trying to run those specs. */
-  testIgnore: ["**/unit/**"],
+  /* Vitest owns tests/unit/** and tests/integration/**; keep Playwright out. */
+  testIgnore: ["**/unit/**", "**/integration/**"],
   /** CI runners are slower; shop streams RSC + cart POST/redirect polling needs headroom. */
   timeout: process.env.CI ? 120_000 : 45_000,
   expect: {
@@ -91,6 +91,13 @@ export default defineConfig({
       E2E_ALLOW_HTTP_COOKIES: "1",
       // `next start` runs as production; allow integration health checks in tests.
       ENABLE_INTEGRATION_HEALTH: process.env.ENABLE_INTEGRATION_HEALTH ?? "1",
+      // Deterministic admin gate for tests/e2e/admin.spec.ts. The spec never uses
+      // this password to log in (it only submits deliberately-wrong credentials),
+      // so it stays a test-only secret. Without these, the admin login form does
+      // not render and the form/rate-limit cases self-skip.
+      MYSTIQUE_ADMIN_PASSWORD: process.env.MYSTIQUE_ADMIN_PASSWORD ?? "e2e-correct-horse-battery",
+      MYSTIQUE_ADMIN_SECRET:
+        process.env.MYSTIQUE_ADMIN_SECRET ?? "e2e-admin-signing-secret-min-32-chars-long-000",
     },
   },
 });

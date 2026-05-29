@@ -8,6 +8,8 @@
     "lint": "npm run lint --workspace=next-app",
     "test": "playwright test",
     "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:integration": "vitest run tests/integration",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
     "test:runtime": "node tests/run-all-verifications.mjs",
