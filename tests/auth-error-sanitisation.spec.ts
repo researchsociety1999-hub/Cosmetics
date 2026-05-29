@@ -1,64 +1,105 @@
 import { expect, test } from "@playwright/test";
-import { gotoAndWait } from "./helpers";
 
 /**
- * M4 — Auth error sanitisation (skipped by default)
+ * M4 — Auth error sanitisation
  *
- * Verifies that the auth error UI never leaks raw Supabase / internal error
- * messages to the browser (e.g. "relation \"auth.users\" does not exist",
- * Postgres error codes, stack traces).
+ * SECURITY PROPERTY
+ * Error messages shown to the user during authentication must never leak
+ * internal details — raw Supabase/Postgres errors, stack traces, exception
+ * text, or internal file/URL paths — and must not enable user enumeration.
  *
- * HOW TO ENABLE
- * Set the environment variable BREAK_AUTH_ERRORS=1 before running:
+ * WHAT THIS SPEC ASSERTS (against the real magic-link auth flow):
+ *   1. /auth/error rendered with a hostile `message` param (stuffed with
+ *      "supabase", "postgres", stack-trace-like text, internal paths) collapses
+ *      to a safe, generic message — the raw input is never echoed.
+ *   2. A deliberately bad/malformed magic-link token (/auth/confirm) redirects
+ *      to /account/login with a safe status message (link-invalid / auth-error /
+ *      not-configured depending on backend config) — never a raw backend error.
+ *   3. The pages still render (no unhandled crash) in every case.
  *
- *   BREAK_AUTH_ERRORS=1 npx playwright test tests/auth-error-sanitisation.spec.ts
- *
- * Without that flag the test is skipped so it never fails in CI unless you
- * deliberately opt-in to the destructive probe.
+ * Runs in CI with NO opt-in flag (the previous BREAK_AUTH_ERRORS gate is gone).
+ * Deterministic whether or not Supabase is configured in the test environment.
  */
 
-const ENABLED = process.env.BREAK_AUTH_ERRORS === "1";
+/** Tokens that must never appear in a user-facing auth error message. */
+const FORBIDDEN: Array<[string, RegExp]> = [
+  ["supabase", /supabase/i],
+  ["postgres", /postgres/i],
+  ["sql", /\bsql\b/i],
+  ["exception", /exception/i],
+  ["stack", /stack/i],
+  ["Error: (capital E)", /Error:/],
+  ["internal path", /node_modules|\/var\/|webpack-internal|file:\/\//i],
+];
+
+function assertNoLeak(text: string) {
+  for (const [label, pattern] of FORBIDDEN) {
+    expect(text, `auth error UI must not expose: ${label}`).not.toMatch(pattern);
+  }
+}
 
 test.describe("M4 — auth error sanitisation", () => {
-  test.skip(!ENABLED, "Set BREAK_AUTH_ERRORS=1 to run this destructive probe");
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
 
-  test("M4: login with bad credentials does not expose raw error detail", async ({
-    page,
-  }) => {
-    await gotoAndWait(page, "/account/login");
+  test("M4a: /auth/error never echoes raw backend detail in its message", async ({ page }) => {
+    const hostile =
+      'Error: relation "auth.users" does not exist — supabase postgres sql exception ' +
+      "stack trace at /var/task/node_modules/@supabase/gotrue-js/dist/index.js";
 
-    // Fill deliberately wrong credentials.
-    await page.getByLabel(/email/i).fill("nonexistent@example.invalid");
-    await page.getByLabel(/password/i).fill("WRONG_PASSWORD_123!");
-    await page.getByRole("button", { name: /sign in|log in/i }).click();
+    await page.goto(`/auth/error?message=${encodeURIComponent(hostile)}`, {
+      waitUntil: "domcontentloaded",
+    });
 
-    // Wait for the error feedback to appear.
-    const errorRegion = page
-      .getByRole("alert")
-      .or(page.locator("[aria-live]"))
-      .first();
-    await expect(errorRegion).toBeVisible({ timeout: 15_000 });
+    // Page renders (no crash).
+    await expect(
+      page.getByRole("heading", { name: /could ?n.t complete sign-in/i }),
+    ).toBeVisible();
 
-    const errorText = await errorRegion.innerText();
+    // The visible error message is the safe generic copy, not the hostile input.
+    const mainText = await page.locator("main").first().innerText();
+    assertNoLeak(mainText);
+    await expect(
+      page.getByText(/request a fresh magic link|could ?n.t verify that sign-in link/i),
+    ).toBeVisible();
+  });
 
-    // Must NOT contain raw Postgres / Supabase internals.
-    const forbidden = [
-      /relation .* does not exist/i,
-      /postgres/i,
-      /supabase/i,
-      /pg_/i,
-      /error code/i,
-      /stack trace/i,
-      /at Object\./i,
-    ];
-    for (const pattern of forbidden) {
-      expect(
-        errorText,
-        `Auth error UI must not expose: ${pattern}`,
-      ).not.toMatch(pattern);
-    }
+  test("M4b: a malformed magic-link token shows a safe generic error", async ({ page }) => {
+    // A bogus token_hash exercises the real verification path in /auth/confirm.
+    await page.goto("/auth/confirm?token_hash=deadbeef-not-a-real-token&type=magiclink", {
+      waitUntil: "domcontentloaded",
+    });
 
-    // Must show a human-friendly message.
-    expect(errorText.trim().length).toBeGreaterThan(0);
+    // The backend bounces the bad token back to the login page with a status.
+    await page.waitForURL(/\/account\/login/, { timeout: 30_000 });
+    await expect(page.getByRole("heading", { name: /sign in to mystique/i })).toBeVisible();
+
+    const status = new URL(page.url()).searchParams.get("status");
+    expect(["link-invalid", "auth-error", "not-configured"]).toContain(status);
+
+    // A safe, generic status message is shown — and nothing internal leaks.
+    const mainText = await page.locator("main").first().innerText();
+    assertNoLeak(mainText);
+    await expect(
+      page.getByText(
+        /expired|already used|no longer valid|could ?n.t verify|is ?n.t available|new magic link/i,
+      ).first(),
+    ).toBeVisible();
+  });
+
+  test("M4c: /auth/callback with a bogus code does not leak and stays safe", async ({ page }) => {
+    await page.goto("/auth/callback?code=bogus-oauth-code-12345&next=/account", {
+      waitUntil: "domcontentloaded",
+    });
+
+    await page.waitForURL(/\/account\/login/, { timeout: 30_000 });
+    await expect(page.getByRole("heading", { name: /sign in to mystique/i })).toBeVisible();
+
+    const status = new URL(page.url()).searchParams.get("status");
+    expect(["auth-error", "not-configured"]).toContain(status);
+
+    const mainText = await page.locator("main").first().innerText();
+    assertNoLeak(mainText);
   });
 });

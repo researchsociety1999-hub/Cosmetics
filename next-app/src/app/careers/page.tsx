@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 
 export const metadata: Metadata = {
@@ -12,20 +14,13 @@ export const metadata: Metadata = {
 export default function CareersPage() {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
-        <header className="mb-8 max-w-3xl space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Careers
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-            Join Mystique
-          </h1>
-          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            We are building a small, senior team around formulation, operations, and
-            storytelling. When a role opens, it will be listed here first.
-          </p>
-        </header>
-        <div className="mystic-panel max-w-2xl space-y-4 p-6 text-sm leading-relaxed text-[#b8ab95] md:p-8 md:text-base">
+      <PageContainer as="main" variant="default">
+        <PageHeader
+          eyebrow="Careers"
+          title="Join Mystique"
+          subtitle="We are building a small, senior team around formulation, operations, and storytelling. When a role opens, it will be listed here first."
+        />
+        <div className="mystic-panel mt-10 max-w-2xl space-y-4 p-6 text-sm leading-relaxed text-[#b8ab95] md:p-8 md:text-base">
           <p className="text-[0.68rem] uppercase tracking-[0.26em] text-[#d6a85f]">
             Studio
           </p>
@@ -48,7 +43,7 @@ export default function CareersPage() {
             </Link>
           </div>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

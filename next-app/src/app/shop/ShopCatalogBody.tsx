@@ -38,6 +38,12 @@ type ShopCatalogBodyProps = {
   currentIngredient: string;
   matchedMerchGroup: { slug: string; name: string } | null;
   dbCategories: { id: number; slug: string; name: string }[];
+  /**
+   * Catalog (newest, excludeComingSoon) already fetched by the parent page for
+   * merch-group counts. Reused for the default unfiltered view to avoid a
+   * duplicate Supabase round trip.
+   */
+  prefetchedNewestCatalog?: Product[];
 };
 
 export async function ShopCatalogBody({
@@ -46,13 +52,25 @@ export async function ShopCatalogBody({
   currentIngredient,
   matchedMerchGroup,
   dbCategories,
+  prefetchedNewestCatalog,
 }: ShopCatalogBodyProps) {
-  let filteredProducts = await getProducts({
-    search: currentIngredient ? "" : currentSearch,
-    ingredientId: currentIngredient || undefined,
-    sortBy: sort,
-    excludeComingSoon: true,
-  });
+  // Default view (no search/ingredient filter, newest sort) is identical to the
+  // catalog already fetched upstream — reuse it instead of querying again.
+  const canReusePrefetched =
+    !currentSearch &&
+    !currentIngredient &&
+    sort === "newest" &&
+    Array.isArray(prefetchedNewestCatalog) &&
+    prefetchedNewestCatalog.length > 0;
+
+  let filteredProducts = canReusePrefetched
+    ? prefetchedNewestCatalog!
+    : await getProducts({
+        search: currentIngredient ? "" : currentSearch,
+        ingredientId: currentIngredient || undefined,
+        sortBy: sort,
+        excludeComingSoon: true,
+      });
 
   // If the store is in pre-launch mode (all published products are coming soon),
   // don't render an empty Shop — show the catalog with waitlist CTAs instead.

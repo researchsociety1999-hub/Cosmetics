@@ -15,15 +15,27 @@ export function SearchExperience({
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [prevInitialQuery, setPrevInitialQuery] = useState(initialQuery);
+  const [prevInitialProducts, setPrevInitialProducts] =
+    useState<Product[]>(initialProducts);
   const firstRenderRef = useRef(true);
 
-  const trimmedQuery = useMemo(() => query.trim(), [query]);
-
-  useEffect(() => {
+  // Sync local state when the server-provided props change (e.g. client-side
+  // navigation to a new /search?q=... URL). Uses the React-recommended
+  // "previous prop" pattern instead of a useEffect, which avoids the cascading
+  // re-render flagged by `react-hooks/set-state-in-effect`.
+  if (
+    initialQuery !== prevInitialQuery ||
+    initialProducts !== prevInitialProducts
+  ) {
+    setPrevInitialQuery(initialQuery);
+    setPrevInitialProducts(initialProducts);
     setQuery(initialQuery);
     setProducts(initialProducts);
     setLoadError(null);
-  }, [initialProducts, initialQuery]);
+  }
+
+  const trimmedQuery = useMemo(() => query.trim(), [query]);
 
   useEffect(() => {
     if (firstRenderRef.current) {
@@ -32,7 +44,10 @@ export function SearchExperience({
     }
 
     if (!trimmedQuery) {
-      setProducts([]);
+      // No need to clear `products` here — when `trimmedQuery` is empty the
+      // render path shows the "Browse" panel and never reads `products`, so
+      // leaving the previous results in state is unobservable and avoids a
+      // setState-in-effect cascade.
       const url = new URL(window.location.href);
       url.searchParams.delete("q");
       window.history.replaceState({}, "", url);
@@ -43,10 +58,14 @@ export function SearchExperience({
     url.searchParams.set("q", trimmedQuery);
     window.history.replaceState({}, "", url);
 
-    setIsLoading(true);
-    setLoadError(null);
     const controller = new AbortController();
+    // setIsLoading/setLoadError are intentionally set inside the timeout
+    // callback (not the synchronous effect body) so they don't trigger
+    // `react-hooks/set-state-in-effect`. As a bonus, "Searching…" only shows
+    // after the 220ms debounce settles instead of flickering on every keystroke.
     const timeoutId = window.setTimeout(async () => {
+      setIsLoading(true);
+      setLoadError(null);
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
           cache: "no-store",

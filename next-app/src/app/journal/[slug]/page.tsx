@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageContainer } from "../../components/PageContainer";
+import { PageHeader } from "../../components/PageHeader";
 import { SiteChrome } from "../../components/SiteChrome";
 import { getJournalEntries } from "../../lib/queries";
 import { buildPageMetadata } from "../../lib/seo";
@@ -45,7 +47,7 @@ export default async function JournalEntryPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-28 md:px-6 lg:px-10 lg:pb-14 xl:px-14">
+      <PageContainer as="main" variant="narrow">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"
@@ -62,12 +64,7 @@ export default async function JournalEntryPage({
             {entry.title}
           </span>
         </nav>
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          {entry.category}
-        </p>
-        <h1 className="mt-4 font-literata text-5xl tracking-[0.12em]">
-          {entry.title}
-        </h1>
+        <PageHeader eyebrow={entry.category} title={entry.title} />
         <article className="mystic-card mt-10 p-8 text-sm leading-relaxed text-[#b8ab95] md:text-base">
           <p className="text-base text-[#d8c6aa]">{entry.excerpt}</p>
           <div className="mt-8 space-y-8">
@@ -101,7 +98,7 @@ export default async function JournalEntryPage({
             Home
           </Link>
         </nav>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

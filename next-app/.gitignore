@@ -41,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright (test-results already above; playwright-report covered by root .gitignore but pin here defensively)
+/playwright-report/

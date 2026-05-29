@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { SearchExperience } from "./SearchExperience";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { searchProducts } from "../lib/queries";
 
@@ -26,17 +28,15 @@ export default async function SearchPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-        <header className="mb-10 space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Search
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Find a ritual
-          </h1>
-        </header>
-        <SearchExperience initialQuery={query} initialProducts={products} />
-      </main>
+      <PageContainer as="main" variant="wide">
+        <PageHeader
+          eyebrow="Search"
+          title={query ? `Find a ritual: “${query}”` : "Find a ritual"}
+        />
+        <section aria-label="Search results" className="mt-10">
+          <SearchExperience initialQuery={query} initialProducts={products} />
+        </section>
+      </PageContainer>
     </SiteChrome>
   );
 }

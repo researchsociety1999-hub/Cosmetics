@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { submitContactAction } from "../actions/contact";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { getPublicStudioEmail } from "../lib/siteConfig";
 import { getProductBySlug } from "../lib/queries";
@@ -26,20 +28,13 @@ export default async function ContactPage({
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
-        <header className="mb-10 max-w-3xl space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Contact
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Write the studio.
-          </h1>
-          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Orders, press, wholesale, or help choosing a texture—we read every note and
-            reply within one to two business days, Pacific time.
-          </p>
-        </header>
-        <div className="grid gap-8 md:grid-cols-[1fr_320px]">
+      <PageContainer as="main" variant="default">
+        <PageHeader
+          eyebrow="Contact"
+          title="Write the studio."
+          subtitle="Orders, press, wholesale, or help choosing a texture—we read every note and reply within one to two business days, Pacific time."
+        />
+        <div className="mt-10 grid gap-8 md:grid-cols-[1fr_320px]">
           <form action={submitContactAction} className="mystic-card grid gap-5 p-6 md:p-8">
             <Field label="Name" name="name" autoComplete="name" />
             <Field label="Email" name="email" type="email" autoComplete="email" />
@@ -78,7 +73,7 @@ export default async function ContactPage({
               ) : null}
               {params.status === "rate-limited" ? (
                 <p className="text-sm text-[#d6a85f]" role="status">
-                  We've received a lot of messages from your network just now. Please wait a few
+                  We&apos;ve received a lot of messages from your network just now. Please wait a few
                   minutes and try again.
                 </p>
               ) : null}
@@ -149,7 +144,7 @@ export default async function ContactPage({
             </div>
           </aside>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

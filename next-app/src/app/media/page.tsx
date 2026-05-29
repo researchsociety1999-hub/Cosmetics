@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
 import { SiteChrome } from "../components/SiteChrome";
 import { buildPageMetadata } from "../lib/seo";
 
@@ -15,9 +16,9 @@ export const metadata: Metadata = {
 export default function MediaPage() {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
+      <PageContainer as="main" variant="default">
         <header className="mystic-panel p-8 md:p-10">
-          <p className="text-[0.7rem] uppercase tracking-[0.3em] text-[#8a8275]">
+          <p className="mystic-kicker">
             Media
           </p>
           <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
@@ -42,7 +43,7 @@ export default function MediaPage() {
             </Link>
           </div>
         </header>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

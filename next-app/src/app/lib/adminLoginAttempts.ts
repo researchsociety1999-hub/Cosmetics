@@ -4,6 +4,7 @@ type AttemptRecord = {
 };
 
 const WINDOW_MS = 15 * 60 * 1000;
+const LOCKOUT_DURATION_MS = 30 * 60 * 1000;
 const MAX_FAILURES = 5;
 
 const failuresByIp = new Map<string, AttemptRecord>();
@@ -37,4 +38,7 @@ export function recordAdminLoginFailure(ip: string): void {
   }
 
   record.count += 1;
+  if (record.count >= MAX_FAILURES) {
+    record.resetAt = now + LOCKOUT_DURATION_MS;
+  }
 }

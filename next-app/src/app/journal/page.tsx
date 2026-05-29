@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { getJournalEntries } from "../lib/queries";
 
@@ -21,7 +23,7 @@ export default async function JournalPage() {
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section pb-[5.25rem] md:pb-28">
+      <PageContainer as="main" variant="default">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"
@@ -32,17 +34,12 @@ export default async function JournalPage() {
           <span aria-hidden>/</span>
           <span className="text-[#b8ab95]">Journal</span>
         </nav>
-        <header className="mb-14 max-w-3xl space-y-5 border-b border-[rgba(214,168,95,0.09)] pb-12 md:mb-16 md:space-y-6 md:pb-14">
-          <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#8a8275]">
-            Journal
-          </p>
-          <h1 className="font-literata text-[clamp(2rem,4.5vw,3rem)] font-normal leading-[1.15] tracking-[0.1em] text-[#f2ebe1]">
-            Skincare reads, written with care.
-          </h1>
-          <p className="max-w-2xl text-sm leading-relaxed text-[#9a9185] md:text-[0.9375rem]">
-            Essays on layering, ingredients, and routines—each piece opens on its own page.
-          </p>
-        </header>
+        <PageHeader
+          className="mb-14 border-b border-[rgba(214,168,95,0.09)] pb-12 md:mb-16 md:pb-14"
+          eyebrow="Journal"
+          title="Skincare reads, written with care."
+          subtitle="Essays on layering, ingredients, and routines—each piece opens on its own page."
+        />
         {entries.length === 0 ? (
           <div className="mystic-card border border-[rgba(214,168,95,0.12)] p-8 text-sm leading-[1.7] text-[#a99e8e]">
             <p>
@@ -118,7 +115,7 @@ export default async function JournalPage() {
             </Link>
           </section>
         ) : null}
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

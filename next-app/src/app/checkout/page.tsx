@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { CheckoutClient } from "./CheckoutClient";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { PurchaseTrustFootnote } from "../components/PurchaseTrustFootnote";
 import { SiteChrome } from "../components/SiteChrome";
 import { getCartSummary } from "../lib/cart";
@@ -31,19 +33,25 @@ export default async function CheckoutPage({
   );
   const totals = getOrderTotals(cart, appliedPromo?.discountCents ?? 0);
 
+  // Presentational only: whether any status/helper notice should render so we
+  // can group them inside a single helper card instead of loose paragraphs.
+  const hasCheckoutNotice =
+    params.status === "cancelled" ||
+    params.status === "validation" ||
+    params.status === "empty" ||
+    params.status === "order-error" ||
+    params.status === "stripe-error" ||
+    Boolean(invalidMessage);
+
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-        <header className="mb-10 space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Checkout
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">Checkout</h1>
-          <p className="max-w-2xl text-sm leading-relaxed text-[#b8ab95]">
-            Complete your shipping details and review your order before the next
-            step.
-          </p>
-        </header>
+      <PageContainer as="main" variant="wide">
+        <PageHeader
+          className="mb-10"
+          eyebrow="Checkout"
+          title="Checkout"
+          subtitle="Complete your shipping details and review your order before the next step."
+        />
 
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
           <div className="space-y-4">
@@ -51,37 +59,44 @@ export default async function CheckoutPage({
               defaultEmail=""
               stripeReady={stripeReady}
             />
-            {params.status === "cancelled" ? (
-              <p className="text-sm text-[#d6a85f]">
-                Secure checkout was cancelled. Your bag is still here, and you can
-                try again whenever you are ready.
-              </p>
-            ) : null}
-            {params.status === "validation" ? (
-              <p className="text-sm text-[#d6a85f]">
-                {params.message ?? "Please review your shipping details and try again."}
-              </p>
-            ) : null}
-            {params.status === "empty" ? (
-              <p className="text-sm text-[#d6a85f]">
-                Your bag is empty. Add products before placing an order.
-              </p>
-            ) : null}
-            {params.status === "order-error" ? (
-              <p className="text-sm text-[#d6a85f]">
-                We could not create your order right now. Please try again in a moment.
-              </p>
-            ) : null}
-            {params.status === "stripe-error" ? (
-              <p className="text-sm text-[#d6a85f]">
-                We could not start secure checkout right now. Please try again
-                in a moment.
-              </p>
-            ) : null}
-            {invalidMessage ? (
-              <p className="text-sm text-[#d6a85f]">
-                Your previous promo code could not be applied at checkout: {invalidMessage}
-              </p>
+            {hasCheckoutNotice ? (
+              <section
+                aria-label="Checkout updates"
+                className="mystic-card space-y-3 p-5"
+              >
+                {params.status === "cancelled" ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    Secure checkout was cancelled. Your bag is still here, and you can
+                    try again whenever you are ready.
+                  </p>
+                ) : null}
+                {params.status === "validation" ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    {params.message ?? "Please review your shipping details and try again."}
+                  </p>
+                ) : null}
+                {params.status === "empty" ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    Your bag is empty. Add products before placing an order.
+                  </p>
+                ) : null}
+                {params.status === "order-error" ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    We could not create your order right now. Please try again in a moment.
+                  </p>
+                ) : null}
+                {params.status === "stripe-error" ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    We could not start secure checkout right now. Please try again
+                    in a moment.
+                  </p>
+                ) : null}
+                {invalidMessage ? (
+                  <p className="text-sm text-[#d6a85f]">
+                    Your previous promo code could not be applied at checkout: {invalidMessage}
+                  </p>
+                ) : null}
+              </section>
             ) : null}
           </div>
 
@@ -128,7 +143,7 @@ export default async function CheckoutPage({
             </div>
           </aside>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

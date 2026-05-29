@@ -1,3 +1,4 @@
+import { PageContainer } from "./PageContainer";
 import { SiteChrome } from "./SiteChrome";
 
 export async function LegalPage({
@@ -16,7 +17,7 @@ export async function LegalPage({
 }) {
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section w-full max-w-3xl">
+      <PageContainer as="main" variant="narrow">
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
           {eyebrow}
         </p>
@@ -38,7 +39,7 @@ export async function LegalPage({
             </section>
           ))}
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

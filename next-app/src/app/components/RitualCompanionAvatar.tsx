@@ -2,6 +2,8 @@
 
 import { useId } from "react";
 
+import "./RitualCompanionAvatar.css";
+
 type RitualCompanionAvatarProps = {
   className?: string;
   isWaving?: boolean;

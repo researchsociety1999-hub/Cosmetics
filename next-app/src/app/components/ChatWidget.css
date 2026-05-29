@@ -1,0 +1,41 @@
+/*
+ * ChatWidget.css — moved out of globals.css.
+ * Only loaded when the chat widget mounts (interactive bottom-right launcher).
+ */
+
+@keyframes mystique-mascot-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes mystique-mascot-wave {
+  0% { transform: translateY(0) rotate(0deg); }
+  20% { transform: translateY(-4px) rotate(-4deg); }
+  45% { transform: translateY(-2px) rotate(5deg); }
+  70% { transform: translateY(-4px) rotate(-3deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes mystique-chat-bubble-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes mystique-chat-panel-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mystique-chat-mascot-idle { animation: mystique-mascot-idle 4.5s ease-in-out infinite; }
+.mystique-chat-mascot-wave { animation: mystique-mascot-wave 900ms ease-in-out; }
+.mystique-chat-bubble-in { animation: mystique-chat-bubble-in 320ms ease-out; }
+.mystique-chat-panel-in { animation: mystique-chat-panel-in 280ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mystique-chat-mascot-idle,
+  .mystique-chat-mascot-wave,
+  .mystique-chat-bubble-in,
+  .mystique-chat-panel-in {
+    animation: none !important;
+  }
+}

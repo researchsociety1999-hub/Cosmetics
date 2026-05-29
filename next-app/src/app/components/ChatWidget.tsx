@@ -12,6 +12,8 @@ import {
   type KeyboardEvent,
 } from "react";
 
+import "./ChatWidget.css";
+
 type ChatRole = "user" | "assistant";
 
 interface ChatMessage {
@@ -366,7 +368,7 @@ export function ChatWidget() {
                     key={label}
                     type="button"
                     onClick={() => handleSuggestion(label)}
-                    className="rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(214,168,95,0.06)] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(214,168,95,0.12)]"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[rgba(214,168,95,0.22)] bg-[rgba(214,168,95,0.06)] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#e8c56e] transition hover:border-[rgba(214,168,95,0.38)] hover:bg-[rgba(214,168,95,0.12)]"
                   >
                     {label}
                   </button>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
 import { SiteChrome } from "../components/SiteChrome";
 import { mockFaqs } from "../lib/data";
 import { FaqHashSync } from "./FaqHashSync";
@@ -34,12 +35,12 @@ export default function FaqPage() {
   return (
     <SiteChrome>
       <FaqHashSync />
-      <main className="mystic-section-shell mystic-section">
+      <PageContainer as="main" variant="default">
         <header
           id="faq-top"
           className="mystique-scroll-anchor mb-10 max-w-3xl space-y-4"
         >
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
+          <p className="mystic-kicker">
             FAQ
           </p>
           <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
@@ -80,7 +81,7 @@ export default function FaqPage() {
             Contact us
           </Link>
         </section>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

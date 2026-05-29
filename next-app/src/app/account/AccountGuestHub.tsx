@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { formatMoney } from "../lib/format";
 import type { CartSummary } from "../lib/types";
 import { AccountPageFooterStrip } from "./AccountPageFooterStrip";
@@ -7,19 +9,12 @@ export function AccountGuestHub({ cart }: { cart: CartSummary }) {
   const hasGuestLines = cart.lines.length > 0 && cart.source === "cookie";
 
   return (
-    <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
-      <header className="max-w-2xl">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-          Account
-        </p>
-        <h1 className="mt-4 font-literata text-4xl tracking-[0.12em] text-[#f5eee3] md:text-5xl">
-          Sign in to your Mystique account
-        </h1>
-        <p className="mt-4 text-sm leading-relaxed text-[#b8ab95] md:text-base">
-          View your profile, order history, and saved bag. New here? Create an account
-          in one step with a secure magic link.
-        </p>
-      </header>
+    <PageContainer as="main" variant="wide">
+      <PageHeader
+        eyebrow="Account"
+        title="Sign in to your Mystique account"
+        subtitle="View your profile, order history, and saved bag. New here? Create an account in one step with a secure magic link."
+      />
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
         <Link
@@ -75,6 +70,6 @@ export function AccountGuestHub({ cart }: { cart: CartSummary }) {
       ) : null}
 
       <AccountPageFooterStrip />
-    </main>
+    </PageContainer>
   );
 }

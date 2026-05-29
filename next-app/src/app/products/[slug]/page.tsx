@@ -6,10 +6,11 @@ import {
   buildProductAccordionItems,
 } from "../../components/ProductDetailAccordions";
 import { ProductMerchQuickFacts } from "../../components/ProductMerchQuickFacts";
+import { ProductGallery } from "../../components/ProductGallery";
 import { ProductPurchaseClient } from "../../components/ProductPurchaseClient";
+import { PageContainer } from "../../components/PageContainer";
 import { RatingSummaryText, StarRow } from "../../components/StarRating";
 import { SiteChrome } from "../../components/SiteChrome";
-import { ThemedImageFrame } from "../../components/ThemedImageFrame";
 import { getProductImages, truncateMetaDescription } from "../../lib/format";
 import { isProductPurchasable } from "../../lib/productMerch";
 import {
@@ -75,7 +76,7 @@ export default async function ProductPage({
   if (!product) {
     return (
       <SiteChrome>
-        <main className="w-full px-4 pb-14 md:px-6 lg:px-10 xl:px-14">
+        <PageContainer as="main" variant="narrow">
           <section className="mystic-panel p-8 text-center md:p-10">
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
               Unavailable
@@ -96,7 +97,7 @@ export default async function ProductPage({
               </Link>
             </div>
           </section>
-        </main>
+        </PageContainer>
       </SiteChrome>
     );
   }
@@ -184,7 +185,7 @@ export default async function ProductPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumbs) }}
       />
-      <main className="w-full px-4 pb-28 md:px-6 lg:px-10 lg:pb-14 xl:px-14">
+      <PageContainer as="main" variant="wide">
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.2em] text-[#7a7265]"
           aria-label="Breadcrumb"
@@ -209,37 +210,11 @@ export default async function ProductPage({
         </nav>
 
         <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="space-y-4">
-            <ThemedImageFrame
-              src={heroSrc}
-              displayTitle={productName}
-              alt={`${productName} hero image`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              variant="product"
-              className="aspect-[4/5]"
-              frameClassName="rounded-[28px]"
-              imageClassName="object-cover"
-            />
-            {galleryThumbs.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {galleryThumbs.map((image, index) => (
-                  <ThemedImageFrame
-                    key={`${image}-${index}`}
-                    src={image}
-                    displayTitle={productName}
-                    alt={`${productName} alternate image ${index + 2}`}
-                    fill
-                    sizes="25vw"
-                    variant="thumb"
-                    className="aspect-square"
-                    frameClassName="rounded-[18px]"
-                    imageClassName="object-cover"
-                  />
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <ProductGallery
+            productName={productName}
+            heroSrc={heroSrc}
+            thumbs={galleryThumbs}
+          />
 
           <div className="space-y-6 lg:space-y-8">
             <div>
@@ -418,7 +393,7 @@ export default async function ProductPage({
             </div>
           </section>
         ) : null}
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

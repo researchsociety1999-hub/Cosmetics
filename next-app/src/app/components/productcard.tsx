@@ -124,7 +124,7 @@ export default function ProductCard({
   const articleClassShop = `group relative flex h-full w-full min-w-0 ${articleLayout} overflow-hidden rounded-[22px] bg-gradient-to-b from-[rgba(18,20,30,0.62)] via-[rgba(10,12,18,0.26)] to-[rgba(4,5,9,0.08)] shadow-[0_11px_38px_rgba(0,0,0,0.3)] ring-1 ring-inset ring-white/[0.055] backdrop-blur-md transition-[box-shadow,transform,background-color,border-color] duration-700 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-px hover:from-[rgba(22,24,36,0.68)] hover:via-[rgba(12,14,20,0.32)] hover:to-[rgba(6,7,11,0.12)] [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_16px_48px_rgba(0,0,0,0.36)] hover:ring-[rgba(214,168,95,0.12)] focus-within:ring-[rgba(214,168,95,0.16)] motion-reduce:transition-none`;
 
   const imageMotionFeatured =
-    "object-cover transition duration-700 ease-out motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.03] group-focus-within:scale-[1.02]";
+    "object-cover transition duration-700 ease-out motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.015] group-focus-within:scale-[1.01]";
   const imageMotionShop =
     "object-cover transition duration-[900ms] ease-out motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.012] group-focus-within:scale-[1.008]";
 
@@ -171,7 +171,7 @@ export default function ProductCard({
             }
             imageClassName={
               compact
-                ? "object-cover transition duration-700 ease-out motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.03] group-focus-within:scale-[1.02]"
+                ? "object-cover transition duration-700 ease-out motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.015] group-focus-within:scale-[1.01]"
                 : featuredHero
                   ? imageMotionFeatured
                   : imageMotionShop

@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { PageContainer } from '../../components/PageContainer';
+import { PageHeader } from '../../components/PageHeader';
+import { SiteChrome } from '../../components/SiteChrome';
 import { getOrderNumberByStripeSessionIdForDisplay } from '../../lib/checkoutOrders';
 import {
   isStripeServerConfigured,
@@ -15,22 +18,24 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
 
   if (!sessionId) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
-        <div className="max-w-md w-full space-y-4 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Order confirmation</h1>
-          <p className="text-muted-foreground" role="alert">
-            Invalid or missing checkout session. We could not verify your order — something went
-            wrong.
-          </p>
-          <Link
-            href="/shop"
-            data-testid="order-confirmation-continue-shopping"
-            className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
-          >
-            Continue shopping
-          </Link>
-        </div>
-      </main>
+      <SiteChrome>
+        <PageContainer variant="narrow">
+          <PageHeader eyebrow="Order confirmation" title="Order confirmation" />
+          <div className="mystic-card mt-8 p-8 md:p-10">
+            <p className="text-sm leading-relaxed text-[#b8ab95]" role="alert">
+              Invalid or missing checkout session. We could not verify your order — something went
+              wrong.
+            </p>
+            <Link
+              href="/shop"
+              data-testid="order-confirmation-continue-shopping"
+              className="mystic-button-primary mt-6 inline-flex min-h-[48px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+            >
+              Continue shopping
+            </Link>
+          </div>
+        </PageContainer>
+      </SiteChrome>
     );
   }
 
@@ -39,25 +44,28 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
 
   if (isMockSession) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center px-4 py-24">
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="text-5xl" aria-hidden="true">✓</div>
-          <h1 className="text-2xl font-semibold tracking-tight">Order confirmed</h1>
-          <p className="text-muted-foreground">
-            Thank you for your purchase. A confirmation email is on its way.
-          </p>
-          <p className="text-xs text-muted-foreground font-mono break-all">
-            Session: {sessionId}
-          </p>
-          <Link
-            href="/shop"
-            data-testid="order-confirmation-continue-shopping"
-            className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
-          >
-            Continue shopping
-          </Link>
-        </div>
-      </main>
+      <SiteChrome>
+        <PageContainer variant="narrow">
+          <PageHeader
+            eyebrow="Payment complete"
+            title="Order confirmed"
+            subtitle="Thank you for your purchase. A confirmation email is on its way."
+          />
+          <div className="mystic-card mt-8 p-8 md:p-10">
+            <div className="text-5xl text-[#d6a85f]" aria-hidden="true">✓</div>
+            <p className="mt-5 break-all font-mono text-xs text-[#7a7265]">
+              Session: {sessionId}
+            </p>
+            <Link
+              href="/shop"
+              data-testid="order-confirmation-continue-shopping"
+              className="mystic-button-primary mt-6 inline-flex min-h-[48px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+            >
+              Continue shopping
+            </Link>
+          </div>
+        </PageContainer>
+      </SiteChrome>
     );
   }
 
@@ -82,30 +90,38 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
   const isConfirmed = Boolean(orderNumber) || stripePaid;
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4 py-24">
-      <div className="max-w-md w-full text-center space-y-6">
-        <div className="text-5xl" aria-hidden="true">{isConfirmed ? "✓" : "…"}</div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {isConfirmed ? "Order confirmed" : "Confirming your payment"}
-        </h1>
-        <p className="text-muted-foreground" role={isConfirmed ? undefined : "status"}>
-          {isConfirmed
-            ? "Thank you for your purchase. A confirmation email is on its way."
-            : "We returned you from secure checkout. If your payment is still being verified, refresh this page in a moment or check your email shortly."}
-        </p>
-        {orderNumber ? (
-          <p className="text-sm uppercase tracking-[0.18em] text-muted-foreground">
-            Order reference: {orderNumber}
+    <SiteChrome>
+      <PageContainer variant="narrow">
+        <PageHeader
+          eyebrow={isConfirmed ? "Payment complete" : "Payment confirmation"}
+          title={isConfirmed ? "Order confirmed" : "Confirming your payment"}
+        />
+        <div className="mystic-card mt-8 p-8 md:p-10">
+          <div className="text-5xl text-[#d6a85f]" aria-hidden="true">
+            {isConfirmed ? "✓" : "…"}
+          </div>
+          <p
+            className="mt-5 text-sm leading-relaxed text-[#b8ab95]"
+            role={isConfirmed ? undefined : "status"}
+          >
+            {isConfirmed
+              ? "Thank you for your purchase. A confirmation email is on its way."
+              : "We returned you from secure checkout. If your payment is still being verified, refresh this page in a moment or check your email shortly."}
           </p>
-        ) : null}
-        <Link
-          href="/shop"
-          data-testid="order-confirmation-continue-shopping"
-          className="inline-block mt-4 px-6 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
-        >
-          Continue shopping
-        </Link>
-      </div>
-    </main>
+          {orderNumber ? (
+            <p className="mt-6 text-sm uppercase tracking-[0.18em] text-[#f5eee3]">
+              Order reference: {orderNumber}
+            </p>
+          ) : null}
+          <Link
+            href="/shop"
+            data-testid="order-confirmation-continue-shopping"
+            className="mystic-button-primary mt-6 inline-flex min-h-[48px] items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.22em]"
+          >
+            Continue shopping
+          </Link>
+        </div>
+      </PageContainer>
+    </SiteChrome>
   );
 }

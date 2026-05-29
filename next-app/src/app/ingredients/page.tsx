@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IngredientSpotlightThumb } from "../components/IngredientSpotlightThumb";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import { getIngredients } from "../lib/queries";
 import { buildPageMetadata } from "../lib/seo";
@@ -21,19 +23,12 @@ export default async function IngredientsPage() {
 
   return (
     <SiteChrome>
-      <main className="mystic-section-shell mystic-section">
-        <header className="mystic-intro space-y-4">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-[#b8ab95]">
-            Ingredients
-          </p>
-          <h1 className="font-literata text-4xl tracking-[0.12em] md:text-5xl">
-            Ingredients with intention.
-          </h1>
-          <p className="text-sm leading-relaxed text-[#b8ab95] md:text-base">
-            Thoughtful, comfort-first formulas meet a layering sensibility inspired by
-            modern ritual skincare—supporting skin that looks calm, luminous, and refined.
-          </p>
-        </header>
+      <PageContainer as="main" variant="default">
+        <PageHeader
+          eyebrow="Ingredients"
+          title="Ingredients with intention."
+          subtitle="Thoughtful, comfort-first formulas meet a layering sensibility inspired by modern ritual skincare—supporting skin that looks calm, luminous, and refined."
+        />
         <section className="mystic-panel mt-10 grid gap-6 p-6 md:grid-cols-[0.85fr_1.15fr] md:p-8">
           <div className="space-y-4">
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#d6a85f]">
@@ -144,7 +139,7 @@ export default async function IngredientsPage() {
             Shop the collection
           </Link>
         </section>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageContainer } from "../../components/PageContainer";
 import { SiteChrome } from "../../components/SiteChrome";
 import { getOrderNumberByIdForDisplay } from "../../lib/checkoutOrders";
 
@@ -23,7 +24,7 @@ export default async function CheckoutCancelPage({
 
   return (
     <SiteChrome>
-      <main className="w-full px-4 pb-20 text-center md:px-6 lg:px-10 xl:px-14">
+      <PageContainer as="main" variant="wide" className="text-center">
         <div className="mx-auto max-w-3xl">
         <div className="mystic-card p-8 md:p-10">
           <p className="text-[0.72rem] uppercase tracking-[0.28em] text-[#d6a85f]">
@@ -57,7 +58,7 @@ export default async function CheckoutCancelPage({
           </div>
         </div>
         </div>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
+import { PageContainer } from "../components/PageContainer";
+import { PageHeader } from "../components/PageHeader";
 import { SiteChrome } from "../components/SiteChrome";
 import {
   countProductsByMerchGroup,
@@ -90,91 +92,95 @@ export default async function ShopPage({
 
   return (
     <SiteChrome>
-      <main className="mx-auto w-full max-w-[110rem] px-4 pb-16 md:px-6 md:pb-20 lg:px-10 xl:px-14">
-        <h1 className="sr-only">Shop</h1>
-        <section className="mb-6 flex flex-wrap gap-2.5 md:mb-7 md:gap-3">
-          <CategoryChip
-            href={buildShopHref({
-              search: currentSearch,
-              ingredient: currentIngredient,
-              sort,
-            })}
-            active={!matchedMerchGroup}
-          >
-            All
-          </CategoryChip>
-          {visibleMerchGroups.map((group) => (
+      <PageContainer as="main" variant="wide">
+        <PageHeader
+          eyebrow="Shop"
+          title="All Mystique Rituals"
+          subtitle={
+            matchedMerchGroup
+              ? `Filtered to ${matchedMerchGroup.name.toLowerCase()}. Choose All to see the full collection.`
+              : "Each chip groups related categories so you can explore a focused slice of the collection."
+          }
+        />
+
+        <section aria-label="Filters" className="mt-10 md:mt-12">
+          <div className="flex flex-wrap gap-2.5 md:gap-3">
             <CategoryChip
-              key={group.slug}
               href={buildShopHref({
-                category: group.slug,
                 search: currentSearch,
                 ingredient: currentIngredient,
                 sort,
               })}
-              active={matchedMerchGroup?.slug === group.slug}
+              active={!matchedMerchGroup}
             >
-              {group.label}
+              All
             </CategoryChip>
-          ))}
-        </section>
+            {visibleMerchGroups.map((group) => (
+              <CategoryChip
+                key={group.slug}
+                href={buildShopHref({
+                  category: group.slug,
+                  search: currentSearch,
+                  ingredient: currentIngredient,
+                  sort,
+                })}
+                active={matchedMerchGroup?.slug === group.slug}
+              >
+                {group.label}
+              </CategoryChip>
+            ))}
+          </div>
 
-        <section className="mb-2 mystic-card flex flex-col gap-3 p-4 sm:flex-row sm:items-end sm:gap-4 md:mb-2.5 md:p-5">
-          <form
-            method="get"
-            action="/shop"
-            className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center"
-          >
-            {matchedMerchGroup ? (
-              <input type="hidden" name="category" value={matchedMerchGroup.slug} />
-            ) : null}
-            {currentIngredient ? (
-              <input type="hidden" name="ingredient" value={currentIngredient} />
-            ) : null}
-            {sort !== "newest" ? <input type="hidden" name="sort" value={sort} /> : null}
-            <label className="sr-only" htmlFor="shop-search">
-              Search shop
-            </label>
-            <input
-              id="shop-search"
-              name="search"
-              type="search"
-              defaultValue={currentSearch}
-              placeholder="Search rituals…"
-              className="mystic-input min-h-[44px] w-full flex-1 text-sm sm:max-w-md"
-            />
-            <button
-              type="submit"
-              className="mystic-button-secondary shrink-0 px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.2em]"
+          <div className="mt-4 mystic-card flex flex-col gap-3 p-4 sm:flex-row sm:items-end sm:gap-4 md:mt-5 md:p-5">
+            <form
+              method="get"
+              action="/shop"
+              className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center"
             >
-              Find
-            </button>
-          </form>
+              {matchedMerchGroup ? (
+                <input type="hidden" name="category" value={matchedMerchGroup.slug} />
+              ) : null}
+              {currentIngredient ? (
+                <input type="hidden" name="ingredient" value={currentIngredient} />
+              ) : null}
+              {sort !== "newest" ? <input type="hidden" name="sort" value={sort} /> : null}
+              <label className="sr-only" htmlFor="shop-search">
+                Search shop
+              </label>
+              <input
+                id="shop-search"
+                name="search"
+                type="search"
+                defaultValue={currentSearch}
+                placeholder="Search rituals…"
+                className="mystic-input min-h-[44px] w-full flex-1 text-sm sm:max-w-md"
+              />
+              <button
+                type="submit"
+                className="mystic-button-secondary shrink-0 px-5 py-2.5 text-[0.62rem] uppercase tracking-[0.2em]"
+              >
+                Find
+              </button>
+            </form>
+          </div>
         </section>
 
-        <section className="mb-10 md:mb-12">
-          <p className="text-[0.66rem] uppercase tracking-[0.32em] text-[#8f8475]">
-            {matchedMerchGroup
-              ? `${matchedMerchGroup.name}`
-              : "Shop the collection"}
-          </p>
-          <p className="mt-3 max-w-2xl text-sm leading-[1.7] text-[#7d7368]">
-            {matchedMerchGroup
-              ? `Filtered to ${matchedMerchGroup.name.toLowerCase()}. Choose All to see the full collection.`
-              : "Each chip groups related categories so you can explore a focused slice of the collection."}
-          </p>
+        <section aria-label="Products" className="mt-10 md:mt-12">
+          <Suspense fallback={<ShopCatalogFallback />}>
+            <ShopCatalogBody
+              sort={sort}
+              currentSearch={currentSearch}
+              currentIngredient={currentIngredient}
+              matchedMerchGroup={matchedMerchGroup}
+              dbCategories={dbCategories}
+              // Reuse the catalog already fetched for merch-group counts when the
+              // default unfiltered/newest view is requested — avoids a second
+              // full-catalog round trip to Supabase (lower TTFB on /shop).
+              prefetchedNewestCatalog={catalogForMerchCounts}
+            />
+          </Suspense>
         </section>
-
-        <Suspense fallback={<ShopCatalogFallback />}>
-          <ShopCatalogBody
-            sort={sort}
-            currentSearch={currentSearch}
-            currentIngredient={currentIngredient}
-            matchedMerchGroup={matchedMerchGroup}
-            dbCategories={dbCategories}
-          />
-        </Suspense>
-      </main>
+      </PageContainer>
     </SiteChrome>
   );
 }

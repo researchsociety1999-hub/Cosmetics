@@ -29,6 +29,11 @@ jobs:
       - name: Free port 3001
         run: fuser -k 3001/tcp || true
 
+      # Runs the whole Playwright suite, including the M4 (auth) and M8 (checkout)
+      # error-sanitisation specs. Those run unconditionally — no BREAK_* flags —
+      # and are deterministic whether or not the Supabase/Stripe secrets below
+      # are present, so no extra env vars (e.g. STRIPE_TEST_CARD) are required.
+      # GitHub Actions sets CI=true automatically.
       - name: Run Playwright tests
         run: npm run test
         env:

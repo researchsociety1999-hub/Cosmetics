@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { JournalEntry } from "../../lib/types";
 
 // ---------------------------------------------------------------------------
 // Client-side deferred section wrappers
@@ -65,13 +66,50 @@ export const DeferredHomeGuidedDiscovery = dynamic(
   { ssr: false, loading: () => <SectionLoading title="Guided discovery" /> }
 );
 
+/**
+ * Reserves vertical space for an `ssr: false` section while its chunk loads,
+ * so content below it does not jump when it mounts (CLS guard).
+ */
+function ReservedSpace({ minHeight }: { minHeight: string }) {
+  return <div aria-hidden style={{ minHeight }} />;
+}
+
 export const DeferredHomeServicesModule = dynamic(
   () =>
     import("./HomeServicesModule").then((m) => m.HomeServicesModule),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => <ReservedSpace minHeight="28rem" /> }
 );
 
 export const DeferredHomeTrustStrip = dynamic(
   () => import("./HomeTrustStrip").then((m) => m.HomeTrustStrip),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => <ReservedSpace minHeight="9rem" /> }
+);
+
+export const DeferredHomeRitualStrip = dynamic(
+  () => import("./HomeRitualStrip").then((m) => m.HomeRitualStrip),
+  { ssr: false, loading: () => <SectionLoading title="Rituals" /> }
+);
+
+export const DeferredHomeIngredientSpotlight = dynamic(
+  () =>
+    import("./HomeIngredientSpotlight").then((m) => m.HomeIngredientSpotlight),
+  { ssr: false, loading: () => <SectionLoading title="Ingredients" /> }
+);
+
+// Journal needs server-fetched entries. We re-export a thin wrapper that
+// forwards entries to the lazy-loaded client component, so the JS bundle for
+// the journal grid only ships when the user actually scrolls past the
+// services section.
+const LazyHomeJournal = dynamic(
+  () => import("./HomeJournal").then((m) => m.HomeJournal),
+  { ssr: false, loading: () => <SectionLoading title="Journal" /> }
+);
+
+export function DeferredHomeJournal({ entries }: { entries: JournalEntry[] }) {
+  return <LazyHomeJournal entries={entries} />;
+}
+
+export const DeferredHomeNewsletter = dynamic(
+  () => import("./HomeNewsletter").then((m) => m.HomeNewsletter),
+  { ssr: false, loading: () => <ReservedSpace minHeight="22rem" /> }
 );
