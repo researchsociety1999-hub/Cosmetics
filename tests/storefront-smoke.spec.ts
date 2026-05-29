@@ -27,7 +27,7 @@ test.describe("storefront smoke", () => {
 
   test("core shopper routes return working pages", async ({ page }) => {
     await gotoAndWait(page, "/shop");
-    await expectHeading(page, "Shop", { level: 1 });
+    await expectHeading(page, "All Mystique Rituals", { level: 1 });
 
     await gotoAndWait(page, "/search?q=bloom%20skin");
     await expectHeading(page, "Find a ritual");
