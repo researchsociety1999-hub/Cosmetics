@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { useFormStatus } from "react-dom";
+import { trackEvent } from "./GoogleAnalytics";
 
 type AddToCartFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -23,10 +24,12 @@ function SubmitButton({
   label,
   className,
   disabled,
+  productId,
 }: {
   label: string;
   className: string;
   disabled: boolean;
+  productId: number;
 }) {
   const { pending } = useFormStatus();
   const isDisabled = disabled || pending;
@@ -51,8 +54,10 @@ function SubmitButton({
           detail: { message: "Added to bag." },
         }),
       );
+      // B02 — fire GA4 add_to_cart funnel event after successful server action
+      trackEvent("add_to_cart", { product_id: productId });
     }
-  }, [pending]);
+  }, [pending, productId]);
 
   return (
     <button
@@ -129,6 +134,7 @@ export function AddToCartForm({
         label={buttonLabel}
         className={buttonClassName}
         disabled={disabled}
+        productId={productId}
       />
     </form>
   );
