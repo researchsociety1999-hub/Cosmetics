@@ -34,6 +34,52 @@ export interface ChatContextBundle {
 const MAX_FAQ_SNIPPETS = 5;
 const MAX_CATALOG_ITEMS = 12;
 
+/**
+ * Always-present routine FAQ snippets injected into every chat context.
+ * These ensure the model has branded routine guidance regardless of which
+ * page the user is on — critical for the top knowledge-gap query
+ * "Build my routine" (100% error rate when upstream was down).
+ */
+const ROUTINE_FAQ_SNIPPETS: SafeFaqSnippet[] = [
+  {
+    question: "How do I build a morning skincare routine?",
+    answer:
+      "A Mystique morning ritual: (1) Gentle cleanse, (2) Hydrating serum or essence, " +
+      "(3) Moisturiser suited to your skin type, (4) SPF 30–50 — always the final step. " +
+      "Layer thinnest to thickest texture and let each step absorb for 30 seconds before the next.",
+  },
+  {
+    question: "How do I build an evening skincare routine?",
+    answer:
+      "A Mystique evening ritual: (1) First cleanse — remove SPF and makeup with a cleansing balm or micellar water, " +
+      "(2) Second cleanse — water-based for a clean canvas, " +
+      "(3) Treatment serum (retinol, peptides, or AHA/BHA — alternate if combining), " +
+      "(4) Eye cream, (5) Richer night moisturiser or sleeping mask to support overnight renewal.",
+  },
+  {
+    question: "What weekly treatments should I add to my routine?",
+    answer:
+      "Once or twice a week: a chemical exfoliant (AHA for glow, BHA for congestion). " +
+      "Once a week: a targeted mask — hydrating, clay, or brightening depending on your concern. " +
+      "Always follow with moisturiser after exfoliating.",
+  },
+  {
+    question: "How do I layer skincare products correctly?",
+    answer:
+      "Apply in order of thinnest to thickest texture: toners and essences first, " +
+      "then serums, then moisturiser, then oils or balms as the final seal. " +
+      "In the morning, SPF is always last. Wait 30–60 seconds between active ingredients.",
+  },
+  {
+    question: "What routine is best for my skin type?",
+    answer:
+      "Oily/combination: lightweight gel textures, skip heavy occlusives in AM. " +
+      "Dry/dehydrated: add a hydrating serum layer, use richer creams. " +
+      "Sensitive: fragrance-free formulas, introduce one new product at a time, always patch-test. " +
+      "Normal: flexible — adjust texture weight seasonally.",
+  },
+];
+
 /** Strip product records to customer-safe fields only. */
 export function toSafeProductContext(
   product: Product | null | undefined,
@@ -72,7 +118,6 @@ async function buildCatalogSummary(
   page: ChatPageContext,
   product: SafeProductContext | null,
 ): Promise<string | null> {
-  // Narrow catalog context on product pages; broader on shop/routines/home.
   const pathname = page.pathname.toLowerCase();
   const needsCatalog =
     pathname.startsWith("/shop") ||
@@ -177,6 +222,15 @@ export function formatContextForPrompt(bundle: ChatContextBundle): string {
         .join("\n"),
     );
   }
+
+  // Always inject routine FAQ snippets first — they cover the top knowledge-gap
+  // query ("Build my routine") regardless of which page the user is on.
+  sections.push(
+    "Routine guidance (always available):\n" +
+      ROUTINE_FAQ_SNIPPETS.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join(
+        "\n\n",
+      ),
+  );
 
   if (bundle.faqSnippets.length) {
     sections.push(
