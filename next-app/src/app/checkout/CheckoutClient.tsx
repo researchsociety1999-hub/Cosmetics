@@ -3,6 +3,7 @@
 import { loadStripe } from "@stripe/stripe-js";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
+import { trackEvent } from "../components/GoogleAnalytics";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
@@ -59,7 +60,7 @@ function mapCheckoutStartError(status: number, body: CheckoutApiBody): string {
     return "We couldn't open the secure payment window. Your bag is unchanged—please try again shortly.";
   }
 
-  return "We couldn’t start secure checkout. Please try again in a moment, or contact Mystique if this continues.";
+  return "We couldn't start secure checkout. Please try again in a moment, or contact Mystique if this continues.";
 }
 
 export function CheckoutClient({
@@ -96,6 +97,9 @@ export function CheckoutClient({
       );
       return;
     }
+
+    // B02 — fire GA4 begin_checkout funnel event before loader kicks in
+    trackEvent("begin_checkout");
 
     setIsLoading(true);
     setError(null);
@@ -282,7 +286,7 @@ export function CheckoutClient({
       />
       <div className="rounded-[18px] border border-[rgba(214,168,95,0.16)] bg-[rgba(255,255,255,0.02)] p-4 text-sm text-[#b8ab95] md:col-span-2">
         {stripeReady
-          ? "When you continue, you will leave Mystique for a moment to complete payment on Stripe’s secure checkout."
+          ? "When you continue, you will leave Mystique for a moment to complete payment on Stripe's secure checkout."
           : "Payment stays disabled until Stripe is configured—use Contact if you need to arrange an order manually in the meantime."}
       </div>
       <button

@@ -40,6 +40,19 @@ const EMPTY_INVENTORY: ProductInventoryStats = {
 
 const RECENT_ORDERS_LIMIT = 5;
 
+/**
+ * Only statuses that represent real, realised revenue.
+ * pending / failed / cancelled are intentionally excluded so
+ * the admin KPI cards reflect actual money, not intent.
+ */
+const REVENUE_STATUSES = [
+  "paid",
+  "processing",
+  "fulfilled",
+  "shipped",
+  "delivered",
+] as const;
+
 function startOfTodayIso(): string {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -60,12 +73,11 @@ function sumTotals(
  * One-shot fetch for the admin overview page.
  *
  * Five parallel queries against the Supabase service-role client:
- *   - lifetime order count (head + count)
- *   - lifetime revenue sample (sum reduced client-side; Supabase JS doesn't
- *     expose a typed SQL aggregate without an RPC, which we don't want to add)
- *   - today's order count
- *   - today's revenue
- *   - recent orders list (via the existing frozen helper)
+ *   - lifetime order count  (head + count, realised statuses only)
+ *   - lifetime revenue      (sum reduced client-side, realised statuses only)
+ *   - today's order count   (realised statuses only)
+ *   - today's revenue       (realised statuses only)
+ *   - recent orders list    (via the existing frozen helper)
  *
  * Returns empty values (no throw) when service env is missing — same contract
  * as the rest of the admin data layer.
@@ -85,18 +97,25 @@ export async function getAdminOverview(): Promise<AdminOverviewData> {
     recentOrders,
     inventory,
   ] = await Promise.all([
-    supabaseAdmin
-      .from("orders")
-      .select("id", { count: "exact", head: true }),
-    supabaseAdmin.from("orders").select("total_cents"),
+    // B01 fix — filter to realised statuses on all four KPI queries
     supabaseAdmin
       .from("orders")
       .select("id", { count: "exact", head: true })
-      .gte("created_at", todayIso),
+      .in("status", REVENUE_STATUSES),
     supabaseAdmin
       .from("orders")
       .select("total_cents")
-      .gte("created_at", todayIso),
+      .in("status", REVENUE_STATUSES),
+    supabaseAdmin
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .gte("created_at", todayIso)
+      .in("status", REVENUE_STATUSES),
+    supabaseAdmin
+      .from("orders")
+      .select("total_cents")
+      .gte("created_at", todayIso)
+      .in("status", REVENUE_STATUSES),
     getOrdersForAdmin(RECENT_ORDERS_LIMIT),
     getInventoryStatsForOverview(),
   ]);

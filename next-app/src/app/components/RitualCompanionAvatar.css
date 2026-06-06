@@ -1,44 +1,45 @@
 /*
- * RitualCompanionAvatar.css — moved out of globals.css.
+ * RitualCompanionAvatar.css
  * Loaded only on routes that render the avatar (ChatWidget launcher, etc.).
+ * Polish update: slower, more editorial motion cadence for luxury brand feel.
  */
 
 @keyframes mystique-avatar-glow {
-  0%, 100% { opacity: 0.72; }
+  0%, 100% { opacity: 0.68; }
   50% { opacity: 1; }
 }
 
 @keyframes mystique-avatar-emblem-pulse {
-  0%, 100% { opacity: 0.65; }
+  0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
 
 @keyframes mystique-avatar-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.025); }
+  50% { transform: scale(1.022); }
 }
 
 @keyframes mystique-avatar-hood-sway {
   0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(0.6deg); }
+  50% { transform: rotate(0.5deg); }
 }
 
 @keyframes mystique-avatar-wave-arm {
   0% { transform: rotate(0deg); }
-  25% { transform: rotate(-18deg); }
-  55% { transform: rotate(10deg); }
-  80% { transform: rotate(-12deg); }
+  22% { transform: rotate(-20deg); }
+  52% { transform: rotate(11deg); }
+  78% { transform: rotate(-13deg); }
   100% { transform: rotate(0deg); }
 }
 
 @keyframes mystique-avatar-blink {
   0%, 44%, 48%, 100% { transform: scaleY(1); }
-  46% { transform: scaleY(0.12); }
+  46% { transform: scaleY(0.1); }
 }
 
 @keyframes mystique-avatar-figure-idle {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-1.5px); }
+  50% { transform: translateY(-1.2px); }
 }
 
 @keyframes mystique-avatar-figure-wave {
@@ -51,38 +52,48 @@
 
 .mystique-avatar { display: block; overflow: visible; }
 
+/* Idle float — slower, more serene */
 .mystique-avatar__root {
   transform-origin: 50px 108px;
   transform-box: fill-box;
-  animation: mystique-avatar-figure-idle 5s ease-in-out infinite;
+  animation: mystique-avatar-figure-idle 6.5s ease-in-out infinite;
 }
 
 .mystique-avatar--waving .mystique-avatar__root {
-  animation: mystique-avatar-figure-wave 900ms ease-in-out;
+  animation: mystique-avatar-figure-wave 920ms ease-in-out;
 }
 
+/* Breathe — softened scale, slower */
 .mystique-avatar__body {
-  animation: mystique-avatar-breathe 4.2s ease-in-out infinite;
+  animation: mystique-avatar-breathe 5.5s ease-in-out infinite;
   transform-origin: 50px 63px;
   transform-box: fill-box;
 }
 
+/* Hood sway — more editorial, barely perceptible */
 .mystique-avatar__hood {
-  animation: mystique-avatar-hood-sway 6.5s ease-in-out infinite;
+  animation: mystique-avatar-hood-sway 8s ease-in-out infinite;
   transform-origin: 50px 22px;
   transform-box: fill-box;
 }
 
+/* Eyes — blink slightly slower for calm presence */
 .mystique-avatar__eyes {
   animation:
-    mystique-avatar-glow 3.4s ease-in-out infinite,
-    mystique-avatar-blink 8s ease-in-out infinite;
+    mystique-avatar-glow 3.8s ease-in-out infinite,
+    mystique-avatar-blink 9s ease-in-out infinite;
   transform-origin: 50px 28px;
   transform-box: fill-box;
 }
 
-.mystique-avatar__emblem { animation: mystique-avatar-emblem-pulse 4.4s ease-in-out infinite; }
-.mystique-avatar__hood-glow { animation: mystique-avatar-glow 4.2s ease-in-out infinite; }
+/* Emblem — deeper pulse drama */
+.mystique-avatar__emblem {
+  animation: mystique-avatar-emblem-pulse 4.8s ease-in-out infinite;
+}
+
+.mystique-avatar__hood-glow {
+  animation: mystique-avatar-glow 5s ease-in-out infinite;
+}
 
 .mystique-avatar__wave-arm {
   transform-origin: 18px 54px;
@@ -90,11 +101,11 @@
 }
 
 .mystique-avatar--waving .mystique-avatar__wave-arm {
-  animation: mystique-avatar-wave-arm 900ms ease-in-out;
+  animation: mystique-avatar-wave-arm 920ms ease-in-out;
 }
 
 .mystique-avatar--waving .mystique-avatar__eyes {
-  animation: mystique-avatar-glow 900ms ease-in-out 1;
+  animation: mystique-avatar-glow 920ms ease-in-out 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
