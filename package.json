@@ -9,7 +9,6 @@
     "test": "playwright test",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
-    "test:integration": "vitest run tests/integration",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
     "test:runtime": "node tests/run-all-verifications.mjs",
@@ -19,6 +18,9 @@
   "workspaces": [
     "next-app"
   ],
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^20",

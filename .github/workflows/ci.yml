@@ -1,0 +1,38 @@
+name: CI (lint · typecheck · unit · integration)
+
+# Complements playwright.yml (E2E). This workflow gates the fast checks that
+# previously did not run in CI: ESLint, TypeScript, and the Vitest unit +
+# integration suites (tests/unit/**, tests/integration/**).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck (next-app)
+        run: npx tsc --noEmit -p next-app/tsconfig.json
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Integration tests
+        run: npm run test:integration
