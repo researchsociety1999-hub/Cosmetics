@@ -61,7 +61,7 @@ const INJECTION_PATTERNS: RegExp[] = [
 ];
 
 const INJECTION_REFUSAL =
-  "I’m here to help with Mystique skincare rituals, product choices, and ingredient questions—not internal site details. Would you like help building a routine or choosing a formula?";
+  "I'm here to help with Mystique skincare rituals, product choices, and ingredient questions—not internal site details. Would you like help building a routine or choosing a formula?";
 
 const SYSTEM_PROMPT = `You are the Mystique Ritual Companion—a calm, elegant skincare guide for the Mystique premium cosmetics website.
 
@@ -85,7 +85,59 @@ If unsure, say so briefly and guide the user toward the nearest valid help (rout
 
 When users ask for medical concerns, redirect them to a qualified healthcare professional while offering general, non-medical product-layering guidance if appropriate.
 
-Use only the approved context below for product facts. Do not assume unpublished or hidden catalog items exist.`;
+Use only the approved context below for product facts. Do not assume unpublished or hidden catalog items exist.
+
+---
+
+ROUTINE BUILDING FRAMEWORK
+When a user asks to build a routine, suggest steps or help me with my routine or similar, follow this structure and adapt it to any Mystique products visible in the approved context.
+
+Morning Ritual (light, protective):
+1. Cleanse — gentle low-foam cleanser; removes overnight sebum without stripping
+2. Tone / Essence (optional) — balances pH, preps skin for actives
+3. Serum — target concern (hydration, brightening, or barrier repair)
+4. Eye cream (if applicable) — pat gently around orbital bone
+5. Moisturise — lock in serum; choose weight by skin type (gel for oily, cream for dry)
+6. SPF 30–50 — final step every morning, non-negotiable
+
+Evening Ritual (repair, replenish):
+1. First cleanse — micellar water or cleansing balm to dissolve SPF and makeup
+2. Second cleanse — water-based cleanser for a clean canvas
+3. Treatment serum — retinol, peptides, or AHA/BHA (alternate nights if combining)
+4. Eye cream
+5. Night moisturiser or sleeping mask — richer than daytime; supports overnight renewal
+
+Weekly add-ons:
+- Exfoliant (1–2×/week): chemical (AHA/BHA) preferred over physical scrubs
+- Mask (1×/week): hydrating, clay, or brightening depending on concern
+
+Layering rule: apply thinnest to thickest texture. Wait 30–60 seconds between actives.
+Skin type guidance:
+- Oily / combination: gel or fluid textures; avoid heavy occlusives in AM
+- Dry / dehydrated: cream or balm textures; add a hydrating serum layer
+- Sensitive: fragrance-free; introduce one new product at a time; patch-test
+- Normal: flexible; adjust seasonally
+
+Always anchor recommendations to Mystique products in the approved context when available. If no catalog context is present, describe the framework and invite them to explore the shop.`;
+
+const ROUTINE_KEYWORDS =
+  /\b(routine|ritual|steps|morning|evening|night|daily|regimen|build|start|begin|how\s+do\s+i\s+use|where\s+do\s+i\s+start)\b/i;
+
+/**
+ * Static branded fallback for routine queries when upstream is unavailable.
+ * Returns a helpful response so users are never shown a raw error for the
+ * most common query type.
+ */
+function buildRoutineFallback(): string {
+  return (
+    "Here\u2019s a simple Mystique ritual framework to get you started:\n\n" +
+    "\u2600\ufe0f Morning: cleanse \u2192 serum \u2192 moisturise \u2192 SPF\n" +
+    "\ud83c\udf19 Evening: double cleanse \u2192 treatment serum \u2192 night moisturiser\n" +
+    "\ud83d\uddd3 Weekly: exfoliant (1\u20132\u00d7) + hydrating mask\n\n" +
+    "Always layer thinnest to thickest, and patch-test new actives. " +
+    "Browse the shop to match Mystique products to each step\u2014or ask me about a specific concern and I\u2019ll guide you."
+  );
+}
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -196,14 +248,27 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** True for transient upstream failures worth a backoff retry. */
+/**
+ * True for transient upstream failures worth a backoff retry.
+ * 401/403 are auth failures — never retry, log loudly for operator visibility.
+ */
 function isRetryableUpstreamError(error: unknown): boolean {
   if (error instanceof OpenAI.APIError) {
     const status = error.status;
+    // Auth failures: hard stop, no retry. Logged as FATAL by the caller.
+    if (status === 401 || status === 403) return false;
     return status === undefined || status === 408 || status === 409 || status === 429 || status >= 500;
   }
   // Network-level failures (fetch abort/timeout, DNS, reset) surface as plain Errors.
   return error instanceof Error;
+}
+
+/** Returns true when the error is an OpenRouter auth/billing rejection. */
+function isAuthError(error: unknown): boolean {
+  return (
+    error instanceof OpenAI.APIError &&
+    (error.status === 401 || error.status === 403)
+  );
 }
 
 interface OpenRouterResult {
@@ -239,6 +304,16 @@ async function requestCompletionWithRetry(
 
       lastErrorCode = "empty_response";
     } catch (error) {
+      if (isAuthError(error)) {
+        const status = (error as OpenAI.APIError).status;
+        console.error(
+          `[chat] FATAL: OpenRouter auth failed (${status}) — ` +
+            "check OPENROUTER_API_KEY and account credits at openrouter.ai. " +
+            "No retries will be attempted.",
+        );
+        return { message: null, errorCode: "auth_error" };
+      }
+
       lastErrorCode =
         error instanceof OpenAI.APIError && error.status === 408
           ? "timeout"
@@ -277,7 +352,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message:
-          "You’ve reached the message limit for now. Please wait a few minutes and try again.",
+          "You've reached the message limit for now. Please wait a few minutes and try again.",
         error: "rate_limited",
       },
       {
@@ -400,19 +475,30 @@ export async function POST(request: Request) {
 
   if (result.errorCode === "empty_response") {
     const message =
-      "I couldn’t quite gather that—could you rephrase your skincare question?";
+      "I couldn't quite gather that—could you rephrase your skincare question?";
     logExchange("fallback", 200, message, "empty_response");
-    // 200 with a friendly fallback: the request itself succeeded, the model
-    // just returned nothing useful. Avoids surfacing a 5xx to the client.
     return NextResponse.json({ message });
   }
 
-  // All upstream attempts failed (timeout / network / 5xx). Return a graceful
-  // 503 so the client shows a calm retry message instead of a crash/502.
+  // For auth errors and upstream failures, try a static fallback for routine
+  // queries so the most common use-case never surfaces a raw error to users.
+  if (
+    result.errorCode === "auth_error" ||
+    result.errorCode === "upstream_error"
+  ) {
+    if (ROUTINE_KEYWORDS.test(lastUserMessage)) {
+      const message = buildRoutineFallback();
+      logExchange("fallback", 200, message, result.errorCode);
+      return NextResponse.json({ message });
+    }
+  }
+
   const message =
     result.errorCode === "timeout"
       ? "That took longer than expected. Please try your question again in a moment."
-      : "Something interrupted our connection. Please try again in a moment.";
+      : result.errorCode === "auth_error"
+        ? "The ritual companion is taking a short rest. Please try again in a moment."
+        : "Something interrupted our connection. Please try again in a moment.";
   logExchange("error", 503, message, result.errorCode ?? "upstream_error");
   return NextResponse.json(
     { message, error: result.errorCode ?? "upstream_error" },
