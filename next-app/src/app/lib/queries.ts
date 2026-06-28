@@ -611,16 +611,7 @@ export async function getProducts(
       query = query.order("created_at", { ascending: false });
     }
 
-    // NOTE: We intentionally do NOT add a server-side stock filter here because
-    // stock lives on `product_variants`, not on `products` directly. PostgREST
-    // doesn't support filtering a parent row based on a nested relation aggregate
-    // without a separate RPC. Instead we fetch variant stocks via the join
-    // (`product_variants(stock)`) and filter in-memory below using `productIsInStock`.
-    // This is correct and efficient for catalog sizes under a few hundred products.
-
     if (limit) {
-      // Fetch a larger slice when stock-filtering is on so pagination stays accurate
-      // after we drop out-of-stock rows in memory.
       const fetchExtra = excludeOutOfStock ? 2 : 1;
       const from = Math.max(page - 1, 0) * limit;
       const fetchLimit = limit * fetchExtra + from;
@@ -637,8 +628,6 @@ export async function getProducts(
 
     let normalizedProducts = ((data ?? []) as Product[]).map(normalizeProduct);
 
-    // Filter out products where every variant is out of stock (stock = 0 or null).
-    // Products with no variants at all are treated as in-stock.
     if (excludeOutOfStock) {
       normalizedProducts = normalizedProducts.filter(productIsInStock);
     }
@@ -732,7 +721,6 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return normalizeProduct(data as Product);
     }
 
-    // E2E / dev: Supabase can be configured but empty—honor demo slugs when explicitly allowed.
     if (allowMockCatalog()) {
       return getMockProducts().find((product) => product.slug === slug) ?? null;
     }
@@ -744,11 +732,6 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
 }
 
-/**
- * Ritual step order — must match lowercase `ritual_step` values stored in Supabase.
- * Previously used Title Case ("Cleanse", "Tone", …) which caused indexOf() to always
- * return -1, breaking ritual-based ordering and related-product scoring.
- */
 const RITUAL_STEPS = ["cleanse", "tone", "treat", "moisturize", "protect"] as const;
 
 export async function getRelatedProducts(
@@ -775,43 +758,27 @@ export async function getRelatedProducts(
 
   const score = (p: Product) => {
     let s = 0;
-    if (sameCat(p)) {
-      s += 6;
-    }
-    if (p.routine_step && p.routine_step === product.routine_step) {
-      s += 4;
-    }
+    if (sameCat(p)) s += 6;
+    if (p.routine_step && p.routine_step === product.routine_step) s += 4;
     const pi = stepIndex(p);
     if (stepIdx >= 0 && pi >= 0) {
       const dist = Math.abs(pi - stepIdx);
-      if (dist === 1) {
-        s += 3;
-      } else if (dist === 2) {
-        s += 1;
-      }
+      if (dist === 1) s += 3;
+      else if (dist === 2) s += 1;
     }
-    if (p.sale_price_cents != null) {
-      s += 0.5;
-    }
+    if (p.sale_price_cents != null) s += 0.5;
     return s;
   };
 
   return [...others]
     .sort((a, b) => {
       const ds = score(b) - score(a);
-      if (ds !== 0) {
-        return ds;
-      }
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      if (ds !== 0) return ds;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     })
     .slice(0, limit);
 }
 
-/**
- * Suggested companions for "Complete the ritual" — other ritual steps first (same category when possible).
- */
 export async function getRoutineCompanionProducts(
   product: Product,
   limit = 3,
@@ -835,9 +802,7 @@ export async function getRoutineCompanionProducts(
     const matchCat = pool.find(
       (p) => p.routine_step === step && sameCategory(p.category_id),
     );
-    if (matchCat) {
-      return matchCat;
-    }
+    if (matchCat) return matchCat;
     return pool.find((p) => p.routine_step === step) ?? null;
   };
 
@@ -845,12 +810,8 @@ export async function getRoutineCompanionProducts(
   const used = new Set<number>([product.id]);
 
   for (const step of RITUAL_STEPS) {
-    if (step === product.routine_step) {
-      continue;
-    }
-    if (picked.length >= limit) {
-      break;
-    }
+    if (step === product.routine_step) continue;
+    if (picked.length >= limit) break;
     const pool = others.filter((p) => !used.has(p.id));
     const next = pickForStep(step, pool);
     if (next) {
@@ -866,16 +827,10 @@ export async function getRoutineCompanionProducts(
         (a, b) =>
           sameCategory(a.category_id) === sameCategory(b.category_id)
             ? stepOrder(a.routine_step) - stepOrder(b.routine_step)
-            : sameCategory(a.category_id)
-              ? -1
-              : sameCategory(b.category_id)
-                ? 1
-                : 0,
+            : sameCategory(a.category_id) ? -1 : sameCategory(b.category_id) ? 1 : 0,
       );
     for (const p of rest) {
-      if (picked.length >= limit) {
-        break;
-      }
+      if (picked.length >= limit) break;
       picked.push(p);
     }
   }
@@ -885,15 +840,11 @@ export async function getRoutineCompanionProducts(
 
 export async function getCategories(): Promise<Category[]> {
   if (shouldLoadCatalogFromEmbeds()) {
-    if (!allowMockCatalog()) {
-      return [];
-    }
+    if (!allowMockCatalog()) return [];
     return getMockCategories();
   }
 
-  if (!supabase) {
-    return [];
-  }
+  if (!supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -922,15 +873,11 @@ export async function getProductVariants(
   productId: number,
 ): Promise<ProductVariant[]> {
   if (shouldLoadCatalogFromEmbeds()) {
-    if (!allowMockCatalog()) {
-      return [];
-    }
+    if (!allowMockCatalog()) return [];
     return mockProductVariants.filter((v) => v.product_id === productId);
   }
 
-  if (!supabase) {
-    return [];
-  }
+  if (!supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -938,10 +885,7 @@ export async function getProductVariants(
       .select("*")
       .eq("product_id", productId);
 
-    if (error) {
-      return [];
-    }
-
+    if (error) return [];
     return (data ?? []) as ProductVariant[];
   } catch {
     return [];
@@ -951,9 +895,7 @@ export async function getProductVariants(
 export async function getProductVariantsByIds(
   ids: number[],
 ): Promise<ProductVariant[]> {
-  if (!ids.length || !hasSupabaseEnv || !supabase) {
-    return [];
-  }
+  if (!ids.length || !hasSupabaseEnv || !supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -961,10 +903,7 @@ export async function getProductVariantsByIds(
       .select("*")
       .in("id", ids);
 
-    if (error) {
-      return [];
-    }
-
+    if (error) return [];
     return (data ?? []) as ProductVariant[];
   } catch {
     return [];
@@ -977,9 +916,7 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
       ? mockReviews.filter((review) => review.product_id === productId)
       : [];
 
-  if (!hasSupabaseEnv || !supabase) {
-    return mockForProduct();
-  }
+  if (!hasSupabaseEnv || !supabase) return mockForProduct();
 
   try {
     const { data, error } = await supabase
@@ -1001,9 +938,7 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
 }
 
 export async function getActivePromo(): Promise<PromoCampaign | null> {
-  if (!hasSupabaseEnv || !supabase) {
-    return mockPromoCampaign;
-  }
+  if (!hasSupabaseEnv || !supabase) return mockPromoCampaign;
 
   const today = new Date().toISOString();
 
@@ -1016,10 +951,7 @@ export async function getActivePromo(): Promise<PromoCampaign | null> {
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) {
-      return mockPromoCampaign;
-    }
-
+    if (error || !data) return mockPromoCampaign;
     return data as PromoCampaign;
   } catch {
     return mockPromoCampaign;
@@ -1034,16 +966,12 @@ const PRESS_PLACEHOLDER_HOMEPAGE_LINKS = new Set([
 ]);
 
 function normalizePressLink(link: string | null): string | null {
-  if (link && PRESS_PLACEHOLDER_HOMEPAGE_LINKS.has(link.trim())) {
-    return "#";
-  }
+  if (link && PRESS_PLACEHOLDER_HOMEPAGE_LINKS.has(link.trim())) return "#";
   return link;
 }
 
 export async function getPressMentions(): Promise<PressMention[]> {
-  if (!hasSupabaseEnv || !supabase) {
-    return [];
-  }
+  if (!hasSupabaseEnv || !supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -1051,9 +979,7 @@ export async function getPressMentions(): Promise<PressMention[]> {
       .select("*")
       .order("published_at", { ascending: false });
 
-    if (error || !data?.length) {
-      return [];
-    }
+    if (error || !data?.length) return [];
 
     return (data as PressMention[]).map((row) => ({
       ...row,
@@ -1065,18 +991,13 @@ export async function getPressMentions(): Promise<PressMention[]> {
 }
 
 export async function getIngredients(): Promise<Ingredient[]> {
-  if (!hasSupabaseEnv || !supabase) {
-    return mockIngredients;
-  }
+  if (!hasSupabaseEnv || !supabase) return mockIngredients;
 
   try {
     const { data, error } = await supabase.from("ingredients").select("*");
 
-    if (error || !data?.length) {
-      return mockIngredients;
-    }
+    if (error || !data?.length) return mockIngredients;
 
-    // Match homepage ingredient spotlight: canonical ids only (no extra Supabase-only rows).
     return mergeMystiqueCanonicalIngredients(data as Ingredient[], {
       includeNonCanonicalRows: false,
     });
@@ -1087,10 +1008,7 @@ export async function getIngredients(): Promise<Ingredient[]> {
 
 export async function searchProducts(query: string): Promise<Product[]> {
   const normalizedQuery = normalizeSearchText(query);
-
-  if (!normalizedQuery) {
-    return [];
-  }
+  if (!normalizedQuery) return [];
 
   const sourceProducts = await getProducts({
     sortBy: "featured",
@@ -1106,14 +1024,29 @@ export async function getJournalEntries(): Promise<JournalEntry[]> {
 }
 
 export async function getCartItems(userId: string): Promise<CartItem[]> {
-  void userId;
-  return [];
+  if (!hasSupabaseEnv || !supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      logSupabaseError("[Supabase] getCartItems failed:", error.message);
+      return [];
+    }
+
+    return (data ?? []) as CartItem[];
+  } catch (e) {
+    logSupabaseError("[Supabase] getCartItems exception:", e);
+    return [];
+  }
 }
 
 export async function getUserOrders(_userId: string): Promise<Order[]> {
-  if (!hasSupabaseEnv || !supabase) {
-    return [];
-  }
+  if (!hasSupabaseEnv || !supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -1122,10 +1055,7 @@ export async function getUserOrders(_userId: string): Promise<Order[]> {
       .eq("user_id", _userId)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      return [];
-    }
-
+    if (error) return [];
     return (data ?? []) as Order[];
   } catch {
     return [];
@@ -1133,9 +1063,7 @@ export async function getUserOrders(_userId: string): Promise<Order[]> {
 }
 
 export async function getOrderById(_orderId: string): Promise<Order | null> {
-  if (!hasSupabaseEnv || !supabase) {
-    return null;
-  }
+  if (!hasSupabaseEnv || !supabase) return null;
 
   try {
     const { data, error } = await supabase
@@ -1145,10 +1073,7 @@ export async function getOrderById(_orderId: string): Promise<Order | null> {
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) {
-      return null;
-    }
-
+    if (error || !data) return null;
     return data as Order;
   } catch {
     return null;
@@ -1156,25 +1081,94 @@ export async function getOrderById(_orderId: string): Promise<Order | null> {
 }
 
 export async function getUserAddresses(userId: string): Promise<Address[]> {
-  void userId;
-  return [];
+  if (!hasSupabaseEnv || !supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("addresses")
+      .select("*")
+      .eq("user_id", userId)
+      .order("is_default", { ascending: false });
+
+    if (error) {
+      logSupabaseError("[Supabase] getUserAddresses failed:", error.message);
+      return [];
+    }
+
+    return (data ?? []) as Address[];
+  } catch (e) {
+    logSupabaseError("[Supabase] getUserAddresses exception:", e);
+    return [];
+  }
 }
 
 export async function getUserWishlist(userId: string): Promise<WishlistItem[]> {
-  void userId;
-  return [];
+  if (!hasSupabaseEnv || !supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("wishlists")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (error) {
+      logSupabaseError("[Supabase] getUserWishlist failed:", error.message);
+      return [];
+    }
+
+    return (data ?? []) as WishlistItem[];
+  } catch (e) {
+    logSupabaseError("[Supabase] getUserWishlist exception:", e);
+    return [];
+  }
 }
 
 export async function getLoyaltyProgram(
   userId: string,
 ): Promise<LoyaltyProgram | null> {
-  void userId;
-  return null;
+  if (!hasSupabaseEnv || !supabase) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("loyalty_program")
+      .select("*")
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      logSupabaseError("[Supabase] getLoyaltyProgram failed:", error.message);
+      return null;
+    }
+
+    return (data ?? null) as LoyaltyProgram | null;
+  } catch (e) {
+    logSupabaseError("[Supabase] getLoyaltyProgram exception:", e);
+    return null;
+  }
 }
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  void userId;
-  return null;
+  if (!hasSupabaseEnv || !supabase) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      logSupabaseError("[Supabase] getProfile failed:", error.message);
+      return null;
+    }
+
+    return (data ?? null) as Profile | null;
+  } catch (e) {
+    logSupabaseError("[Supabase] getProfile exception:", e);
+    return null;
+  }
 }
 
 export async function createPendingOrder({
@@ -1253,17 +1247,13 @@ export async function attachStripeCheckoutSession(
     })
     .eq("id", orderId);
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 }
 
 export async function getOrderByOrderNumber(
   orderNumber: string,
 ): Promise<Order | null> {
-  if (!hasSupabaseEnv || !supabase) {
-    return null;
-  }
+  if (!hasSupabaseEnv || !supabase) return null;
 
   try {
     const { data, error } = await supabase
@@ -1273,10 +1263,7 @@ export async function getOrderByOrderNumber(
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) {
-      return null;
-    }
-
+    if (error || !data) return null;
     return data as Order;
   } catch {
     return null;
@@ -1286,9 +1273,7 @@ export async function getOrderByOrderNumber(
 export async function getOrderByStripeCheckoutSessionId(
   sessionId: string,
 ): Promise<Order | null> {
-  if (!hasSupabaseEnv || !supabase) {
-    return null;
-  }
+  if (!hasSupabaseEnv || !supabase) return null;
 
   try {
     const { data, error } = await supabase
@@ -1298,10 +1283,7 @@ export async function getOrderByStripeCheckoutSessionId(
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) {
-      return null;
-    }
-
+    if (error || !data) return null;
     return data as Order;
   } catch {
     return null;
@@ -1309,9 +1291,7 @@ export async function getOrderByStripeCheckoutSessionId(
 }
 
 export async function getOrderItems(orderId: string): Promise<OrderItem[]> {
-  if (!hasSupabaseEnv || !supabase) {
-    return [];
-  }
+  if (!hasSupabaseEnv || !supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -1319,10 +1299,7 @@ export async function getOrderItems(orderId: string): Promise<OrderItem[]> {
       .select("*")
       .eq("order_id", orderId);
 
-    if (error) {
-      return [];
-    }
-
+    if (error) return [];
     return (data ?? []) as OrderItem[];
   } catch {
     return [];
@@ -1330,9 +1307,7 @@ export async function getOrderItems(orderId: string): Promise<OrderItem[]> {
 }
 
 export async function getPaymentsForOrder(orderId: string): Promise<Payment[]> {
-  if (!hasSupabaseEnv || !supabase) {
-    return [];
-  }
+  if (!hasSupabaseEnv || !supabase) return [];
 
   try {
     const { data, error } = await supabase
@@ -1341,10 +1316,7 @@ export async function getPaymentsForOrder(orderId: string): Promise<Payment[]> {
       .eq("order_id", orderId)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      return [];
-    }
-
+    if (error) return [];
     return (data ?? []) as Payment[];
   } catch {
     return [];
@@ -1355,17 +1327,9 @@ export async function getOrderWithItems(
   orderId: string,
 ): Promise<OrderWithItems | null> {
   const order = await getOrderById(orderId);
-
-  if (!order) {
-    return null;
-  }
-
+  if (!order) return null;
   const items = await getOrderItems(order.id);
-
-  return {
-    ...order,
-    items,
-  };
+  return { ...order, items };
 }
 
 export async function getOrderWithItemsForUser({
@@ -1375,9 +1339,7 @@ export async function getOrderWithItemsForUser({
   userId: string;
   orderId: string;
 }): Promise<OrderWithItems | null> {
-  if (!hasSupabaseEnv || !supabase) {
-    return null;
-  }
+  if (!hasSupabaseEnv || !supabase) return null;
 
   try {
     const { data: order, error } = await supabase
@@ -1388,16 +1350,10 @@ export async function getOrderWithItemsForUser({
       .limit(1)
       .maybeSingle();
 
-    if (error || !order) {
-      return null;
-    }
+    if (error || !order) return null;
 
     const items = await getOrderItems(orderId);
-
-    return {
-      ...(order as Order),
-      items,
-    };
+    return { ...(order as Order), items };
   } catch {
     return null;
   }
@@ -1427,10 +1383,7 @@ export async function markOrderPaid({
     .select("*")
     .single();
 
-  if (error || !data) {
-    throw new Error(error?.message ?? "Failed to mark order paid.");
-  }
-
+  if (error || !data) throw new Error(error?.message ?? "Failed to mark order paid.");
   return data as Order;
 }
 
@@ -1438,28 +1391,18 @@ export async function markOrderFailed(orderId: string): Promise<void> {
   const client = requireSupabase();
   const { error } = await client
     .from("orders")
-    .update({
-      status: "failed",
-      updated_at: new Date().toISOString(),
-    })
+    .update({ status: "failed", updated_at: new Date().toISOString() })
     .eq("id", orderId);
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 }
 
 export async function markOrderCancelled(orderId: string): Promise<void> {
   const client = requireSupabase();
   const { error } = await client
     .from("orders")
-    .update({
-      status: "cancelled",
-      updated_at: new Date().toISOString(),
-    })
+    .update({ status: "cancelled", updated_at: new Date().toISOString() })
     .eq("id", orderId);
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 }

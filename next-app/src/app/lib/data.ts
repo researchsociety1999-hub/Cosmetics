@@ -151,7 +151,7 @@ export const mockProducts: Product[] = [
     slug: "midnight-recovery-ampoule",
     category_id: 1,
     sku: "MYS-AMP-006",
-    stock: 9,
+    stock: 20,
     in_stock: true,
     is_published: true,
     created_at: now.toISOString(),
@@ -190,7 +190,8 @@ export const mockProductVariants: ProductVariant[] = [
     variant_name: "Glow tint — medium",
     price_cents: null,
     price: null,
-    stock: 0,
+    // Restocked: was 0, now 8
+    stock: 8,
     sku: "MYS-SPF-005-M",
   },
   {
@@ -214,7 +215,7 @@ export const mockProductVariants: ProductVariant[] = [
 ];
 
 /**
- * Canonical spotlight actives—same order and ids as the homepage “Actives we formulate around”
+ * Canonical spotlight actives—same order and ids as the homepage "Actives we formulate around"
  * section. `/ingredients` uses `getIngredients()` with `includeNonCanonicalRows: false` so only
  * these rows appear (Supabase still overrides copy when `id` matches).
  */
@@ -322,12 +323,16 @@ export function mergeMystiqueCanonicalIngredients(
  */
 export const mockPressMentions: PressMention[] = [];
 
+/**
+ * Active summer promo campaign — valid 2026-06-01 through 2026-09-30.
+ * The spring-glow campaign expired 2026-03-31 and has been replaced here.
+ */
 export const mockPromoCampaign: PromoCampaign = {
-  id: "spring-glow",
-  name: "Spring glow event",
+  id: "summer-ritual-2026",
+  name: "Summer Ritual Event",
   description: "Free U.S. shipping over $75 and selected rituals up to 15% off.",
-  start_date: "2026-03-01T00:00:00.000Z",
-  end_date: "2026-03-31T23:59:59.000Z",
+  start_date: "2026-06-01T00:00:00.000Z",
+  end_date: "2026-09-30T23:59:59.000Z",
   discount_percentage: 15,
 };
 
