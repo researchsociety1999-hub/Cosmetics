@@ -1,21 +1,27 @@
 -- ============================================================
 -- MIGRATION: payments_rls_insert
 -- Applied: 2026-06-28
--- Fix: payments table only had a SELECT policy for authenticated
---      users. The webhook / service role creates payment rows
---      via service role (bypasses RLS), but there was no INSERT
---      policy for the authenticated path used in some flows.
---      Add an explicit service-role-only note + anon INSERT guard.
+-- Fix: payments table had no INSERT policy. Adding explicit
+--      block for anon and authenticated roles — all payment
+--      creation must go through the service-role webhook only.
+--
+-- The existing SELECT policy from 20260427 is preserved:
+--   "Users view own payments" FOR SELECT TO authenticated
+--
+-- NOTE: service role bypasses RLS entirely, so the webhook
+--       can still INSERT without needing an explicit policy.
 -- ============================================================
 
--- Block direct INSERT from anon to prevent abuse
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+
+-- Block direct INSERT from anon
 DROP POLICY IF EXISTS "Block anon writes to payments" ON public.payments;
 CREATE POLICY "Block anon writes to payments" ON public.payments
   FOR INSERT TO anon
   WITH CHECK (false);
 
--- Authenticated users cannot directly insert payment rows either;
--- all payment creation goes through the service role webhook.
+-- Block direct INSERT from authenticated users
+-- (all payment rows are created by the Stripe webhook via service role)
 DROP POLICY IF EXISTS "Block authenticated direct writes to payments" ON public.payments;
 CREATE POLICY "Block authenticated direct writes to payments" ON public.payments
   FOR INSERT TO authenticated
