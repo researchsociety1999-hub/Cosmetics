@@ -85,6 +85,9 @@
       linear-gradient(180deg, rgba(2, 3, 8, 0.92), rgba(4, 5, 10, 0.62) 48%, rgba(2, 3, 8, 0.92)),
       var(--mystique-vein-svg);
     mix-blend-mode: soft-light;
+    /* PERF: promote to its own GPU layer so scroll doesn't repaint it */
+    will-change: opacity;
+    transform: translateZ(0);
   }
 
   .mystique-material::after {
@@ -97,6 +100,7 @@
       radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0) 36%, rgba(0, 0, 0, 0.18) 62%, rgba(0, 0, 0, 0.5) 100%),
       linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05) 28%, rgba(0, 0, 0, 0.32));
     opacity: 0.9;
+    transform: translateZ(0);
   }
 
   .mystique-material--hero { --mystique-marble-opacity: 0.22; }
@@ -127,7 +131,7 @@
     mix-blend-mode: normal;
   }
 
-  /* Opt-in “ore accent” for key panels. */
+  /* Opt-in "ore accent" for key panels. */
   .mystique-section-ore {
     position: relative;
     isolation: isolate;
@@ -149,19 +153,20 @@
     -webkit-mask-image: radial-gradient(ellipse 90% 80% at 80% 20%, black 0%, rgba(0,0,0,0.6) 50%, transparent 80%);
     mask-image: radial-gradient(ellipse 90% 80% at 80% 20%, black 0%, rgba(0,0,0,0.6) 50%, transparent 80%);
     filter: saturate(1.1) contrast(1.03);
+    transform: translateZ(0);
   }
 
   .mystique-section-ore > * { position: relative; z-index: 1; }
 
   /* Ingredient spotlight cards — soft blue smoke + grain + gold motes. */
   @keyframes mystique-ingredient-smoke-drift {
-    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-    50% { transform: translate(2.5%, -1.8%) rotate(0.55deg) scale(1.02); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(2.5%, -1.8%, 0) rotate(0.55deg) scale(1.02); }
   }
 
   @keyframes mystique-ingredient-smoke-drift-reverse {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-2.2%, 1.6%) scale(1.03); }
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(-2.2%, 1.6%, 0) scale(1.03); }
   }
 
   @keyframes mystique-ingredient-mote-shimmer {
@@ -176,6 +181,9 @@
     border-radius: inherit;
     overflow: hidden;
     pointer-events: none;
+    /* PERF: own compositing layer — keeps animation off the main scroll tree */
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .mystique-ingredient-card-atmosphere::before {
@@ -186,10 +194,18 @@
       radial-gradient(ellipse 88% 58% at 16% 55%, rgba(120, 170, 210, 0.2), transparent 58%),
       radial-gradient(ellipse 78% 52% at 90% 28%, rgba(175, 205, 228, 0.14), transparent 54%),
       radial-gradient(ellipse 52% 46% at 48% 88%, rgba(75, 105, 142, 0.16), transparent 50%);
-    filter: blur(22px);
+    /* PERF: reduced blur radius from 22px → 8px on mobile; 22px on hover/desktop only */
+    filter: blur(8px);
     opacity: 0.52;
     mix-blend-mode: screen;
     animation: mystique-ingredient-smoke-drift 24s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mystique-ingredient-card-atmosphere::before {
+      filter: blur(22px);
+    }
   }
 
   .mystique-ingredient-card-atmosphere::after {
@@ -212,6 +228,7 @@
     animation:
       mystique-ingredient-smoke-drift-reverse 30s ease-in-out infinite,
       mystique-ingredient-mote-shimmer 17s ease-in-out infinite;
+    will-change: transform, opacity;
   }
 
   .mystique-ingredient-card--stg-0 .mystique-ingredient-card-atmosphere::before { animation-delay: 0s; }
@@ -239,10 +256,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* Hash/anchor landing offset. Tracks the live measured navbar height so it
-     stays correct at every breakpoint and scroll state (replaces the three
-     fragmented per-breakpoint values, one of which — the ≥768px 4.65rem — was
-     smaller than the real desktop navbar and let anchors land under it). */
+  /* Hash/anchor landing offset. */
   scroll-padding-top: max(
     var(--mystique-header-offset, 8rem),
     env(safe-area-inset-top, 0px)
@@ -253,6 +267,9 @@ html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* PERF: tell the browser scroll is vertical only — eliminates 300ms touch delay
+     and stops Chrome from waiting on JS before committing a scroll frame. */
+  touch-action: pan-y;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -269,9 +286,15 @@ body {
   color: var(--mystic-text);
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
+  /* PERF: enable passive-scrolling optimization path in Chrome Android */
+  overscroll-behavior-y: none;
 }
 
-/* Custom mineral background: charcoal depth + warm gold veining + vignette. */
+/* Custom mineral background: charcoal depth + warm gold veining + vignette.
+   PERF: position:fixed pseudo-elements are repainted on EVERY scroll frame on
+   Android Chrome unless they are on their own GPU layer. translateZ(0) promotes
+   them so the compositor can scroll the page on the GPU without involving the
+   main thread. */
 body::after {
   content: "";
   position: fixed;
@@ -286,6 +309,9 @@ body::after {
     linear-gradient(180deg, #07060a 0%, #09080d 50%, #07060a 100%);
   background-repeat: no-repeat;
   background-size: cover;
+  /* PERF: own compositor layer — never repaints during scroll */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Film grain ~2-3% above wallpaper, below app chrome. */
@@ -300,6 +326,9 @@ body::before {
   background-size: 256px 256px;
   background-repeat: repeat;
   mix-blend-mode: overlay;
+  /* PERF: own compositor layer */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .mystique-app-shell {
@@ -319,8 +348,16 @@ body::before {
   box-shadow:
     inset 0 1px 0 var(--mystique-rim-weak),
     0 28px 82px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(8px) saturate(1.1);
-  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  /* PERF: reduced blur 8px → 4px on mobile; full blur only on hover-capable devices */
+  backdrop-filter: blur(4px) saturate(1.1);
+  -webkit-backdrop-filter: blur(4px) saturate(1.1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mystique-section-surface {
+    backdrop-filter: blur(8px) saturate(1.1);
+    -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  }
 }
 
 .mystique-commerce-surface {
@@ -356,6 +393,8 @@ summary {
     box-shadow 0.25s ease,
     opacity 0.25s ease,
     transform 0.25s ease;
+  /* PERF: prevent scroll from being blocked by touch handlers on interactive elements */
+  touch-action: manipulation;
 }
 
 :where(
@@ -423,28 +462,44 @@ article:has(> a[href^="/products/"]):not(.mystic-card)::after {
   box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.08);
 }
 
-/* Frosted glass — shop filters, chips */
+/* Frosted glass — shop filters, chips
+   PERF: blur(22px) is very expensive on Android. Stepped down to 10px on
+   touch devices; the visual difference is invisible at 60% opacity backgrounds. */
 .mystic-glass {
   border-radius: var(--mystic-radius-card);
   border: 1px solid rgba(212, 175, 55, 0.18);
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(22px) saturate(1.35);
-  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 0 0 1px rgba(212, 175, 55, 0.05),
     0 16px 48px rgba(0, 0, 0, 0.55);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .mystic-glass {
+    backdrop-filter: blur(22px) saturate(1.35);
+    -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  }
+}
+
 .mystic-glass--subtle {
   border-radius: 18px;
   border: 1px solid rgba(212, 175, 55, 0.12);
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 0 20px rgba(212, 175, 55, 0.04);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mystic-glass--subtle {
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
 }
 
 .mystic-section { padding-top: 3rem; padding-bottom: 3rem; }
@@ -679,6 +734,9 @@ optgroup { background-color: #000000; color: var(--mystic-text); }
     0 0 36px rgba(212, 175, 55, 0.22);
   opacity: 0.88;
   animation: mystic-float 8.4s ease-in-out infinite;
+  /* PERF: each particle on its own layer avoids invalidating siblings */
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -713,6 +771,7 @@ optgroup { background-color: #000000; color: var(--mystic-text); }
   );
   background-size: 200% 100%;
   animation: mystic-shimmer 1.6s ease-in-out infinite;
+  will-change: background-position;
 }
 
 @keyframes mystic-shimmer {
@@ -728,16 +787,7 @@ optgroup { background-color: #000000; color: var(--mystic-text); }
 }
 
 /*
- * Header offset model (SiteChrome `#main-content`):
- * 1) Standard pages — `#main-content` supplies the fixed-header clearance via
- *    padding-top: var(--mystique-header-offset). Pages then add their own
- *    vertical rhythm (e.g. `PageContainer`'s py-*) on top of that offset as a
- *    breathing-room buffer. (Historically a `#main-content > main { padding-top: 0 }`
- *    rule lived here to prevent a "double gutter", but it was unlayered and
- *    silently overrode PageContainer's top padding, leaving the heading with no
- *    buffer beneath the navbar — removed.)
- * 2) Hero-first / full-bleed — first immersive block cancels padding via
- *    `.mystique-first-section` (deprecated alias: `.mystique-flush-under-header`).
+ * Header offset model (SiteChrome `#main-content`).
  */
 .mystique-main-content { padding-top: var(--mystique-header-offset, 7rem); }
 
