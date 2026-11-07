@@ -264,7 +264,9 @@ function isRetryableUpstreamError(error: unknown): boolean {
 }
 
 /** Returns true when the error is an OpenRouter auth/billing rejection. */
-function isAuthError(error: unknown): boolean {
+function isAuthError(
+  error: unknown,
+): error is InstanceType<typeof OpenAI.APIError> {
   return (
     error instanceof OpenAI.APIError &&
     (error.status === 401 || error.status === 403)
@@ -305,9 +307,8 @@ async function requestCompletionWithRetry(
       lastErrorCode = "empty_response";
     } catch (error) {
       if (isAuthError(error)) {
-        const status = (error as OpenAI.APIError).status;
         console.error(
-          `[chat] FATAL: OpenRouter auth failed (${status}) — ` +
+          `[chat] FATAL: OpenRouter auth failed (${error.status}) — ` +
             "check OPENROUTER_API_KEY and account credits at openrouter.ai. " +
             "No retries will be attempted.",
         );
